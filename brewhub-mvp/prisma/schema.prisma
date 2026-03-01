@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Equipment {
+  id                String   @id @default(uuid())
+  name              String
+  brewhouseEfficiency Float  @map("brewhouse_efficiency")
+  mashEfficiency    Float?   @map("mash_efficiency")
+  evaporationRate   Float?   @map("evaporation_rate")
+  boilPotDiameter   Float?   @map("boil_pot_diameter")
+  fermenterLossL    Float    @map("fermenter_loss_l")
+  trubLossL         Float    @map("trub_loss_l")
+  systemLossPercent Float?   @map("system_loss_percent")
+  bagasseLossL      Float?   @map("bagasse_loss_l")
+  batches           Batch[]
+
+  @@map("equipment")
+}
+
+model Grain {
+  id          String         @id @default(uuid())
+  name        String
+  brand       String?
+  maxYield    Float?         @map("max_yield")
+  colorL      Float?         @map("color_l")
+  profile     String?
+  uses        String?
+  batchGrains BatchGrain[]
+
+  @@map("grains")
+}
+
+model Hop {
+  id          String         @id @default(uuid())
+  name        String
+  alphaAcid   Float          @map("alpha_acid")
+  profile     String?
+  styles      String?
+  alternatives String?
+  batchHops   BatchHop[]
+
+  @@map("hops")
+}
+
+model Yeast {
+  id               String         @id @default(uuid())
+  name             String
+  brand            String?
+  type             String?        // liquid, dry
+  temperatureRange String?        @map("temperature_range")
+  profile          String?
+  uses             String?
+  attenuation      Float?
+  batchYeasts      BatchYeast[]
+
+  @@map("yeasts")
+}
+
+model WaterProfile {
+  id          String         @id @default(uuid())
+  name        String
+  caPpm       Float          @map("ca_ppm")
+  mgPpm       Float          @map("mg_ppm")
+  naPpm       Float          @map("na_ppm")
+  clPpm       Float          @map("cl_ppm")
+  so4Ppm      Float          @map("so4_ppm")
+  znPpm       Float?         @map("zn_ppm")
+  hco3Ppm     Float?         @map("hco3_ppm")
+  sourceBatches Batch[]      @relation("SourceWaterProfile")
+  targetBatches Batch[]      @relation("TargetWaterProfile")
+
+  @@map("water_profiles")
+}
+
+model Keg {
+  id           String  @id @default(uuid())
+  name         String
+  number       String?
+  capacity     Float
+  tareWeight   Float?  @map("tare_weight")
+  notes        String?
+
+  @@map("kegs")
+}
+
+model Batch {
+  id                    String      @id @default(uuid())
+  brewDate              DateTime    @map("brew_date")
+  type                  String      // beer, cider, hopwater, other
+  name                  String
+  style                 String?
+  notes                 String?
+  draft                 Boolean     @default(true)
+  targetFermentarL      Float?      @map("target_fermentar_l")
+  targetOg              Float?      @map("target_og")
+  targetFg              Float?      @map("target_fg")
+  targetIbu             Float?      @map("target_ibu")
+  targetSrm             Float?      @map("target_srm")
+  
+  equipment             Equipment?  @relation(fields: [equipmentId], references: [id])
+  equipmentId           String?     @map("equipment_id")
+  
+  sourceWaterProfile    WaterProfile? @relation("SourceWaterProfile", fields: [sourceWaterProfileId], references: [id])
+  sourceWaterProfileId  String?       @map("source_water_profile_id")
+  
+  targetWaterProfile    WaterProfile? @relation("TargetWaterProfile", fields: [targetWaterProfileId], references: [id])
+  targetWaterProfileId  String?       @map("target_water_profile_id")
+  
+  heatUpTimeMin         Float?        @map("heat_up_time_min")
+  boilTimeMin           Float?        @map("boil_time_min")
+  whirpoolTimeMin       Float?        @map("whirpool_time_min")
+  
+  grains                BatchGrain[]
+  hops                  BatchHop[]
+  yeasts                BatchYeast[]
+
+  @@map("batches")
+}
+
+model BatchGrain {
+  id        String   @id @default(uuid())
+  batch     Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId   String   @map("batch_id")
+  grain     Grain    @relation(fields: [grainId], references: [id])
+  grainId   String   @map("grain_id")
+  grams     Float
+
+  @@map("batch_grains")
+}
+
+model BatchHop {
+  id            String   @id @default(uuid())
+  batch         Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId       String   @map("batch_id")
+  hop           Hop      @relation(fields: [hopId], references: [id])
+  hopId         String   @map("hop_id")
+  grams         Float
+  additionTime  Float    @map("addition_time") // minutes
+  use           String   // fwh, boil, whirlpool, hop_stand, dry_hop
+
+  @@map("batch_hops")
+}
+
+model BatchYeast {
+  id        String   @id @default(uuid())
+  batch     Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId   String   @map("batch_id")
+  yeast     Yeast    @relation(fields: [yeastId], references: [id])
+  yeastId   String   @map("yeast_id")
+  quantity  String
+  temp      Float?
+
+  @@map("batch_yeasts")
+}
