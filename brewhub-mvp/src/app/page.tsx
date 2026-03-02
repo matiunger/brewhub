@@ -107,8 +107,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                         <div>
                           <p className="font-medium">{batch.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {batch.style || "No style"} • {" "}
-                            {batch.brewDate.toLocaleDateString()}
+                            {batch.style || "No style"}
+                            {batch.brewDate && ` • ${batch.brewDate.toLocaleDateString()}`}
                           </p>
                         </div>
                         <div className="flex gap-1">
@@ -149,8 +149,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                         <div>
                           <p className="font-medium">{batch.name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {batch.style || "No style"} • {" "}
-                            {batch.brewDate.toLocaleDateString()}
+                            {batch.style || "No style"}
+                            {batch.brewDate && ` • ${batch.brewDate.toLocaleDateString()}`}
                           </p>
                         </div>
                         <div className="flex gap-1">

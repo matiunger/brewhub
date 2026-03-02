@@ -94,7 +94,7 @@ model Keg {
 
 model Batch {
   id                    String      @id @default(uuid())
-  brewDate              DateTime    @map("brew_date")
+  brewDate              DateTime?   @map("brew_date")
   type                  String      // beer, cider, hopwater, other
   name                  String
   style                 String?
@@ -160,4 +160,15 @@ model BatchYeast {
   temp      Float?
 
   @@map("batch_yeasts")
+}
+
+model WikiPage {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  title     String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("wiki_pages")
 }

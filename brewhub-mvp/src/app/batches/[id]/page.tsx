@@ -3,38 +3,40 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { calculateBrewingStats } from "@/lib/calculations";
+import { DeleteBatchDialog } from "./delete-dialog";
+import { BatchForm } from "./batch-form";
 
 interface BatchPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-async function updateBatch(formData: FormData, id: string) {
+async function updateBatch(id: string, formData: FormData) {
   "use server";
+  
+  const brewDateValue = formData.get("brewDate") as string;
   
   await prisma.batch.update({
     where: { id },
     data: {
       name: formData.get("name") as string,
-      brewDate: new Date(formData.get("brewDate") as string),
+      brewDate: brewDateValue ? new Date(brewDateValue) : null,
       style: formData.get("style") as string || null,
-      notes: formData.get("notes") as string || null,
       draft: formData.get("draft") === "on",
     },
   });
+}
+
+async function updateNotes(id: string, notes: string) {
+  "use server";
   
-  redirect(`/batches/${id}`);
+  await prisma.batch.update({
+    where: { id },
+    data: {
+      notes: notes || null,
+    },
+  });
 }
 
 async function deleteBatch(id: string) {
@@ -48,8 +50,10 @@ async function deleteBatch(id: string) {
 }
 
 export default async function BatchPage({ params }: BatchPageProps) {
+  const { id } = await params;
+  
   const batch = await prisma.batch.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       equipment: true,
       sourceWaterProfile: true,
@@ -72,82 +76,31 @@ export default async function BatchPage({ params }: BatchPageProps) {
 
   const stats = calculateBrewingStats(batch);
   
-  const updateWithId = updateBatch.bind(null, new FormData(), params.id);
-  const deleteWithId = deleteBatch.bind(null, params.id);
+  const updateWithId = updateBatch.bind(null, id);
+  const updateNotesWithId = updateNotes.bind(null, id);
+  const deleteWithId = deleteBatch.bind(null, id);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
-            ← Back to Home
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold">{batch.name}</h1>
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant={batch.draft ? "secondary" : "default"}>
-                {batch.draft ? "Draft" : "Executed"}
-              </Badge>
-              <Badge variant="outline">{batch.type}</Badge>
-              {batch.style && <Badge variant="outline">{batch.style}</Badge>}
-            </div>
+        <div>
+          <h1 className="text-2xl font-bold">{batch.name}</h1>
+          <div className="flex items-center gap-2 mt-1">
+            <Badge variant={batch.draft ? "secondary" : "default"}>
+              {batch.draft ? "Draft" : "Executed"}
+            </Badge>
+            <Badge variant="outline">{batch.type}</Badge>
+            {batch.style && <Badge variant="outline">{batch.style}</Badge>}
           </div>
         </div>
         
-        <form action={deleteWithId}>
-          <Button type="submit" variant="destructive" size="sm">Delete Batch</Button>
-        </form>
+        <DeleteBatchDialog batchName={batch.name} deleteAction={deleteWithId} />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form action={updateWithId} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" defaultValue={batch.name} />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="brewDate">Brew Date</Label>
-                <Input 
-                  id="brewDate" 
-                  name="brewDate" 
-                  type="date" 
-                  defaultValue={batch.brewDate.toISOString().split("T")[0]} 
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="style">Style</Label>
-                <Input id="style" name="style" defaultValue={batch.style || ""} />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea id="notes" name="notes" defaultValue={batch.notes || ""} />
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="draft"
-                  name="draft"
-                  defaultChecked={batch.draft}
-                  className="rounded border-gray-300"
-                />
-                <Label htmlFor="draft" className="text-sm font-normal">Draft</Label>
-              </div>
-              
-              <Button type="submit" size="sm">Update Info</Button>
-            </form>
-          </CardContent>
-        </Card>
-
-        {batch.type === "beer" && (
+      {batch.type === "beer" ? (
+        <div className="grid gap-6 md:grid-cols-2">
+          <BatchForm batch={batch} updateAction={updateWithId} updateNotesAction={updateNotesWithId} />
+          
           <Card>
             <CardHeader>
               <CardTitle>Recipe Overview</CardTitle>
@@ -188,8 +141,10 @@ export default async function BatchPage({ params }: BatchPageProps) {
               </div>
             </CardContent>
           </Card>
-        )}
-      </div>
+        </div>
+      ) : (
+        <BatchForm batch={batch} updateAction={updateWithId} updateNotesAction={updateNotesWithId} />
+      )}
 
       {batch.type === "beer" && (
         <div className="grid gap-6 md:grid-cols-2">
