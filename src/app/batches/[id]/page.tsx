@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { calculateBrewingStats } from "@/lib/calculations";
 import { DeleteBatchDialog } from "./delete-dialog";
 import { BatchForm } from "./batch-form";
+import { ExportBeerJsonButton } from "@/components/export-beerjson-button";
 
 interface BatchPageProps {
   params: Promise<{ id: string }>;
@@ -94,7 +95,10 @@ export default async function BatchPage({ params }: BatchPageProps) {
           </div>
         </div>
         
-        <DeleteBatchDialog batchName={batch.name} deleteAction={deleteWithId} />
+        <div className="flex gap-2">
+          <ExportBeerJsonButton batchId={id} />
+          <DeleteBatchDialog batchName={batch.name} deleteAction={deleteWithId} />
+        </div>
       </div>
 
       {batch.type === "beer" ? (

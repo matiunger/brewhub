@@ -3,14 +3,14 @@ import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ImportBeerJsonButton } from "@/components/import-beerjson-button";
 
 interface HomePageProps {
-  searchParams: { type?: string; draft?: string };
+  searchParams: Promise<{ type?: string; draft?: string }>;
 }
 
 export default async function HomePage({ searchParams }: HomePageProps) {
-  const typeFilter = searchParams.type;
-  const draftFilter = searchParams.draft;
+  const { type: typeFilter, draft: draftFilter } = await searchParams;
 
   const whereClause: any = {};
   if (typeFilter) whereClause.type = typeFilter;
@@ -38,6 +38,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Batches</h1>
         <div className="flex gap-2">
+          <ImportBeerJsonButton />
           <Link href="/batches/new">
             <Button>+ New Batch</Button>
           </Link>

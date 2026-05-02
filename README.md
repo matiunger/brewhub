@@ -1,170 +1,36 @@
-# brewhub
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Layout
+## Getting Started
 
-### Header
-Beericon (emoji) + Brewhub
+First, run the development server:
 
-### Sidebar (Menu)
-Home
-Config
-Wiki:
- - list of wiki pages
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## Home
-should display a column of executed batch with ability to filter by type (order by date)
-should display a column of draft beer batches
-button to add new batch
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Config
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-should have diffrent tabs to edit my databases:
- - grains
- - hops
- - yeasts
- - water profiles
- - equipment
- - kegs
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-each one should have a list of items with properties and the ability to add/edit/delete records
+## Learn More
 
-## Batch page (for anything that is not beer)
-show fields to edit and notes as mardown to display/edit
+To learn more about Next.js, take a look at the following resources:
 
-## Beer batch page
-Here I will design the recipe entering some of the needed values and seeing calculations of other things, add real values during the brewing process.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-Sections:
-Recipe overview
-    target numbers (OG, FG, IBU, SRM)
-Select equipment
-Recipe ingredients
- - Add/edit/delete grains
- - Add/edit/delete hops
- - Add/edit/delete yeast
- - Select source water profile
- - Select target water profile
-Water adjustments
-    CaCl, CaSO4, MgSO4
-Final water profile
-Water volume calculations
-Preparation checklist
-Molienda
-Macerado
-Lavado
-Pre-hervido
-Hervido
-Whirpool
-Enfriado
-Fermentacion
-Maduracion
-Embotellado
-Notes
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Wiki pages
-Should be markdown.
+## Deploy on Vercel
 
- - Cleaning and sanitization
- - Kegging
- - Salts
- - Tips
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-# Database model
-
-Batches:
-brew_date
-type (beer, cider, hopwater, other)
-style
-
-Cider / hop water or other batches:
-brew_date
-name
-type
-draft (boolean)
-notes
-
-
-Beer batches:
-brew_date
-name
-type
-notes
-draft (boolean)
-target_fermentar_L
-target_og
-target_fg
-target_ibu
-target_srm
-equipment
-grains
-    id, grams
-hops
-    id, grams, addition_time, use (fwh, boil, whirlpool, hop stand, dry hop)
-yeast
-    id, quantity, temp
-source_water_profile
-target_water_profile
-
-heat_up_time_min
-boil_time_min
-whirpool_time_min
-
-
-
-Tasks:
-item
-status
-notes
-
-Equipment:
-name
-brewhouse_efficiency
-mash_efficiency
-evaporation_rate
-boil_pot_diameter
-fermenter_loss_l
-trub_loss_l
-system_loss_percent
-bagasse_loss_l
-
-
-Grains:
-name
-brand
-max_yield
-color_L
-profile
-uses
-
-Hops:
-name
-alpha_acid
-profile
-styles
-alternatives
-
-Yeasts:
-name
-brand
-type (liquid, dry)
-temperature_range
-profile
-uses
-attenuation
-
-Water Profiles:
-name
-ca_ppm
-mg_ppm
-na_ppm
-cl_ppm
-so4_ppm
-zn_ppm
-hco3_ppm
-
-Kegs:
-name
-number
-capacity
-tare_weight
-notes
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

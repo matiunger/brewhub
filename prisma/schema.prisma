@@ -29,6 +29,9 @@ model Equipment {
 model Grain {
   id          String         @id @default(uuid())
   name        String
+  type        String?        // BeerJSON: dry extract, extract, grain, sugar, fruit, juice, honey, other
+  origin      String?
+  grainGroup  String?        @map("grain_group") // BeerJSON grain_group: base, caramel, flaked, roasted, specialty, smoked, adjunct
   brand       String?
   maxYield    Float?         @map("max_yield")
   colorL      Float?         @map("color_l")
@@ -42,7 +45,11 @@ model Grain {
 model Hop {
   id          String         @id @default(uuid())
   name        String
+  origin      String?
+  form        String?        // BeerJSON: extract, leaf, leaf (wet), pellet, powder, plug
+  hopType     String?        @map("hop_type") // BeerJSON type: aroma, bittering, flavor, aroma/bittering, bittering/flavor, aroma/flavor, aroma/bittering/flavor
   alphaAcid   Float          @map("alpha_acid")
+  betaAcid    Float?         @map("beta_acid")
   profile     String?
   styles      String?
   alternatives String?
@@ -55,7 +62,8 @@ model Yeast {
   id               String         @id @default(uuid())
   name             String
   brand            String?
-  type             String?        // liquid, dry
+  type             String?        // BeerJSON form: liquid, dry, slant, culture, dregs
+  cultureType      String?        @map("culture_type") // BeerJSON type: ale, bacteria, brett, champagne, kveik, lacto, lager, malolactic, mixed-culture, other, pedio, spontaneous, wine
   temperatureRange String?        @map("temperature_range")
   profile          String?
   uses             String?
@@ -75,6 +83,7 @@ model WaterProfile {
   so4Ppm      Float          @map("so4_ppm")
   znPpm       Float?         @map("zn_ppm")
   hco3Ppm     Float?         @map("hco3_ppm")
+  pH          Float?         @map("ph")
   sourceBatches Batch[]      @relation("SourceWaterProfile")
   targetBatches Batch[]      @relation("TargetWaterProfile")
 

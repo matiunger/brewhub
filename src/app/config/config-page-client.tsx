@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +22,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// BeerJSON enums
+const FERMENTABLE_TYPES = ["grain", "dry extract", "extract", "sugar", "fruit", "juice", "honey", "other"];
+const GRAIN_GROUPS = ["base", "caramel", "flaked", "roasted", "specialty", "smoked", "adjunct"];
+const HOP_FORMS = ["pellet", "leaf", "leaf (wet)", "extract", "powder", "plug"];
+const HOP_TYPES = ["aroma", "bittering", "flavor", "aroma/bittering", "bittering/flavor", "aroma/flavor", "aroma/bittering/flavor"];
+const CULTURE_FORMS = ["liquid", "dry", "slant", "culture", "dregs"];
+const CULTURE_TYPES = ["ale", "lager", "kveik", "brett", "bacteria", "champagne", "lacto", "malolactic", "mixed-culture", "pedio", "spontaneous", "wine", "other"];
 
 // Types
 interface Equipment {
@@ -40,6 +55,9 @@ interface Equipment {
 interface Grain {
   id: string;
   name: string;
+  type: string | null;
+  origin: string | null;
+  grainGroup: string | null;
   brand: string | null;
   maxYield: number | null;
   colorL: number | null;
@@ -50,7 +68,11 @@ interface Grain {
 interface Hop {
   id: string;
   name: string;
+  origin: string | null;
+  form: string | null;
+  hopType: string | null;
   alphaAcid: number;
+  betaAcid: number | null;
   profile: string | null;
   styles: string | null;
   alternatives: string | null;
@@ -60,7 +82,8 @@ interface Yeast {
   id: string;
   name: string;
   brand: string | null;
-  type: string | null;
+  type: string | null;       // BeerJSON form: liquid/dry/etc
+  cultureType: string | null; // BeerJSON type: ale/lager/etc
   temperatureRange: string | null;
   profile: string | null;
   uses: string | null;
@@ -77,6 +100,7 @@ interface WaterProfile {
   so4Ppm: number;
   znPpm: number | null;
   hco3Ppm: number | null;
+  pH: number | null;
 }
 
 interface Keg {
@@ -97,14 +121,41 @@ interface ConfigData {
   kegs: Keg[];
 }
 
+// Helper: render a Select field or a plain input fallback
+function EnumSelect({
+  value,
+  options,
+  placeholder,
+  onChange,
+}: {
+  value: string | null | undefined;
+  options: string[];
+  placeholder: string;
+  onChange: (v: string | null) => void;
+}) {
+  return (
+    <Select value={value ?? ""} onValueChange={(v) => onChange(v || null)}>
+      <SelectTrigger>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="">— none —</SelectItem>
+        {options.map((o) => (
+          <SelectItem key={o} value={o}>
+            {o}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
 export function ConfigPageClient({ initialData }: { initialData: ConfigData }) {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const defaultTab = searchParams.get("tab") || "equipment";
+  const activeTab = searchParams.get("tab") || "fermentables";
   const [data, setData] = useState(initialData);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(defaultTab);
 
   const refreshData = async () => {
     const response = await fetch("/api/config");
@@ -112,29 +163,9 @@ export function ConfigPageClient({ initialData }: { initialData: ConfigData }) {
     setData(newData);
   };
 
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    setEditingId(null);
-    const params = new URLSearchParams(searchParams);
-    params.set("tab", value);
-    router.push(`/config?${params.toString()}`);
-  };
-
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Configuration</h1>
-      </div>
-
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="equipment">Equipment ({data.equipment.length})</TabsTrigger>
-          <TabsTrigger value="grains">Grains ({data.grains.length})</TabsTrigger>
-          <TabsTrigger value="hops">Hops ({data.hops.length})</TabsTrigger>
-          <TabsTrigger value="yeasts">Yeasts ({data.yeasts.length})</TabsTrigger>
-          <TabsTrigger value="water">Water ({data.waterProfiles.length})</TabsTrigger>
-          <TabsTrigger value="kegs">Kegs ({data.kegs.length})</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} className="w-full">
 
         <TabsContent value="equipment" className="mt-6">
           <EquipmentTable
@@ -147,7 +178,7 @@ export function ConfigPageClient({ initialData }: { initialData: ConfigData }) {
           />
         </TabsContent>
 
-        <TabsContent value="grains" className="mt-6">
+        <TabsContent value="fermentables" className="mt-6">
           <GrainsTable
             data={data.grains}
             editingId={editingId}
@@ -169,7 +200,7 @@ export function ConfigPageClient({ initialData }: { initialData: ConfigData }) {
           />
         </TabsContent>
 
-        <TabsContent value="yeasts" className="mt-6">
+        <TabsContent value="cultures" className="mt-6">
           <YeastsTable
             data={data.yeasts}
             editingId={editingId}
@@ -206,7 +237,8 @@ export function ConfigPageClient({ initialData }: { initialData: ConfigData }) {
   );
 }
 
-// Equipment Table Component
+// ---- Equipment Table ----
+
 function EquipmentTable({
   data,
   editingId,
@@ -230,15 +262,8 @@ function EquipmentTable({
     trubLossL: 1,
   });
 
-  const startEdit = (item: Equipment) => {
-    setEditingId(item.id);
-    setEditForm(item);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({});
-  };
+  const startEdit = (item: Equipment) => { setEditingId(item.id); setEditForm(item); };
+  const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
     await fetch(`/api/equipment/${editingId}`, {
@@ -282,88 +307,51 @@ function EquipmentTable({
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="space-y-2">
                 <Label>Name *</Label>
-                <Input
-                  value={addForm.name}
-                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                />
+                <Input value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label>Brewhouse Efficiency (%) *</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.brewhouseEfficiency}
-                  onChange={(e) => setAddForm({ ...addForm, brewhouseEfficiency: parseFloat(e.target.value) })}
-                />
+                <Input type="number" step="0.1" value={addForm.brewhouseEfficiency}
+                  onChange={(e) => setAddForm({ ...addForm, brewhouseEfficiency: parseFloat(e.target.value) })} />
               </div>
               <div className="space-y-2">
                 <Label>Mash Efficiency (%)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.mashEfficiency || ""}
-                  onChange={(e) => setAddForm({ ...addForm, mashEfficiency: e.target.value ? parseFloat(e.target.value) : null })}
-                />
+                <Input type="number" step="0.1" value={addForm.mashEfficiency || ""}
+                  onChange={(e) => setAddForm({ ...addForm, mashEfficiency: e.target.value ? parseFloat(e.target.value) : null })} />
               </div>
               <div className="space-y-2">
                 <Label>Evaporation Rate (%/h)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.evaporationRate || ""}
-                  onChange={(e) => setAddForm({ ...addForm, evaporationRate: e.target.value ? parseFloat(e.target.value) : null })}
-                />
+                <Input type="number" step="0.1" value={addForm.evaporationRate || ""}
+                  onChange={(e) => setAddForm({ ...addForm, evaporationRate: e.target.value ? parseFloat(e.target.value) : null })} />
               </div>
               <div className="space-y-2">
                 <Label>Boil Pot Diameter (cm)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.boilPotDiameter || ""}
-                  onChange={(e) => setAddForm({ ...addForm, boilPotDiameter: e.target.value ? parseFloat(e.target.value) : null })}
-                />
+                <Input type="number" step="0.1" value={addForm.boilPotDiameter || ""}
+                  onChange={(e) => setAddForm({ ...addForm, boilPotDiameter: e.target.value ? parseFloat(e.target.value) : null })} />
               </div>
               <div className="space-y-2">
                 <Label>Fermenter Loss (L) *</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.fermenterLossL}
-                  onChange={(e) => setAddForm({ ...addForm, fermenterLossL: parseFloat(e.target.value) })}
-                />
+                <Input type="number" step="0.1" value={addForm.fermenterLossL}
+                  onChange={(e) => setAddForm({ ...addForm, fermenterLossL: parseFloat(e.target.value) })} />
               </div>
               <div className="space-y-2">
                 <Label>Trub Loss (L) *</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.trubLossL}
-                  onChange={(e) => setAddForm({ ...addForm, trubLossL: parseFloat(e.target.value) })}
-                />
+                <Input type="number" step="0.1" value={addForm.trubLossL}
+                  onChange={(e) => setAddForm({ ...addForm, trubLossL: parseFloat(e.target.value) })} />
               </div>
               <div className="space-y-2">
                 <Label>System Loss (%)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.systemLossPercent || ""}
-                  onChange={(e) => setAddForm({ ...addForm, systemLossPercent: e.target.value ? parseFloat(e.target.value) : null })}
-                />
+                <Input type="number" step="0.1" value={addForm.systemLossPercent || ""}
+                  onChange={(e) => setAddForm({ ...addForm, systemLossPercent: e.target.value ? parseFloat(e.target.value) : null })} />
               </div>
               <div className="space-y-2">
                 <Label>Bagasse Loss (L)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.bagasseLossL || ""}
-                  onChange={(e) => setAddForm({ ...addForm, bagasseLossL: e.target.value ? parseFloat(e.target.value) : null })}
-                />
+                <Input type="number" step="0.1" value={addForm.bagasseLossL || ""}
+                  onChange={(e) => setAddForm({ ...addForm, bagasseLossL: e.target.value ? parseFloat(e.target.value) : null })} />
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
               <Button onClick={addItem}>Save</Button>
             </div>
           </DialogContent>
@@ -386,36 +374,13 @@ function EquipmentTable({
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
-                    <TableCell>
-                      <Input
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.brewhouseEfficiency}
-                        onChange={(e) => setEditForm({ ...editForm, brewhouseEfficiency: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.fermenterLossL}
-                        onChange={(e) => setEditForm({ ...editForm, fermenterLossL: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.trubLossL}
-                        onChange={(e) => setEditForm({ ...editForm, trubLossL: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
+                    <TableCell><Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.brewhouseEfficiency}
+                      onChange={(e) => setEditForm({ ...editForm, brewhouseEfficiency: parseFloat(e.target.value) })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.fermenterLossL}
+                      onChange={(e) => setEditForm({ ...editForm, fermenterLossL: parseFloat(e.target.value) })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.trubLossL}
+                      onChange={(e) => setEditForm({ ...editForm, trubLossL: parseFloat(e.target.value) })} /></TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="sm" onClick={saveEdit}>Save</Button>
@@ -431,12 +396,8 @@ function EquipmentTable({
                     <TableCell>{item.trubLossL} L</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>
-                          Edit
-                        </Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>
-                          Delete
-                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
+                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
                       </div>
                     </TableCell>
                   </>
@@ -457,7 +418,8 @@ function EquipmentTable({
   );
 }
 
-// Grains Table Component
+// ---- Grains Table ----
+
 function GrainsTable({
   data,
   editingId,
@@ -474,19 +436,10 @@ function GrainsTable({
   setIsAddDialogOpen: (open: boolean) => void;
 }) {
   const [editForm, setEditForm] = useState<Partial<Grain>>({});
-  const [addForm, setAddForm] = useState<Partial<Grain>>({
-    name: "",
-  });
+  const [addForm, setAddForm] = useState<Partial<Grain>>({ name: "", type: "grain" });
 
-  const startEdit = (item: Grain) => {
-    setEditingId(item.id);
-    setEditForm(item);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({});
-  };
+  const startEdit = (item: Grain) => { setEditingId(item.id); setEditForm(item); };
+  const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
     await fetch(`/api/grains/${editingId}`, {
@@ -512,7 +465,7 @@ function GrainsTable({
       body: JSON.stringify(addForm),
     });
     setIsAddDialogOpen(false);
-    setAddForm({ name: "" });
+    setAddForm({ name: "", type: "grain" });
     onRefresh();
   };
 
@@ -521,66 +474,63 @@ function GrainsTable({
       <div className="flex justify-end">
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Grain</Button>
+            <Button>+ Add Fermentable</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Add Grain</DialogTitle>
+              <DialogTitle>Add Fermentable</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>Name *</Label>
-                <Input
-                  value={addForm.name}
-                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Brand</Label>
-                <Input
-                  value={addForm.brand || ""}
-                  onChange={(e) => setAddForm({ ...addForm, brand: e.target.value })}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Name *</Label>
+                  <Input value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Type *</Label>
+                  <EnumSelect value={addForm.type} options={FERMENTABLE_TYPES} placeholder="Select type"
+                    onChange={(v) => setAddForm({ ...addForm, type: v })} />
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Max Yield (%)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.maxYield || ""}
-                    onChange={(e) => setAddForm({ ...addForm, maxYield: e.target.value ? parseFloat(e.target.value) : null })}
-                  />
+                  <Label>Producer / Brand</Label>
+                  <Input value={addForm.brand || ""} onChange={(e) => setAddForm({ ...addForm, brand: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Color (L)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.colorL || ""}
-                    onChange={(e) => setAddForm({ ...addForm, colorL: e.target.value ? parseFloat(e.target.value) : null })}
-                  />
+                  <Label>Origin</Label>
+                  <Input value={addForm.origin || ""} onChange={(e) => setAddForm({ ...addForm, origin: e.target.value })}
+                    placeholder="e.g., Belgium, USA" />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Profile</Label>
-                <Textarea
-                  value={addForm.profile || ""}
-                  onChange={(e) => setAddForm({ ...addForm, profile: e.target.value })}
-                />
+                <Label>Grain Group</Label>
+                <EnumSelect value={addForm.grainGroup} options={GRAIN_GROUPS} placeholder="Select grain group"
+                  onChange={(v) => setAddForm({ ...addForm, grainGroup: v })} />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Max Yield / Fine Grind (%)</Label>
+                  <Input type="number" step="0.1" value={addForm.maxYield || ""}
+                    onChange={(e) => setAddForm({ ...addForm, maxYield: e.target.value ? parseFloat(e.target.value) : null })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Color (Lovibond)</Label>
+                  <Input type="number" step="0.1" value={addForm.colorL || ""}
+                    onChange={(e) => setAddForm({ ...addForm, colorL: e.target.value ? parseFloat(e.target.value) : null })} />
+                </div>
               </div>
               <div className="space-y-2">
-                <Label>Uses</Label>
-                <Textarea
-                  value={addForm.uses || ""}
-                  onChange={(e) => setAddForm({ ...addForm, uses: e.target.value })}
-                />
+                <Label>Notes / Profile</Label>
+                <Textarea value={addForm.profile || ""} onChange={(e) => setAddForm({ ...addForm, profile: e.target.value })} />
+              </div>
+              <div className="space-y-2">
+                <Label>Best Uses</Label>
+                <Textarea value={addForm.uses || ""} onChange={(e) => setAddForm({ ...addForm, uses: e.target.value })} />
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
               <Button onClick={addItem}>Save</Button>
             </div>
           </DialogContent>
@@ -592,8 +542,10 @@ function GrainsTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Brand</TableHead>
-              <TableHead>Max Yield</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Group</TableHead>
+              <TableHead>Origin</TableHead>
+              <TableHead>Yield %</TableHead>
               <TableHead>Color (L)</TableHead>
               <TableHead className="w-[150px]">Actions</TableHead>
             </TableRow>
@@ -603,33 +555,25 @@ function GrainsTable({
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
+                    <TableCell><Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></TableCell>
                     <TableCell>
-                      <Input
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                      />
+                      <EnumSelect value={editForm.type} options={FERMENTABLE_TYPES} placeholder="Type"
+                        onChange={(v) => setEditForm({ ...editForm, type: v })} />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        value={editForm.brand || ""}
-                        onChange={(e) => setEditForm({ ...editForm, brand: e.target.value })}
-                      />
+                      <EnumSelect value={editForm.grainGroup} options={GRAIN_GROUPS} placeholder="Group"
+                        onChange={(v) => setEditForm({ ...editForm, grainGroup: v })} />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.maxYield || ""}
-                        onChange={(e) => setEditForm({ ...editForm, maxYield: e.target.value ? parseFloat(e.target.value) : null })}
-                      />
+                      <Input value={editForm.origin || ""} onChange={(e) => setEditForm({ ...editForm, origin: e.target.value })} />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.colorL || ""}
-                        onChange={(e) => setEditForm({ ...editForm, colorL: e.target.value ? parseFloat(e.target.value) : null })}
-                      />
+                      <Input type="number" step="0.1" value={editForm.maxYield || ""}
+                        onChange={(e) => setEditForm({ ...editForm, maxYield: e.target.value ? parseFloat(e.target.value) : null })} />
+                    </TableCell>
+                    <TableCell>
+                      <Input type="number" step="0.1" value={editForm.colorL || ""}
+                        onChange={(e) => setEditForm({ ...editForm, colorL: e.target.value ? parseFloat(e.target.value) : null })} />
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
@@ -641,17 +585,15 @@ function GrainsTable({
                 ) : (
                   <>
                     <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.brand || "-"}</TableCell>
-                    <TableCell>{item.maxYield || "-"}</TableCell>
-                    <TableCell>{item.colorL || "-"}</TableCell>
+                    <TableCell>{item.type || "-"}</TableCell>
+                    <TableCell>{item.grainGroup || "-"}</TableCell>
+                    <TableCell>{item.origin || "-"}</TableCell>
+                    <TableCell>{item.maxYield ?? "-"}</TableCell>
+                    <TableCell>{item.colorL ?? "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>
-                          Edit
-                        </Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>
-                          Delete
-                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
+                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
                       </div>
                     </TableCell>
                   </>
@@ -660,8 +602,8 @@ function GrainsTable({
             ))}
             {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                  No grains yet. Click "Add Grain" to create one.
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                  No fermentables yet. Click "Add Fermentable" to create one.
                 </TableCell>
               </TableRow>
             )}
@@ -672,7 +614,8 @@ function GrainsTable({
   );
 }
 
-// Hops Table Component
+// ---- Hops Table ----
+
 function HopsTable({
   data,
   editingId,
@@ -689,20 +632,10 @@ function HopsTable({
   setIsAddDialogOpen: (open: boolean) => void;
 }) {
   const [editForm, setEditForm] = useState<Partial<Hop>>({});
-  const [addForm, setAddForm] = useState<Partial<Hop>>({
-    name: "",
-    alphaAcid: 5,
-  });
+  const [addForm, setAddForm] = useState<Partial<Hop>>({ name: "", alphaAcid: 5, form: "pellet" });
 
-  const startEdit = (item: Hop) => {
-    setEditingId(item.id);
-    setEditForm(item);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({});
-  };
+  const startEdit = (item: Hop) => { setEditingId(item.id); setEditForm(item); };
+  const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
     await fetch(`/api/hops/${editingId}`, {
@@ -728,7 +661,7 @@ function HopsTable({
       body: JSON.stringify(addForm),
     });
     setIsAddDialogOpen(false);
-    setAddForm({ name: "", alphaAcid: 5 });
+    setAddForm({ name: "", alphaAcid: 5, form: "pellet" });
     onRefresh();
   };
 
@@ -744,50 +677,60 @@ function HopsTable({
               <DialogTitle>Add Hop</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>Name *</Label>
-                <Input
-                  value={addForm.name}
-                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Name *</Label>
+                  <Input value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Origin</Label>
+                  <Input value={addForm.origin || ""} onChange={(e) => setAddForm({ ...addForm, origin: e.target.value })}
+                    placeholder="e.g., USA, Germany" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Form</Label>
+                  <EnumSelect value={addForm.form} options={HOP_FORMS} placeholder="Select form"
+                    onChange={(v) => setAddForm({ ...addForm, form: v })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Type</Label>
+                  <EnumSelect value={addForm.hopType} options={HOP_TYPES} placeholder="Select type"
+                    onChange={(v) => setAddForm({ ...addForm, hopType: v })} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Alpha Acid (%) *</Label>
+                  <Input type="number" step="0.1" value={addForm.alphaAcid}
+                    onChange={(e) => setAddForm({ ...addForm, alphaAcid: parseFloat(e.target.value) })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Beta Acid (%)</Label>
+                  <Input type="number" step="0.1" value={addForm.betaAcid || ""}
+                    onChange={(e) => setAddForm({ ...addForm, betaAcid: e.target.value ? parseFloat(e.target.value) : null })} />
+                </div>
               </div>
               <div className="space-y-2">
-                <Label>Alpha Acid (%) *</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.alphaAcid}
-                  onChange={(e) => setAddForm({ ...addForm, alphaAcid: parseFloat(e.target.value) })}
-                />
+                <Label>Notes / Profile</Label>
+                <Textarea value={addForm.profile || ""} onChange={(e) => setAddForm({ ...addForm, profile: e.target.value })} />
               </div>
-              <div className="space-y-2">
-                <Label>Profile</Label>
-                <Textarea
-                  value={addForm.profile || ""}
-                  onChange={(e) => setAddForm({ ...addForm, profile: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Styles</Label>
-                <Input
-                  value={addForm.styles || ""}
-                  onChange={(e) => setAddForm({ ...addForm, styles: e.target.value })}
-                  placeholder="e.g., IPA, Pale Ale, Stout"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label>Alternatives</Label>
-                <Input
-                  value={addForm.alternatives || ""}
-                  onChange={(e) => setAddForm({ ...addForm, alternatives: e.target.value })}
-                  placeholder="e.g., Cascade, Centennial"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Styles</Label>
+                  <Input value={addForm.styles || ""} onChange={(e) => setAddForm({ ...addForm, styles: e.target.value })}
+                    placeholder="e.g., IPA, Pale Ale" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Substitutes</Label>
+                  <Input value={addForm.alternatives || ""} onChange={(e) => setAddForm({ ...addForm, alternatives: e.target.value })}
+                    placeholder="e.g., Cascade, Centennial" />
+                </div>
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
               <Button onClick={addItem}>Save</Button>
             </div>
           </DialogContent>
@@ -799,8 +742,11 @@ function HopsTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Alpha Acid</TableHead>
-              <TableHead>Profile</TableHead>
+              <TableHead>Origin</TableHead>
+              <TableHead>Form</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Alpha %</TableHead>
+              <TableHead>Beta %</TableHead>
               <TableHead className="w-[150px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -809,26 +755,23 @@ function HopsTable({
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
+                    <TableCell><Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></TableCell>
+                    <TableCell><Input value={editForm.origin || ""} onChange={(e) => setEditForm({ ...editForm, origin: e.target.value })} /></TableCell>
                     <TableCell>
-                      <Input
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                      />
+                      <EnumSelect value={editForm.form} options={HOP_FORMS} placeholder="Form"
+                        onChange={(v) => setEditForm({ ...editForm, form: v })} />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.alphaAcid}
-                        onChange={(e) => setEditForm({ ...editForm, alphaAcid: parseFloat(e.target.value) })}
-                      />
+                      <EnumSelect value={editForm.hopType} options={HOP_TYPES} placeholder="Type"
+                        onChange={(v) => setEditForm({ ...editForm, hopType: v })} />
                     </TableCell>
                     <TableCell>
-                      <Textarea
-                        value={editForm.profile || ""}
-                        onChange={(e) => setEditForm({ ...editForm, profile: e.target.value })}
-                        rows={2}
-                      />
+                      <Input type="number" step="0.1" value={editForm.alphaAcid}
+                        onChange={(e) => setEditForm({ ...editForm, alphaAcid: parseFloat(e.target.value) })} />
+                    </TableCell>
+                    <TableCell>
+                      <Input type="number" step="0.1" value={editForm.betaAcid || ""}
+                        onChange={(e) => setEditForm({ ...editForm, betaAcid: e.target.value ? parseFloat(e.target.value) : null })} />
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
@@ -840,16 +783,15 @@ function HopsTable({
                 ) : (
                   <>
                     <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell>{item.origin || "-"}</TableCell>
+                    <TableCell>{item.form || "-"}</TableCell>
+                    <TableCell>{item.hopType || "-"}</TableCell>
                     <TableCell>{item.alphaAcid}%</TableCell>
-                    <TableCell className="max-w-xs truncate">{item.profile || "-"}</TableCell>
+                    <TableCell>{item.betaAcid != null ? `${item.betaAcid}%` : "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>
-                          Edit
-                        </Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>
-                          Delete
-                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
+                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
                       </div>
                     </TableCell>
                   </>
@@ -858,7 +800,7 @@ function HopsTable({
             ))}
             {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                   No hops yet. Click "Add Hop" to create one.
                 </TableCell>
               </TableRow>
@@ -870,7 +812,8 @@ function HopsTable({
   );
 }
 
-// Yeasts Table Component
+// ---- Yeasts Table ----
+
 function YeastsTable({
   data,
   editingId,
@@ -887,19 +830,10 @@ function YeastsTable({
   setIsAddDialogOpen: (open: boolean) => void;
 }) {
   const [editForm, setEditForm] = useState<Partial<Yeast>>({});
-  const [addForm, setAddForm] = useState<Partial<Yeast>>({
-    name: "",
-  });
+  const [addForm, setAddForm] = useState<Partial<Yeast>>({ name: "" });
 
-  const startEdit = (item: Yeast) => {
-    setEditingId(item.id);
-    setEditForm(item);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({});
-  };
+  const startEdit = (item: Yeast) => { setEditingId(item.id); setEditForm(item); };
+  const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
     await fetch(`/api/yeasts/${editingId}`, {
@@ -934,75 +868,58 @@ function YeastsTable({
       <div className="flex justify-end">
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Yeast</Button>
+            <Button>+ Add Culture</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Add Yeast</DialogTitle>
+              <DialogTitle>Add Culture</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>Name *</Label>
-                <Input
-                  value={addForm.name}
-                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Name *</Label>
+                  <Input value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Producer / Brand</Label>
+                  <Input value={addForm.brand || ""} onChange={(e) => setAddForm({ ...addForm, brand: e.target.value })} />
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Brand</Label>
-                  <Input
-                    value={addForm.brand || ""}
-                    onChange={(e) => setAddForm({ ...addForm, brand: e.target.value })}
-                  />
+                  <Label>Culture Type</Label>
+                  <EnumSelect value={addForm.cultureType} options={CULTURE_TYPES} placeholder="Select type"
+                    onChange={(v) => setAddForm({ ...addForm, cultureType: v })} />
                 </div>
                 <div className="space-y-2">
-                  <Label>Type</Label>
-                  <Input
-                    value={addForm.type || ""}
-                    onChange={(e) => setAddForm({ ...addForm, type: e.target.value })}
-                    placeholder="liquid or dry"
-                  />
+                  <Label>Form</Label>
+                  <EnumSelect value={addForm.type} options={CULTURE_FORMS} placeholder="Select form"
+                    onChange={(v) => setAddForm({ ...addForm, type: v })} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Temperature Range</Label>
-                  <Input
-                    value={addForm.temperatureRange || ""}
-                    onChange={(e) => setAddForm({ ...addForm, temperatureRange: e.target.value })}
-                    placeholder="e.g., 18-22°C"
-                  />
+                  <Input value={addForm.temperatureRange || ""} onChange={(e) => setAddForm({ ...addForm, temperatureRange: e.target.value })}
+                    placeholder="e.g., 18-22°C" />
                 </div>
                 <div className="space-y-2">
                   <Label>Attenuation (%)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.attenuation || ""}
-                    onChange={(e) => setAddForm({ ...addForm, attenuation: e.target.value ? parseFloat(e.target.value) : null })}
-                  />
+                  <Input type="number" step="0.1" value={addForm.attenuation || ""}
+                    onChange={(e) => setAddForm({ ...addForm, attenuation: e.target.value ? parseFloat(e.target.value) : null })} />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Profile</Label>
-                <Textarea
-                  value={addForm.profile || ""}
-                  onChange={(e) => setAddForm({ ...addForm, profile: e.target.value })}
-                />
+                <Label>Notes / Profile</Label>
+                <Textarea value={addForm.profile || ""} onChange={(e) => setAddForm({ ...addForm, profile: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label>Uses</Label>
-                <Textarea
-                  value={addForm.uses || ""}
-                  onChange={(e) => setAddForm({ ...addForm, uses: e.target.value })}
-                />
+                <Label>Best For</Label>
+                <Textarea value={addForm.uses || ""} onChange={(e) => setAddForm({ ...addForm, uses: e.target.value })} />
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
               <Button onClick={addItem}>Save</Button>
             </div>
           </DialogContent>
@@ -1014,8 +931,9 @@ function YeastsTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead>Brand</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead>Producer</TableHead>
+              <TableHead>Culture Type</TableHead>
+              <TableHead>Form</TableHead>
               <TableHead>Attenuation</TableHead>
               <TableHead className="w-[150px]">Actions</TableHead>
             </TableRow>
@@ -1025,31 +943,19 @@ function YeastsTable({
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
+                    <TableCell><Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></TableCell>
+                    <TableCell><Input value={editForm.brand || ""} onChange={(e) => setEditForm({ ...editForm, brand: e.target.value })} /></TableCell>
                     <TableCell>
-                      <Input
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                      />
+                      <EnumSelect value={editForm.cultureType} options={CULTURE_TYPES} placeholder="Type"
+                        onChange={(v) => setEditForm({ ...editForm, cultureType: v })} />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        value={editForm.brand || ""}
-                        onChange={(e) => setEditForm({ ...editForm, brand: e.target.value })}
-                      />
+                      <EnumSelect value={editForm.type} options={CULTURE_FORMS} placeholder="Form"
+                        onChange={(v) => setEditForm({ ...editForm, type: v })} />
                     </TableCell>
                     <TableCell>
-                      <Input
-                        value={editForm.type || ""}
-                        onChange={(e) => setEditForm({ ...editForm, type: e.target.value })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.attenuation || ""}
-                        onChange={(e) => setEditForm({ ...editForm, attenuation: e.target.value ? parseFloat(e.target.value) : null })}
-                      />
+                      <Input type="number" step="0.1" value={editForm.attenuation || ""}
+                        onChange={(e) => setEditForm({ ...editForm, attenuation: e.target.value ? parseFloat(e.target.value) : null })} />
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
@@ -1062,16 +968,13 @@ function YeastsTable({
                   <>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.brand || "-"}</TableCell>
+                    <TableCell>{item.cultureType || "-"}</TableCell>
                     <TableCell>{item.type || "-"}</TableCell>
-                    <TableCell>{item.attenuation ? `${item.attenuation}%` : "-"}</TableCell>
+                    <TableCell>{item.attenuation != null ? `${item.attenuation}%` : "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>
-                          Edit
-                        </Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>
-                          Delete
-                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
+                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
                       </div>
                     </TableCell>
                   </>
@@ -1080,8 +983,8 @@ function YeastsTable({
             ))}
             {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                  No yeasts yet. Click "Add Yeast" to create one.
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                  No cultures yet. Click "Add Culture" to create one.
                 </TableCell>
               </TableRow>
             )}
@@ -1092,7 +995,8 @@ function YeastsTable({
   );
 }
 
-// Water Table Component
+// ---- Water Table ----
+
 function WaterTable({
   data,
   editingId,
@@ -1110,23 +1014,11 @@ function WaterTable({
 }) {
   const [editForm, setEditForm] = useState<Partial<WaterProfile>>({});
   const [addForm, setAddForm] = useState<Partial<WaterProfile>>({
-    name: "",
-    caPpm: 0,
-    mgPpm: 0,
-    naPpm: 0,
-    clPpm: 0,
-    so4Ppm: 0,
+    name: "", caPpm: 0, mgPpm: 0, naPpm: 0, clPpm: 0, so4Ppm: 0,
   });
 
-  const startEdit = (item: WaterProfile) => {
-    setEditingId(item.id);
-    setEditForm(item);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({});
-  };
+  const startEdit = (item: WaterProfile) => { setEditingId(item.id); setEditForm(item); };
+  const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
     await fetch(`/api/water-profiles/${editingId}`, {
@@ -1156,6 +1048,21 @@ function WaterTable({
     onRefresh();
   };
 
+  const numField = (
+    label: string,
+    key: keyof WaterProfile,
+    form: Partial<WaterProfile>,
+    setForm: (f: Partial<WaterProfile>) => void,
+    required = false,
+    step = "0.1"
+  ) => (
+    <div className="space-y-2">
+      <Label>{label}{required ? " *" : ""}</Label>
+      <Input type="number" step={step} value={form[key] != null ? String(form[key]) : ""}
+        onChange={(e) => setForm({ ...form, [key]: e.target.value ? parseFloat(e.target.value) : null })} />
+    </div>
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
@@ -1168,83 +1075,29 @@ function WaterTable({
               <DialogTitle>Add Water Profile</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label>Name *</Label>
-                <Input
-                  value={addForm.name}
-                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Name *</Label>
+                  <Input value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>pH</Label>
+                  <Input type="number" step="0.01" placeholder="e.g., 7.0" value={addForm.pH != null ? String(addForm.pH) : ""}
+                    onChange={(e) => setAddForm({ ...addForm, pH: e.target.value ? parseFloat(e.target.value) : null })} />
+                </div>
               </div>
               <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label>Ca (ppm) *</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.caPpm}
-                    onChange={(e) => setAddForm({ ...addForm, caPpm: parseFloat(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Mg (ppm) *</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.mgPpm}
-                    onChange={(e) => setAddForm({ ...addForm, mgPpm: parseFloat(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Na (ppm) *</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.naPpm}
-                    onChange={(e) => setAddForm({ ...addForm, naPpm: parseFloat(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Cl (ppm) *</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.clPpm}
-                    onChange={(e) => setAddForm({ ...addForm, clPpm: parseFloat(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>SO4 (ppm) *</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.so4Ppm}
-                    onChange={(e) => setAddForm({ ...addForm, so4Ppm: parseFloat(e.target.value) })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Zn (ppm)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.znPpm || ""}
-                    onChange={(e) => setAddForm({ ...addForm, znPpm: e.target.value ? parseFloat(e.target.value) : null })}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>HCO3 (ppm)</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.hco3Ppm || ""}
-                    onChange={(e) => setAddForm({ ...addForm, hco3Ppm: e.target.value ? parseFloat(e.target.value) : null })}
-                  />
-                </div>
+                {numField("Ca²⁺ (ppm) *", "caPpm", addForm, setAddForm, true)}
+                {numField("Mg²⁺ (ppm) *", "mgPpm", addForm, setAddForm, true)}
+                {numField("Na⁺ (ppm) *", "naPpm", addForm, setAddForm, true)}
+                {numField("Cl⁻ (ppm) *", "clPpm", addForm, setAddForm, true)}
+                {numField("SO₄²⁻ (ppm) *", "so4Ppm", addForm, setAddForm, true)}
+                {numField("HCO₃⁻ (ppm)", "hco3Ppm", addForm, setAddForm)}
+                {numField("Zn (ppm)", "znPpm", addForm, setAddForm)}
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
               <Button onClick={addItem}>Save</Button>
             </div>
           </DialogContent>
@@ -1256,11 +1109,13 @@ function WaterTable({
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>pH</TableHead>
               <TableHead>Ca</TableHead>
               <TableHead>Mg</TableHead>
               <TableHead>Na</TableHead>
               <TableHead>Cl</TableHead>
-              <TableHead>SO4</TableHead>
+              <TableHead>SO₄</TableHead>
+              <TableHead>HCO₃</TableHead>
               <TableHead className="w-[150px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -1269,52 +1124,21 @@ function WaterTable({
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
-                    <TableCell>
-                      <Input
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.caPpm}
-                        onChange={(e) => setEditForm({ ...editForm, caPpm: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.mgPpm}
-                        onChange={(e) => setEditForm({ ...editForm, mgPpm: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.naPpm}
-                        onChange={(e) => setEditForm({ ...editForm, naPpm: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.clPpm}
-                        onChange={(e) => setEditForm({ ...editForm, clPpm: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.so4Ppm}
-                        onChange={(e) => setEditForm({ ...editForm, so4Ppm: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
+                    <TableCell><Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></TableCell>
+                    <TableCell><Input type="number" step="0.01" value={editForm.pH != null ? String(editForm.pH) : ""}
+                      onChange={(e) => setEditForm({ ...editForm, pH: e.target.value ? parseFloat(e.target.value) : null })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.caPpm}
+                      onChange={(e) => setEditForm({ ...editForm, caPpm: parseFloat(e.target.value) })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.mgPpm}
+                      onChange={(e) => setEditForm({ ...editForm, mgPpm: parseFloat(e.target.value) })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.naPpm}
+                      onChange={(e) => setEditForm({ ...editForm, naPpm: parseFloat(e.target.value) })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.clPpm}
+                      onChange={(e) => setEditForm({ ...editForm, clPpm: parseFloat(e.target.value) })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.so4Ppm}
+                      onChange={(e) => setEditForm({ ...editForm, so4Ppm: parseFloat(e.target.value) })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.hco3Ppm != null ? String(editForm.hco3Ppm) : ""}
+                      onChange={(e) => setEditForm({ ...editForm, hco3Ppm: e.target.value ? parseFloat(e.target.value) : null })} /></TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="sm" onClick={saveEdit}>Save</Button>
@@ -1325,19 +1149,17 @@ function WaterTable({
                 ) : (
                   <>
                     <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell>{item.pH ?? "-"}</TableCell>
                     <TableCell>{item.caPpm}</TableCell>
                     <TableCell>{item.mgPpm}</TableCell>
                     <TableCell>{item.naPpm}</TableCell>
                     <TableCell>{item.clPpm}</TableCell>
                     <TableCell>{item.so4Ppm}</TableCell>
+                    <TableCell>{item.hco3Ppm ?? "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>
-                          Edit
-                        </Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>
-                          Delete
-                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
+                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
                       </div>
                     </TableCell>
                   </>
@@ -1346,7 +1168,7 @@ function WaterTable({
             ))}
             {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                   No water profiles yet. Click "Add Water Profile" to create one.
                 </TableCell>
               </TableRow>
@@ -1358,7 +1180,8 @@ function WaterTable({
   );
 }
 
-// Kegs Table Component
+// ---- Kegs Table ----
+
 function KegsTable({
   data,
   editingId,
@@ -1375,20 +1198,10 @@ function KegsTable({
   setIsAddDialogOpen: (open: boolean) => void;
 }) {
   const [editForm, setEditForm] = useState<Partial<Keg>>({});
-  const [addForm, setAddForm] = useState<Partial<Keg>>({
-    name: "",
-    capacity: 19,
-  });
+  const [addForm, setAddForm] = useState<Partial<Keg>>({ name: "", capacity: 19 });
 
-  const startEdit = (item: Keg) => {
-    setEditingId(item.id);
-    setEditForm(item);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({});
-  };
+  const startEdit = (item: Keg) => { setEditingId(item.id); setEditForm(item); };
+  const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
     await fetch(`/api/kegs/${editingId}`, {
@@ -1432,51 +1245,32 @@ function KegsTable({
             <div className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label>Name *</Label>
-                <Input
-                  value={addForm.name}
-                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                />
+                <Input value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Number</Label>
-                  <Input
-                    value={addForm.number || ""}
-                    onChange={(e) => setAddForm({ ...addForm, number: e.target.value })}
-                    placeholder="e.g., K001"
-                  />
+                  <Input value={addForm.number || ""} onChange={(e) => setAddForm({ ...addForm, number: e.target.value })}
+                    placeholder="e.g., K001" />
                 </div>
                 <div className="space-y-2">
                   <Label>Capacity (L) *</Label>
-                  <Input
-                    type="number"
-                    step="0.1"
-                    value={addForm.capacity}
-                    onChange={(e) => setAddForm({ ...addForm, capacity: parseFloat(e.target.value) })}
-                  />
+                  <Input type="number" step="0.1" value={addForm.capacity}
+                    onChange={(e) => setAddForm({ ...addForm, capacity: parseFloat(e.target.value) })} />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label>Tare Weight (kg)</Label>
-                <Input
-                  type="number"
-                  step="0.1"
-                  value={addForm.tareWeight || ""}
-                  onChange={(e) => setAddForm({ ...addForm, tareWeight: e.target.value ? parseFloat(e.target.value) : null })}
-                />
+                <Input type="number" step="0.1" value={addForm.tareWeight || ""}
+                  onChange={(e) => setAddForm({ ...addForm, tareWeight: e.target.value ? parseFloat(e.target.value) : null })} />
               </div>
               <div className="space-y-2">
                 <Label>Notes</Label>
-                <Textarea
-                  value={addForm.notes || ""}
-                  onChange={(e) => setAddForm({ ...addForm, notes: e.target.value })}
-                />
+                <Textarea value={addForm.notes || ""} onChange={(e) => setAddForm({ ...addForm, notes: e.target.value })} />
               </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
-                Cancel
-              </Button>
+              <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
               <Button onClick={addItem}>Save</Button>
             </div>
           </DialogContent>
@@ -1499,34 +1293,12 @@ function KegsTable({
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
-                    <TableCell>
-                      <Input
-                        value={editForm.name}
-                        onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        value={editForm.number || ""}
-                        onChange={(e) => setEditForm({ ...editForm, number: e.target.value })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.capacity}
-                        onChange={(e) => setEditForm({ ...editForm, capacity: parseFloat(e.target.value) })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={editForm.tareWeight || ""}
-                        onChange={(e) => setEditForm({ ...editForm, tareWeight: e.target.value ? parseFloat(e.target.value) : null })}
-                      />
-                    </TableCell>
+                    <TableCell><Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></TableCell>
+                    <TableCell><Input value={editForm.number || ""} onChange={(e) => setEditForm({ ...editForm, number: e.target.value })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.capacity}
+                      onChange={(e) => setEditForm({ ...editForm, capacity: parseFloat(e.target.value) })} /></TableCell>
+                    <TableCell><Input type="number" step="0.1" value={editForm.tareWeight || ""}
+                      onChange={(e) => setEditForm({ ...editForm, tareWeight: e.target.value ? parseFloat(e.target.value) : null })} /></TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="sm" onClick={saveEdit}>Save</Button>
@@ -1539,15 +1311,11 @@ function KegsTable({
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.number || "-"}</TableCell>
                     <TableCell>{item.capacity} L</TableCell>
-                    <TableCell>{item.tareWeight ? `${item.tareWeight} kg` : "-"}</TableCell>
+                    <TableCell>{item.tareWeight != null ? `${item.tareWeight} kg` : "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>
-                          Edit
-                        </Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>
-                          Delete
-                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
+                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
                       </div>
                     </TableCell>
                   </>
