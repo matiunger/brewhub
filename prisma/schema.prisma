@@ -93,7 +93,8 @@ model WaterProfile {
 model Keg {
   id           String  @id @default(uuid())
   name         String
-  number       String?
+  type         String?
+  label        String?
   capacity     Float
   tareWeight   Float?  @map("tare_weight")
   notes        String?

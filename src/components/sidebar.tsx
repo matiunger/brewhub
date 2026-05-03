@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Plus, Wrench, Wheat, Hop, FlaskConical, Droplets, Barrel, FileText, ChevronLeft, ChevronRight, Home, Beer } from "lucide-react";
@@ -16,19 +16,17 @@ const menuItems = [
   { href: "/", label: "Batches", icon: Home },
 ];
 
-const configTabs = [
-  { tab: "equipment", label: "Equipment", icon: Wrench },
-  { tab: "fermentables", label: "Fermentables", icon: Wheat },
-  { tab: "hops", label: "Hops", icon: Hop },
-  { tab: "cultures", label: "Cultures", icon: FlaskConical },
-  { tab: "water", label: "Water", icon: Droplets },
-  { tab: "kegs", label: "Kegs", icon: Barrel },
+const inventoryItems = [
+  { href: "/inventory/equipment", label: "Equipment", icon: Wrench },
+  { href: "/inventory/fermentables", label: "Fermentables", icon: Wheat },
+  { href: "/inventory/hops", label: "Hops", icon: Hop },
+  { href: "/inventory/cultures", label: "Cultures", icon: FlaskConical },
+  { href: "/inventory/water", label: "Water", icon: Droplets },
+  { href: "/inventory/kegs", label: "Kegs", icon: Barrel },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const activeConfigTab = searchParams.get("tab") || "fermentables";
   const [wikiPages, setWikiPages] = useState<WikiPage[]>([]);
   const [loading, setLoading] = useState(true);
   const [collapsed, setCollapsed] = useState(false);
@@ -99,15 +97,15 @@ export function Sidebar() {
           )}
           {collapsed && <div className="border-t mx-2 mb-2" />}
           <div className="space-y-1">
-            {configTabs.map((item) => (
+            {inventoryItems.map((item) => (
               <Link
-                key={item.tab}
-                href={`/config?tab=${item.tab}`}
+                key={item.href}
+                href={item.href}
                 title={collapsed ? item.label : undefined}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors",
                   collapsed && "justify-center px-2",
-                  pathname === "/config" && activeConfigTab === item.tab
+                  pathname === item.href
                     ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}

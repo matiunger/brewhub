@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/select";
 
 interface AddYeastPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-async function addYeast(formData: FormData, batchId: string) {
+async function addYeast(batchId: string, formData: FormData) {
   "use server";
-  
+
   await prisma.batchYeast.create({
     data: {
       batchId,
@@ -28,13 +28,14 @@ async function addYeast(formData: FormData, batchId: string) {
       temp: formData.get("temp") ? parseFloat(formData.get("temp") as string) : null,
     },
   });
-  
+
   redirect(`/batches/${batchId}`);
 }
 
 export default async function AddYeastPage({ params }: AddYeastPageProps) {
+  const { id } = await params;
   const batch = await prisma.batch.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!batch) {
@@ -45,12 +46,12 @@ export default async function AddYeastPage({ params }: AddYeastPageProps) {
     orderBy: { name: "asc" },
   });
 
-  const addWithId = addYeast.bind(null, new FormData(), params.id);
+  const addWithId = addYeast.bind(null, id);
 
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
-        <Link href={`/batches/${params.id}`} className="text-sm text-muted-foreground hover:text-foreground">
+        <Link href={`/batches/${id}`} className="text-sm text-muted-foreground hover:text-foreground">
           ← Back to Batch
         </Link>
       </div>
@@ -95,7 +96,7 @@ export default async function AddYeastPage({ params }: AddYeastPageProps) {
             
             <div className="flex gap-2">
               <Button type="submit">Add Yeast</Button>
-              <Link href={`/batches/${params.id}`}>
+              <Link href={`/batches/${id}`}>
                 <Button variant="outline">Cancel</Button>
               </Link>
             </div>

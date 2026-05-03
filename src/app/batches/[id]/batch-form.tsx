@@ -1,12 +1,16 @@
 "use client";
 
+import { useRef, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MarkdownNotes } from "./markdown-notes";
+import styles from "../../../../styles.json";
+
+const styleNames = styles.map((s) => `${s.number} ${s.name}`);
 
 interface BatchFormProps {
   batch: {
@@ -20,121 +24,146 @@ interface BatchFormProps {
   };
   updateAction: (formData: FormData) => Promise<void>;
   updateNotesAction: (notes: string) => Promise<void>;
+  bare?: boolean;
 }
 
-export function BatchForm({ batch, updateAction, updateNotesAction }: BatchFormProps) {
+export function BatchForm({ batch, updateAction, updateNotesAction, bare }: BatchFormProps) {
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [draft, setDraft] = useState(batch.draft);
 
-  const handleSubmit = async (formData: FormData) => {
+  const save = useCallback(async () => {
+    if (!formRef.current) return;
+    const formData = new FormData(formRef.current);
     try {
       await updateAction(formData);
-      toast.success("Batch updated successfully");
       router.refresh();
-    } catch (error) {
-      toast.error("Failed to update batch");
+    } catch {
+      toast.error("Failed to save");
     }
-  };
+  }, [updateAction, router]);
+
+  const scheduleAutoSave = useCallback(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(save, 800);
+  }, [save]);
 
   const isBeer = batch.type === "beer";
+
+  const inner = (
+    <>
+      <form ref={formRef} className="space-y-4">
+        {isBeer ? (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input id="name" name="name" defaultValue={batch.name} onChange={scheduleAutoSave} />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="style">Style</Label>
+                <Input
+                  id="style"
+                  name="style"
+                  list="style-options"
+                  defaultValue={batch.style || ""}
+                  autoComplete="off"
+                  onChange={scheduleAutoSave}
+                />
+                <datalist id="style-options">
+                  {styleNames.map((s) => (
+                    <option key={s} value={s} />
+                  ))}
+                </datalist>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="brewDate">Brew Date</Label>
+                <Input
+                  id="brewDate"
+                  name="brewDate"
+                  type="date"
+                  defaultValue={batch.brewDate?.toISOString().split("T")[0]}
+                  onChange={scheduleAutoSave}
+                />
+              </div>
+
+              <div className="flex items-end pb-2">
+                <div className="flex items-center space-x-2">
+                  <input type="hidden" name="draft" value={draft ? "on" : "off"} />
+                  <Switch
+                    id="draft"
+                    checked={draft}
+                    onCheckedChange={(checked) => { setDraft(checked); scheduleAutoSave(); }}
+                  />
+                  <Label htmlFor="draft" className="text-sm font-normal">Draft</Label>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input id="name" name="name" defaultValue={batch.name} onChange={scheduleAutoSave} />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="style">Style</Label>
+                <Input id="style" name="style" defaultValue={batch.style || ""} onChange={scheduleAutoSave} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="brewDate">Brew Date</Label>
+                <Input
+                  id="brewDate"
+                  name="brewDate"
+                  type="date"
+                  defaultValue={batch.brewDate?.toISOString().split("T")[0]}
+                  onChange={scheduleAutoSave}
+                />
+              </div>
+
+              <div className="flex items-end pb-2">
+                <div className="flex items-center space-x-2">
+                  <input type="hidden" name="draft" value={draft ? "on" : "off"} />
+                  <Switch
+                    id="draft"
+                    checked={draft}
+                    onCheckedChange={(checked) => { setDraft(checked); scheduleAutoSave(); }}
+                  />
+                  <Label htmlFor="draft" className="text-sm font-normal">Draft</Label>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </form>
+
+      <div className="mt-6">
+        <h3 className="text-sm font-medium mb-3">Notes</h3>
+        <MarkdownNotes notes={batch.notes} onSave={updateNotesAction} />
+      </div>
+    </>
+  );
+
+  if (bare) {
+    return inner;
+  }
 
   return (
     <Card className="w-full xl:max-w-[1000px]">
       <CardHeader>
         <CardTitle>Basic Information</CardTitle>
       </CardHeader>
-      <CardContent>
-        <form action={handleSubmit} className="space-y-4">
-          {isBeer ? (
-            // Beer layout - stacked
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" defaultValue={batch.name} />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="brewDate">Brew Date</Label>
-                <Input 
-                  id="brewDate" 
-                  name="brewDate" 
-                  type="date" 
-                  defaultValue={batch.brewDate?.toISOString().split("T")[0]} 
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="style">Style</Label>
-                <Input id="style" name="style" defaultValue={batch.style || ""} />
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="draft"
-                  name="draft"
-                  defaultChecked={batch.draft}
-                  className="rounded border-gray-300"
-                />
-                <Label htmlFor="draft" className="text-sm font-normal">Draft</Label>
-              </div>
-              
-              <div className="flex justify-end">
-                <Button type="submit" size="sm">Update Info</Button>
-              </div>
-            </>
-          ) : (
-            // Non-beer layout - name/style row, brewDate/draft row
-            <>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input id="name" name="name" defaultValue={batch.name} />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="style">Style</Label>
-                  <Input id="style" name="style" defaultValue={batch.style || ""} />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="brewDate">Brew Date</Label>
-                  <Input 
-                    id="brewDate" 
-                    name="brewDate" 
-                    type="date" 
-                    defaultValue={batch.brewDate?.toISOString().split("T")[0]} 
-                  />
-                </div>
-                
-                <div className="flex items-end pb-2">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="draft"
-                      name="draft"
-                      defaultChecked={batch.draft}
-                      className="rounded border-gray-300"
-                    />
-                    <Label htmlFor="draft" className="text-sm font-normal">Draft</Label>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex justify-end">
-                <Button type="submit" size="sm">Update Info</Button>
-              </div>
-            </>
-          )}
-        </form>
-        
-        {/* Notes Section */}
-        <div className="mt-6 pt-6 border-t">
-          <h3 className="text-sm font-medium mb-3">Notes</h3>
-          <MarkdownNotes notes={batch.notes} onSave={updateNotesAction} />
-        </div>
-      </CardContent>
+      <CardContent>{inner}</CardContent>
     </Card>
   );
 }

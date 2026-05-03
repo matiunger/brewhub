@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { Wrench, Wheat, Hop as HopIcon, FlaskConical, Droplets, Barrel } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -83,8 +82,8 @@ interface Yeast {
   id: string;
   name: string;
   brand: string | null;
-  type: string | null;       // BeerJSON form: liquid/dry/etc
-  cultureType: string | null; // BeerJSON type: ale/lager/etc
+  type: string | null;
+  cultureType: string | null;
   temperatureRange: string | null;
   profile: string | null;
   uses: string | null;
@@ -114,16 +113,6 @@ interface Keg {
   notes: string | null;
 }
 
-interface ConfigData {
-  equipment: Equipment[];
-  grains: Grain[];
-  hops: Hop[];
-  yeasts: Yeast[];
-  waterProfiles: WaterProfile[];
-  kegs: Keg[];
-}
-
-// Helper: render a Select field or a plain input fallback
 function EnumSelect({
   value,
   options,
@@ -136,12 +125,12 @@ function EnumSelect({
   onChange: (v: string | null) => void;
 }) {
   return (
-    <Select value={value ?? ""} onValueChange={(v) => onChange(v || null)}>
+    <Select value={value ?? "__none__"} onValueChange={(v) => onChange(v === "__none__" ? null : v)}>
       <SelectTrigger>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">— none —</SelectItem>
+        <SelectItem value="__none__">— none —</SelectItem>
         {options.map((o) => (
           <SelectItem key={o} value={o}>
             {o}
@@ -152,110 +141,12 @@ function EnumSelect({
   );
 }
 
-export function ConfigPageClient({ initialData }: { initialData: ConfigData }) {
-  const searchParams = useSearchParams();
-  const activeTab = searchParams.get("tab") || "fermentables";
+// ---- Equipment Table ----
+
+export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
   const [data, setData] = useState(initialData);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-
-  const refreshData = async () => {
-    const response = await fetch("/api/config");
-    const newData = await response.json();
-    setData(newData);
-  };
-
-  return (
-    <div className="space-y-6">
-      <Tabs value={activeTab} className="w-full">
-
-        <TabsContent value="equipment" className="mt-6">
-          <EquipmentTable
-            data={data.equipment}
-            editingId={editingId}
-            setEditingId={setEditingId}
-            onRefresh={refreshData}
-            isAddDialogOpen={isAddDialogOpen}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-          />
-        </TabsContent>
-
-        <TabsContent value="fermentables" className="mt-6">
-          <GrainsTable
-            data={data.grains}
-            editingId={editingId}
-            setEditingId={setEditingId}
-            onRefresh={refreshData}
-            isAddDialogOpen={isAddDialogOpen}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-          />
-        </TabsContent>
-
-        <TabsContent value="hops" className="mt-6">
-          <HopsTable
-            data={data.hops}
-            editingId={editingId}
-            setEditingId={setEditingId}
-            onRefresh={refreshData}
-            isAddDialogOpen={isAddDialogOpen}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-          />
-        </TabsContent>
-
-        <TabsContent value="cultures" className="mt-6">
-          <YeastsTable
-            data={data.yeasts}
-            editingId={editingId}
-            setEditingId={setEditingId}
-            onRefresh={refreshData}
-            isAddDialogOpen={isAddDialogOpen}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-          />
-        </TabsContent>
-
-        <TabsContent value="water" className="mt-6">
-          <WaterTable
-            data={data.waterProfiles}
-            editingId={editingId}
-            setEditingId={setEditingId}
-            onRefresh={refreshData}
-            isAddDialogOpen={isAddDialogOpen}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-          />
-        </TabsContent>
-
-        <TabsContent value="kegs" className="mt-6">
-          <KegsTable
-            data={data.kegs}
-            editingId={editingId}
-            setEditingId={setEditingId}
-            onRefresh={refreshData}
-            isAddDialogOpen={isAddDialogOpen}
-            setIsAddDialogOpen={setIsAddDialogOpen}
-          />
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-}
-
-// ---- Equipment Table ----
-
-function EquipmentTable({
-  data,
-  editingId,
-  setEditingId,
-  onRefresh,
-  isAddDialogOpen,
-  setIsAddDialogOpen,
-}: {
-  data: Equipment[];
-  editingId: string | null;
-  setEditingId: (id: string | null) => void;
-  onRefresh: () => void;
-  isAddDialogOpen: boolean;
-  setIsAddDialogOpen: (open: boolean) => void;
-}) {
   const [editForm, setEditForm] = useState<Partial<Equipment>>({});
   const [addForm, setAddForm] = useState<Partial<Equipment>>({
     name: "",
@@ -263,6 +154,11 @@ function EquipmentTable({
     fermenterLossL: 1,
     trubLossL: 1,
   });
+
+  const refresh = async () => {
+    const r = await fetch("/api/equipment");
+    setData(await r.json());
+  };
 
   const startEdit = (item: Equipment) => { setEditingId(item.id); setEditForm(item); };
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
@@ -274,13 +170,13 @@ function EquipmentTable({
       body: JSON.stringify(editForm),
     });
     setEditingId(null);
-    onRefresh();
+    refresh();
   };
 
   const deleteItem = async (id: string) => {
     if (confirm("Are you sure you want to delete this equipment?")) {
       await fetch(`/api/equipment/${id}`, { method: "DELETE" });
-      onRefresh();
+      refresh();
     }
   };
 
@@ -292,15 +188,19 @@ function EquipmentTable({
     });
     setIsAddDialogOpen(false);
     setAddForm({ name: "", brewhouseEfficiency: 75, fermenterLossL: 1, trubLossL: 1 });
-    onRefresh();
+    refresh();
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Wrench className="w-6 h-6" />
+          <h1 className="text-2xl font-bold">Equipment</h1>
+        </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Equipment</Button>
+            <Button className="bg-gray-200 hover:bg-gray-300 text-gray-800">+ Add Equipment</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -363,7 +263,7 @@ function EquipmentTable({
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-gray-100 hover:bg-gray-100">
               <TableHead>Name</TableHead>
               <TableHead>Brewhouse Eff.</TableHead>
               <TableHead>Fermenter Loss</TableHead>
@@ -409,7 +309,7 @@ function EquipmentTable({
             {data.length === 0 && (
               <TableRow>
                 <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                  No equipment yet. Click "Add Equipment" to create one.
+                  No equipment yet. Click &quot;Add Equipment&quot; to create one.
                 </TableCell>
               </TableRow>
             )}
@@ -422,23 +322,17 @@ function EquipmentTable({
 
 // ---- Grains Table ----
 
-function GrainsTable({
-  data,
-  editingId,
-  setEditingId,
-  onRefresh,
-  isAddDialogOpen,
-  setIsAddDialogOpen,
-}: {
-  data: Grain[];
-  editingId: string | null;
-  setEditingId: (id: string | null) => void;
-  onRefresh: () => void;
-  isAddDialogOpen: boolean;
-  setIsAddDialogOpen: (open: boolean) => void;
-}) {
+export function GrainsTable({ initialData }: { initialData: Grain[] }) {
+  const [data, setData] = useState(initialData);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<Grain>>({});
   const [addForm, setAddForm] = useState<Partial<Grain>>({ name: "", type: "grain" });
+
+  const refresh = async () => {
+    const r = await fetch("/api/grains");
+    setData(await r.json());
+  };
 
   const startEdit = (item: Grain) => { setEditingId(item.id); setEditForm(item); };
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
@@ -450,13 +344,13 @@ function GrainsTable({
       body: JSON.stringify(editForm),
     });
     setEditingId(null);
-    onRefresh();
+    refresh();
   };
 
   const deleteItem = async (id: string) => {
     if (confirm("Are you sure you want to delete this grain?")) {
       await fetch(`/api/grains/${id}`, { method: "DELETE" });
-      onRefresh();
+      refresh();
     }
   };
 
@@ -468,15 +362,19 @@ function GrainsTable({
     });
     setIsAddDialogOpen(false);
     setAddForm({ name: "", type: "grain" });
-    onRefresh();
+    refresh();
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Wheat className="w-6 h-6" />
+          <h1 className="text-2xl font-bold">Fermentables</h1>
+        </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Fermentable</Button>
+            <Button className="bg-orange-200 hover:bg-orange-300 text-orange-900">+ Add Fermentable</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -542,7 +440,7 @@ function GrainsTable({
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-orange-100 hover:bg-orange-100">
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Group</TableHead>
@@ -605,7 +503,7 @@ function GrainsTable({
             {data.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                  No fermentables yet. Click "Add Fermentable" to create one.
+                  No fermentables yet. Click &quot;Add Fermentable&quot; to create one.
                 </TableCell>
               </TableRow>
             )}
@@ -618,23 +516,17 @@ function GrainsTable({
 
 // ---- Hops Table ----
 
-function HopsTable({
-  data,
-  editingId,
-  setEditingId,
-  onRefresh,
-  isAddDialogOpen,
-  setIsAddDialogOpen,
-}: {
-  data: Hop[];
-  editingId: string | null;
-  setEditingId: (id: string | null) => void;
-  onRefresh: () => void;
-  isAddDialogOpen: boolean;
-  setIsAddDialogOpen: (open: boolean) => void;
-}) {
+export function HopsTable({ initialData }: { initialData: Hop[] }) {
+  const [data, setData] = useState(initialData);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<Hop>>({});
   const [addForm, setAddForm] = useState<Partial<Hop>>({ name: "", alphaAcid: 5, form: "pellet" });
+
+  const refresh = async () => {
+    const r = await fetch("/api/hops");
+    setData(await r.json());
+  };
 
   const startEdit = (item: Hop) => { setEditingId(item.id); setEditForm(item); };
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
@@ -646,13 +538,13 @@ function HopsTable({
       body: JSON.stringify(editForm),
     });
     setEditingId(null);
-    onRefresh();
+    refresh();
   };
 
   const deleteItem = async (id: string) => {
     if (confirm("Are you sure you want to delete this hop?")) {
       await fetch(`/api/hops/${id}`, { method: "DELETE" });
-      onRefresh();
+      refresh();
     }
   };
 
@@ -664,15 +556,19 @@ function HopsTable({
     });
     setIsAddDialogOpen(false);
     setAddForm({ name: "", alphaAcid: 5, form: "pellet" });
-    onRefresh();
+    refresh();
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <HopIcon className="w-6 h-6" />
+          <h1 className="text-2xl font-bold">Hops</h1>
+        </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Hop</Button>
+            <Button className="bg-lime-200 hover:bg-lime-300 text-lime-900">+ Add Hop</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -742,7 +638,7 @@ function HopsTable({
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-lime-100 hover:bg-lime-100">
               <TableHead>Name</TableHead>
               <TableHead>Origin</TableHead>
               <TableHead>Form</TableHead>
@@ -803,7 +699,7 @@ function HopsTable({
             {data.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                  No hops yet. Click "Add Hop" to create one.
+                  No hops yet. Click &quot;Add Hop&quot; to create one.
                 </TableCell>
               </TableRow>
             )}
@@ -816,23 +712,17 @@ function HopsTable({
 
 // ---- Yeasts Table ----
 
-function YeastsTable({
-  data,
-  editingId,
-  setEditingId,
-  onRefresh,
-  isAddDialogOpen,
-  setIsAddDialogOpen,
-}: {
-  data: Yeast[];
-  editingId: string | null;
-  setEditingId: (id: string | null) => void;
-  onRefresh: () => void;
-  isAddDialogOpen: boolean;
-  setIsAddDialogOpen: (open: boolean) => void;
-}) {
+export function YeastsTable({ initialData }: { initialData: Yeast[] }) {
+  const [data, setData] = useState(initialData);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<Yeast>>({});
   const [addForm, setAddForm] = useState<Partial<Yeast>>({ name: "" });
+
+  const refresh = async () => {
+    const r = await fetch("/api/yeasts");
+    setData(await r.json());
+  };
 
   const startEdit = (item: Yeast) => { setEditingId(item.id); setEditForm(item); };
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
@@ -844,13 +734,13 @@ function YeastsTable({
       body: JSON.stringify(editForm),
     });
     setEditingId(null);
-    onRefresh();
+    refresh();
   };
 
   const deleteItem = async (id: string) => {
     if (confirm("Are you sure you want to delete this yeast?")) {
       await fetch(`/api/yeasts/${id}`, { method: "DELETE" });
-      onRefresh();
+      refresh();
     }
   };
 
@@ -862,15 +752,19 @@ function YeastsTable({
     });
     setIsAddDialogOpen(false);
     setAddForm({ name: "" });
-    onRefresh();
+    refresh();
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <FlaskConical className="w-6 h-6" />
+          <h1 className="text-2xl font-bold">Cultures</h1>
+        </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Culture</Button>
+            <Button className="bg-purple-200 hover:bg-purple-300 text-purple-900">+ Add Culture</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -931,7 +825,7 @@ function YeastsTable({
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-purple-100 hover:bg-purple-100">
               <TableHead>Name</TableHead>
               <TableHead>Producer</TableHead>
               <TableHead>Culture Type</TableHead>
@@ -986,7 +880,7 @@ function YeastsTable({
             {data.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                  No cultures yet. Click "Add Culture" to create one.
+                  No cultures yet. Click &quot;Add Culture&quot; to create one.
                 </TableCell>
               </TableRow>
             )}
@@ -999,25 +893,19 @@ function YeastsTable({
 
 // ---- Water Table ----
 
-function WaterTable({
-  data,
-  editingId,
-  setEditingId,
-  onRefresh,
-  isAddDialogOpen,
-  setIsAddDialogOpen,
-}: {
-  data: WaterProfile[];
-  editingId: string | null;
-  setEditingId: (id: string | null) => void;
-  onRefresh: () => void;
-  isAddDialogOpen: boolean;
-  setIsAddDialogOpen: (open: boolean) => void;
-}) {
+export function WaterTable({ initialData }: { initialData: WaterProfile[] }) {
+  const [data, setData] = useState(initialData);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<WaterProfile>>({});
   const [addForm, setAddForm] = useState<Partial<WaterProfile>>({
     name: "", caPpm: 0, mgPpm: 0, naPpm: 0, clPpm: 0, so4Ppm: 0,
   });
+
+  const refresh = async () => {
+    const r = await fetch("/api/water-profiles");
+    setData(await r.json());
+  };
 
   const startEdit = (item: WaterProfile) => { setEditingId(item.id); setEditForm(item); };
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
@@ -1029,13 +917,13 @@ function WaterTable({
       body: JSON.stringify(editForm),
     });
     setEditingId(null);
-    onRefresh();
+    refresh();
   };
 
   const deleteItem = async (id: string) => {
     if (confirm("Are you sure you want to delete this water profile?")) {
       await fetch(`/api/water-profiles/${id}`, { method: "DELETE" });
-      onRefresh();
+      refresh();
     }
   };
 
@@ -1047,7 +935,7 @@ function WaterTable({
     });
     setIsAddDialogOpen(false);
     setAddForm({ name: "", caPpm: 0, mgPpm: 0, naPpm: 0, clPpm: 0, so4Ppm: 0 });
-    onRefresh();
+    refresh();
   };
 
   const numField = (
@@ -1067,10 +955,14 @@ function WaterTable({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Droplets className="w-6 h-6" />
+          <h1 className="text-2xl font-bold">Water Profiles</h1>
+        </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Water Profile</Button>
+            <Button className="bg-blue-200 hover:bg-blue-300 text-blue-900">+ Add Water Profile</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -1109,7 +1001,7 @@ function WaterTable({
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-blue-100 hover:bg-blue-100">
               <TableHead>Name</TableHead>
               <TableHead>pH</TableHead>
               <TableHead>Ca</TableHead>
@@ -1171,7 +1063,7 @@ function WaterTable({
             {data.length === 0 && (
               <TableRow>
                 <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
-                  No water profiles yet. Click "Add Water Profile" to create one.
+                  No water profiles yet. Click &quot;Add Water Profile&quot; to create one.
                 </TableCell>
               </TableRow>
             )}
@@ -1184,23 +1076,17 @@ function WaterTable({
 
 // ---- Kegs Table ----
 
-function KegsTable({
-  data,
-  editingId,
-  setEditingId,
-  onRefresh,
-  isAddDialogOpen,
-  setIsAddDialogOpen,
-}: {
-  data: Keg[];
-  editingId: string | null;
-  setEditingId: (id: string | null) => void;
-  onRefresh: () => void;
-  isAddDialogOpen: boolean;
-  setIsAddDialogOpen: (open: boolean) => void;
-}) {
+export function KegsTable({ initialData }: { initialData: Keg[] }) {
+  const [data, setData] = useState(initialData);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<Keg>>({});
   const [addForm, setAddForm] = useState<Partial<Keg>>({ name: "", capacity: 19, type: null, label: null });
+
+  const refresh = async () => {
+    const r = await fetch("/api/kegs");
+    setData(await r.json());
+  };
 
   const startEdit = (item: Keg) => { setEditingId(item.id); setEditForm(item); };
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
@@ -1212,13 +1098,13 @@ function KegsTable({
       body: JSON.stringify(editForm),
     });
     setEditingId(null);
-    onRefresh();
+    refresh();
   };
 
   const deleteItem = async (id: string) => {
     if (confirm("Are you sure you want to delete this keg?")) {
       await fetch(`/api/kegs/${id}`, { method: "DELETE" });
-      onRefresh();
+      refresh();
     }
   };
 
@@ -1230,15 +1116,19 @@ function KegsTable({
     });
     setIsAddDialogOpen(false);
     setAddForm({ name: "", capacity: 19, type: null, label: null });
-    onRefresh();
+    refresh();
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Barrel className="w-6 h-6" />
+          <h1 className="text-2xl font-bold">Kegs</h1>
+        </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button>+ Add Keg</Button>
+            <Button className="bg-amber-200 hover:bg-amber-300 text-amber-900">+ Add Keg</Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -1293,7 +1183,7 @@ function KegsTable({
       <div className="border rounded-lg">
         <Table>
           <TableHeader>
-            <TableRow>
+            <TableRow className="bg-amber-100 hover:bg-amber-100">
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Label</TableHead>
@@ -1348,7 +1238,7 @@ function KegsTable({
             {data.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                  No kegs yet. Click "Add Keg" to create one.
+                  No kegs yet. Click &quot;Add Keg&quot; to create one.
                 </TableCell>
               </TableRow>
             )}
