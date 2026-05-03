@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MarkdownNotes } from "./markdown-notes";
 import styles from "../../../../styles.json";
@@ -21,17 +22,20 @@ interface BatchFormProps {
     brewDate: Date | null;
     draft: boolean;
     type: string;
+    equipmentId?: string | null;
   };
+  equipment?: { id: string; name: string }[];
   updateAction: (formData: FormData) => Promise<void>;
   updateNotesAction: (notes: string) => Promise<void>;
   bare?: boolean;
 }
 
-export function BatchForm({ batch, updateAction, updateNotesAction, bare }: BatchFormProps) {
+export function BatchForm({ batch, equipment, updateAction, updateNotesAction, bare }: BatchFormProps) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [draft, setDraft] = useState(batch.draft);
+  const [equipmentId, setEquipmentId] = useState<string>(batch.equipmentId ?? "");
 
   const save = useCallback(async () => {
     if (!formRef.current) return;
@@ -104,6 +108,29 @@ export function BatchForm({ batch, updateAction, updateNotesAction, bare }: Batc
                 </div>
               </div>
             </div>
+
+            {equipment !== undefined && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="equipmentId">Equipment</Label>
+                  <input type="hidden" name="equipmentId" value={equipmentId} />
+                  <Select
+                    value={equipmentId}
+                    onValueChange={(val) => { setEquipmentId(val); scheduleAutoSave(); }}
+                    disabled={equipment.length === 0}
+                  >
+                    <SelectTrigger id="equipmentId">
+                      <SelectValue placeholder={equipment.length === 0 ? "No equipment configured" : "Select equipment…"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {equipment.map((e) => (
+                        <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <>

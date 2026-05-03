@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/select";
 
 interface AddHopPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-async function addHop(formData: FormData, batchId: string) {
+async function addHop(batchId: string, formData: FormData) {
   "use server";
-  
+
   await prisma.batchHop.create({
     data: {
       batchId,
@@ -29,13 +29,14 @@ async function addHop(formData: FormData, batchId: string) {
       use: formData.get("use") as string,
     },
   });
-  
+
   redirect(`/batches/${batchId}`);
 }
 
 export default async function AddHopPage({ params }: AddHopPageProps) {
+  const { id } = await params;
   const batch = await prisma.batch.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!batch) {
@@ -46,7 +47,7 @@ export default async function AddHopPage({ params }: AddHopPageProps) {
     orderBy: { name: "asc" },
   });
 
-  const addWithId = addHop.bind(null, new FormData(), params.id);
+  const addWithId = addHop.bind(null, id);
 
   const hopUses = [
     { value: "fwh", label: "First Wort Hop (FWH)" },
@@ -59,11 +60,11 @@ export default async function AddHopPage({ params }: AddHopPageProps) {
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
-        <Link href={`/batches/${params.id}`} className="text-sm text-muted-foreground hover:text-foreground">
+        <Link href={`/batches/${id}`} className="text-sm text-muted-foreground hover:text-foreground">
           ← Back to Batch
         </Link>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Add Hop to {batch.name}</CardTitle>
@@ -85,24 +86,24 @@ export default async function AddHopPage({ params }: AddHopPageProps) {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="grams">Amount (grams) *</Label>
               <Input id="grams" name="grams" type="number" step="0.1" required />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="additionTime">Addition Time (minutes) *</Label>
-              <Input 
-                id="additionTime" 
-                name="additionTime" 
-                type="number" 
-                step="1" 
+              <Input
+                id="additionTime"
+                name="additionTime"
+                type="number"
+                step="1"
                 placeholder="e.g., 60 for 60 minutes left in boil"
-                required 
+                required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="use">Use *</Label>
               <Select name="use" required>
@@ -118,10 +119,10 @@ export default async function AddHopPage({ params }: AddHopPageProps) {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div className="flex gap-2">
               <Button type="submit">Add Hop</Button>
-              <Link href={`/batches/${params.id}`}>
+              <Link href={`/batches/${id}`}>
                 <Button variant="outline">Cancel</Button>
               </Link>
             </div>

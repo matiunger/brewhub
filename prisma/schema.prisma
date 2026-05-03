@@ -128,6 +128,13 @@ model Batch {
   heatUpTimeMin         Float?        @map("heat_up_time_min")
   boilTimeMin           Float?        @map("boil_time_min")
   whirpoolTimeMin       Float?        @map("whirpool_time_min")
+
+  saltChalkGL       Float?  @map("salt_chalk_gl")
+  saltBakingSodaGL  Float?  @map("salt_baking_soda_gl")
+  saltGypsumGL      Float?  @map("salt_gypsum_gl")
+  saltCaCl2GL       Float?  @map("salt_ca_cl2_gl")
+  saltEpsomGL       Float?  @map("salt_epsom_gl")
+  saltNaClGL        Float?  @map("salt_na_cl_gl")
   
   grains                BatchGrain[]
   hops                  BatchHop[]
