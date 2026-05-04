@@ -45,12 +45,18 @@ interface Equipment {
   name: string;
   brewhouseEfficiency: number;
   mashEfficiency: number | null;
-  evaporationRate: number | null;
+  mashTunVolumeL: number | null;
+  mashTunDeadSpaceL: number | null;
+  boilPotVolumeL: number | null;
   boilPotDiameter: number | null;
+  boilEvaporationRateLH: number | null;
+  heatingEvaporationRateLH: number | null;
+  spargeWaterPotDiameter: number | null;
+  grainAbsorptionLKg: number | null;
   fermenterLossL: number;
   trubLossL: number;
   systemLossPercent: number | null;
-  bagasseLossL: number | null;
+  tempContractionPercent: number | null;
 }
 
 interface Grain {
@@ -257,15 +263,21 @@ function EquipmentTable({
   setIsAddDialogOpen: (open: boolean) => void;
 }) {
   const [editForm, setEditForm] = useState<Partial<Equipment>>({});
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [addForm, setAddForm] = useState<Partial<Equipment>>({
     name: "",
     brewhouseEfficiency: 75,
     fermenterLossL: 1,
     trubLossL: 1,
+    tempContractionPercent: 4,
   });
 
-  const startEdit = (item: Equipment) => { setEditingId(item.id); setEditForm(item); };
-  const cancelEdit = () => { setEditingId(null); setEditForm({}); };
+  const num = (val: number | null | undefined) => (val == null ? "" : val);
+  const setNum = (form: Partial<Equipment>, field: keyof Equipment, val: string, required?: boolean) =>
+    ({ ...form, [field]: val === "" ? (required ? 0 : null) : parseFloat(val) });
+
+  const startEdit = (item: Equipment) => { setEditingId(item.id); setEditForm(item); setIsEditDialogOpen(true); };
+  const cancelEdit = () => { setEditingId(null); setEditForm({}); setIsEditDialogOpen(false); };
 
   const saveEdit = async () => {
     await fetch(`/api/equipment/${editingId}`, {
@@ -273,7 +285,7 @@ function EquipmentTable({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
     });
-    setEditingId(null);
+    cancelEdit();
     onRefresh();
   };
 
@@ -291,9 +303,88 @@ function EquipmentTable({
       body: JSON.stringify(addForm),
     });
     setIsAddDialogOpen(false);
-    setAddForm({ name: "", brewhouseEfficiency: 75, fermenterLossL: 1, trubLossL: 1 });
+    setAddForm({ name: "", brewhouseEfficiency: 75, fermenterLossL: 1, trubLossL: 1, tempContractionPercent: 4 });
     onRefresh();
   };
+
+  const EquipmentFormFields = ({ form, setForm }: { form: Partial<Equipment>; setForm: (f: Partial<Equipment>) => void }) => (
+    <div className="grid grid-cols-2 gap-4 mt-4">
+      <div className="space-y-2 col-span-2">
+        <Label>Name *</Label>
+        <Input value={form.name ?? ""} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+      </div>
+      <div className="space-y-2">
+        <Label>Brewhouse Efficiency (%) *</Label>
+        <Input type="number" step="0.1" value={num(form.brewhouseEfficiency)}
+          onChange={(e) => setForm(setNum(form, "brewhouseEfficiency", e.target.value, true))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Mash Efficiency (%)</Label>
+        <Input type="number" step="0.1" value={num(form.mashEfficiency)}
+          onChange={(e) => setForm(setNum(form, "mashEfficiency", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Mash Tun Volume (L)</Label>
+        <Input type="number" step="0.1" value={num(form.mashTunVolumeL)}
+          onChange={(e) => setForm(setNum(form, "mashTunVolumeL", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Mash Tun Dead Space (L)</Label>
+        <Input type="number" step="0.1" value={num(form.mashTunDeadSpaceL)}
+          onChange={(e) => setForm(setNum(form, "mashTunDeadSpaceL", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Boil Pot Volume (L)</Label>
+        <Input type="number" step="0.1" value={num(form.boilPotVolumeL)}
+          onChange={(e) => setForm(setNum(form, "boilPotVolumeL", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Boil Pot Diameter (cm)</Label>
+        <Input type="number" step="0.1" value={num(form.boilPotDiameter)}
+          onChange={(e) => setForm(setNum(form, "boilPotDiameter", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Boil Evaporation Rate (L/h)</Label>
+        <Input type="number" step="0.1" value={num(form.boilEvaporationRateLH)}
+          onChange={(e) => setForm(setNum(form, "boilEvaporationRateLH", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Heating Evaporation Rate (L/h)</Label>
+        <Input type="number" step="0.1" value={num(form.heatingEvaporationRateLH)}
+          onChange={(e) => setForm(setNum(form, "heatingEvaporationRateLH", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Sparge Water Pot Diameter (cm)</Label>
+        <Input type="number" step="0.1" value={num(form.spargeWaterPotDiameter)}
+          onChange={(e) => setForm(setNum(form, "spargeWaterPotDiameter", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Grain Absorption (L/kg)</Label>
+        <Input type="number" step="0.01" value={num(form.grainAbsorptionLKg)}
+          onChange={(e) => setForm(setNum(form, "grainAbsorptionLKg", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Fermenter Loss (L) *</Label>
+        <Input type="number" step="0.1" value={num(form.fermenterLossL)}
+          onChange={(e) => setForm(setNum(form, "fermenterLossL", e.target.value, true))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Trub Loss (L) *</Label>
+        <Input type="number" step="0.1" value={num(form.trubLossL)}
+          onChange={(e) => setForm(setNum(form, "trubLossL", e.target.value, true))} />
+      </div>
+      <div className="space-y-2">
+        <Label>System Loss (%)</Label>
+        <Input type="number" step="0.1" value={num(form.systemLossPercent)}
+          onChange={(e) => setForm(setNum(form, "systemLossPercent", e.target.value))} />
+      </div>
+      <div className="space-y-2">
+        <Label>Temp Contraction (%)</Label>
+        <Input type="number" step="0.1" value={num(form.tempContractionPercent)}
+          onChange={(e) => setForm(setNum(form, "tempContractionPercent", e.target.value))} />
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-4">
@@ -306,52 +397,7 @@ function EquipmentTable({
             <DialogHeader>
               <DialogTitle>Add Equipment</DialogTitle>
             </DialogHeader>
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="space-y-2">
-                <Label>Name *</Label>
-                <Input value={addForm.name} onChange={(e) => setAddForm({ ...addForm, name: e.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Brewhouse Efficiency (%) *</Label>
-                <Input type="number" step="0.1" value={addForm.brewhouseEfficiency}
-                  onChange={(e) => setAddForm({ ...addForm, brewhouseEfficiency: parseFloat(e.target.value) })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Mash Efficiency (%)</Label>
-                <Input type="number" step="0.1" value={addForm.mashEfficiency || ""}
-                  onChange={(e) => setAddForm({ ...addForm, mashEfficiency: e.target.value ? parseFloat(e.target.value) : null })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Evaporation Rate (%/h)</Label>
-                <Input type="number" step="0.1" value={addForm.evaporationRate || ""}
-                  onChange={(e) => setAddForm({ ...addForm, evaporationRate: e.target.value ? parseFloat(e.target.value) : null })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Boil Pot Diameter (cm)</Label>
-                <Input type="number" step="0.1" value={addForm.boilPotDiameter || ""}
-                  onChange={(e) => setAddForm({ ...addForm, boilPotDiameter: e.target.value ? parseFloat(e.target.value) : null })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Fermenter Loss (L) *</Label>
-                <Input type="number" step="0.1" value={addForm.fermenterLossL}
-                  onChange={(e) => setAddForm({ ...addForm, fermenterLossL: parseFloat(e.target.value) })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Trub Loss (L) *</Label>
-                <Input type="number" step="0.1" value={addForm.trubLossL}
-                  onChange={(e) => setAddForm({ ...addForm, trubLossL: parseFloat(e.target.value) })} />
-              </div>
-              <div className="space-y-2">
-                <Label>System Loss (%)</Label>
-                <Input type="number" step="0.1" value={addForm.systemLossPercent || ""}
-                  onChange={(e) => setAddForm({ ...addForm, systemLossPercent: e.target.value ? parseFloat(e.target.value) : null })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Bagasse Loss (L)</Label>
-                <Input type="number" step="0.1" value={addForm.bagasseLossL || ""}
-                  onChange={(e) => setAddForm({ ...addForm, bagasseLossL: e.target.value ? parseFloat(e.target.value) : null })} />
-              </div>
-            </div>
+            <EquipmentFormFields form={addForm} setForm={setAddForm} />
             <div className="flex justify-end gap-2 mt-4">
               <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>Cancel</Button>
               <Button onClick={addItem}>Save</Button>
@@ -359,6 +405,19 @@ function EquipmentTable({
           </DialogContent>
         </Dialog>
       </div>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={(open) => { if (!open) cancelEdit(); }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Equipment</DialogTitle>
+          </DialogHeader>
+          <EquipmentFormFields form={editForm} setForm={setEditForm} />
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={cancelEdit}>Cancel</Button>
+            <Button onClick={saveEdit}>Save</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="border rounded-lg">
         <Table>
@@ -374,36 +433,16 @@ function EquipmentTable({
           <TableBody>
             {data.map((item) => (
               <TableRow key={item.id}>
-                {editingId === item.id ? (
-                  <>
-                    <TableCell><Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.brewhouseEfficiency}
-                      onChange={(e) => setEditForm({ ...editForm, brewhouseEfficiency: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.fermenterLossL}
-                      onChange={(e) => setEditForm({ ...editForm, fermenterLossL: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.trubLossL}
-                      onChange={(e) => setEditForm({ ...editForm, trubLossL: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        <Button size="sm" onClick={saveEdit}>Save</Button>
-                        <Button size="sm" variant="outline" onClick={cancelEdit}>Cancel</Button>
-                      </div>
-                    </TableCell>
-                  </>
-                ) : (
-                  <>
-                    <TableCell className="font-medium">{item.name}</TableCell>
-                    <TableCell>{item.brewhouseEfficiency}%</TableCell>
-                    <TableCell>{item.fermenterLossL} L</TableCell>
-                    <TableCell>{item.trubLossL} L</TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
-                      </div>
-                    </TableCell>
-                  </>
-                )}
+                <TableCell className="font-medium">{item.name}</TableCell>
+                <TableCell>{item.brewhouseEfficiency}%</TableCell>
+                <TableCell>{item.fermenterLossL} L</TableCell>
+                <TableCell>{item.trubLossL} L</TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
+                    <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
+                  </div>
+                </TableCell>
               </TableRow>
             ))}
             {data.length === 0 && (

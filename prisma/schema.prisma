@@ -11,17 +11,23 @@ datasource db {
 }
 
 model Equipment {
-  id                String   @id @default(uuid())
-  name              String
-  brewhouseEfficiency Float  @map("brewhouse_efficiency")
-  mashEfficiency    Float?   @map("mash_efficiency")
-  evaporationRate   Float?   @map("evaporation_rate")
-  boilPotDiameter   Float?   @map("boil_pot_diameter")
-  fermenterLossL    Float    @map("fermenter_loss_l")
-  trubLossL         Float    @map("trub_loss_l")
-  systemLossPercent Float?   @map("system_loss_percent")
-  bagasseLossL      Float?   @map("bagasse_loss_l")
-  batches           Batch[]
+  id                       String   @id @default(uuid())
+  name                     String
+  brewhouseEfficiency      Float    @map("brewhouse_efficiency")
+  mashEfficiency           Float?   @map("mash_efficiency")
+  mashTunVolumeL           Float?   @map("mash_tun_volume_l")
+  mashTunDeadSpaceL        Float?   @map("mash_tun_dead_space_l")
+  boilPotVolumeL           Float?   @map("boil_pot_volume_l")
+  boilPotDiameter          Float?   @map("boil_pot_diameter")
+  boilEvaporationRateLH    Float?   @map("boil_evaporation_rate_l_h")
+  heatingEvaporationRateLH Float?   @map("heating_evaporation_rate_l_h")
+  spargeWaterPotDiameter   Float?   @map("sparge_water_pot_diameter")
+  grainAbsorptionLKg       Float?   @map("grain_absorption_l_kg")
+  fermenterLossL           Float    @map("fermenter_loss_l")
+  trubLossL                Float    @map("trub_loss_l")
+  systemLossPercent        Float?   @map("system_loss_percent")
+  tempContractionPercent   Float?   @map("temp_contraction_percent") @default(4)
+  batches                  Batch[]
 
   @@map("equipment")
 }
@@ -129,16 +135,39 @@ model Batch {
   boilTimeMin           Float?        @map("boil_time_min")
   whirpoolTimeMin       Float?        @map("whirpool_time_min")
 
+  grainTempC            Float?        @map("grain_temp_c")
+  targetPh              Float?        @map("target_ph")
+  spargeTargetPh        Float?        @map("sparge_target_ph")
+
   saltChalkGL       Float?  @map("salt_chalk_gl")
   saltBakingSodaGL  Float?  @map("salt_baking_soda_gl")
   saltGypsumGL      Float?  @map("salt_gypsum_gl")
   saltCaCl2GL       Float?  @map("salt_ca_cl2_gl")
   saltEpsomGL       Float?  @map("salt_epsom_gl")
   saltNaClGL        Float?  @map("salt_na_cl_gl")
-  
+
+  sourceCaPpm       Float?  @map("source_ca_ppm")
+  sourceMgPpm       Float?  @map("source_mg_ppm")
+  sourceNaPpm       Float?  @map("source_na_ppm")
+  sourceClPpm       Float?  @map("source_cl_ppm")
+  sourceSo4Ppm      Float?  @map("source_so4_ppm")
+  sourceZnPpm       Float?  @map("source_zn_ppm")
+  sourceHco3Ppm     Float?  @map("source_hco3_ppm")
+  sourceWaterPh     Float?  @map("source_water_ph")
+
+  targetCaPpm       Float?  @map("target_ca_ppm")
+  targetMgPpm       Float?  @map("target_mg_ppm")
+  targetNaPpm       Float?  @map("target_na_ppm")
+  targetClPpm       Float?  @map("target_cl_ppm")
+  targetSo4Ppm      Float?  @map("target_so4_ppm")
+  targetZnPpm       Float?  @map("target_zn_ppm")
+  targetHco3Ppm     Float?  @map("target_hco3_ppm")
+  targetWaterPh     Float?  @map("target_water_ph")
+   
   grains                BatchGrain[]
   hops                  BatchHop[]
   yeasts                BatchYeast[]
+  mashSteps             MashStep[]
 
   @@map("batches")
 }
@@ -177,6 +206,24 @@ model BatchYeast {
   temp      Float?
 
   @@map("batch_yeasts")
+}
+
+model MashStep {
+  id                String   @id @default(uuid())
+  batch             Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId           String   @map("batch_id")
+  name              String
+  type              String   // infusion, temperature, decoction, souring mash, souring wort, drain mash tun, sparge
+  stepTemperatureC  Float    @map("step_temperature_c")
+  stepTimeMin       Float    @map("step_time_min")
+  amountL           Float?   @map("amount_l")
+  rampTimeMin       Float?   @map("ramp_time_min")
+  endTemperatureC   Float?   @map("end_temperature_c")
+  description       String?
+  infuseTemperatureC Float?  @map("infuse_temperature_c")
+  sortOrder         Int      @default(0) @map("sort_order")
+
+  @@map("mash_steps")
 }
 
 model WikiPage {

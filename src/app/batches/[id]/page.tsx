@@ -48,6 +48,22 @@ async function updateTargetStats(
   await prisma.batch.update({ where: { id }, data });
 }
 
+async function updateBoilTimes(
+  id: string,
+  data: { heatUpTimeMin: number | null; boilTimeMin: number | null; whirpoolTimeMin: number | null }
+) {
+  "use server";
+  await prisma.batch.update({ where: { id }, data });
+}
+
+async function updateMashParams(
+  id: string,
+  data: { grainTempC: number | null; targetPh: number | null; spargeTargetPh: number | null }
+) {
+  "use server";
+  await prisma.batch.update({ where: { id }, data });
+}
+
 async function updateBatchGrain(batchGrainId: string, data: { grams: number }) {
   "use server";
   await prisma.batchGrain.update({ where: { id: batchGrainId }, data });
@@ -86,15 +102,97 @@ async function updateBatchWaterProfiles(
   data: { sourceWaterProfileId: string | null; targetWaterProfileId: string | null }
 ) {
   "use server";
-  await prisma.batch.update({ where: { id }, data });
+
+  const updateData: any = {};
+
+  if (data.sourceWaterProfileId) {
+    const profile = await prisma.waterProfile.findUnique({ where: { id: data.sourceWaterProfileId } });
+    if (profile) {
+      updateData.sourceWaterProfile = { connect: { id: data.sourceWaterProfileId } };
+      updateData.sourceCaPpm = profile.caPpm;
+      updateData.sourceMgPpm = profile.mgPpm;
+      updateData.sourceNaPpm = profile.naPpm;
+      updateData.sourceClPpm = profile.clPpm;
+      updateData.sourceSo4Ppm = profile.so4Ppm;
+      updateData.sourceZnPpm = profile.znPpm;
+      updateData.sourceHco3Ppm = profile.hco3Ppm;
+      updateData.sourceWaterPh = profile.pH;
+    }
+  } else {
+    updateData.sourceWaterProfile = { disconnect: true };
+    updateData.sourceCaPpm = null;
+    updateData.sourceMgPpm = null;
+    updateData.sourceNaPpm = null;
+    updateData.sourceClPpm = null;
+    updateData.sourceSo4Ppm = null;
+    updateData.sourceZnPpm = null;
+    updateData.sourceHco3Ppm = null;
+    updateData.sourceWaterPh = null;
+  }
+
+  if (data.targetWaterProfileId) {
+    const profile = await prisma.waterProfile.findUnique({ where: { id: data.targetWaterProfileId } });
+    if (profile) {
+      updateData.targetWaterProfile = { connect: { id: data.targetWaterProfileId } };
+      updateData.targetCaPpm = profile.caPpm;
+      updateData.targetMgPpm = profile.mgPpm;
+      updateData.targetNaPpm = profile.naPpm;
+      updateData.targetClPpm = profile.clPpm;
+      updateData.targetSo4Ppm = profile.so4Ppm;
+      updateData.targetZnPpm = profile.znPpm;
+      updateData.targetHco3Ppm = profile.hco3Ppm;
+      updateData.targetWaterPh = profile.pH;
+    }
+  } else {
+    updateData.targetWaterProfile = { disconnect: true };
+    updateData.targetCaPpm = null;
+    updateData.targetMgPpm = null;
+    updateData.targetNaPpm = null;
+    updateData.targetClPpm = null;
+    updateData.targetSo4Ppm = null;
+    updateData.targetZnPpm = null;
+    updateData.targetHco3Ppm = null;
+    updateData.targetWaterPh = null;
+  }
+
+  await prisma.batch.update({ where: { id }, data: updateData });
 }
 
-async function updateWaterProfile(
-  profileId: string,
+async function updateBatchWaterSnapshot(
+  id: string,
+  type: "source" | "target",
   data: { caPpm: number; mgPpm: number; naPpm: number; clPpm: number; so4Ppm: number; znPpm: number | null; hco3Ppm: number | null; pH: number | null }
 ) {
   "use server";
-  await prisma.waterProfile.update({ where: { id: profileId }, data });
+  if (type === "source") {
+    await prisma.batch.update({
+      where: { id },
+      data: {
+        sourceCaPpm: data.caPpm,
+        sourceMgPpm: data.mgPpm,
+        sourceNaPpm: data.naPpm,
+        sourceClPpm: data.clPpm,
+        sourceSo4Ppm: data.so4Ppm,
+        sourceZnPpm: data.znPpm,
+        sourceHco3Ppm: data.hco3Ppm,
+        sourceWaterPh: data.pH,
+      },
+    });
+  } else {
+    await prisma.batch.update({
+      where: { id },
+      data: {
+        targetCaPpm: data.caPpm,
+        targetMgPpm: data.mgPpm,
+        targetNaPpm: data.naPpm,
+        targetClPpm: data.clPpm,
+        targetSo4Ppm: data.so4Ppm,
+        targetZnPpm: data.znPpm,
+        targetHco3Ppm: data.hco3Ppm,
+        targetWaterPh: data.pH,
+      },
+    });
+  }
 }
 
 async function updateSaltAdditions(
@@ -103,6 +201,78 @@ async function updateSaltAdditions(
 ) {
   "use server";
   await prisma.batch.update({ where: { id }, data });
+}
+
+async function createMashStep(
+  batchId: string,
+  data: {
+    name: string;
+    type: string;
+    stepTemperatureC: number;
+    stepTimeMin: number;
+    amountL?: number | null;
+    rampTimeMin?: number | null;
+    endTemperatureC?: number | null;
+    description?: string | null;
+    infuseTemperatureC?: number | null;
+    sortOrder?: number;
+  }
+) {
+  "use server";
+  const step = await prisma.mashStep.create({
+    data: {
+      batchId,
+      name: data.name,
+      type: data.type,
+      stepTemperatureC: data.stepTemperatureC,
+      stepTimeMin: data.stepTimeMin,
+      amountL: data.amountL ?? null,
+      rampTimeMin: data.rampTimeMin ?? null,
+      endTemperatureC: data.endTemperatureC ?? null,
+      description: data.description ?? null,
+      infuseTemperatureC: data.infuseTemperatureC ?? null,
+      sortOrder: data.sortOrder ?? 0,
+    },
+  });
+  return step;
+}
+
+async function updateMashStep(
+  id: string,
+  data: {
+    name: string;
+    type: string;
+    stepTemperatureC: number;
+    stepTimeMin: number;
+    amountL?: number | null;
+    rampTimeMin?: number | null;
+    endTemperatureC?: number | null;
+    description?: string | null;
+    infuseTemperatureC?: number | null;
+    sortOrder?: number;
+  }
+) {
+  "use server";
+  await prisma.mashStep.update({
+    where: { id },
+    data: {
+      name: data.name,
+      type: data.type,
+      stepTemperatureC: data.stepTemperatureC,
+      stepTimeMin: data.stepTimeMin,
+      amountL: data.amountL ?? null,
+      rampTimeMin: data.rampTimeMin ?? null,
+      endTemperatureC: data.endTemperatureC ?? null,
+      description: data.description ?? null,
+      infuseTemperatureC: data.infuseTemperatureC ?? null,
+      sortOrder: data.sortOrder ?? 0,
+    },
+  });
+}
+
+async function deleteMashStep(id: string) {
+  "use server";
+  await prisma.mashStep.delete({ where: { id } });
 }
 
 async function deleteBatch(id: string) {
@@ -136,6 +306,9 @@ export default async function BatchPage({ params }: BatchPageProps) {
       yeasts: {
         include: { yeast: true },
       },
+      mashSteps: {
+        orderBy: { sortOrder: "asc" },
+      },
     },
   });
 
@@ -156,8 +329,11 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const updateYeastWithId = updateBatchYeast;
   const deleteYeastWithId = deleteBatchYeast;
   const updateBatchWaterWithId = updateBatchWaterProfiles.bind(null, id);
-  const updateWaterProfileWithId = updateWaterProfile;
+  const updateBatchWaterSnapshotWithId = updateBatchWaterSnapshot.bind(null, id);
   const updateSaltAdditionsWithId = updateSaltAdditions.bind(null, id);
+  const updateBoilTimesWithId = updateBoilTimes.bind(null, id);
+  const updateMashParamsWithId = updateMashParams.bind(null, id);
+  const createMashStepWithId = createMashStep.bind(null, id);
 
   return (
     <div className="space-y-6">
@@ -200,9 +376,35 @@ export default async function BatchPage({ params }: BatchPageProps) {
           waterProfiles={allWaterProfiles}
           sourceWaterProfile={batch.sourceWaterProfile}
           targetWaterProfile={batch.targetWaterProfile}
+          sourceWaterSnapshot={batch.sourceWaterProfile ? {
+            caPpm:   batch.sourceCaPpm   ?? batch.sourceWaterProfile.caPpm   ?? 0,
+            mgPpm:   batch.sourceMgPpm   ?? batch.sourceWaterProfile.mgPpm   ?? 0,
+            naPpm:   batch.sourceNaPpm   ?? batch.sourceWaterProfile.naPpm   ?? 0,
+            clPpm:   batch.sourceClPpm   ?? batch.sourceWaterProfile.clPpm   ?? 0,
+            so4Ppm:  batch.sourceSo4Ppm  ?? batch.sourceWaterProfile.so4Ppm  ?? 0,
+            znPpm:   batch.sourceZnPpm   ?? batch.sourceWaterProfile.znPpm   ?? null,
+            hco3Ppm: batch.sourceHco3Ppm ?? batch.sourceWaterProfile.hco3Ppm ?? null,
+            pH:      batch.sourceWaterPh ?? batch.sourceWaterProfile.pH      ?? null,
+          } : null}
+          targetWaterSnapshot={batch.targetWaterProfile ? {
+            caPpm:   batch.targetCaPpm   ?? batch.targetWaterProfile.caPpm   ?? 0,
+            mgPpm:   batch.targetMgPpm   ?? batch.targetWaterProfile.mgPpm   ?? 0,
+            naPpm:   batch.targetNaPpm   ?? batch.targetWaterProfile.naPpm   ?? 0,
+            clPpm:   batch.targetClPpm   ?? batch.targetWaterProfile.clPpm   ?? 0,
+            so4Ppm:  batch.targetSo4Ppm  ?? batch.targetWaterProfile.so4Ppm  ?? 0,
+            znPpm:   batch.targetZnPpm   ?? batch.targetWaterProfile.znPpm   ?? null,
+            hco3Ppm: batch.targetHco3Ppm ?? batch.targetWaterProfile.hco3Ppm ?? null,
+            pH:      batch.targetWaterPh ?? batch.targetWaterProfile.pH      ?? null,
+          } : null}
           updateBatchWaterAction={updateBatchWaterWithId}
-          updateWaterProfileAction={updateWaterProfileWithId}
+          updateBatchWaterSnapshotAction={updateBatchWaterSnapshotWithId}
           updateSaltAdditionsAction={updateSaltAdditionsWithId}
+          updateBoilTimesAction={updateBoilTimesWithId}
+          updateMashParamsAction={updateMashParamsWithId}
+          mashSteps={batch.mashSteps}
+          createMashStepAction={createMashStepWithId}
+          updateMashStepAction={updateMashStep}
+          deleteMashStepAction={deleteMashStep}
           saltAdditions={{
             saltChalkGL: batch.saltChalkGL,
             saltBakingSodaGL: batch.saltBakingSodaGL,

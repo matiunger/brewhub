@@ -1,16 +1,29 @@
-in recipe overview add Batch size (Lts) in fermenter
+agregar acid additions in water.
+
+agregar brew day
+
+Prepartion checklits
+Molienda
+ - dia y hora
+Mash
+ - hora calentar agua
+ - check gusto
+
 
 visual de agua, losses, etc
 
 fix MCU con post boil volume
 
 in recipe overview, agregar mas metricas como balance, etc
-agregar lista de estilos. Mostrar valores de receta contra rango de estilo.
 
 Beer batch
-
+checklists de preparación, limpieza, etc
 
 DONE:
+agregar Mash target ph (default 5.4)
+Sparge target ph (default 5.4)
+
+nueva escala SO4/CL ratio. Usar round y crisp
 colores segun seccion (
     kegs -> brown
     water -> blue
@@ -20,3 +33,5 @@ colores segun seccion (
     equipment -> grey
 
 )
+in recipe overview add Batch size (Lts) in fermenter
+agregar lista de estilos. Mostrar valores de receta contra rango de estilo.
