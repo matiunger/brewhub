@@ -1,5 +1,7 @@
 agregar acid additions in water.
 
+Ojo con editar un inveotry qye se usa en un batch. Fijar los valores al seleccionar ese componente?
+
 agregar brew day
 
 Prepartion checklits

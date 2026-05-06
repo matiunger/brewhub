@@ -1,6 +1,9 @@
 interface BatchWithIngredients {
   grains: {
     grams: number;
+    // Snapshot fields take priority; fall back to inventory if null
+    colorL?: number | null;
+    maxYield?: number | null;
     grain: {
       maxYield: number | null;
       colorL: number | null;
@@ -10,11 +13,13 @@ interface BatchWithIngredients {
     grams: number;
     additionTime: number;
     use: string;
+    alphaAcid?: number | null;
     hop: {
       alphaAcid: number;
     };
   }[];
   yeasts: {
+    attenuation?: number | null;
     yeast: {
       attenuation: number | null;
     };
@@ -23,6 +28,8 @@ interface BatchWithIngredients {
   equipment: {
     trubLossL: number;
   } | null;
+  // Equipment snapshot fields (take priority over linked equipment)
+  equipmentTrubLossL?: number | null;
 }
 
 export function calculateBrewingStats(batch: BatchWithIngredients) {
@@ -33,7 +40,7 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
   let totalGravityPoints = 0;
   
   batch.grains.forEach((bg) => {
-    const yield_ = bg.grain.maxYield || 75; // Default 75% yield
+    const yield_ = (bg.maxYield ?? bg.grain.maxYield) || 75; // Default 75% yield
     const extractableSugar = (bg.grams / 1000) * (yield_ / 100); // kg of extract
     totalExtractableSugar += extractableSugar;
   });
@@ -48,7 +55,7 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
   let avgAttenuation = 75; // Default 75%
   if (batch.yeasts.length > 0) {
     const totalAttenuation = batch.yeasts.reduce((sum, by) => {
-      return sum + (by.yeast.attenuation || 75);
+      return sum + ((by.attenuation ?? by.yeast.attenuation) || 75);
     }, 0);
     avgAttenuation = totalAttenuation / batch.yeasts.length;
   }
@@ -62,7 +69,7 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
   // Calculate IBU using Tinseth formula
   let totalIbu = 0;
   batch.hops.forEach((bh) => {
-    const aa = bh.hop.alphaAcid / 100;
+    const aa = (bh.alphaAcid ?? bh.hop.alphaAcid) / 100;
     const grams = bh.grams;
     const time = bh.additionTime;
     
@@ -85,7 +92,7 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
   });
   
   // Calculate post-chill volume for MCU (fermenter + trub loss)
-  const trubLossL = batch.equipment?.trubLossL ?? 1.0;
+  const trubLossL = batch.equipmentTrubLossL ?? batch.equipment?.trubLossL ?? 1.0;
   const postChillGal = (batchVolume + trubLossL) * 0.264172;
 
   // Calculate SRM (Standard Reference Method)
@@ -94,7 +101,7 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
   let mcu = 0;
   batch.grains.forEach((bg) => {
     const weightLbs = bg.grams * 0.00220462; // Convert grams to lbs
-    const colorL = bg.grain.colorL || 2; // Default to 2L (pale)
+    const colorL = (bg.colorL ?? bg.grain.colorL) || 2; // Default to 2L (pale)
     mcu += (weightLbs * colorL) / postChillGal;
   });
   
@@ -196,7 +203,7 @@ export function calculateSpargeAcidDose(input: {
 }
 
 export function calculateAcidAddition(input: {
-  grains: { grams: number; grain: { colorL: number | null; grainGroup: string | null } }[];
+  grains: { grams: number; colorL?: number | null; grainGroup?: string | null; grain: { colorL: number | null; grainGroup: string | null } }[];
   mashWaterL: number;
   targetPh: number;
   sourceHco3Ppm: number;
@@ -244,10 +251,11 @@ export function calculateAcidAddition(input: {
   let totalGristKg = 0;
 
   for (const g of grains) {
-    const colorL = g.grain.colorL ?? 2;
+    const colorL = (g.colorL ?? g.grain.colorL) ?? 2;
+    const grainGroup = g.grainGroup ?? g.grain.grainGroup;
     const massKg = g.grams / 1000;
     const massLbEq = massKg * 2.205; // U=2.205 for liters system
-    totalGrainAcidity += massLbEq * acidityPerLbEq(colorL, g.grain.grainGroup);
+    totalGrainAcidity += massLbEq * acidityPerLbEq(colorL, grainGroup);
     totalGristKg += massKg;
   }
 

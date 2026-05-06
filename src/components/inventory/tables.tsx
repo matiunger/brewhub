@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Wrench, Wheat, Hop as HopIcon, FlaskConical, Droplets, Barrel } from "lucide-react";
+import { useState, useMemo } from "react";
+import { toast } from "sonner";
+import { Wrench, Wheat, Hop as HopIcon, FlaskConical, Droplets, Barrel, ArrowUp, ArrowDown, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -147,6 +148,51 @@ function EnumSelect({
   );
 }
 
+// ---- Sortable Header Helper ----
+
+type SortDir = "asc" | "desc";
+type SortState<K extends string> = { key: K; dir: SortDir };
+
+function SortableHead<K extends string>({
+  label,
+  sortKey,
+  sort,
+  onSort,
+  className,
+}: {
+  label: string;
+  sortKey: K;
+  sort: SortState<K>;
+  onSort: (key: K) => void;
+  className?: string;
+}) {
+  const active = sort.key === sortKey;
+  return (
+    <TableHead className={`cursor-pointer select-none ${className || ""}`} onClick={() => onSort(sortKey)}>
+      <span className="inline-flex items-center gap-1">
+        {label}
+        {active ? (
+          sort.dir === "asc" ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />
+        ) : null}
+      </span>
+    </TableHead>
+  );
+}
+
+function sortData<T>(data: T[], key: keyof T, dir: SortDir): T[] {
+  return [...data].sort((a, b) => {
+    const av = a[key];
+    const bv = b[key];
+    if (av == null && bv == null) return 0;
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    if (typeof av === "number" && typeof bv === "number") return dir === "asc" ? av - bv : bv - av;
+    const as = String(av).toLowerCase();
+    const bs = String(bv).toLowerCase();
+    return dir === "asc" ? as.localeCompare(bs) : bs.localeCompare(as);
+  });
+}
+
 // ---- Equipment Table ----
 
 function EquipmentForm({
@@ -282,10 +328,9 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
   };
 
   const deleteItem = async (id: string) => {
-    if (confirm("Are you sure you want to delete this equipment?")) {
-      await fetch(`/api/equipment/${id}`, { method: "DELETE" });
-      refresh();
-    }
+    if (!confirm("Are you sure you want to delete this equipment?")) return;
+    const r = await fetch(`/api/equipment/${id}`, { method: "DELETE" });
+    if (r.ok) { refresh(); } else { toast.error("Failed to delete equipment"); }
   };
 
   const addItem = async () => {
@@ -357,8 +402,8 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
                 <TableCell>{item.trubLossL} L</TableCell>
                 <TableCell>
                   <div className="flex gap-1">
-                    <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
-                    <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(item)}><Pencil className="w-3.5 h-3.5" /></Button>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteItem(item.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -385,6 +430,10 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<Grain>>({});
   const [addForm, setAddForm] = useState<Partial<Grain>>({ name: "", type: "grain" });
+  const [sort, setSort] = useState<SortState<keyof Grain>>({ key: "colorL", dir: "asc" });
+
+  const sorted = useMemo(() => sortData(data, sort.key, sort.dir), [data, sort]);
+  const toggleSort = (key: keyof Grain) => setSort(s => s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" });
 
   const refresh = async () => {
     const r = await fetch("/api/grains");
@@ -405,10 +454,9 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
   };
 
   const deleteItem = async (id: string) => {
-    if (confirm("Are you sure you want to delete this grain?")) {
-      await fetch(`/api/grains/${id}`, { method: "DELETE" });
-      refresh();
-    }
+    if (!confirm("Are you sure you want to delete this fermentable?")) return;
+    const r = await fetch(`/api/grains/${id}`, { method: "DELETE" });
+    if (r.ok) { refresh(); } else { toast.error("Failed to delete fermentable"); }
   };
 
   const addItem = async () => {
@@ -498,17 +546,20 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
         <Table>
           <TableHeader>
             <TableRow className="bg-orange-100 hover:bg-orange-100">
-              <TableHead>Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Group</TableHead>
-              <TableHead>Origin</TableHead>
-              <TableHead>Yield %</TableHead>
-              <TableHead>Color (L)</TableHead>
+              <SortableHead label="Name" sortKey="name" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Type" sortKey="type" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Group" sortKey="grainGroup" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Brand" sortKey="brand" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Origin" sortKey="origin" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Yield %" sortKey="maxYield" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Color (L)" sortKey="colorL" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Profile" sortKey="profile" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Uses" sortKey="uses" sort={sort} onSort={toggleSort} />
               <TableHead className="w-[150px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item) => (
+            {sorted.map((item) => (
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
@@ -522,6 +573,9 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
                         onChange={(v) => setEditForm({ ...editForm, grainGroup: v })} />
                     </TableCell>
                     <TableCell>
+                      <Input value={editForm.brand || ""} onChange={(e) => setEditForm({ ...editForm, brand: e.target.value })} />
+                    </TableCell>
+                    <TableCell>
                       <Input value={editForm.origin || ""} onChange={(e) => setEditForm({ ...editForm, origin: e.target.value })} />
                     </TableCell>
                     <TableCell>
@@ -531,6 +585,12 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
                     <TableCell>
                       <Input type="number" step="0.1" value={editForm.colorL || ""}
                         onChange={(e) => setEditForm({ ...editForm, colorL: e.target.value ? parseFloat(e.target.value) : null })} />
+                    </TableCell>
+                    <TableCell>
+                      <Input value={editForm.profile || ""} onChange={(e) => setEditForm({ ...editForm, profile: e.target.value })} />
+                    </TableCell>
+                    <TableCell>
+                      <Input value={editForm.uses || ""} onChange={(e) => setEditForm({ ...editForm, uses: e.target.value })} />
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
@@ -544,13 +604,16 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell>{item.type || "-"}</TableCell>
                     <TableCell>{item.grainGroup || "-"}</TableCell>
+                    <TableCell>{item.brand || "-"}</TableCell>
                     <TableCell>{item.origin || "-"}</TableCell>
                     <TableCell>{item.maxYield ?? "-"}</TableCell>
                     <TableCell>{item.colorL ?? "-"}</TableCell>
+                    <TableCell>{item.profile || "-"}</TableCell>
+                    <TableCell>{item.uses || "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(item)}><Pencil className="w-3.5 h-3.5" /></Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteItem(item.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                       </div>
                     </TableCell>
                   </>
@@ -559,7 +622,7 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
             ))}
             {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
                   No fermentables yet. Click &quot;Add Fermentable&quot; to create one.
                 </TableCell>
               </TableRow>
@@ -573,12 +636,17 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
 
 // ---- Hops Table ----
 
+
 export function HopsTable({ initialData }: { initialData: Hop[] }) {
   const [data, setData] = useState(initialData);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<Hop>>({});
   const [addForm, setAddForm] = useState<Partial<Hop>>({ name: "", alphaAcid: 5, form: "pellet" });
+  const [sort, setSort] = useState<SortState<keyof Hop>>({ key: "alphaAcid", dir: "asc" });
+
+  const sorted = useMemo(() => sortData(data, sort.key, sort.dir), [data, sort]);
+  const toggleSort = (key: keyof Hop) => setSort(s => s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" });
 
   const refresh = async () => {
     const r = await fetch("/api/hops");
@@ -599,10 +667,9 @@ export function HopsTable({ initialData }: { initialData: Hop[] }) {
   };
 
   const deleteItem = async (id: string) => {
-    if (confirm("Are you sure you want to delete this hop?")) {
-      await fetch(`/api/hops/${id}`, { method: "DELETE" });
-      refresh();
-    }
+    if (!confirm("Are you sure you want to delete this hop?")) return;
+    const r = await fetch(`/api/hops/${id}`, { method: "DELETE" });
+    if (r.ok) { refresh(); } else { toast.error("Failed to delete hop"); }
   };
 
   const addItem = async () => {
@@ -696,17 +763,17 @@ export function HopsTable({ initialData }: { initialData: Hop[] }) {
         <Table>
           <TableHeader>
             <TableRow className="bg-lime-100 hover:bg-lime-100">
-              <TableHead>Name</TableHead>
-              <TableHead>Origin</TableHead>
-              <TableHead>Form</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Alpha %</TableHead>
-              <TableHead>Beta %</TableHead>
+              <SortableHead label="Name" sortKey="name" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Origin" sortKey="origin" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Form" sortKey="form" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Type" sortKey="hopType" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Alpha %" sortKey="alphaAcid" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Beta %" sortKey="betaAcid" sort={sort} onSort={toggleSort} />
               <TableHead className="w-[150px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item) => (
+            {sorted.map((item) => (
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
@@ -745,8 +812,8 @@ export function HopsTable({ initialData }: { initialData: Hop[] }) {
                     <TableCell>{item.betaAcid != null ? `${item.betaAcid}%` : "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(item)}><Pencil className="w-3.5 h-3.5" /></Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteItem(item.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                       </div>
                     </TableCell>
                   </>
@@ -775,6 +842,10 @@ export function YeastsTable({ initialData }: { initialData: Yeast[] }) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState<Partial<Yeast>>({});
   const [addForm, setAddForm] = useState<Partial<Yeast>>({ name: "" });
+  const [sort, setSort] = useState<SortState<keyof Yeast>>({ key: "cultureType", dir: "asc" });
+
+  const sorted = useMemo(() => sortData(data, sort.key, sort.dir), [data, sort]);
+  const toggleSort = (key: keyof Yeast) => setSort(s => s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: "asc" });
 
   const refresh = async () => {
     const r = await fetch("/api/yeasts");
@@ -795,10 +866,9 @@ export function YeastsTable({ initialData }: { initialData: Yeast[] }) {
   };
 
   const deleteItem = async (id: string) => {
-    if (confirm("Are you sure you want to delete this yeast?")) {
-      await fetch(`/api/yeasts/${id}`, { method: "DELETE" });
-      refresh();
-    }
+    if (!confirm("Are you sure you want to delete this culture?")) return;
+    const r = await fetch(`/api/yeasts/${id}`, { method: "DELETE" });
+    if (r.ok) { refresh(); } else { toast.error("Failed to delete culture"); }
   };
 
   const addItem = async () => {
@@ -883,16 +953,16 @@ export function YeastsTable({ initialData }: { initialData: Yeast[] }) {
         <Table>
           <TableHeader>
             <TableRow className="bg-purple-100 hover:bg-purple-100">
-              <TableHead>Name</TableHead>
-              <TableHead>Producer</TableHead>
-              <TableHead>Culture Type</TableHead>
-              <TableHead>Form</TableHead>
-              <TableHead>Attenuation</TableHead>
+              <SortableHead label="Name" sortKey="name" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Producer" sortKey="brand" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Culture Type" sortKey="cultureType" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Form" sortKey="type" sort={sort} onSort={toggleSort} />
+              <SortableHead label="Attenuation" sortKey="attenuation" sort={sort} onSort={toggleSort} />
               <TableHead className="w-[150px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item) => (
+            {sorted.map((item) => (
               <TableRow key={item.id}>
                 {editingId === item.id ? (
                   <>
@@ -926,8 +996,8 @@ export function YeastsTable({ initialData }: { initialData: Yeast[] }) {
                     <TableCell>{item.attenuation != null ? `${item.attenuation}%` : "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(item)}><Pencil className="w-3.5 h-3.5" /></Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteItem(item.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                       </div>
                     </TableCell>
                   </>
@@ -978,10 +1048,9 @@ export function WaterTable({ initialData }: { initialData: WaterProfile[] }) {
   };
 
   const deleteItem = async (id: string) => {
-    if (confirm("Are you sure you want to delete this water profile?")) {
-      await fetch(`/api/water-profiles/${id}`, { method: "DELETE" });
-      refresh();
-    }
+    if (!confirm("Are you sure you want to delete this water profile?")) return;
+    const r = await fetch(`/api/water-profiles/${id}`, { method: "DELETE" });
+    if (r.ok) { refresh(); } else { toast.error("Failed to delete water profile"); }
   };
 
   const addItem = async () => {
@@ -1109,8 +1178,8 @@ export function WaterTable({ initialData }: { initialData: WaterProfile[] }) {
                     <TableCell>{item.hco3Ppm ?? "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(item)}><Pencil className="w-3.5 h-3.5" /></Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteItem(item.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                       </div>
                     </TableCell>
                   </>
@@ -1159,10 +1228,9 @@ export function KegsTable({ initialData }: { initialData: Keg[] }) {
   };
 
   const deleteItem = async (id: string) => {
-    if (confirm("Are you sure you want to delete this keg?")) {
-      await fetch(`/api/kegs/${id}`, { method: "DELETE" });
-      refresh();
-    }
+    if (!confirm("Are you sure you want to delete this keg?")) return;
+    const r = await fetch(`/api/kegs/${id}`, { method: "DELETE" });
+    if (r.ok) { refresh(); } else { toast.error("Failed to delete keg"); }
   };
 
   const addItem = async () => {
@@ -1284,8 +1352,8 @@ export function KegsTable({ initialData }: { initialData: Keg[] }) {
                     <TableCell>{item.tareWeight != null ? `${item.tareWeight} g` : "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button size="sm" variant="outline" onClick={() => startEdit(item)}>Edit</Button>
-                        <Button size="sm" variant="destructive" onClick={() => deleteItem(item.id)}>Delete</Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => startEdit(item)}><Pencil className="w-3.5 h-3.5" /></Button>
+                        <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive hover:text-destructive" onClick={() => deleteItem(item.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                       </div>
                     </TableCell>
                   </>

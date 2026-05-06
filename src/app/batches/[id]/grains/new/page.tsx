@@ -20,11 +20,21 @@ interface AddGrainPageProps {
 async function addGrain(batchId: string, formData: FormData) {
   "use server";
 
+  const grainId = formData.get("grainId") as string;
+  const grain = await prisma.grain.findUnique({ where: { id: grainId } });
+  if (!grain) throw new Error("Grain not found");
+
   await prisma.batchGrain.create({
     data: {
       batchId,
-      grainId: formData.get("grainId") as string,
+      grainId,
       grams: parseFloat(formData.get("grams") as string),
+      // Snapshot inventory values at time of adding
+      name: grain.name,
+      brand: grain.brand,
+      colorL: grain.colorL,
+      maxYield: grain.maxYield,
+      grainGroup: grain.grainGroup,
     },
   });
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
@@ -13,6 +12,8 @@ import { BatchForm } from "./batch-form";
 import stylesData from "../../../../styles.json";
 import { srmToHex, srmIsLight } from "@/lib/olfarve";
 import { calculateAcidAddition, calculateSpargeAcidDose, type AcidType } from "@/lib/calculations";
+import { parseBrewdayData, type BrewdayData } from "@/lib/brewday-types";
+import { BrewdaySection } from "./brewday-section";
 
 // ---------- Style range bar ----------
 
@@ -151,6 +152,12 @@ interface Yeast {
 interface BatchGrain {
   id: string;
   grams: number;
+  // Snapshot fields (copied from inventory at add time, editable per batch)
+  name: string | null;
+  brand: string | null;
+  colorL: number | null;
+  maxYield: number | null;
+  grainGroup: string | null;
   grain: Grain;
 }
 
@@ -159,13 +166,21 @@ interface BatchHop {
   grams: number;
   use: string;
   additionTime: number | null;
+  // Snapshot fields
+  name: string | null;
+  alphaAcid: number | null;
   hop: Hop;
 }
 
 interface BatchYeast {
   id: string;
-  quantity: string;
+  quantityAmount: number | null;
+  quantityUnits: string | null;
   temp: number | null;
+  // Snapshot fields
+  name: string | null;
+  brand: string | null;
+  attenuation: number | null;
   yeast: Yeast;
 }
 
@@ -188,6 +203,22 @@ interface Equipment {
   boilEvaporationRateLH: number | null;
   heatingEvaporationRateLH: number | null;
   tempContractionPercent: number | null;
+}
+
+interface EquipmentSnapshot {
+  name: string | null;
+  brewhouseEff: number | null;
+  mashEff: number | null;
+  mashTunVolumeL: number | null;
+  mashTunDeadSpaceL: number | null;
+  boilPotVolumeL: number | null;
+  boilEvapRateLH: number | null;
+  heatEvapRateLH: number | null;
+  grainAbsLKg: number | null;
+  fermenterLossL: number | null;
+  trubLossL: number | null;
+  systemLossPct: number | null;
+  tempContractionPct: number | null;
 }
 
 interface WaterProfile {
@@ -245,6 +276,9 @@ interface BeerSectionsProps {
   grains: BatchGrain[];
   hops: BatchHop[];
   yeasts: BatchYeast[];
+  allGrains: Grain[];
+  allHops: Hop[];
+  allYeasts: Yeast[];
   updateAction: (formData: FormData) => Promise<void>;
   updateNotesAction: (notes: string) => Promise<void>;
   updateTargetStatsAction: (data: {
@@ -254,11 +288,14 @@ interface BeerSectionsProps {
     targetSrm: number | null;
     targetFermentarL: number | null;
   }) => Promise<void>;
-  updateGrainAction: (id: string, data: { grams: number }) => Promise<void>;
+  addGrainAction: (data: { grainId: string; grams: number }) => Promise<BatchGrain>;
+  updateGrainAction: (id: string, data: { grams: number; colorL: number | null; maxYield: number | null; brand: string | null }) => Promise<void>;
   deleteGrainAction: (id: string) => Promise<void>;
-  updateHopAction: (id: string, data: { grams: number; use: string; additionTime: number | null }) => Promise<void>;
+  addHopAction: (data: { hopId: string; grams: number; use: string; additionTime: number }) => Promise<BatchHop>;
+  updateHopAction: (id: string, data: { grams: number; use: string; additionTime: number | null; alphaAcid: number }) => Promise<void>;
   deleteHopAction: (id: string) => Promise<void>;
-  updateYeastAction: (id: string, data: { quantity: string; temp: number | null }) => Promise<void>;
+  addYeastAction: (data: { yeastId: string; quantityAmount: number; quantityUnits: string; temp: number | null }) => Promise<BatchYeast>;
+  updateYeastAction: (id: string, data: { quantityAmount: number | null; quantityUnits: string | null; temp: number | null; attenuation: number | null }) => Promise<void>;
   deleteYeastAction: (id: string) => Promise<void>;
   waterProfiles: WaterProfile[];
   sourceWaterProfile: WaterProfile | null;
@@ -283,12 +320,31 @@ interface BeerSectionsProps {
     description?: string | null; infuseTemperatureC?: number | null; sortOrder?: number;
   }) => Promise<void>;
   deleteMashStepAction: (id: string) => Promise<void>;
+  brewdayData: string | null;
+  updateBrewdayDataAction: (data: string) => Promise<void>;
+  equipmentSnapshot: EquipmentSnapshot | null;
+  updateEquipmentSnapshotAction: (data: {
+    equipmentName: string | null;
+    equipmentBrewhouseEff: number | null;
+    equipmentMashEff: number | null;
+    equipmentMashTunVolumeL: number | null;
+    equipmentMashTunDeadSpaceL: number | null;
+    equipmentBoilPotVolumeL: number | null;
+    equipmentBoilEvapRateLH: number | null;
+    equipmentHeatEvapRateLH: number | null;
+    equipmentGrainAbsLKg: number | null;
+    equipmentFermenterLossL: number | null;
+    equipmentTrubLossL: number | null;
+    equipmentSystemLossPct: number | null;
+    equipmentTempContractionPct: number | null;
+  }) => Promise<void>;
 }
 
-type SectionKey = "basicInfo" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water";
+type SectionKey = "basicInfo" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdPreparacion" | "bdMolienda" | "bdMacerado" | "bdLavado" | "bdPreboil" | "bdHervido" | "bdWhirlpool" | "bdFermentacion" | "bdEmbarrilado";
 
 const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   basicInfo: true,
+  equipment: false,
   recipeOverview: true,
   boil: true,
   waterVolumes: true,
@@ -297,11 +353,20 @@ const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   hops: true,
   cultures: true,
   water: true,
+  bdPreparacion: false,
+  bdMolienda: false,
+  bdMacerado: false,
+  bdLavado: false,
+  bdPreboil: false,
+  bdHervido: false,
+  bdWhirlpool: false,
+  bdFermentacion: false,
+  bdEmbarrilado: false,
 };
 
 // ---------- CollapsibleCard ----------
 
-function CollapsibleCard({
+export function CollapsibleCard({
   title,
   open,
   onToggle,
@@ -383,13 +448,19 @@ export function BeerSections({
   grains,
   hops,
   yeasts,
+  allGrains,
+  allHops,
+  allYeasts,
   updateAction,
   updateNotesAction,
   updateTargetStatsAction,
+  addGrainAction,
   updateGrainAction,
   deleteGrainAction,
+  addHopAction,
   updateHopAction,
   deleteHopAction,
+  addYeastAction,
   updateYeastAction,
   deleteYeastAction,
   waterProfiles,
@@ -407,6 +478,10 @@ export function BeerSections({
   createMashStepAction,
   updateMashStepAction,
   deleteMashStepAction,
+  brewdayData,
+  updateBrewdayDataAction,
+  equipmentSnapshot,
+  updateEquipmentSnapshotAction,
 }: BeerSectionsProps) {
   const router = useRouter();
   const storageKey = `brewhub:batch:${batchId}:sections`;
@@ -435,18 +510,24 @@ export function BeerSections({
 
   const [grainRows, setGrainRows] = useState(grains);
   const [editingGrainId, setEditingGrainId] = useState<string | null>(null);
-  const [editGrainDraft, setEditGrainDraft] = useState<{ grams: string }>({ grams: "" });
+  const [editGrainDraft, setEditGrainDraft] = useState<{ grams: string; colorL: string; maxYield: string; brand: string }>({ grams: "", colorL: "", maxYield: "", brand: "" });
   const [grainSort, setGrainSort] = useState<{ key: string; dir: "asc" | "desc" } | null>(null);
+  const [isAddingGrain, setIsAddingGrain] = useState(false);
+  const [addGrainDraft, setAddGrainDraft] = useState<{ grainId: string; grams: string }>({ grainId: "", grams: "" });
 
   const [hopRows, setHopRows] = useState(hops);
   const [editingHopId, setEditingHopId] = useState<string | null>(null);
-  const [editHopDraft, setEditHopDraft] = useState<{ grams: string; use: string; additionTime: string }>({ grams: "", use: "", additionTime: "" });
+  const [editHopDraft, setEditHopDraft] = useState<{ grams: string; use: string; additionTime: string; alphaAcid: string }>({ grams: "", use: "", additionTime: "", alphaAcid: "" });
   const [hopSort, setHopSort] = useState<{ key: string; dir: "asc" | "desc" } | null>(null);
+  const [isAddingHop, setIsAddingHop] = useState(false);
+  const [addHopDraft, setAddHopDraft] = useState<{ hopId: string; grams: string; use: string; additionTime: string }>({ hopId: "", grams: "", use: "boil", additionTime: "" });
 
   const [yeastRows, setYeastRows] = useState(yeasts);
   const [editingYeastId, setEditingYeastId] = useState<string | null>(null);
-  const [editYeastDraft, setEditYeastDraft] = useState<{ quantity: string; temp: string }>({ quantity: "", temp: "" });
+  const [editYeastDraft, setEditYeastDraft] = useState<{ quantityAmount: string; quantityUnits: string; temp: string; attenuation: string }>({ quantityAmount: "", quantityUnits: "packet", temp: "", attenuation: "" });
   const [savingYeastId, setSavingYeastId] = useState<string | null>(null);
+  const [isAddingYeast, setIsAddingYeast] = useState(false);
+  const [addYeastDraft, setAddYeastDraft] = useState<{ yeastId: string; quantityAmount: string; quantityUnits: string; temp: string }>({ yeastId: "", quantityAmount: "", quantityUnits: "packet", temp: "" });
 
   const [mashStepRows, setMashStepRows] = useState<MashStep[]>(mashSteps);
   const [editingMashStepId, setEditingMashStepId] = useState<string | null>(null);
@@ -532,6 +613,30 @@ export function BeerSections({
     }, 800);
   }, [updateSaltAdditionsAction]);
 
+  const [brewday, setBrewday] = useState<BrewdayData>(() => parseBrewdayData(brewdayData));
+  const brewdayRef = useRef(brewday);
+  brewdayRef.current = brewday;
+  const brewdayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const scheduleBrewdaySave = useCallback(() => {
+    if (brewdayTimerRef.current) clearTimeout(brewdayTimerRef.current);
+    brewdayTimerRef.current = setTimeout(async () => {
+      try {
+        await updateBrewdayDataAction(JSON.stringify(brewdayRef.current));
+      } catch {
+        toast.error("Failed to save brewday data");
+      }
+    }, 800);
+  }, [updateBrewdayDataAction]);
+
+  const updateBrewday = useCallback(<K extends keyof BrewdayData>(
+    section: K,
+    value: BrewdayData[K]
+  ) => {
+    setBrewday((prev) => ({ ...prev, [section]: value }));
+    scheduleBrewdaySave();
+  }, [scheduleBrewdaySave]);
+
   const targetsRef = useRef(targets);
   targetsRef.current = targets;
   const batchSizeRef = useRef(batchSize);
@@ -593,6 +698,78 @@ export function BeerSections({
     },
     [scheduleSave]
   );
+
+  // Equipment snapshot local state
+  const [eqSnap, setEqSnap] = useState<EquipmentSnapshot | null>(equipmentSnapshot);
+  useEffect(() => { setEqSnap(equipmentSnapshot); }, [equipmentSnapshot]);
+
+  const [eqDraft, setEqDraft] = useState<Record<string, string>>({});
+  const [editingEq, setEditingEq] = useState(false);
+  const [savingEq, setSavingEq] = useState(false);
+
+  function startEditEq() {
+    if (!eqSnap) return;
+    setEqDraft({
+      name:               eqSnap.name               ?? "",
+      brewhouseEff:       eqSnap.brewhouseEff        != null ? String(eqSnap.brewhouseEff)   : "",
+      mashEff:            eqSnap.mashEff             != null ? String(eqSnap.mashEff)         : "",
+      mashTunVolumeL:     eqSnap.mashTunVolumeL      != null ? String(eqSnap.mashTunVolumeL)  : "",
+      mashTunDeadSpaceL:  eqSnap.mashTunDeadSpaceL   != null ? String(eqSnap.mashTunDeadSpaceL) : "",
+      boilPotVolumeL:     eqSnap.boilPotVolumeL      != null ? String(eqSnap.boilPotVolumeL)  : "",
+      boilEvapRateLH:     eqSnap.boilEvapRateLH      != null ? String(eqSnap.boilEvapRateLH)  : "",
+      heatEvapRateLH:     eqSnap.heatEvapRateLH      != null ? String(eqSnap.heatEvapRateLH)  : "",
+      grainAbsLKg:        eqSnap.grainAbsLKg         != null ? String(eqSnap.grainAbsLKg)     : "",
+      fermenterLossL:     eqSnap.fermenterLossL      != null ? String(eqSnap.fermenterLossL)  : "",
+      trubLossL:          eqSnap.trubLossL           != null ? String(eqSnap.trubLossL)       : "",
+      systemLossPct:      eqSnap.systemLossPct       != null ? String(eqSnap.systemLossPct)   : "",
+      tempContractionPct: eqSnap.tempContractionPct  != null ? String(eqSnap.tempContractionPct) : "",
+    });
+    setEditingEq(true);
+  }
+
+  async function saveEqDraft() {
+    setSavingEq(true);
+    try {
+      const n = (k: string) => eqDraft[k] !== "" ? parseFloat(eqDraft[k]) : null;
+      const updated: EquipmentSnapshot = {
+        name:               eqDraft.name || null,
+        brewhouseEff:       n("brewhouseEff"),
+        mashEff:            n("mashEff"),
+        mashTunVolumeL:     n("mashTunVolumeL"),
+        mashTunDeadSpaceL:  n("mashTunDeadSpaceL"),
+        boilPotVolumeL:     n("boilPotVolumeL"),
+        boilEvapRateLH:     n("boilEvapRateLH"),
+        heatEvapRateLH:     n("heatEvapRateLH"),
+        grainAbsLKg:        n("grainAbsLKg"),
+        fermenterLossL:     n("fermenterLossL"),
+        trubLossL:          n("trubLossL"),
+        systemLossPct:      n("systemLossPct"),
+        tempContractionPct: n("tempContractionPct"),
+      };
+      await updateEquipmentSnapshotAction({
+        equipmentName:              updated.name,
+        equipmentBrewhouseEff:      updated.brewhouseEff,
+        equipmentMashEff:           updated.mashEff,
+        equipmentMashTunVolumeL:    updated.mashTunVolumeL,
+        equipmentMashTunDeadSpaceL: updated.mashTunDeadSpaceL,
+        equipmentBoilPotVolumeL:    updated.boilPotVolumeL,
+        equipmentBoilEvapRateLH:    updated.boilEvapRateLH,
+        equipmentHeatEvapRateLH:    updated.heatEvapRateLH,
+        equipmentGrainAbsLKg:       updated.grainAbsLKg,
+        equipmentFermenterLossL:    updated.fermenterLossL,
+        equipmentTrubLossL:         updated.trubLossL,
+        equipmentSystemLossPct:     updated.systemLossPct,
+        equipmentTempContractionPct: updated.tempContractionPct,
+      });
+      setEqSnap(updated);
+      setEditingEq(false);
+      toast.success("Equipment saved");
+    } catch {
+      toast.error("Failed to save equipment");
+    } finally {
+      setSavingEq(false);
+    }
+  }
 
   const styleEntry = useMemo(() => {
     if (!batch.style) return null;
@@ -670,19 +847,18 @@ export function BeerSections({
   const batchVolumeGal = batchVolumeL * 0.264172;
   const totalGrainGrams = grainRows.reduce((s, r) => s + r.grams, 0);
 
-  // Water volumes calculation
-  const selectedEquipment = equipment.find((e) => e.id === batch.equipmentId) ?? null;
+  // Water volumes calculation — uses equipment snapshot stored on the batch
   const wv = (() => {
-    const fermenterLossL = selectedEquipment?.fermenterLossL ?? 1.0;
-    const trubLossL = selectedEquipment?.trubLossL ?? 1.0;
-    const systemLossPct = selectedEquipment?.systemLossPercent ?? 3.0;
-    const mashTunDeadSpaceL = selectedEquipment?.mashTunDeadSpaceL ?? 0;
-    const boilEvapRateLH = selectedEquipment?.boilEvaporationRateLH ?? 3.0;
-    const heatEvapRateLH = selectedEquipment?.heatingEvaporationRateLH ?? boilEvapRateLH * 0.4;
+    const fermenterLossL = eqSnap?.fermenterLossL ?? 1.0;
+    const trubLossL = eqSnap?.trubLossL ?? 1.0;
+    const systemLossPct = eqSnap?.systemLossPct ?? 3.0;
+    const mashTunDeadSpaceL = eqSnap?.mashTunDeadSpaceL ?? 0;
+    const boilEvapRateLH = eqSnap?.boilEvapRateLH ?? 3.0;
+    const heatEvapRateLH = eqSnap?.heatEvapRateLH ?? boilEvapRateLH * 0.4;
     const boilTimeHr = (boilTimeMin ?? 60) / 60;
     const heatUpTimeHr = (heatUpTimeMin ?? 30) / 60;
-    const tempContractionPct = selectedEquipment?.tempContractionPercent ?? 4.0;
-    const grainAbsLpKg = selectedEquipment?.grainAbsorptionLKg ?? 1.0;
+    const tempContractionPct = eqSnap?.tempContractionPct ?? 4.0;
+    const grainAbsLpKg = eqSnap?.grainAbsLKg ?? 1.0;
     const fermenterVol = batchVolumeL;
     const postChill = fermenterVol + trubLossL;
     const tempContractionL = postChill * (tempContractionPct / 100);
@@ -714,7 +890,7 @@ export function BeerSections({
   const acidCalc = useMemo(() => {
     if (targetPh == null || grainRows.length === 0) return null;
     const common = {
-      grains: grainRows.map((r) => ({ grams: r.grams, grain: { colorL: r.grain.colorL, grainGroup: r.grain.grainGroup } })),
+      grains: grainRows.map((r) => ({ grams: r.grams, colorL: r.colorL ?? r.grain.colorL, grainGroup: r.grainGroup ?? r.grain.grainGroup, grain: { colorL: r.grain.colorL, grainGroup: r.grain.grainGroup } })),
       sourceHco3Ppm: sourceSnapshotLocal?.hco3Ppm ?? 0,
       sourceCaPpm:   sourceSnapshotLocal?.caPpm   ?? 0,
       sourceMgPpm:   sourceSnapshotLocal?.mgPpm   ?? 0,
@@ -742,9 +918,11 @@ export function BeerSections({
   }, [targetPh, spargeTargetPh, grainRows, wv.mashWater, wv.spargeWater, sourceSnapshotLocal, salts, acidType, acidAmount]);
 
   const grainCalc = (r: typeof grainRows[0]) => {
-    const extract = r.grams * ((r.grain.maxYield ?? 75) / 100);
-    const mcu = r.grain.colorL != null
-      ? (r.grams * 0.00220462 * r.grain.colorL) / (wv.postChill * 0.264172)
+    const effectiveMaxYield = r.maxYield ?? r.grain.maxYield;
+    const effectiveColorL = r.colorL ?? r.grain.colorL;
+    const extract = r.grams * ((effectiveMaxYield ?? 75) / 100);
+    const mcu = effectiveColorL != null
+      ? (r.grams * 0.00220462 * effectiveColorL) / (wv.postChill * 0.264172)
       : 0;
     const pct = totalGrainGrams > 0 ? (r.grams / totalGrainGrams) * 100 : 0;
     return { extract, mcu, pct };
@@ -765,9 +943,9 @@ export function BeerSections({
   ] as const;
 
   const sortedGrainRows = sortRows(grainRows, grainSort, (r, k) => {
-    if (k === "name") return r.grain.name;
+    if (k === "name") return r.name ?? r.grain.name;
     if (k === "grams") return r.grams;
-    if (k === "colorL") return r.grain.colorL ?? -1;
+    if (k === "colorL") return (r.colorL ?? r.grain.colorL) ?? -1;
     if (k === "pct") return grainCalc(r).pct;
     if (k === "extract") return grainCalc(r).extract;
     if (k === "mcu") return grainCalc(r).mcu;
@@ -802,6 +980,83 @@ export function BeerSections({
         onToggle={() => toggle("basicInfo")}
       >
         <BatchForm batch={batch} equipment={equipment} updateAction={updateAction} updateNotesAction={updateNotesAction} bare />
+      </CollapsibleCard>
+
+      {/* 1b. Equipment */}
+      <CollapsibleCard
+        title={eqSnap ? `Equipment — ${eqSnap.name ?? "Custom"}` : "Equipment"}
+        open={open.equipment}
+        onToggle={() => toggle("equipment")}
+      >
+        {!eqSnap ? (
+          <p className="text-sm text-muted-foreground italic">
+            Select equipment in Basic Information to load values. You can then customize them for this batch.
+          </p>
+        ) : editingEq ? (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm">
+              {([
+                { key: "name",               label: "Name",                     type: "text",   unit: "" },
+                { key: "brewhouseEff",       label: "Brewhouse Efficiency",     type: "number", unit: "%" },
+                { key: "mashEff",            label: "Mash Efficiency",          type: "number", unit: "%" },
+                { key: "fermenterLossL",     label: "Fermenter Loss",           type: "number", unit: "L" },
+                { key: "trubLossL",          label: "Kettle/Chiller Loss",      type: "number", unit: "L" },
+                { key: "systemLossPct",      label: "System Loss",              type: "number", unit: "%" },
+                { key: "boilEvapRateLH",     label: "Boil Evaporation Rate",   type: "number", unit: "L/h" },
+                { key: "heatEvapRateLH",     label: "Heat-Up Evaporation Rate", type: "number", unit: "L/h" },
+                { key: "tempContractionPct", label: "Temp Contraction",         type: "number", unit: "%" },
+                { key: "grainAbsLKg",        label: "Grain Absorption",         type: "number", unit: "L/kg" },
+                { key: "mashTunDeadSpaceL",  label: "Mash Tun Dead Space",      type: "number", unit: "L" },
+                { key: "mashTunVolumeL",     label: "Mash Tun Volume",          type: "number", unit: "L" },
+                { key: "boilPotVolumeL",     label: "Boil Pot Volume",          type: "number", unit: "L" },
+              ] as { key: string; label: string; type: string; unit: string }[]).map(({ key, label, type, unit }) => (
+                <div key={key} className="space-y-1">
+                  <label className="text-xs text-muted-foreground">{label}{unit ? ` (${unit})` : ""}</label>
+                  <Input
+                    type={type}
+                    step="0.01"
+                    value={eqDraft[key] ?? ""}
+                    onChange={(e) => setEqDraft((d) => ({ ...d, [key]: e.target.value }))}
+                    className="h-8 text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" onClick={saveEqDraft} disabled={savingEq}>Save</Button>
+              <Button size="sm" variant="outline" onClick={() => setEditingEq(false)} disabled={savingEq}>Cancel</Button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2 text-sm">
+              {([
+                { label: "Brewhouse Efficiency", value: eqSnap.brewhouseEff,       unit: "%" },
+                { label: "Mash Efficiency",      value: eqSnap.mashEff,            unit: "%" },
+                { label: "Fermenter Loss",        value: eqSnap.fermenterLossL,     unit: "L" },
+                { label: "Kettle/Chiller Loss",   value: eqSnap.trubLossL,          unit: "L" },
+                { label: "System Loss",           value: eqSnap.systemLossPct,      unit: "%" },
+                { label: "Boil Evap. Rate",       value: eqSnap.boilEvapRateLH,     unit: "L/h" },
+                { label: "Heat-Up Evap. Rate",    value: eqSnap.heatEvapRateLH,     unit: "L/h" },
+                { label: "Temp Contraction",      value: eqSnap.tempContractionPct, unit: "%" },
+                { label: "Grain Absorption",      value: eqSnap.grainAbsLKg,        unit: "L/kg" },
+                { label: "Mash Tun Dead Space",   value: eqSnap.mashTunDeadSpaceL,  unit: "L" },
+                { label: "Mash Tun Volume",       value: eqSnap.mashTunVolumeL,     unit: "L" },
+                { label: "Boil Pot Volume",       value: eqSnap.boilPotVolumeL,     unit: "L" },
+              ] as { label: string; value: number | null | undefined; unit: string }[]).map(({ label, value, unit }) => (
+                <div key={label}>
+                  <span className="text-xs text-muted-foreground block">{label}</span>
+                  <span className="font-medium">
+                    {value != null ? `${value} ${unit}` : <span className="text-muted-foreground">—</span>}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <Button size="sm" variant="outline" onClick={startEditEq}>
+              <Pencil className="h-3 w-3 mr-1" /> Edit values
+            </Button>
+          </div>
+        )}
       </CollapsibleCard>
 
       {/* 2. Recipe Overview */}
@@ -1469,9 +1724,7 @@ export function BeerSections({
         onToggle={() => toggle("fermentables")}
         className="bg-orange-50"
         actions={
-          <Link href={`/batches/${batchId}/grains/new`}>
-            <Button size="sm" className="bg-orange-200 hover:bg-orange-300 text-orange-900">+ Add</Button>
-          </Link>
+          <Button size="sm" className="bg-orange-200 hover:bg-orange-300 text-orange-900" onClick={() => setIsAddingGrain((v) => !v)}>+ Add</Button>
         }
       >
         {grainRows.length > 0 ? (
@@ -1495,17 +1748,37 @@ export function BeerSections({
                   return (
                     <tr key={bg.id} className="border-b last:border-0">
                       <td className="py-2 pr-3">
-                        <span className="font-medium">{bg.grain.name}</span>
-                        {bg.grain.brand && <div className="text-[10px] text-muted-foreground leading-tight">{bg.grain.brand}</div>}
+                        {isEditing ? (
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-sm font-medium">{bg.name ?? bg.grain.name}</span>
+                            <Input value={editGrainDraft.brand} onChange={(e) => setEditGrainDraft((d) => ({ ...d, brand: e.target.value }))} className="h-7 text-xs w-32" placeholder="Brand" />
+                          </div>
+                        ) : (
+                          <>
+                            <span className="font-medium">{bg.name ?? bg.grain.name}</span>
+                            {(bg.brand ?? bg.grain.brand) && <div className="text-[10px] text-muted-foreground leading-tight">{bg.brand ?? bg.grain.brand}</div>}
+                          </>
+                        )}
                       </td>
                       <td className="py-2 pr-3">
                         {isEditing ? (
-                          <Input type="number" step="1" value={editGrainDraft.grams} onChange={(e) => setEditGrainDraft({ grams: e.target.value })} className="h-7 text-sm w-24" />
+                          <Input type="number" step="1" value={editGrainDraft.grams} onChange={(e) => setEditGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-7 text-sm w-24" />
                         ) : `${bg.grams} g`}
                       </td>
                       <td className="py-2 pr-3 text-muted-foreground">{pct.toFixed(1)}%</td>
-                      <td className="py-2 pr-3 text-muted-foreground">{extract.toFixed(0)} g</td>
-                      <td className="py-2 pr-3 text-muted-foreground">{bg.grain.colorL ?? "—"}</td>
+                      <td className="py-2 pr-3 text-muted-foreground">
+                        {isEditing ? (
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-[10px] text-muted-foreground">Yield %</span>
+                            <Input type="number" step="0.1" value={editGrainDraft.maxYield} onChange={(e) => setEditGrainDraft((d) => ({ ...d, maxYield: e.target.value }))} className="h-7 text-sm w-20" placeholder="75" />
+                          </div>
+                        ) : `${extract.toFixed(0)} g`}
+                      </td>
+                      <td className="py-2 pr-3 text-muted-foreground">
+                        {isEditing ? (
+                          <Input type="number" step="0.5" value={editGrainDraft.colorL} onChange={(e) => setEditGrainDraft((d) => ({ ...d, colorL: e.target.value }))} className="h-7 text-sm w-20" placeholder="°L" />
+                        ) : ((bg.colorL ?? bg.grain.colorL) ?? "—")}
+                      </td>
                       <td className="py-2 pr-3 text-muted-foreground">{mcu.toFixed(2)}</td>
                       <td className="py-2 text-right">
                         {isEditing ? (
@@ -1514,8 +1787,11 @@ export function BeerSections({
                               onClick={async () => {
                                 try {
                                   const grams = parseFloat(editGrainDraft.grams);
-                                  await updateGrainAction(bg.id, { grams });
-                                  setGrainRows((rows) => rows.map((r) => r.id === bg.id ? { ...r, grams } : r));
+                                  const colorL = editGrainDraft.colorL !== "" ? parseFloat(editGrainDraft.colorL) : null;
+                                  const maxYield = editGrainDraft.maxYield !== "" ? parseFloat(editGrainDraft.maxYield) : null;
+                                  const brand = editGrainDraft.brand.trim() !== "" ? editGrainDraft.brand.trim() : null;
+                                  await updateGrainAction(bg.id, { grams, colorL, maxYield, brand });
+                                  setGrainRows((rows) => rows.map((r) => r.id === bg.id ? { ...r, grams, colorL, maxYield, brand } : r));
                                 } catch { toast.error("Failed to save"); }
                                 finally { setEditingGrainId(null); }
                               }}
@@ -1527,7 +1803,17 @@ export function BeerSections({
                         ) : (
                           <div className="flex items-center justify-end gap-1">
                             <Button size="icon" variant="ghost" className="h-6 w-6"
-                              onClick={() => { setEditGrainDraft({ grams: String(bg.grams) }); setEditingGrainId(bg.id); }}
+                              onClick={() => {
+                                const effectiveColorL = bg.colorL ?? bg.grain.colorL;
+                                const effectiveMaxYield = bg.maxYield ?? bg.grain.maxYield;
+                                setEditGrainDraft({
+                                  grams: String(bg.grams),
+                                  colorL: effectiveColorL != null ? String(effectiveColorL) : "",
+                                  maxYield: effectiveMaxYield != null ? String(effectiveMaxYield) : "",
+                                  brand: bg.brand ?? bg.grain.brand ?? "",
+                                });
+                                setEditingGrainId(bg.id);
+                              }}
                             ><Pencil className="h-3.5 w-3.5" /></Button>
                             <Button size="icon" variant="ghost" className="h-6 w-6 text-destructive hover:text-destructive"
                               onClick={async () => {
@@ -1579,6 +1865,36 @@ export function BeerSections({
         ) : (
           <p className="text-muted-foreground text-center py-4">No fermentables added yet</p>
         )}
+        {isAddingGrain && (
+          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Grain</span>
+              <Select value={addGrainDraft.grainId} onValueChange={(v) => setAddGrainDraft((d) => ({ ...d, grainId: v }))}>
+                <SelectTrigger className="h-8 text-sm w-52"><SelectValue placeholder="Select grain" /></SelectTrigger>
+                <SelectContent>
+                  {allGrains.map((g) => (
+                    <SelectItem key={g.id} value={g.id}>{g.name}{g.brand ? ` (${g.brand})` : ""}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Grams</span>
+              <Input type="number" step="1" placeholder="g" value={addGrainDraft.grams} onChange={(e) => setAddGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-24" />
+            </div>
+            <Button size="sm" disabled={!addGrainDraft.grainId || !addGrainDraft.grams}
+              onClick={async () => {
+                try {
+                  const created = await addGrainAction({ grainId: addGrainDraft.grainId, grams: parseFloat(addGrainDraft.grams) });
+                  setGrainRows((rows) => [...rows, created]);
+                  setAddGrainDraft({ grainId: "", grams: "" });
+                  setIsAddingGrain(false);
+                } catch { toast.error("Failed to add grain"); }
+              }}
+            >Add</Button>
+            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingGrain(false)}><X className="h-4 w-4" /></Button>
+          </div>
+        )}
       </CollapsibleCard>
 
       {/* 5. Hops */}
@@ -1588,9 +1904,7 @@ export function BeerSections({
         onToggle={() => toggle("hops")}
         className="bg-lime-50"
         actions={
-          <Link href={`/batches/${batchId}/hops/new`}>
-            <Button size="sm" className="bg-lime-200 hover:bg-lime-300 text-lime-900">+ Add</Button>
-          </Link>
+          <Button size="sm" className="bg-lime-200 hover:bg-lime-300 text-lime-900" onClick={() => setIsAddingHop((v) => !v)}>+ Add</Button>
         }
       >
         {hopRows.length > 0 ? (
@@ -1619,8 +1933,17 @@ export function BeerSections({
                 const useLabel = HOP_USES.find((u) => u.value === bh.use)?.label ?? bh.use;
                 return (
                   <tr key={bh.id} className="border-b last:border-0">
-                    <td className="py-2 pr-3 font-medium">{bh.hop.name}</td>
-                    <td className="py-2 pr-3 text-muted-foreground">{bh.hop.alphaAcid}%</td>
+                    <td className="py-2 pr-3 font-medium">{bh.name ?? bh.hop.name}</td>
+                    <td className="py-2 pr-3 text-muted-foreground">
+                      {isEditing ? (
+                        <Input
+                          type="number" step="0.1"
+                          value={editHopDraft.alphaAcid}
+                          onChange={(e) => setEditHopDraft((d) => ({ ...d, alphaAcid: e.target.value }))}
+                          className="h-7 text-sm w-20"
+                        />
+                      ) : `${bh.alphaAcid ?? bh.hop.alphaAcid}%`}
+                    </td>
                     <td className="py-2 pr-3">
                       {isEditing ? (
                         <Select value={editHopDraft.use} onValueChange={(v) => setEditHopDraft((d) => ({ ...d, use: v }))}>
@@ -1660,8 +1983,9 @@ export function BeerSections({
                               try {
                                 const grams = parseFloat(editHopDraft.grams);
                                 const additionTime = editHopDraft.additionTime !== "" ? parseFloat(editHopDraft.additionTime) : null;
-                                await updateHopAction(bh.id, { grams, use: editHopDraft.use, additionTime });
-                                setHopRows((rows) => rows.map((r) => r.id === bh.id ? { ...r, grams, use: editHopDraft.use, additionTime } : r));
+                                const alphaAcid = parseFloat(editHopDraft.alphaAcid);
+                                await updateHopAction(bh.id, { grams, use: editHopDraft.use, additionTime, alphaAcid });
+                                setHopRows((rows) => rows.map((r) => r.id === bh.id ? { ...r, grams, use: editHopDraft.use, additionTime, alphaAcid } : r));
                               } catch { toast.error("Failed to save"); }
                               finally { setEditingHopId(null); }
                             }}
@@ -1675,7 +1999,7 @@ export function BeerSections({
                           <Button
                             size="icon" variant="ghost" className="h-6 w-6"
                             onClick={() => {
-                              setEditHopDraft({ grams: String(bh.grams), use: bh.use, additionTime: bh.additionTime != null ? String(bh.additionTime) : "" });
+                              setEditHopDraft({ grams: String(bh.grams), use: bh.use, additionTime: bh.additionTime != null ? String(bh.additionTime) : "", alphaAcid: String(bh.alphaAcid ?? bh.hop.alphaAcid) });
                               setEditingHopId(bh.id);
                             }}
                           ><Pencil className="h-3.5 w-3.5" /></Button>
@@ -1699,6 +2023,49 @@ export function BeerSections({
         ) : (
           <p className="text-muted-foreground text-center py-4">No hops added yet</p>
         )}
+        {isAddingHop && (
+          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Hop</span>
+              <Select value={addHopDraft.hopId} onValueChange={(v) => setAddHopDraft((d) => ({ ...d, hopId: v }))}>
+                <SelectTrigger className="h-8 text-sm w-48"><SelectValue placeholder="Select hop" /></SelectTrigger>
+                <SelectContent>
+                  {allHops.map((h) => (
+                    <SelectItem key={h.id} value={h.id}>{h.name} ({h.alphaAcid}% AA)</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Grams</span>
+              <Input type="number" step="0.1" placeholder="g" value={addHopDraft.grams} onChange={(e) => setAddHopDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-20" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Use</span>
+              <Select value={addHopDraft.use} onValueChange={(v) => setAddHopDraft((d) => ({ ...d, use: v }))}>
+                <SelectTrigger className="h-8 text-sm w-32"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {HOP_USES.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Time (min)</span>
+              <Input type="number" step="1" placeholder="min" value={addHopDraft.additionTime} onChange={(e) => setAddHopDraft((d) => ({ ...d, additionTime: e.target.value }))} className="h-8 text-sm w-20" />
+            </div>
+            <Button size="sm" disabled={!addHopDraft.hopId || !addHopDraft.grams || !addHopDraft.additionTime}
+              onClick={async () => {
+                try {
+                  const created = await addHopAction({ hopId: addHopDraft.hopId, grams: parseFloat(addHopDraft.grams), use: addHopDraft.use, additionTime: parseFloat(addHopDraft.additionTime) });
+                  setHopRows((rows) => [...rows, created]);
+                  setAddHopDraft({ hopId: "", grams: "", use: "boil", additionTime: "" });
+                  setIsAddingHop(false);
+                } catch { toast.error("Failed to add hop"); }
+              }}
+            >Add</Button>
+            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingHop(false)}><X className="h-4 w-4" /></Button>
+          </div>
+        )}
       </CollapsibleCard>
 
       {/* 6. Cultures */}
@@ -1708,19 +2075,19 @@ export function BeerSections({
         onToggle={() => toggle("cultures")}
         className="bg-purple-50"
         actions={
-          <Link href={`/batches/${batchId}/yeasts/new`}>
-            <Button size="sm" className="bg-purple-200 hover:bg-purple-300 text-purple-900">+ Add</Button>
-          </Link>
+          <Button size="sm" className="bg-purple-200 hover:bg-purple-300 text-purple-900" onClick={() => setIsAddingYeast((v) => !v)}>+ Add</Button>
         }
       >
-        {yeasts.length > 0 ? (
+        {yeastRows.length > 0 ? (
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b text-muted-foreground text-xs">
                 <th className="text-left font-medium pb-2 pr-3">Name</th>
                 <th className="text-left font-medium pb-2 pr-3">Brand</th>
                 <th className="text-left font-medium pb-2 pr-3">Attenuation</th>
-                <th className="text-left font-medium pb-2 pr-3">Quantity</th>
+                <th className="text-left font-medium pb-2 pr-3">Qty</th>
+                <th className="text-left font-medium pb-2 pr-3">Units</th>
+                <th className="text-left font-medium pb-2 pr-3">Inoculation</th>
                 <th className="text-left font-medium pb-2 pr-3">Temp (°C)</th>
                 <th className="pb-2" />
               </tr>
@@ -1731,21 +2098,57 @@ export function BeerSections({
                 const isSaving = savingYeastId === by.id;
                 return (
                   <tr key={by.id} className="border-b last:border-0">
-                    <td className="py-2 pr-3 font-medium">{by.yeast.name}</td>
-                    <td className="py-2 pr-3 text-muted-foreground">{by.yeast.brand ?? "—"}</td>
+                    <td className="py-2 pr-3 font-medium">{by.name ?? by.yeast.name}</td>
+                    <td className="py-2 pr-3 text-muted-foreground">{(by.brand ?? by.yeast.brand) ?? "—"}</td>
                     <td className="py-2 pr-3 text-muted-foreground">
-                      {by.yeast.attenuation != null ? `${by.yeast.attenuation}%` : "—"}
+                      {isEditing ? (
+                        <Input
+                          type="number" step="0.1"
+                          value={editYeastDraft.attenuation}
+                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, attenuation: e.target.value }))}
+                          className="h-7 text-sm w-20"
+                          placeholder="%"
+                        />
+                      ) : (
+                        (by.attenuation ?? by.yeast.attenuation) != null
+                          ? `${by.attenuation ?? by.yeast.attenuation}%`
+                          : "—"
+                      )}
                     </td>
                     <td className="py-2 pr-3">
                       {isEditing ? (
                         <Input
-                          value={editYeastDraft.quantity}
-                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, quantity: e.target.value }))}
-                          className="h-7 text-sm w-32"
+                          type="number" step="0.1"
+                          value={editYeastDraft.quantityAmount}
+                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))}
+                          className="h-7 text-sm w-20"
+                          placeholder="0"
                         />
                       ) : (
-                        by.quantity
+                        by.quantityAmount != null ? String(by.quantityAmount) : "—"
                       )}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {isEditing ? (
+                        <Select value={editYeastDraft.quantityUnits} onValueChange={(v) => setEditYeastDraft((d) => ({ ...d, quantityUnits: v }))}>
+                          <SelectTrigger className="h-7 text-sm w-24"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="packet">packet</SelectItem>
+                            <SelectItem value="grams">grams</SelectItem>
+                            <SelectItem value="ml">ml</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        by.quantityUnits ?? "—"
+                      )}
+                    </td>
+                    <td className="py-2 pr-3 text-muted-foreground">
+                      {(() => {
+                        if (by.quantityAmount == null || !batchSize) return "—";
+                        const rate = by.quantityAmount / batchSize;
+                        const unitLabel = by.quantityUnits === "grams" ? "g/L" : by.quantityUnits === "ml" ? "mL/L" : "pkt/L";
+                        return `${rate.toFixed(2)} ${unitLabel}`;
+                      })()}
                     </td>
                     <td className="py-2 pr-3">
                       {isEditing ? (
@@ -1772,10 +2175,13 @@ export function BeerSections({
                               setSavingYeastId(by.id);
                               try {
                                 const newTemp = editYeastDraft.temp !== "" ? parseFloat(editYeastDraft.temp) : null;
-                                await updateYeastAction(by.id, { quantity: editYeastDraft.quantity, temp: newTemp });
+                                const newAttenuation = editYeastDraft.attenuation !== "" ? parseFloat(editYeastDraft.attenuation) : null;
+                                const newQtyAmount = editYeastDraft.quantityAmount !== "" ? parseFloat(editYeastDraft.quantityAmount) : null;
+                                const newQtyUnits = editYeastDraft.quantityUnits || null;
+                                await updateYeastAction(by.id, { quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation });
                                 setYeastRows((rows) =>
                                   rows.map((r) =>
-                                    r.id === by.id ? { ...r, quantity: editYeastDraft.quantity, temp: newTemp } : r
+                                    r.id === by.id ? { ...r, quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation } : r
                                   )
                                 );
                               } catch {
@@ -1804,7 +2210,8 @@ export function BeerSections({
                             variant="ghost"
                             className="h-6 w-6"
                             onClick={() => {
-                              setEditYeastDraft({ quantity: by.quantity, temp: by.temp != null ? String(by.temp) : "" });
+                              const effectiveAttenuation = by.attenuation ?? by.yeast.attenuation;
+                              setEditYeastDraft({ quantityAmount: by.quantityAmount != null ? String(by.quantityAmount) : "", quantityUnits: by.quantityUnits ?? "packet", temp: by.temp != null ? String(by.temp) : "", attenuation: effectiveAttenuation != null ? String(effectiveAttenuation) : "" });
                               setEditingYeastId(by.id);
                             }}
                           >
@@ -1836,6 +2243,52 @@ export function BeerSections({
         ) : (
           <p className="text-muted-foreground text-center py-4">No cultures added yet</p>
         )}
+        {isAddingYeast && (
+          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Yeast</span>
+              <Select value={addYeastDraft.yeastId} onValueChange={(v) => setAddYeastDraft((d) => ({ ...d, yeastId: v }))}>
+                <SelectTrigger className="h-8 text-sm w-52"><SelectValue placeholder="Select yeast" /></SelectTrigger>
+                <SelectContent>
+                  {allYeasts.map((y) => (
+                    <SelectItem key={y.id} value={y.id}>{y.name}{y.brand ? ` (${y.brand})` : ""}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Qty</span>
+              <Input type="number" step="0.1" placeholder="1" value={addYeastDraft.quantityAmount} onChange={(e) => setAddYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))} className="h-8 text-sm w-20" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Units</span>
+              <Select value={addYeastDraft.quantityUnits} onValueChange={(v) => setAddYeastDraft((d) => ({ ...d, quantityUnits: v }))}>
+                <SelectTrigger className="h-8 text-sm w-24"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="packet">packet</SelectItem>
+                  <SelectItem value="grams">grams</SelectItem>
+                  <SelectItem value="ml">ml</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Temp (°C)</span>
+              <Input type="number" step="0.1" placeholder="°C" value={addYeastDraft.temp} onChange={(e) => setAddYeastDraft((d) => ({ ...d, temp: e.target.value }))} className="h-8 text-sm w-20" />
+            </div>
+            <Button size="sm" disabled={!addYeastDraft.yeastId || !addYeastDraft.quantityAmount}
+              onClick={async () => {
+                try {
+                  const temp = addYeastDraft.temp !== "" ? parseFloat(addYeastDraft.temp) : null;
+                  const created = await addYeastAction({ yeastId: addYeastDraft.yeastId, quantityAmount: parseFloat(addYeastDraft.quantityAmount), quantityUnits: addYeastDraft.quantityUnits, temp });
+                  setYeastRows((rows) => [...rows, created]);
+                  setAddYeastDraft({ yeastId: "", quantityAmount: "", quantityUnits: "packet", temp: "" });
+                  setIsAddingYeast(false);
+                } catch { toast.error("Failed to add yeast"); }
+              }}
+            >Add</Button>
+            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingYeast(false)}><X className="h-4 w-4" /></Button>
+          </div>
+        )}
       </CollapsibleCard>
 
       {/* 4. Volumes */}
@@ -1844,7 +2297,7 @@ export function BeerSections({
         open={open.waterVolumes}
         onToggle={() => toggle("waterVolumes")}
       >
-        {!selectedEquipment && (
+        {!eqSnap && (
           <p className="text-sm text-muted-foreground italic mb-3">
             Select equipment in Basic Information to use actual losses. Showing defaults.
           </p>
@@ -2382,6 +2835,29 @@ export function BeerSections({
           );
         })()}
       </CollapsibleCard>
+
+      <BrewdaySection
+        brewday={brewday}
+        updateBrewday={updateBrewday}
+        openPreparacion={open.bdPreparacion}
+        onTogglePreparacion={() => toggle("bdPreparacion")}
+        openMolienda={open.bdMolienda}
+        onToggleMolienda={() => toggle("bdMolienda")}
+        openMacerado={open.bdMacerado}
+        onToggleMacerado={() => toggle("bdMacerado")}
+        openLavado={open.bdLavado}
+        onToggleLavado={() => toggle("bdLavado")}
+        openPreboil={open.bdPreboil}
+        onTogglePreboil={() => toggle("bdPreboil")}
+        openHervido={open.bdHervido}
+        onToggleHervido={() => toggle("bdHervido")}
+        openWhirlpool={open.bdWhirlpool}
+        onToggleWhirlpool={() => toggle("bdWhirlpool")}
+        openFermentacion={open.bdFermentacion}
+        onToggleFermentacion={() => toggle("bdFermentacion")}
+        openEmbarrilado={open.bdEmbarrilado}
+        onToggleEmbarrilado={() => toggle("bdEmbarrilado")}
+      />
     </div>
   );
 }

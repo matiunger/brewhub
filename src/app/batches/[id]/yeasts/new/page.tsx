@@ -20,12 +20,22 @@ interface AddYeastPageProps {
 async function addYeast(batchId: string, formData: FormData) {
   "use server";
 
+  const yeastId = formData.get("yeastId") as string;
+  const yeast = await prisma.yeast.findUnique({ where: { id: yeastId } });
+  if (!yeast) throw new Error("Yeast not found");
+
   await prisma.batchYeast.create({
     data: {
       batchId,
-      yeastId: formData.get("yeastId") as string,
-      quantity: formData.get("quantity") as string,
+      yeastId,
+      quantity: "",
+      quantityAmount: formData.get("quantityAmount") ? parseFloat(formData.get("quantityAmount") as string) : null,
+      quantityUnits: formData.get("quantityUnits") as string || "packet",
       temp: formData.get("temp") ? parseFloat(formData.get("temp") as string) : null,
+      // Snapshot inventory values at time of adding
+      name: yeast.name,
+      brand: yeast.brand,
+      attenuation: yeast.attenuation,
     },
   });
 
@@ -55,7 +65,7 @@ export default async function AddYeastPage({ params }: AddYeastPageProps) {
           ← Back to Batch
         </Link>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Add Yeast to {batch.name}</CardTitle>
@@ -78,22 +88,30 @@ export default async function AddYeastPage({ params }: AddYeastPageProps) {
                 </SelectContent>
               </Select>
             </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="quantity">Quantity *</Label>
-              <Input 
-                id="quantity" 
-                name="quantity" 
-                placeholder="e.g., 1 packet, 200 billion cells, 11g"
-                required 
-              />
+
+            <div className="flex gap-3">
+              <div className="space-y-2 flex-1">
+                <Label htmlFor="quantityAmount">Quantity *</Label>
+                <Input id="quantityAmount" name="quantityAmount" type="number" step="0.1" placeholder="1" required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="quantityUnits">Units *</Label>
+                <Select name="quantityUnits" defaultValue="packet" required>
+                  <SelectTrigger className="w-28"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="packet">packet</SelectItem>
+                    <SelectItem value="grams">grams</SelectItem>
+                    <SelectItem value="ml">ml</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="temp">Fermentation Temperature (°C)</Label>
               <Input id="temp" name="temp" type="number" step="0.1" />
             </div>
-            
+
             <div className="flex gap-2">
               <Button type="submit">Add Yeast</Button>
               <Link href={`/batches/${id}`}>

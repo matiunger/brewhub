@@ -19,8 +19,10 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  await prisma.hop.delete({
-    where: { id },
-  });
-  return NextResponse.json({ success: true });
+  try {
+    await prisma.hop.delete({ where: { id } });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Failed to delete hop" }, { status: 500 });
+  }
 }

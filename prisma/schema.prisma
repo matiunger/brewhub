@@ -164,6 +164,23 @@ model Batch {
   targetHco3Ppm     Float?  @map("target_hco3_ppm")
   targetWaterPh     Float?  @map("target_water_ph")
    
+  brewdayData           String?               @map("brewday_data")
+
+  // Equipment snapshot — copied from inventory when equipment is selected, editable per-batch
+  equipmentName              String?  @map("equipment_name")
+  equipmentBrewhouseEff      Float?   @map("equipment_brewhouse_eff")
+  equipmentMashEff           Float?   @map("equipment_mash_eff")
+  equipmentMashTunVolumeL    Float?   @map("equipment_mash_tun_volume_l")
+  equipmentMashTunDeadSpaceL Float?   @map("equipment_mash_tun_dead_space_l")
+  equipmentBoilPotVolumeL    Float?   @map("equipment_boil_pot_volume_l")
+  equipmentBoilEvapRateLH    Float?   @map("equipment_boil_evap_rate_l_h")
+  equipmentHeatEvapRateLH    Float?   @map("equipment_heat_evap_rate_l_h")
+  equipmentGrainAbsLKg       Float?   @map("equipment_grain_abs_l_kg")
+  equipmentFermenterLossL    Float?   @map("equipment_fermenter_loss_l")
+  equipmentTrubLossL         Float?   @map("equipment_trub_loss_l")
+  equipmentSystemLossPct     Float?   @map("equipment_system_loss_pct")
+  equipmentTempContractionPct Float?  @map("equipment_temp_contraction_pct")
+
   grains                BatchGrain[]
   hops                  BatchHop[]
   yeasts                BatchYeast[]
@@ -173,37 +190,52 @@ model Batch {
 }
 
 model BatchGrain {
-  id        String   @id @default(uuid())
-  batch     Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  batchId   String   @map("batch_id")
-  grain     Grain    @relation(fields: [grainId], references: [id])
-  grainId   String   @map("grain_id")
-  grams     Float
+  id         String   @id @default(uuid())
+  batch      Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId    String   @map("batch_id")
+  grain      Grain    @relation(fields: [grainId], references: [id])
+  grainId    String   @map("grain_id")
+  grams      Float
+  // Snapshot fields — copied from inventory at add time, editable per batch
+  name       String?
+  brand      String?
+  colorL     Float?   @map("color_l")
+  maxYield   Float?   @map("max_yield")
+  grainGroup String?  @map("grain_group")
 
   @@map("batch_grains")
 }
 
 model BatchHop {
-  id            String   @id @default(uuid())
-  batch         Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  batchId       String   @map("batch_id")
-  hop           Hop      @relation(fields: [hopId], references: [id])
-  hopId         String   @map("hop_id")
-  grams         Float
-  additionTime  Float    @map("addition_time") // minutes
-  use           String   // fwh, boil, whirlpool, hop_stand, dry_hop
+  id           String   @id @default(uuid())
+  batch        Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId      String   @map("batch_id")
+  hop          Hop      @relation(fields: [hopId], references: [id])
+  hopId        String   @map("hop_id")
+  grams        Float
+  additionTime Float    @map("addition_time") // minutes
+  use          String   // fwh, boil, whirlpool, hop_stand, dry_hop
+  // Snapshot fields
+  name         String?
+  alphaAcid    Float?   @map("alpha_acid")
 
   @@map("batch_hops")
 }
 
 model BatchYeast {
-  id        String   @id @default(uuid())
-  batch     Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  batchId   String   @map("batch_id")
-  yeast     Yeast    @relation(fields: [yeastId], references: [id])
-  yeastId   String   @map("yeast_id")
-  quantity  String
-  temp      Float?
+  id             String   @id @default(uuid())
+  batch          Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId        String   @map("batch_id")
+  yeast          Yeast    @relation(fields: [yeastId], references: [id])
+  yeastId        String   @map("yeast_id")
+  quantity       String?
+  quantityAmount Float?   @map("quantity_amount")
+  quantityUnits  String?  @map("quantity_units")
+  temp           Float?
+  // Snapshot fields
+  name           String?
+  brand          String?
+  attenuation    Float?
 
   @@map("batch_yeasts")
 }

@@ -129,17 +129,27 @@ interface BatchForExport {
   equipment: { brewhouseEfficiency: number } | null;
   grains: {
     grams: number;
+    name: string | null;
+    brand: string | null;
+    colorL: number | null;
+    maxYield: number | null;
     grain: { name: string; brand: string | null; colorL: number | null; maxYield: number | null };
   }[];
   hops: {
     grams: number;
     additionTime: number;
     use: string;
+    name: string | null;
+    alphaAcid: number | null;
     hop: { name: string; alphaAcid: number };
   }[];
   yeasts: {
-    quantity: string;
+    quantityAmount: number | null;
+    quantityUnits: string | null;
     temp: number | null;
+    name: string | null;
+    brand: string | null;
+    attenuation: number | null;
     yeast: { name: string; brand: string | null; type: string | null; attenuation: number | null };
   }[];
   targetWaterProfile: {
@@ -188,14 +198,18 @@ export function batchToBeerjson(batch: BatchForExport): BeerJson {
 
   if (batch.grains.length > 0) {
     recipe.fermentable_additions = batch.grains.map((bg) => {
+      const name = bg.name ?? bg.grain.name;
+      const brand = bg.brand ?? bg.grain.brand;
+      const colorL = bg.colorL ?? bg.grain.colorL;
+      const maxYield = bg.maxYield ?? bg.grain.maxYield;
       const f: BeerJsonFermentable = {
-        name: bg.grain.name,
+        name,
         amount: { value: bg.grams, unit: "g" },
       };
-      if (bg.grain.brand) f.producer = bg.grain.brand;
-      if (bg.grain.colorL != null) f.color = { value: bg.grain.colorL, unit: "lovibond" };
-      if (bg.grain.maxYield != null) {
-        f.yield = { fine_grind: { value: bg.grain.maxYield, unit: "%" } };
+      if (brand) f.producer = brand;
+      if (colorL != null) f.color = { value: colorL, unit: "lovibond" };
+      if (maxYield != null) {
+        f.yield = { fine_grind: { value: maxYield, unit: "%" } };
       }
       return f;
     });
@@ -203,9 +217,9 @@ export function batchToBeerjson(batch: BatchForExport): BeerJson {
 
   if (batch.hops.length > 0) {
     recipe.hop_additions = batch.hops.map((bh) => ({
-      name: bh.hop.name,
+      name: bh.name ?? bh.hop.name,
       amount: { value: bh.grams, unit: "g" },
-      alpha_acid: { value: bh.hop.alphaAcid, unit: "%" },
+      alpha_acid: { value: bh.alphaAcid ?? bh.hop.alphaAcid, unit: "%" },
       timing: {
         use: hopUseToBeerjson(bh.use),
         time: { value: bh.additionTime, unit: "min" },
@@ -216,20 +230,21 @@ export function batchToBeerjson(batch: BatchForExport): BeerJson {
   if (batch.yeasts.length > 0) {
     recipe.culture_additions = batch.yeasts.map((by) => {
       const c: BeerJsonCultureAddition = {
-        name: by.yeast.name,
+        name: by.name ?? by.yeast.name,
         form: by.yeast.type ?? "dry",
       };
-      if (by.yeast.brand) c.producer = by.yeast.brand;
-      if (by.yeast.attenuation != null) {
-        c.attenuation = { value: by.yeast.attenuation, unit: "%" };
+      const brand = by.brand ?? by.yeast.brand;
+      const attenuation = by.attenuation ?? by.yeast.attenuation;
+      if (brand) c.producer = brand;
+      if (attenuation != null) {
+        c.attenuation = { value: attenuation, unit: "%" };
       }
       if (by.temp != null) {
         c.temperature = { value: by.temp, unit: "c" };
       }
-      // Store the quantity string as amount weight if it looks numeric
-      const qty = parseFloat(by.quantity);
-      if (!isNaN(qty)) {
-        c.amount_as_weight = { value: qty, unit: "g" };
+      if (by.quantityAmount != null) {
+        const unit = by.quantityUnits === "ml" ? "ml" : "g";
+        c.amount_as_weight = { value: by.quantityAmount, unit };
       }
       return c;
     });
@@ -307,7 +322,8 @@ export interface ImportedBatchData {
     brand: string | null;
     type: string | null;
     attenuation: number | null;
-    quantity: string;
+    quantityAmount: number | null;
+    quantityUnits: string | null;
     temp: number | null;
   }[];
   waterProfile: {
@@ -370,17 +386,25 @@ export function beerjsonToBatchData(recipe: BeerJsonRecipe): ImportedBatchData {
 
   const yeasts = (recipe.culture_additions ?? []).map((c) => {
     const qtyRaw = c.amount_as_weight ?? c.amount;
-    let quantity = "1 pkg";
+    let quantityAmount: number | null = null;
+    let quantityUnits: string | null = "packet";
     if (qtyRaw) {
-      const g = massToGrams(qtyRaw.value, (qtyRaw as MassWithUnit).unit);
-      quantity = `${Math.round(g)} g`;
+      const unit = (qtyRaw as MassWithUnit).unit;
+      if (unit === "ml") {
+        quantityAmount = qtyRaw.value;
+        quantityUnits = "ml";
+      } else {
+        quantityAmount = Math.round(massToGrams(qtyRaw.value, unit));
+        quantityUnits = "grams";
+      }
     }
     return {
       name: c.name,
       brand: c.producer ?? null,
       type: c.form ?? null,
       attenuation: c.attenuation?.value ?? null,
-      quantity,
+      quantityAmount,
+      quantityUnits,
       temp: c.temperature?.value ?? null,
     };
   });

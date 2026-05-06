@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   const batch = await prisma.$transaction(async (tx) => {
     // Find-or-create grains (case-insensitive via JS filter)
-    const grainIds: { grainId: string; grams: number }[] = [];
+    const grainIds: { grainId: string; grams: number; name: string; brand: string | null; colorL: number | null; maxYield: number | null; grainGroup: string | null }[] = [];
     for (const g of data.grains) {
       const allGrains = await tx.grain.findMany();
       const existing = allGrains.find(
@@ -32,11 +32,11 @@ export async function POST(req: NextRequest) {
       const grain = existing ?? (await tx.grain.create({
         data: { name: g.name, brand: g.brand, colorL: g.colorL, maxYield: g.maxYield },
       }));
-      grainIds.push({ grainId: grain.id, grams: g.grams });
+      grainIds.push({ grainId: grain.id, grams: g.grams, name: grain.name, brand: grain.brand, colorL: grain.colorL, maxYield: grain.maxYield, grainGroup: grain.grainGroup });
     }
 
     // Find-or-create hops
-    const hopIds: { hopId: string; grams: number; additionTime: number; use: string }[] = [];
+    const hopIds: { hopId: string; grams: number; additionTime: number; use: string; name: string; alphaAcid: number }[] = [];
     for (const h of data.hops) {
       const allHops = await tx.hop.findMany();
       const existing = allHops.find(
@@ -45,11 +45,11 @@ export async function POST(req: NextRequest) {
       const hop = existing ?? (await tx.hop.create({
         data: { name: h.name, alphaAcid: h.alphaAcid },
       }));
-      hopIds.push({ hopId: hop.id, grams: h.grams, additionTime: h.additionTime, use: h.use });
+      hopIds.push({ hopId: hop.id, grams: h.grams, additionTime: h.additionTime, use: h.use, name: hop.name, alphaAcid: hop.alphaAcid });
     }
 
     // Find-or-create yeasts
-    const yeastIds: { yeastId: string; quantity: string; temp: number | null }[] = [];
+    const yeastIds: { yeastId: string; quantity: string; quantityAmount: number | null; quantityUnits: string | null; temp: number | null; name: string; brand: string | null; attenuation: number | null }[] = [];
     for (const y of data.yeasts) {
       const allYeasts = await tx.yeast.findMany();
       const existing = allYeasts.find(
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       const yeast = existing ?? (await tx.yeast.create({
         data: { name: y.name, brand: y.brand, type: y.type, attenuation: y.attenuation },
       }));
-      yeastIds.push({ yeastId: yeast.id, quantity: y.quantity, temp: y.temp });
+      yeastIds.push({ yeastId: yeast.id, quantity: "", quantityAmount: y.quantityAmount, quantityUnits: y.quantityUnits, temp: y.temp, name: yeast.name, brand: yeast.brand, attenuation: yeast.attenuation });
     }
 
     // Find-or-create water profile

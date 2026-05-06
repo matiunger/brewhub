@@ -20,13 +20,20 @@ interface AddHopPageProps {
 async function addHop(batchId: string, formData: FormData) {
   "use server";
 
+  const hopId = formData.get("hopId") as string;
+  const hop = await prisma.hop.findUnique({ where: { id: hopId } });
+  if (!hop) throw new Error("Hop not found");
+
   await prisma.batchHop.create({
     data: {
       batchId,
-      hopId: formData.get("hopId") as string,
+      hopId,
       grams: parseFloat(formData.get("grams") as string),
       additionTime: parseFloat(formData.get("additionTime") as string),
       use: formData.get("use") as string,
+      // Snapshot inventory values at time of adding
+      name: hop.name,
+      alphaAcid: hop.alphaAcid,
     },
   });
 

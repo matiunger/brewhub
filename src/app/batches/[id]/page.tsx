@@ -17,6 +17,31 @@ async function updateBatch(id: string, formData: FormData) {
   const brewDateValue = formData.get("brewDate") as string;
   const equipmentId = formData.get("equipmentId") as string || null;
 
+  // When a new equipment is selected, snapshot its values into the batch
+  const equipmentSnapshot: Record<string, unknown> = {};
+  if (equipmentId) {
+    // Only snapshot if the equipment changed
+    const current = await prisma.batch.findUnique({ where: { id }, select: { equipmentId: true } });
+    if (current?.equipmentId !== equipmentId) {
+      const eq = await prisma.equipment.findUnique({ where: { id: equipmentId } });
+      if (eq) {
+        equipmentSnapshot.equipmentName = eq.name;
+        equipmentSnapshot.equipmentBrewhouseEff = eq.brewhouseEfficiency;
+        equipmentSnapshot.equipmentMashEff = eq.mashEfficiency;
+        equipmentSnapshot.equipmentMashTunVolumeL = eq.mashTunVolumeL;
+        equipmentSnapshot.equipmentMashTunDeadSpaceL = eq.mashTunDeadSpaceL;
+        equipmentSnapshot.equipmentBoilPotVolumeL = eq.boilPotVolumeL;
+        equipmentSnapshot.equipmentBoilEvapRateLH = eq.boilEvaporationRateLH;
+        equipmentSnapshot.equipmentHeatEvapRateLH = eq.heatingEvaporationRateLH;
+        equipmentSnapshot.equipmentGrainAbsLKg = eq.grainAbsorptionLKg;
+        equipmentSnapshot.equipmentFermenterLossL = eq.fermenterLossL;
+        equipmentSnapshot.equipmentTrubLossL = eq.trubLossL;
+        equipmentSnapshot.equipmentSystemLossPct = eq.systemLossPercent;
+        equipmentSnapshot.equipmentTempContractionPct = eq.tempContractionPercent;
+      }
+    }
+  }
+
   await prisma.batch.update({
     where: { id },
     data: {
@@ -25,8 +50,31 @@ async function updateBatch(id: string, formData: FormData) {
       style: formData.get("style") as string || null,
       draft: formData.get("draft") === "on",
       equipmentId,
+      ...equipmentSnapshot,
     },
   });
+}
+
+async function updateBatchEquipmentSnapshot(
+  id: string,
+  data: {
+    equipmentName: string | null;
+    equipmentBrewhouseEff: number | null;
+    equipmentMashEff: number | null;
+    equipmentMashTunVolumeL: number | null;
+    equipmentMashTunDeadSpaceL: number | null;
+    equipmentBoilPotVolumeL: number | null;
+    equipmentBoilEvapRateLH: number | null;
+    equipmentHeatEvapRateLH: number | null;
+    equipmentGrainAbsLKg: number | null;
+    equipmentFermenterLossL: number | null;
+    equipmentTrubLossL: number | null;
+    equipmentSystemLossPct: number | null;
+    equipmentTempContractionPct: number | null;
+  }
+) {
+  "use server";
+  await prisma.batch.update({ where: { id }, data });
 }
 
 async function updateNotes(id: string, notes: string) {
@@ -64,7 +112,7 @@ async function updateMashParams(
   await prisma.batch.update({ where: { id }, data });
 }
 
-async function updateBatchGrain(batchGrainId: string, data: { grams: number }) {
+async function updateBatchGrain(batchGrainId: string, data: { grams: number; colorL: number | null; maxYield: number | null; brand: string | null }) {
   "use server";
   await prisma.batchGrain.update({ where: { id: batchGrainId }, data });
 }
@@ -74,9 +122,17 @@ async function deleteBatchGrain(batchGrainId: string) {
   await prisma.batchGrain.delete({ where: { id: batchGrainId } });
 }
 
-async function updateBatchHop(batchHopId: string, data: { grams: number; use: string; additionTime: number | null }) {
+async function updateBatchHop(batchHopId: string, data: { grams: number; use: string; additionTime: number | null; alphaAcid: number }) {
   "use server";
-  await prisma.batchHop.update({ where: { id: batchHopId }, data });
+  await prisma.batchHop.update({
+    where: { id: batchHopId },
+    data: {
+      grams: data.grams,
+      use: data.use,
+      alphaAcid: data.alphaAcid,
+      ...(data.additionTime != null ? { additionTime: data.additionTime } : {}),
+    },
+  });
 }
 
 async function deleteBatchHop(batchHopId: string) {
@@ -86,7 +142,7 @@ async function deleteBatchHop(batchHopId: string) {
 
 async function updateBatchYeast(
   batchYeastId: string,
-  data: { quantity: string; temp: number | null }
+  data: { quantityAmount: number | null; quantityUnits: string | null; temp: number | null; attenuation: number | null }
 ) {
   "use server";
   await prisma.batchYeast.update({ where: { id: batchYeastId }, data });
@@ -275,21 +331,86 @@ async function deleteMashStep(id: string) {
   await prisma.mashStep.delete({ where: { id } });
 }
 
+async function updateBrewdayData(id: string, data: string) {
+  "use server";
+  await prisma.batch.update({ where: { id }, data: { brewdayData: data } });
+}
+
 async function deleteBatch(id: string) {
   "use server";
-  
+
   await prisma.batch.delete({
     where: { id },
   });
-  
+
   redirect("/");
+}
+
+async function addBatchGrain(batchId: string, data: { grainId: string; grams: number }) {
+  "use server";
+  const grain = await prisma.grain.findUnique({ where: { id: data.grainId } });
+  if (!grain) throw new Error("Grain not found");
+  return prisma.batchGrain.create({
+    data: {
+      batchId,
+      grainId: data.grainId,
+      grams: data.grams,
+      name: grain.name,
+      brand: grain.brand,
+      colorL: grain.colorL,
+      maxYield: grain.maxYield,
+      grainGroup: grain.grainGroup,
+    },
+    include: { grain: true },
+  });
+}
+
+async function addBatchHop(batchId: string, data: { hopId: string; grams: number; use: string; additionTime: number }) {
+  "use server";
+  const hop = await prisma.hop.findUnique({ where: { id: data.hopId } });
+  if (!hop) throw new Error("Hop not found");
+  return prisma.batchHop.create({
+    data: {
+      batchId,
+      hopId: data.hopId,
+      grams: data.grams,
+      use: data.use,
+      additionTime: data.additionTime,
+      name: hop.name,
+      alphaAcid: hop.alphaAcid,
+    },
+    include: { hop: true },
+  });
+}
+
+async function addBatchYeast(batchId: string, data: { yeastId: string; quantityAmount: number; quantityUnits: string; temp: number | null }) {
+  "use server";
+  const yeast = await prisma.yeast.findUnique({ where: { id: data.yeastId } });
+  if (!yeast) throw new Error("Yeast not found");
+  return prisma.batchYeast.create({
+    data: {
+      batchId,
+      yeastId: data.yeastId,
+      quantity: "",
+      quantityAmount: data.quantityAmount,
+      quantityUnits: data.quantityUnits,
+      temp: data.temp,
+      name: yeast.name,
+      brand: yeast.brand,
+      attenuation: yeast.attenuation,
+    },
+    include: { yeast: true },
+  });
 }
 
 export default async function BatchPage({ params }: BatchPageProps) {
   const { id } = await params;
-  
+
   const allEquipment = await prisma.equipment.findMany({ orderBy: { name: "asc" } });
   const allWaterProfiles = await prisma.waterProfile.findMany({ orderBy: { name: "asc" } });
+  const allGrains = await prisma.grain.findMany({ orderBy: { name: "asc" } });
+  const allHops = await prisma.hop.findMany({ orderBy: { name: "asc" } });
+  const allYeasts = await prisma.yeast.findMany({ orderBy: { name: "asc" } });
 
   const batch = await prisma.batch.findUnique({
     where: { id },
@@ -328,12 +449,33 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const deleteHopWithId = deleteBatchHop;
   const updateYeastWithId = updateBatchYeast;
   const deleteYeastWithId = deleteBatchYeast;
+  const addGrainWithId = addBatchGrain.bind(null, id);
+  const addHopWithId = addBatchHop.bind(null, id);
+  const addYeastWithId = addBatchYeast.bind(null, id);
   const updateBatchWaterWithId = updateBatchWaterProfiles.bind(null, id);
   const updateBatchWaterSnapshotWithId = updateBatchWaterSnapshot.bind(null, id);
   const updateSaltAdditionsWithId = updateSaltAdditions.bind(null, id);
   const updateBoilTimesWithId = updateBoilTimes.bind(null, id);
   const updateMashParamsWithId = updateMashParams.bind(null, id);
   const createMashStepWithId = createMashStep.bind(null, id);
+  const updateBrewdayDataWithId = updateBrewdayData.bind(null, id);
+  const updateEquipmentSnapshotWithId = updateBatchEquipmentSnapshot.bind(null, id);
+
+  const equipmentSnapshot = batch.equipmentFermenterLossL != null ? {
+    name: batch.equipmentName,
+    brewhouseEff: batch.equipmentBrewhouseEff,
+    mashEff: batch.equipmentMashEff,
+    mashTunVolumeL: batch.equipmentMashTunVolumeL,
+    mashTunDeadSpaceL: batch.equipmentMashTunDeadSpaceL,
+    boilPotVolumeL: batch.equipmentBoilPotVolumeL,
+    boilEvapRateLH: batch.equipmentBoilEvapRateLH,
+    heatEvapRateLH: batch.equipmentHeatEvapRateLH,
+    grainAbsLKg: batch.equipmentGrainAbsLKg,
+    fermenterLossL: batch.equipmentFermenterLossL,
+    trubLossL: batch.equipmentTrubLossL,
+    systemLossPct: batch.equipmentSystemLossPct,
+    tempContractionPct: batch.equipmentTempContractionPct,
+  } : null;
 
   return (
     <div className="space-y-6">
@@ -364,13 +506,19 @@ export default async function BatchPage({ params }: BatchPageProps) {
           grains={batch.grains}
           hops={batch.hops}
           yeasts={batch.yeasts}
+          allGrains={allGrains}
+          allHops={allHops}
+          allYeasts={allYeasts}
           updateAction={updateWithId}
           updateNotesAction={updateNotesWithId}
           updateTargetStatsAction={updateTargetStatsWithId}
+          addGrainAction={addGrainWithId}
           updateGrainAction={updateGrainWithId}
           deleteGrainAction={deleteGrainWithId}
+          addHopAction={addHopWithId}
           updateHopAction={updateHopWithId}
           deleteHopAction={deleteHopWithId}
+          addYeastAction={addYeastWithId}
           updateYeastAction={updateYeastWithId}
           deleteYeastAction={deleteYeastWithId}
           waterProfiles={allWaterProfiles}
@@ -405,6 +553,10 @@ export default async function BatchPage({ params }: BatchPageProps) {
           createMashStepAction={createMashStepWithId}
           updateMashStepAction={updateMashStep}
           deleteMashStepAction={deleteMashStep}
+          brewdayData={batch.brewdayData}
+          updateBrewdayDataAction={updateBrewdayDataWithId}
+          equipmentSnapshot={equipmentSnapshot}
+          updateEquipmentSnapshotAction={updateEquipmentSnapshotWithId}
           saltAdditions={{
             saltChalkGL: batch.saltChalkGL,
             saltBakingSodaGL: batch.saltBakingSodaGL,
