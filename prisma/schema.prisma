@@ -179,7 +179,9 @@ model Batch {
   equipmentFermenterLossL    Float?   @map("equipment_fermenter_loss_l")
   equipmentTrubLossL         Float?   @map("equipment_trub_loss_l")
   equipmentSystemLossPct     Float?   @map("equipment_system_loss_pct")
-  equipmentTempContractionPct Float?  @map("equipment_temp_contraction_pct")
+  equipmentTempContractionPct         Float?  @map("equipment_temp_contraction_pct")
+  equipmentBoilPotDiameter            Float?  @map("equipment_boil_pot_diameter")
+  equipmentSpargeWaterPotDiameter     Float?  @map("equipment_sparge_water_pot_diameter")
 
   grains                BatchGrain[]
   hops                  BatchHop[]

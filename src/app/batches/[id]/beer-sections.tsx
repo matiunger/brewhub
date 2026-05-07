@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ClipboardList, Wrench, BarChart2, Flame, Layers, Wheat, Hop as HopIcon, FlaskConical, GlassWater, Droplet } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import stylesData from "../../../../styles.json";
 import { srmToHex, srmIsLight } from "@/lib/olfarve";
 import { calculateAcidAddition, calculateSpargeAcidDose, type AcidType } from "@/lib/calculations";
 import { parseBrewdayData, type BrewdayData } from "@/lib/brewday-types";
-import { BrewdaySection } from "./brewday-section";
+import { BrewdaySection, type RecipeData } from "./brewday-section";
 
 // ---------- Style range bar ----------
 
@@ -219,6 +219,8 @@ interface EquipmentSnapshot {
   trubLossL: number | null;
   systemLossPct: number | null;
   tempContractionPct: number | null;
+  boilPotDiameter: number | null;
+  spargeWaterPotDiameter: number | null;
 }
 
 interface WaterProfile {
@@ -337,6 +339,8 @@ interface BeerSectionsProps {
     equipmentTrubLossL: number | null;
     equipmentSystemLossPct: number | null;
     equipmentTempContractionPct: number | null;
+    equipmentBoilPotDiameter: number | null;
+    equipmentSpargeWaterPotDiameter: number | null;
   }) => Promise<void>;
 }
 
@@ -368,16 +372,20 @@ const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
 
 export function CollapsibleCard({
   title,
+  icon,
   open,
   onToggle,
   actions,
+  badge,
   className,
   children,
 }: {
   title: React.ReactNode;
+  icon?: React.ReactNode;
   open: boolean;
   onToggle: () => void;
   actions?: React.ReactNode;
+  badge?: React.ReactNode;
   className?: string;
   children: React.ReactNode;
 }) {
@@ -394,9 +402,13 @@ export function CollapsibleCard({
           ) : (
             <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
           )}
+          {icon && <span className="text-muted-foreground">{icon}</span>}
           <CardTitle>{title}</CardTitle>
         </button>
-        {open && actions && <div className="ml-2">{actions}</div>}
+        <div className="flex items-center gap-2 ml-2">
+          {badge}
+          {open && actions}
+        </div>
       </CardHeader>
       {open && <CardContent>{children}</CardContent>}
     </Card>
@@ -715,7 +727,9 @@ export function BeerSections({
       mashEff:            eqSnap.mashEff             != null ? String(eqSnap.mashEff)         : "",
       mashTunVolumeL:     eqSnap.mashTunVolumeL      != null ? String(eqSnap.mashTunVolumeL)  : "",
       mashTunDeadSpaceL:  eqSnap.mashTunDeadSpaceL   != null ? String(eqSnap.mashTunDeadSpaceL) : "",
-      boilPotVolumeL:     eqSnap.boilPotVolumeL      != null ? String(eqSnap.boilPotVolumeL)  : "",
+      boilPotVolumeL:       eqSnap.boilPotVolumeL        != null ? String(eqSnap.boilPotVolumeL)        : "",
+      boilPotDiameter:      eqSnap.boilPotDiameter       != null ? String(eqSnap.boilPotDiameter)       : "",
+      spargeWaterPotDiameter: eqSnap.spargeWaterPotDiameter != null ? String(eqSnap.spargeWaterPotDiameter) : "",
       boilEvapRateLH:     eqSnap.boilEvapRateLH      != null ? String(eqSnap.boilEvapRateLH)  : "",
       heatEvapRateLH:     eqSnap.heatEvapRateLH      != null ? String(eqSnap.heatEvapRateLH)  : "",
       grainAbsLKg:        eqSnap.grainAbsLKg         != null ? String(eqSnap.grainAbsLKg)     : "",
@@ -744,7 +758,9 @@ export function BeerSections({
         fermenterLossL:     n("fermenterLossL"),
         trubLossL:          n("trubLossL"),
         systemLossPct:      n("systemLossPct"),
-        tempContractionPct: n("tempContractionPct"),
+        tempContractionPct:     n("tempContractionPct"),
+        boilPotDiameter:        n("boilPotDiameter"),
+        spargeWaterPotDiameter: n("spargeWaterPotDiameter"),
       };
       await updateEquipmentSnapshotAction({
         equipmentName:              updated.name,
@@ -759,7 +775,9 @@ export function BeerSections({
         equipmentFermenterLossL:    updated.fermenterLossL,
         equipmentTrubLossL:         updated.trubLossL,
         equipmentSystemLossPct:     updated.systemLossPct,
-        equipmentTempContractionPct: updated.tempContractionPct,
+        equipmentTempContractionPct:     updated.tempContractionPct,
+        equipmentBoilPotDiameter:        updated.boilPotDiameter,
+        equipmentSpargeWaterPotDiameter: updated.spargeWaterPotDiameter,
       });
       setEqSnap(updated);
       setEditingEq(false);
@@ -976,6 +994,7 @@ export function BeerSections({
       {/* 1. Basic Information */}
       <CollapsibleCard
         title="Basic Information"
+        icon={<ClipboardList className="h-4 w-4" />}
         open={open.basicInfo}
         onToggle={() => toggle("basicInfo")}
       >
@@ -985,6 +1004,7 @@ export function BeerSections({
       {/* 1b. Equipment */}
       <CollapsibleCard
         title={eqSnap ? `Equipment — ${eqSnap.name ?? "Custom"}` : "Equipment"}
+        icon={<Wrench className="h-4 w-4" />}
         open={open.equipment}
         onToggle={() => toggle("equipment")}
       >
@@ -1008,7 +1028,9 @@ export function BeerSections({
                 { key: "grainAbsLKg",        label: "Grain Absorption",         type: "number", unit: "L/kg" },
                 { key: "mashTunDeadSpaceL",  label: "Mash Tun Dead Space",      type: "number", unit: "L" },
                 { key: "mashTunVolumeL",     label: "Mash Tun Volume",          type: "number", unit: "L" },
-                { key: "boilPotVolumeL",     label: "Boil Pot Volume",          type: "number", unit: "L" },
+                { key: "boilPotVolumeL",          label: "Boil Pot Volume",          type: "number", unit: "L" },
+                { key: "boilPotDiameter",         label: "Boil Pot Diameter",        type: "number", unit: "cm" },
+                { key: "spargeWaterPotDiameter",  label: "Sparge Pot Diameter",      type: "number", unit: "cm" },
               ] as { key: string; label: string; type: string; unit: string }[]).map(({ key, label, type, unit }) => (
                 <div key={key} className="space-y-1">
                   <label className="text-xs text-muted-foreground">{label}{unit ? ` (${unit})` : ""}</label>
@@ -1042,7 +1064,9 @@ export function BeerSections({
                 { label: "Grain Absorption",      value: eqSnap.grainAbsLKg,        unit: "L/kg" },
                 { label: "Mash Tun Dead Space",   value: eqSnap.mashTunDeadSpaceL,  unit: "L" },
                 { label: "Mash Tun Volume",       value: eqSnap.mashTunVolumeL,     unit: "L" },
-                { label: "Boil Pot Volume",       value: eqSnap.boilPotVolumeL,     unit: "L" },
+                { label: "Boil Pot Volume",        value: eqSnap.boilPotVolumeL,          unit: "L" },
+                { label: "Boil Pot Diameter",      value: eqSnap.boilPotDiameter,         unit: "cm" },
+                { label: "Sparge Pot Diameter",    value: eqSnap.spargeWaterPotDiameter,  unit: "cm" },
               ] as { label: string; value: number | null | undefined; unit: string }[]).map(({ label, value, unit }) => (
                 <div key={label}>
                   <span className="text-xs text-muted-foreground block">{label}</span>
@@ -1062,6 +1086,7 @@ export function BeerSections({
       {/* 2. Recipe Overview */}
       <CollapsibleCard
         title="Recipe Overview"
+        icon={<BarChart2 className="h-4 w-4" />}
         open={open.recipeOverview}
         onToggle={() => toggle("recipeOverview")}
       >
@@ -1268,6 +1293,7 @@ export function BeerSections({
       {/* 3. Boil */}
       <CollapsibleCard
         title="Boil"
+        icon={<Flame className="h-4 w-4" />}
         open={open.boil}
         onToggle={() => toggle("boil")}
       >
@@ -1301,6 +1327,7 @@ export function BeerSections({
       {/* 5. Mash */}
       <CollapsibleCard
         title="Mash"
+        icon={<Layers className="h-4 w-4" />}
         open={open.mash}
         onToggle={() => toggle("mash")}
       >
@@ -1720,6 +1747,7 @@ export function BeerSections({
       {/* 6. Fermentables */}
       <CollapsibleCard
         title={`Fermentables (${grainRows.length})`}
+        icon={<Wheat className="h-4 w-4" />}
         open={open.fermentables}
         onToggle={() => toggle("fermentables")}
         className="bg-orange-50"
@@ -1900,6 +1928,7 @@ export function BeerSections({
       {/* 5. Hops */}
       <CollapsibleCard
         title={`Hops (${hopRows.length})`}
+        icon={<HopIcon className="h-4 w-4" />}
         open={open.hops}
         onToggle={() => toggle("hops")}
         className="bg-lime-50"
@@ -2071,6 +2100,7 @@ export function BeerSections({
       {/* 6. Cultures */}
       <CollapsibleCard
         title={`Cultures (${yeastRows.length})`}
+        icon={<FlaskConical className="h-4 w-4" />}
         open={open.cultures}
         onToggle={() => toggle("cultures")}
         className="bg-purple-50"
@@ -2294,6 +2324,7 @@ export function BeerSections({
       {/* 4. Volumes */}
       <CollapsibleCard
         title="Volumes"
+        icon={<GlassWater className="h-4 w-4" />}
         open={open.waterVolumes}
         onToggle={() => toggle("waterVolumes")}
       >
@@ -2401,6 +2432,7 @@ export function BeerSections({
       {/* 7. Water */}
       <CollapsibleCard
         title="Water"
+        icon={<Droplet className="h-4 w-4" />}
         open={open.water}
         onToggle={() => toggle("water")}
         className="bg-sky-50"
@@ -2836,28 +2868,73 @@ export function BeerSections({
         })()}
       </CollapsibleCard>
 
-      <BrewdaySection
-        brewday={brewday}
-        updateBrewday={updateBrewday}
-        openPreparacion={open.bdPreparacion}
-        onTogglePreparacion={() => toggle("bdPreparacion")}
-        openMolienda={open.bdMolienda}
-        onToggleMolienda={() => toggle("bdMolienda")}
-        openMacerado={open.bdMacerado}
-        onToggleMacerado={() => toggle("bdMacerado")}
-        openLavado={open.bdLavado}
-        onToggleLavado={() => toggle("bdLavado")}
-        openPreboil={open.bdPreboil}
-        onTogglePreboil={() => toggle("bdPreboil")}
-        openHervido={open.bdHervido}
-        onToggleHervido={() => toggle("bdHervido")}
-        openWhirlpool={open.bdWhirlpool}
-        onToggleWhirlpool={() => toggle("bdWhirlpool")}
-        openFermentacion={open.bdFermentacion}
-        onToggleFermentacion={() => toggle("bdFermentacion")}
-        openEmbarrilado={open.bdEmbarrilado}
-        onToggleEmbarrilado={() => toggle("bdEmbarrilado")}
-      />
+      {(() => {
+        const recipeData: RecipeData = {
+          mashMode,
+          mashWaterL: wv.mashWater,
+          spargeWaterL: wv.spargeWater,
+          saltMash: {
+            cacl2:      salts.saltCaCl2GL      * wv.mashWater,
+            gypsum:     salts.saltGypsumGL     * wv.mashWater,
+            epsom:      salts.saltEpsomGL      * wv.mashWater,
+            nacl:       salts.saltNaClGL       * wv.mashWater,
+            chalk:      salts.saltChalkGL      * wv.mashWater,
+            bakingSoda: salts.saltBakingSodaGL * wv.mashWater,
+          },
+          saltSparge: {
+            cacl2:      salts.saltCaCl2GL      * wv.spargeWater,
+            gypsum:     salts.saltGypsumGL     * wv.spargeWater,
+            epsom:      salts.saltEpsomGL      * wv.spargeWater,
+            nacl:       salts.saltNaClGL       * wv.spargeWater,
+            chalk:      salts.saltChalkGL      * wv.spargeWater,
+            bakingSoda: salts.saltBakingSodaGL * wv.spargeWater,
+          },
+          acidType,
+          spargeAcid: acidCalc?.sparge
+            ? {
+                doseMl: acidCalc.sparge.doseMl,
+                doseG:  acidCalc.sparge.doseG,
+                needed: acidCalc.sparge.startingAlkalinityPpm >= 25,
+              }
+            : null,
+          grainTempC:             grainTempC ?? 20,
+          firstMashTempC:         mashStepRows[0]?.stepTemperatureC ?? null,
+          mashRatio:              mashRatioInput,
+          mashPotDiameterCm:      eqSnap?.boilPotDiameter ?? null,
+          mashPotVolumeL:         eqSnap?.boilPotVolumeL ?? null,
+          spargePotDiameterCm:    eqSnap?.spargeWaterPotDiameter ?? null,
+          mashAcidDose:           parseFloat(acidAmount) > 0 ? parseFloat(acidAmount) : null,
+          mashAcidUnit:           acidType === "citric" ? "g" : "mL",
+          mashAcidLabel:          acidType === "lactic" ? "Lactic 88%" : acidType === "phosphoric" ? "Phosphoric 10%" : "Citric",
+          spargeTargetPh,
+          targetPh,
+        };
+        return (
+          <BrewdaySection
+            brewday={brewday}
+            updateBrewday={updateBrewday}
+            recipeData={recipeData}
+            openPreparacion={open.bdPreparacion}
+            onTogglePreparacion={() => toggle("bdPreparacion")}
+            openMolienda={open.bdMolienda}
+            onToggleMolienda={() => toggle("bdMolienda")}
+            openMacerado={open.bdMacerado}
+            onToggleMacerado={() => toggle("bdMacerado")}
+            openLavado={open.bdLavado}
+            onToggleLavado={() => toggle("bdLavado")}
+            openPreboil={open.bdPreboil}
+            onTogglePreboil={() => toggle("bdPreboil")}
+            openHervido={open.bdHervido}
+            onToggleHervido={() => toggle("bdHervido")}
+            openWhirlpool={open.bdWhirlpool}
+            onToggleWhirlpool={() => toggle("bdWhirlpool")}
+            openFermentacion={open.bdFermentacion}
+            onToggleFermentacion={() => toggle("bdFermentacion")}
+            openEmbarrilado={open.bdEmbarrilado}
+            onToggleEmbarrilado={() => toggle("bdEmbarrilado")}
+          />
+        );
+      })()}
     </div>
   );
 }

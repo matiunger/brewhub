@@ -5,10 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { CollapsibleCard } from "./beer-sections";
 import {
   type BrewdayData,
   type MaceradoData,
+  type MashStepEntry,
   type LavadoData,
   type PreboilData,
   type LastRunData,
@@ -81,13 +83,60 @@ function CheckRow({ checked, onCheckedChange, label }: { checked: boolean; onChe
   );
 }
 
-const MASH_MINUTES = [0, 5, 10, 15, 20, 25, 30, 35, 45, 50, 55, 60];
+function calcStepMin(firstHora: string | null, hora: string | null): number | null {
+  if (!firstHora || !hora) return null;
+  const [fh, fm] = firstHora.split(":").map(Number);
+  const [h, m] = hora.split(":").map(Number);
+  const diff = (h * 60 + m) - (fh * 60 + fm);
+  return diff >= 0 ? diff : null;
+}
+
+function RecipeRef({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex items-baseline gap-1">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-xs font-semibold tabular-nums">{value}</span>
+    </div>
+  );
+}
+
+function SaltRef({ label, grams }: { label: string; grams: number }) {
+  if (grams <= 0) return null;
+  return (
+    <div className="flex items-baseline gap-1 text-xs">
+      <span className="text-muted-foreground">{label}:</span>
+      <span className="font-medium tabular-nums">{grams.toFixed(1)} g</span>
+    </div>
+  );
+}
 
 // ---- Main component ----
+
+export interface RecipeData {
+  mashMode: "sparge" | "biab";
+  mashWaterL: number;
+  spargeWaterL: number;
+  saltMash: { cacl2: number; gypsum: number; epsom: number; nacl: number; chalk: number; bakingSoda: number };
+  saltSparge: { cacl2: number; gypsum: number; epsom: number; nacl: number; chalk: number; bakingSoda: number };
+  acidType: string;
+  spargeAcid: { doseMl: number | null; doseG: number | null; needed: boolean } | null;
+  grainTempC: number;
+  firstMashTempC: number | null;
+  mashRatio: number;
+  mashPotDiameterCm: number | null;
+  mashPotVolumeL: number | null;
+  spargePotDiameterCm: number | null;
+  mashAcidDose: number | null;
+  mashAcidUnit: string;
+  mashAcidLabel: string;
+  spargeTargetPh: number | null;
+  targetPh: number | null;
+}
 
 interface BrewdaySectionProps {
   brewday: BrewdayData;
   updateBrewday: <K extends keyof BrewdayData>(section: K, value: BrewdayData[K]) => void;
+  recipeData: RecipeData;
   openPreparacion: boolean; onTogglePreparacion: () => void;
   openMolienda: boolean; onToggleMolienda: () => void;
   openMacerado: boolean; onToggleMacerado: () => void;
@@ -100,7 +149,7 @@ interface BrewdaySectionProps {
 }
 
 export function BrewdaySection({
-  brewday, updateBrewday,
+  brewday, updateBrewday, recipeData,
   openPreparacion, onTogglePreparacion,
   openMolienda, onToggleMolienda,
   openMacerado, onToggleMacerado,
@@ -128,8 +177,15 @@ export function BrewdaySection({
   );
 
   const setAguaLavado = useCallback(
-    (key: keyof MaceradoData["aguaLavado"], val: string | number | null) => {
+    (key: keyof MaceradoData["aguaLavado"], val: number | null) => {
       updateBrewday("macerado", { ...macerado, aguaLavado: { ...macerado.aguaLavado, [key]: val } });
+    },
+    [macerado, updateBrewday]
+  );
+
+  const setAguaLavadoOlla = useCallback(
+    (val: string | null) => {
+      updateBrewday("macerado", { ...macerado, aguaLavado: { ...macerado.aguaLavado, olla: val } });
     },
     [macerado, updateBrewday]
   );
@@ -141,12 +197,23 @@ export function BrewdaySection({
     [macerado, updateBrewday]
   );
 
-  const setTimeline = useCallback(
-    (minute: number, key: "recirculado" | "revolver" | "tempC" | "hora", val: boolean | number | string | null) => {
-      const timeline = macerado.timeline.map((entry) =>
-        entry.minute === minute ? { ...entry, [key]: val } : entry
-      );
-      updateBrewday("macerado", { ...macerado, timeline });
+  const addMashStep = useCallback(() => {
+    const now = new Date();
+    const hora = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    const newStep: MashStepEntry = { id: crypto.randomUUID(), hora, tempC: null, ph: null, recirculado: false, revolver: false };
+    updateBrewday("macerado", { ...macerado, timeline: [...macerado.timeline, newStep] });
+  }, [macerado, updateBrewday]);
+
+  const removeMashStep = useCallback((id: string) => {
+    updateBrewday("macerado", { ...macerado, timeline: macerado.timeline.filter((s) => s.id !== id) });
+  }, [macerado, updateBrewday]);
+
+  const setMashStep = useCallback(
+    (id: string, key: keyof MashStepEntry, val: string | number | boolean | null) => {
+      updateBrewday("macerado", {
+        ...macerado,
+        timeline: macerado.timeline.map((s) => (s.id === id ? { ...s, [key]: val } : s)),
+      });
     },
     [macerado, updateBrewday]
   );
@@ -231,7 +298,7 @@ export function BrewdaySection({
       </div>
 
       {/* ---- PREPARACION ---- */}
-      <CollapsibleCard title="Preparacion" open={openPreparacion} onToggle={onTogglePreparacion}>
+      <CollapsibleCard title="Preparation" open={openPreparacion} onToggle={onTogglePreparacion}>
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
           <CheckRow checked={preparacion.congelarBotellas} onCheckedChange={(v) => setPrep("congelarBotellas", v)} label="Congelar botellas agua" />
           <CheckRow checked={preparacion.prepararHeladera} onCheckedChange={(v) => setPrep("prepararHeladera", v)} label="Preparar heladera" />
@@ -256,216 +323,319 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- MOLIENDA ---- */}
-      <CollapsibleCard title="Molienda" open={openMolienda} onToggle={onToggleMolienda}>
-        <div className="flex items-center gap-3">
-          <FieldLabel>Fecha y hora</FieldLabel>
-          <Input
-            type="datetime-local"
-            value={molienda.fechaHora ?? ""}
-            onChange={(e) => updateBrewday("molienda", { fechaHora: e.target.value || null })}
-            className="h-7 text-sm w-52"
-          />
+      <CollapsibleCard title="Milling" open={openMolienda} onToggle={onToggleMolienda}>
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-3">
+            <FieldLabel>Date &amp; time</FieldLabel>
+            <Input
+              type="datetime-local"
+              value={molienda.fechaHora ?? ""}
+              onChange={(e) => updateBrewday("molienda", { fechaHora: e.target.value || null })}
+              className="h-7 text-sm w-52"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <FieldLabel>Roller gap (mm)</FieldLabel>
+            <Input
+              type="number"
+              step="0.05"
+              min="0"
+              value={molienda.gapMm ?? ""}
+              onChange={(e) => updateBrewday("molienda", { gapMm: e.target.value === "" ? null : parseFloat(e.target.value) })}
+              placeholder="0.8"
+              className="h-7 text-sm w-24"
+            />
+            {molienda.gapMm != null && (() => {
+              const gap = molienda.gapMm;
+              const [label, color] =
+                gap < 0.5  ? ["Very fine",  "text-red-500"] :
+                gap < 0.7  ? ["Fine",       "text-orange-500"] :
+                gap < 0.9  ? ["Standard",   "text-green-600"] :
+                gap < 1.1  ? ["Coarse",     "text-amber-500"] :
+                             ["Very coarse","text-red-500"];
+              return <span className={`text-xs font-medium ${color}`}>{label}</span>;
+            })()}
+          </div>
         </div>
       </CollapsibleCard>
 
       {/* ---- MACERADO ---- */}
-      <CollapsibleCard title="Macerado" open={openMacerado} onToggle={onToggleMacerado}>
+      <CollapsibleCard
+        title="Mash"
+        open={openMacerado}
+        onToggle={onToggleMacerado}
+        badge={(() => {
+          const heatTime = macerado.general.horaCalentarAgua;
+          const lastStep = macerado.timeline[macerado.timeline.length - 1];
+          const lastTime = lastStep?.hora;
+          if (!heatTime || !lastTime) return null;
+          const [ah, am] = heatTime.split(":").map(Number);
+          const [bh, bm] = lastTime.split(":").map(Number);
+          const diff = (bh * 60 + bm) - (ah * 60 + am);
+          if (diff <= 0) return null;
+          const hh = String(Math.floor(diff / 60)).padStart(2, "0");
+          const mm = String(diff % 60).padStart(2, "0");
+          return <span className="text-xs text-muted-foreground tabular-nums">{hh}:{mm}</span>;
+        })()}
+      >
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Agua macerado */}
-            <div className="border rounded-lg p-3 space-y-2">
-              <SubTitle>Agua macerado</SubTitle>
-              <div className="grid grid-cols-3 gap-2">
-                <FieldGroup label="Lts">
-                  <NumInput value={macerado.aguaMacerado.lts} onChange={(v) => setAguaMacerado("lts", v)} />
-                </FieldGroup>
-                <FieldGroup label="Altura cm">
-                  <NumInput value={macerado.aguaMacerado.alturaCm} onChange={(v) => setAguaMacerado("alturaCm", v)} />
-                </FieldGroup>
-                <FieldGroup label="Olla">
-                  <TextInput value={macerado.aguaMacerado.olla} onChange={(v) => setAguaMacerado("olla", v)} />
-                </FieldGroup>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <FieldGroup label="CaCl2 gr">
-                  <NumInput value={macerado.aguaMacerado.cacl2Gr} onChange={(v) => setAguaMacerado("cacl2Gr", v)} />
-                </FieldGroup>
-                <FieldGroup label="CaSO4 gr">
-                  <NumInput value={macerado.aguaMacerado.caso4Gr} onChange={(v) => setAguaMacerado("caso4Gr", v)} />
-                </FieldGroup>
-                <FieldGroup label="MgSO4 gr">
-                  <NumInput value={macerado.aguaMacerado.mgso4Gr} onChange={(v) => setAguaMacerado("mgso4Gr", v)} />
-                </FieldGroup>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <FieldGroup label="T Strike °C">
-                  <NumInput value={macerado.aguaMacerado.tStrikeC} onChange={(v) => setAguaMacerado("tStrikeC", v)} />
-                </FieldGroup>
-                <FieldGroup label="Ascorbic acid gr">
-                  <NumInput value={macerado.aguaMacerado.ascorbicAcidGr} onChange={(v) => setAguaMacerado("ascorbicAcidGr", v)} />
-                </FieldGroup>
-              </div>
-              <FieldGroup label="Ajuste PH (citrico/fosforico)">
-                <TextInput value={macerado.aguaMacerado.ajustePh} onChange={(v) => setAguaMacerado("ajustePh", v)} />
-              </FieldGroup>
-            </div>
+            {/* Mash Water */}
+            {(() => {
+              const C = 0.41;
+              const strikeCalc =
+                recipeData.firstMashTempC != null
+                  ? (C / recipeData.mashRatio) * (recipeData.firstMashTempC - recipeData.grainTempC) + recipeData.firstMashTempC
+                  : null;
+              const mashH =
+                recipeData.mashPotDiameterCm != null && recipeData.mashPotDiameterCm > 0
+                  ? ((recipeData.mashWaterL * 1000) / (Math.PI * Math.pow(recipeData.mashPotDiameterCm / 2, 2))).toFixed(1)
+                  : null;
+              const { cacl2, gypsum, epsom, nacl, chalk, bakingSoda } = recipeData.saltMash;
+              const hasSalts = cacl2 > 0 || gypsum > 0 || epsom > 0 || nacl > 0 || chalk > 0 || bakingSoda > 0;
+              return (
+                <div className="border rounded-lg p-3 space-y-3">
+                  <SubTitle>Mash Water</SubTitle>
 
-            {/* Agua lavado */}
-            <div className="border rounded-lg p-3 space-y-2">
-              <SubTitle>Agua lavado</SubTitle>
-              <div className="grid grid-cols-3 gap-2">
-                <FieldGroup label="Lts">
-                  <NumInput value={macerado.aguaLavado.lts} onChange={(v) => setAguaLavado("lts", v)} />
-                </FieldGroup>
-                <FieldGroup label="Altura cm">
-                  <NumInput value={macerado.aguaLavado.alturaCm} onChange={(v) => setAguaLavado("alturaCm", v)} />
-                </FieldGroup>
-                <FieldGroup label="Olla">
-                  <TextInput value={macerado.aguaLavado.olla} onChange={(v) => setAguaLavado("olla", v)} />
-                </FieldGroup>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <FieldGroup label="CaCl2 gr">
-                  <NumInput value={macerado.aguaLavado.cacl2Gr} onChange={(v) => setAguaLavado("cacl2Gr", v)} />
-                </FieldGroup>
-                <FieldGroup label="CaSO4 gr">
-                  <NumInput value={macerado.aguaLavado.caso4Gr} onChange={(v) => setAguaLavado("caso4Gr", v)} />
-                </FieldGroup>
-                <FieldGroup label="MgSO4 gr">
-                  <NumInput value={macerado.aguaLavado.mgso4Gr} onChange={(v) => setAguaLavado("mgso4Gr", v)} />
-                </FieldGroup>
-              </div>
-              <FieldGroup label="Temp °C (75-82 °C)">
-                <NumInput value={macerado.aguaLavado.tempC} onChange={(v) => setAguaLavado("tempC", v)} />
-              </FieldGroup>
-              <FieldGroup label="Ajuste PH (citrico/fosforico)">
-                <TextInput value={macerado.aguaLavado.ajustePh} onChange={(v) => setAguaLavado("ajustePh", v)} />
-              </FieldGroup>
-              <FieldGroup label="PH (Objetivo: 4.5-5.5)">
-                <NumInput value={macerado.aguaLavado.ph} onChange={(v) => setAguaLavado("ph", v)} />
-              </FieldGroup>
-            </div>
+                  {/* Recipe reference */}
+                  <div className="bg-muted/40 rounded-md p-2 space-y-1">
+                    {/* Line 1: Pot vol + Pot ⌀ */}
+                    <div className="flex gap-x-4">
+                      {recipeData.mashPotVolumeL != null && <RecipeRef label="Pot vol:" value={`${recipeData.mashPotVolumeL} L`} />}
+                      {recipeData.mashPotDiameterCm != null && <RecipeRef label="Pot ⌀:" value={`${recipeData.mashPotDiameterCm} cm`} />}
+                    </div>
+                    {/* Line 2: Volume + Height */}
+                    <div className="flex gap-x-4">
+                      <RecipeRef label="Volume:" value={`${recipeData.mashWaterL.toFixed(1)} L`} />
+                      {mashH != null && <RecipeRef label="Height:" value={`${mashH} cm`} />}
+                    </div>
+                    {/* Line 3: Strike temp */}
+                    {strikeCalc != null && (
+                      <div><RecipeRef label="Strike temp:" value={`${strikeCalc.toFixed(1)} °C`} /></div>
+                    )}
+                    {/* Line 4: Salt additions */}
+                    {hasSalts && (
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 pt-1 border-t border-border/40">
+                        <SaltRef label="CaCl₂" grams={cacl2} />
+                        <SaltRef label="CaSO₄" grams={gypsum} />
+                        <SaltRef label="MgSO₄" grams={epsom} />
+                        <SaltRef label="NaCl" grams={nacl} />
+                        <SaltRef label="Chalk" grams={chalk} />
+                        <SaltRef label="NaHCO₃" grams={bakingSoda} />
+                      </div>
+                    )}
+                    {/* Line 5: Acid additions */}
+                    {recipeData.mashAcidDose != null && (
+                      <div className="flex items-baseline gap-1 pt-1 border-t border-border/40">
+                        <span className="text-xs text-muted-foreground">{recipeData.mashAcidLabel}:</span>
+                        <span className="text-xs font-semibold tabular-nums">{recipeData.mashAcidDose.toFixed(1)} {recipeData.mashAcidUnit}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <CheckRow
+                    checked={macerado.general.checkGustoAgua}
+                    onCheckedChange={(v) => setMaceradoGeneral("checkGustoAgua", v)}
+                    label="Check water taste"
+                  />
+                  <FieldGroup label="Notes">
+                    <Textarea
+                      value={macerado.aguaMacerado.notes ?? ""}
+                      onChange={(e) => setAguaMacerado("notes", e.target.value || null)}
+                      placeholder="—"
+                      className="text-sm min-h-[60px] resize-none"
+                    />
+                  </FieldGroup>
+                </div>
+              );
+            })()}
+
+            {/* Sparge Water — hidden in BIAB mode */}
+            {recipeData.mashMode !== "biab" && (() => {
+              const spargeH =
+                recipeData.spargePotDiameterCm != null && recipeData.spargePotDiameterCm > 0
+                  ? ((recipeData.spargeWaterL * 1000) / (Math.PI * Math.pow(recipeData.spargePotDiameterCm / 2, 2))).toFixed(1)
+                  : null;
+              const { cacl2, gypsum, epsom, nacl, chalk, bakingSoda } = recipeData.saltSparge;
+              const hasSalts = cacl2 > 0 || gypsum > 0 || epsom > 0 || nacl > 0 || chalk > 0 || bakingSoda > 0;
+              const acid = recipeData.spargeAcid;
+              const acidLabel = recipeData.acidType === "lactic" ? "Lactic 88%" : recipeData.acidType === "phosphoric" ? "Phosphoric 10%" : "Citric";
+              return (
+                <div className="border rounded-lg p-3 space-y-3">
+                  <SubTitle>Sparge Water</SubTitle>
+
+                  {/* Recipe reference */}
+                  <div className="bg-muted/40 rounded-md p-2 space-y-1">
+                    {/* Line 1: Pot ⌀ */}
+                    {recipeData.spargePotDiameterCm != null && (
+                      <div><RecipeRef label="Pot ⌀:" value={`${recipeData.spargePotDiameterCm} cm`} /></div>
+                    )}
+                    {/* Line 2: Volume + Height */}
+                    <div className="flex gap-x-4">
+                      <RecipeRef label="Volume:" value={`${recipeData.spargeWaterL.toFixed(1)} L`} />
+                      {spargeH != null && <RecipeRef label="Height:" value={`${spargeH} cm`} />}
+                    </div>
+                    {/* Line 3: Recommended temp */}
+                    <div><RecipeRef label="Temp:" value="75–82 °C" /></div>
+                    {/* Line 4: Salt additions */}
+                    {hasSalts && (
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 pt-1 border-t border-border/40">
+                        <SaltRef label="CaCl₂" grams={cacl2} />
+                        <SaltRef label="CaSO₄" grams={gypsum} />
+                        <SaltRef label="MgSO₄" grams={epsom} />
+                        <SaltRef label="NaCl" grams={nacl} />
+                        <SaltRef label="Chalk" grams={chalk} />
+                        <SaltRef label="NaHCO₃" grams={bakingSoda} />
+                      </div>
+                    )}
+                    {/* Line 5: Acid additions */}
+                    {acid?.needed && (
+                      <div className="flex items-baseline gap-1 pt-1 border-t border-border/40">
+                        <span className="text-xs text-muted-foreground">{acidLabel}:</span>
+                        <span className="text-xs font-semibold tabular-nums">
+                          {acid.doseMl != null ? `${acid.doseMl.toFixed(1)} mL` : acid.doseG != null ? `${acid.doseG.toFixed(1)} g` : "—"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actuals */}
+                  <div className="grid grid-cols-1 gap-2">
+                    <FieldGroup label={`pH${recipeData.spargeTargetPh != null ? ` (target: ${recipeData.spargeTargetPh})` : ""}`}>
+                      <NumInput value={macerado.aguaLavado.ph} onChange={(v) => setAguaLavado("ph", v)} />
+                    </FieldGroup>
+                    <FieldGroup label="Notes">
+                      <Textarea
+                        value={macerado.aguaLavado.notes ?? ""}
+                        onChange={(e) => setAguaLavado("notes", e.target.value || null)}
+                        placeholder="—"
+                        className="text-sm min-h-[60px] resize-none"
+                      />
+                    </FieldGroup>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
 
           {/* General */}
           <div className="space-y-3">
-            <CheckRow
-              checked={macerado.general.checkGustoAgua}
-              onCheckedChange={(v) => setMaceradoGeneral("checkGustoAgua", v)}
-              label="Check gusto agua"
-            />
             <div className="grid grid-cols-3 gap-3">
-              <FieldGroup label="Hora calentar agua">
+              <FieldGroup label="Heat water time">
                 <TimeInput value={macerado.general.horaCalentarAgua} onChange={(v) => setMaceradoGeneral("horaCalentarAgua", v)} />
               </FieldGroup>
-              <FieldGroup label="Hora inicio empaste">
+              <FieldGroup label="Mash in time">
                 <TimeInput value={macerado.general.horaInicioEmpaste} onChange={(v) => setMaceradoGeneral("horaInicioEmpaste", v)} />
               </FieldGroup>
-              <FieldGroup label="Hora inicio macerado">
-                <TimeInput value={macerado.general.horaInicioMacerado} onChange={(v) => setMaceradoGeneral("horaInicioMacerado", v)} />
-              </FieldGroup>
+              <div className="flex flex-col gap-1">
+                <FieldLabel>Heat duration</FieldLabel>
+                <span className="text-sm font-semibold tabular-nums h-7 flex items-center">
+                  {(() => {
+                    const a = macerado.general.horaCalentarAgua;
+                    const b = macerado.general.horaInicioEmpaste;
+                    if (!a || !b) return "—";
+                    const [ah, am] = a.split(":").map(Number);
+                    const [bh, bm] = b.split(":").map(Number);
+                    const diff = (bh * 60 + bm) - (ah * 60 + am);
+                    return diff > 0 ? `${diff} min` : "—";
+                  })()}
+                </span>
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-3">
-              <FieldGroup label="Temp objetivo °C">
-                <NumInput value={macerado.general.tempObjetivoC} onChange={(v) => setMaceradoGeneral("tempObjetivoC", v)} />
-              </FieldGroup>
-              <FieldGroup label="Temp mash °C">
-                <NumInput value={macerado.general.tempMashC} onChange={(v) => setMaceradoGeneral("tempMashC", v)} />
-              </FieldGroup>
-              <FieldGroup label="PH mash (Obj: 5.3-5.6)">
-                <NumInput value={macerado.general.phMash} onChange={(v) => setMaceradoGeneral("phMash", v)} />
-              </FieldGroup>
-            </div>
+            {recipeData.firstMashTempC != null && (
+              <RecipeRef label="Target temp:" value={`${recipeData.firstMashTempC} °C`} />
+            )}
           </div>
 
-          {/* Timeline table */}
-          <div className="overflow-x-auto">
+          {/* Mash steps */}
+          <div className="space-y-2">
             <table className="w-full text-xs border-collapse">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-1 pr-2 font-medium text-muted-foreground w-20">Min</th>
-                  {MASH_MINUTES.map((m) => (
-                    <th key={m} className="text-center py-1 px-1 font-medium w-12">{m}</th>
-                  ))}
+                  <th className="text-left py-1 pr-2 font-medium text-muted-foreground">Time</th>
+                  <th className="text-left py-1 px-2 font-medium text-muted-foreground">Min</th>
+                  <th className="text-left py-1 px-2 font-medium text-muted-foreground">
+                    Temp °C{recipeData.firstMashTempC != null && <span className="text-[10px] font-normal ml-1">({recipeData.firstMashTempC})</span>}
+                  </th>
+                  <th className="text-left py-1 px-2 font-medium text-muted-foreground">
+                    pH{recipeData.targetPh != null && <span className="text-[10px] font-normal ml-1">({recipeData.targetPh})</span>}
+                  </th>
+                  <th className="text-center py-1 px-2 font-medium text-muted-foreground">Recirc</th>
+                  <th className="text-center py-1 px-2 font-medium text-muted-foreground">Stir</th>
+                  <th className="w-6" />
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b">
-                  <td className="py-1 pr-2 text-muted-foreground">Recirculado</td>
-                  {macerado.timeline.map((entry) => (
-                    <td key={entry.minute} className="py-1 px-1 text-center">
-                      <Checkbox checked={entry.recirculado} onCheckedChange={(v) => setTimeline(entry.minute, "recirculado", v === true)} className="mx-auto" />
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b">
-                  <td className="py-1 pr-2 text-muted-foreground">Revolver</td>
-                  {macerado.timeline.map((entry) => (
-                    <td key={entry.minute} className="py-1 px-1 text-center">
-                      <Checkbox checked={entry.revolver} onCheckedChange={(v) => setTimeline(entry.minute, "revolver", v === true)} className="mx-auto" />
-                    </td>
-                  ))}
-                </tr>
-                <tr className="border-b">
-                  <td className="py-1 pr-2 text-muted-foreground">Temp °C</td>
-                  {macerado.timeline.map((entry) => (
-                    <td key={entry.minute} className="py-1 px-0.5">
-                      <Input
-                        type="number"
-                        value={entry.tempC ?? ""}
-                        onChange={(e) => setTimeline(entry.minute, "tempC", e.target.value === "" ? null : Number(e.target.value))}
-                        className="h-6 text-xs px-1 w-10"
-                      />
-                    </td>
-                  ))}
-                </tr>
-                <tr>
-                  <td className="py-1 pr-2 text-muted-foreground">Hora</td>
-                  {macerado.timeline.map((entry) => (
-                    <td key={entry.minute} className="py-1 px-0.5">
-                      <Input
-                        type="time"
-                        value={entry.hora ?? ""}
-                        onChange={(e) => setTimeline(entry.minute, "hora", e.target.value || null)}
-                        className="h-6 text-xs px-1 w-14"
-                      />
-                    </td>
-                  ))}
-                </tr>
+                {macerado.timeline.map((step, idx) => {
+                  const firstHora = macerado.timeline[0]?.hora;
+                  const minVal = idx === 0 ? 0 : calcStepMin(firstHora, step.hora);
+                  return (
+                    <tr key={step.id} className="border-b last:border-0">
+                      <td className="py-1 pr-2">
+                        <TimeInput value={step.hora} onChange={(v) => setMashStep(step.id, "hora", v)} className="w-44" />
+                      </td>
+                      <td className="py-1 px-2 tabular-nums text-muted-foreground">
+                        {minVal != null ? minVal : "—"}
+                      </td>
+                      <td className="py-1 px-2">
+                        <NumInput value={step.tempC} onChange={(v) => setMashStep(step.id, "tempC", v)} className="w-20" />
+                      </td>
+                      <td className="py-1 px-2">
+                        <NumInput value={step.ph} onChange={(v) => setMashStep(step.id, "ph", v)} className="w-20" />
+                      </td>
+                      <td className="py-1 px-2 text-center">
+                        <Checkbox checked={step.recirculado} onCheckedChange={(v) => setMashStep(step.id, "recirculado", v === true)} className="mx-auto" />
+                      </td>
+                      <td className="py-1 px-2 text-center">
+                        <Checkbox checked={step.revolver} onCheckedChange={(v) => setMashStep(step.id, "revolver", v === true)} className="mx-auto" />
+                      </td>
+                      <td className="py-1 pl-1">
+                        {idx > 0 && (
+                          <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeMashStep(step.id)}>
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+            <Button type="button" variant="outline" size="sm" onClick={addMashStep} className="h-7 text-xs">
+              <Plus className="h-3.5 w-3.5 mr-1" /> Add step
+            </Button>
           </div>
         </div>
       </CollapsibleCard>
 
       {/* ---- LAVADO ---- */}
-      <CollapsibleCard title="Lavado" open={openLavado} onToggle={onToggleLavado}>
+      <CollapsibleCard title="Sparge" open={openLavado} onToggle={onToggleLavado}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border rounded-lg p-3 space-y-2">
             <div className="grid grid-cols-2 gap-2">
-              <FieldGroup label="Hora inicio recirculado">
+              <FieldGroup label="Recirculation start">
                 <TimeInput value={lavado.horaInicioRecirculado} onChange={(v) => setLavado("horaInicioRecirculado", v)} />
               </FieldGroup>
-              <FieldGroup label="Hora fin recirculado">
+              <FieldGroup label="Recirculation end">
                 <TimeInput value={lavado.horaFinRecirculado} onChange={(v) => setLavado("horaFinRecirculado", v)} />
               </FieldGroup>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <FieldGroup label="Hora inicio lavado">
+              <FieldGroup label="Sparge start">
                 <TimeInput value={lavado.horaInicioLavado} onChange={(v) => setLavado("horaInicioLavado", v)} />
               </FieldGroup>
-              <FieldGroup label="Hora fin lavado">
+              <FieldGroup label="Sparge end">
                 <TimeInput value={lavado.horaFinLavado} onChange={(v) => setLavado("horaFinLavado", v)} />
               </FieldGroup>
             </div>
           </div>
           <div className="border rounded-lg p-3 space-y-2">
-            <SubTitle>Primer mosto</SubTitle>
+            <SubTitle>First Runnings</SubTitle>
             <div className="grid grid-cols-2 gap-2">
-              <FieldGroup label="Densidad gr/L">
+              <FieldGroup label="Density g/L">
                 <NumInput value={lavado.primerMostoDensidad} onChange={(v) => setLavado("primerMostoDensidad", v)} />
               </FieldGroup>
-              <FieldGroup label="PH">
+              <FieldGroup label="pH">
                 <NumInput value={lavado.primerMostoPh} onChange={(v) => setLavado("primerMostoPh", v)} />
               </FieldGroup>
             </div>
@@ -474,7 +644,7 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- FIN LAVADO / PRE HEAT UP ---- */}
-      <CollapsibleCard title="Fin Lavado / Pre Heat Up" open={openPreboil} onToggle={onTogglePreboil}>
+      <CollapsibleCard title="Post-Sparge / Pre Heat Up" open={openPreboil} onToggle={onTogglePreboil}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border rounded-lg p-3 space-y-2">
             <div className="grid grid-cols-3 gap-2">
@@ -521,7 +691,7 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- HERVIDO ---- */}
-      <CollapsibleCard title="Hervido" open={openHervido} onToggle={onToggleHervido}>
+      <CollapsibleCard title="Boil" open={openHervido} onToggle={onToggleHervido}>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="sm:col-span-2 border rounded-lg p-3 space-y-2">
             {hervido.entries.length === 0 && (
@@ -574,7 +744,7 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- WHIRLPOOL Y ENFRIADO ---- */}
-      <CollapsibleCard title="Whirlpool y Enfriado" open={openWhirlpool} onToggle={onToggleWhirlpool}>
+      <CollapsibleCard title="Whirlpool &amp; Chilling" open={openWhirlpool} onToggle={onToggleWhirlpool}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border rounded-lg p-3 space-y-2">
             <FieldGroup label="Hora inicio whirlpool">
@@ -621,7 +791,7 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- FERMENTACION ---- */}
-      <CollapsibleCard title="Fermentacion" open={openFermentacion} onToggle={onToggleFermentacion}>
+      <CollapsibleCard title="Fermentation" open={openFermentacion} onToggle={onToggleFermentacion}>
         <div className="space-y-3">
           <div className="grid grid-cols-3 gap-3">
             <FieldGroup label="Peso total kg">
@@ -652,7 +822,7 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- EMBARRILADO ---- */}
-      <CollapsibleCard title="Embarrilado" open={openEmbarrilado} onToggle={onToggleEmbarrilado}>
+      <CollapsibleCard title="Kegging" open={openEmbarrilado} onToggle={onToggleEmbarrilado}>
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2">

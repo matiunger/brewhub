@@ -1,5 +1,17 @@
-agregar acid additions in water.
+test acid additions
+calculo de tiempos
+in recipe overview, agregar mas metricas como balance, etc
+visual de agua, losses, etc
+REvisar formular de IBU
+alertar seccion si faltan inpus (o aclarar de que valores depende)
+timers
+esquema json en ingles
 
+
+DONE:
+fix MCU con post boil volume
+Beer batch
+checklists de preparación, limpieza, etc
 Ojo con editar un inveotry qye se usa en un batch. Fijar los valores al seleccionar ese componente?
 
 agregar brew day
@@ -10,18 +22,6 @@ Molienda
 Mash
  - hora calentar agua
  - check gusto
-
-
-visual de agua, losses, etc
-
-fix MCU con post boil volume
-
-in recipe overview, agregar mas metricas como balance, etc
-
-Beer batch
-checklists de preparación, limpieza, etc
-
-DONE:
 agregar Mash target ph (default 5.4)
 Sparge target ph (default 5.4)
 

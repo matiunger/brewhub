@@ -17,28 +17,26 @@ async function updateBatch(id: string, formData: FormData) {
   const brewDateValue = formData.get("brewDate") as string;
   const equipmentId = formData.get("equipmentId") as string || null;
 
-  // When a new equipment is selected, snapshot its values into the batch
+  // When equipment is selected, always overwrite snapshot with latest values from inventory
   const equipmentSnapshot: Record<string, unknown> = {};
   if (equipmentId) {
-    // Only snapshot if the equipment changed
-    const current = await prisma.batch.findUnique({ where: { id }, select: { equipmentId: true } });
-    if (current?.equipmentId !== equipmentId) {
-      const eq = await prisma.equipment.findUnique({ where: { id: equipmentId } });
-      if (eq) {
-        equipmentSnapshot.equipmentName = eq.name;
-        equipmentSnapshot.equipmentBrewhouseEff = eq.brewhouseEfficiency;
-        equipmentSnapshot.equipmentMashEff = eq.mashEfficiency;
-        equipmentSnapshot.equipmentMashTunVolumeL = eq.mashTunVolumeL;
-        equipmentSnapshot.equipmentMashTunDeadSpaceL = eq.mashTunDeadSpaceL;
-        equipmentSnapshot.equipmentBoilPotVolumeL = eq.boilPotVolumeL;
-        equipmentSnapshot.equipmentBoilEvapRateLH = eq.boilEvaporationRateLH;
-        equipmentSnapshot.equipmentHeatEvapRateLH = eq.heatingEvaporationRateLH;
-        equipmentSnapshot.equipmentGrainAbsLKg = eq.grainAbsorptionLKg;
-        equipmentSnapshot.equipmentFermenterLossL = eq.fermenterLossL;
-        equipmentSnapshot.equipmentTrubLossL = eq.trubLossL;
-        equipmentSnapshot.equipmentSystemLossPct = eq.systemLossPercent;
-        equipmentSnapshot.equipmentTempContractionPct = eq.tempContractionPercent;
-      }
+    const eq = await prisma.equipment.findUnique({ where: { id: equipmentId } });
+    if (eq) {
+      equipmentSnapshot.equipmentName = eq.name;
+      equipmentSnapshot.equipmentBrewhouseEff = eq.brewhouseEfficiency;
+      equipmentSnapshot.equipmentMashEff = eq.mashEfficiency;
+      equipmentSnapshot.equipmentMashTunVolumeL = eq.mashTunVolumeL;
+      equipmentSnapshot.equipmentMashTunDeadSpaceL = eq.mashTunDeadSpaceL;
+      equipmentSnapshot.equipmentBoilPotVolumeL = eq.boilPotVolumeL;
+      equipmentSnapshot.equipmentBoilEvapRateLH = eq.boilEvaporationRateLH;
+      equipmentSnapshot.equipmentHeatEvapRateLH = eq.heatingEvaporationRateLH;
+      equipmentSnapshot.equipmentGrainAbsLKg = eq.grainAbsorptionLKg;
+      equipmentSnapshot.equipmentFermenterLossL = eq.fermenterLossL;
+      equipmentSnapshot.equipmentTrubLossL = eq.trubLossL;
+      equipmentSnapshot.equipmentSystemLossPct = eq.systemLossPercent;
+      equipmentSnapshot.equipmentTempContractionPct = eq.tempContractionPercent;
+      equipmentSnapshot.equipmentBoilPotDiameter = eq.boilPotDiameter;
+      equipmentSnapshot.equipmentSpargeWaterPotDiameter = eq.spargeWaterPotDiameter;
     }
   }
 
@@ -49,7 +47,7 @@ async function updateBatch(id: string, formData: FormData) {
       brewDate: brewDateValue ? new Date(brewDateValue) : null,
       style: formData.get("style") as string || null,
       draft: formData.get("draft") === "on",
-      equipmentId,
+      equipment: equipmentId ? { connect: { id: equipmentId } } : { disconnect: true },
       ...equipmentSnapshot,
     },
   });
@@ -71,6 +69,8 @@ async function updateBatchEquipmentSnapshot(
     equipmentTrubLossL: number | null;
     equipmentSystemLossPct: number | null;
     equipmentTempContractionPct: number | null;
+    equipmentBoilPotDiameter: number | null;
+    equipmentSpargeWaterPotDiameter: number | null;
   }
 ) {
   "use server";
@@ -475,6 +475,8 @@ export default async function BatchPage({ params }: BatchPageProps) {
     trubLossL: batch.equipmentTrubLossL,
     systemLossPct: batch.equipmentSystemLossPct,
     tempContractionPct: batch.equipmentTempContractionPct,
+    boilPotDiameter: batch.equipmentBoilPotDiameter,
+    spargeWaterPotDiameter: batch.equipmentSpargeWaterPotDiameter,
   } : null;
 
   return (

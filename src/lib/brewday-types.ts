@@ -1,9 +1,10 @@
-export interface MashTimelineEntry {
-  minute: number;
+export interface MashStepEntry {
+  id: string;
+  hora: string | null;
+  tempC: number | null;
+  ph: number | null;
   recirculado: boolean;
   revolver: boolean;
-  tempC: number | null;
-  hora: string | null;
 }
 
 export interface BoilEntry {
@@ -33,30 +34,26 @@ export interface PreparacionData {
 
 export interface MoliendaData {
   fechaHora: string | null;
+  gapMm: number | null;
 }
 
 export interface MaceradoData {
   aguaMacerado: {
     lts: number | null;
     alturaCm: number | null;
+    potDiameterCm: number | null;
     olla: string | null;
-    cacl2Gr: number | null;
-    caso4Gr: number | null;
-    mgso4Gr: number | null;
     tStrikeC: number | null;
-    ascorbicAcidGr: number | null;
-    ajustePh: string | null;
+    notes: string | null;
   };
   aguaLavado: {
     lts: number | null;
     alturaCm: number | null;
+    potDiameterCm: number | null;
     olla: string | null;
-    cacl2Gr: number | null;
-    caso4Gr: number | null;
-    mgso4Gr: number | null;
     tempC: number | null;
-    ajustePh: string | null;
     ph: number | null;
+    notes: string | null;
   };
   general: {
     checkGustoAgua: boolean;
@@ -67,7 +64,7 @@ export interface MaceradoData {
     tempMashC: number | null;
     phMash: number | null;
   };
-  timeline: MashTimelineEntry[];
+  timeline: MashStepEntry[];
 }
 
 export interface LavadoData {
@@ -150,8 +147,6 @@ export interface BrewdayData {
   embarrilado: EmbarriladoData;
 }
 
-const MASH_MINUTES = [0, 5, 10, 15, 20, 25, 30, 35, 45, 50, 55, 60];
-
 export const DEFAULT_BREWDAY_DATA: BrewdayData = {
   preparacion: {
     congelarBotellas: false,
@@ -169,12 +164,12 @@ export const DEFAULT_BREWDAY_DATA: BrewdayData = {
     cocinaLimpia: false,
     prepararMesa: false,
   },
-  molienda: { fechaHora: null },
+  molienda: { fechaHora: null, gapMm: null },
   macerado: {
-    aguaMacerado: { lts: null, alturaCm: null, olla: null, cacl2Gr: null, caso4Gr: null, mgso4Gr: null, tStrikeC: null, ascorbicAcidGr: null, ajustePh: null },
-    aguaLavado: { lts: null, alturaCm: null, olla: null, cacl2Gr: null, caso4Gr: null, mgso4Gr: null, tempC: null, ajustePh: null, ph: null },
+    aguaMacerado: { lts: null, alturaCm: null, potDiameterCm: null, olla: null, tStrikeC: null, notes: null },
+    aguaLavado: { lts: null, alturaCm: null, potDiameterCm: null, olla: null, tempC: null, ph: null, notes: null },
     general: { checkGustoAgua: false, horaCalentarAgua: null, horaInicioEmpaste: null, horaInicioMacerado: null, tempObjetivoC: null, tempMashC: null, phMash: null },
-    timeline: MASH_MINUTES.map((minute) => ({ minute, recirculado: false, revolver: false, tempC: null, hora: null })),
+    timeline: [{ id: "initial", hora: null, tempC: null, ph: null, recirculado: false, revolver: false }],
   },
   lavado: { horaInicioRecirculado: null, horaFinRecirculado: null, horaInicioLavado: null, horaFinLavado: null, primerMostoDensidad: null, primerMostoPh: null },
   preboil: { volumenObjL: null, alturaObjCm: null, densidadObjGL: null, volumenL: null, alturaCm: null, densidadGL: null, tempC: null, ph: null },
@@ -200,7 +195,16 @@ export function parseBrewdayData(raw: string | null): BrewdayData {
         aguaMacerado: { ...DEFAULT_BREWDAY_DATA.macerado.aguaMacerado, ...parsed.macerado?.aguaMacerado },
         aguaLavado: { ...DEFAULT_BREWDAY_DATA.macerado.aguaLavado, ...parsed.macerado?.aguaLavado },
         general: { ...DEFAULT_BREWDAY_DATA.macerado.general, ...parsed.macerado?.general },
-        timeline: parsed.macerado?.timeline ?? DEFAULT_BREWDAY_DATA.macerado.timeline,
+        timeline: Array.isArray(parsed.macerado?.timeline) && parsed.macerado.timeline.length > 0
+          ? parsed.macerado.timeline.map((e: Record<string, unknown>) => ({
+              id: (e.id as string) ?? crypto.randomUUID(),
+              hora: (e.hora as string | null) ?? null,
+              tempC: (e.tempC as number | null) ?? null,
+              ph: (e.ph as number | null) ?? null,
+              recirculado: (e.recirculado as boolean) ?? false,
+              revolver: (e.revolver as boolean) ?? false,
+            }))
+          : DEFAULT_BREWDAY_DATA.macerado.timeline,
       },
       lavado: { ...DEFAULT_BREWDAY_DATA.lavado, ...parsed.lavado },
       preboil: { ...DEFAULT_BREWDAY_DATA.preboil, ...parsed.preboil },
