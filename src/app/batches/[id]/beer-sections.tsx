@@ -2908,6 +2908,21 @@ export function BeerSections({
           mashAcidLabel:          acidType === "lactic" ? "Lactic 88%" : acidType === "phosphoric" ? "Phosphoric 10%" : "Citric",
           spargeTargetPh,
           targetPh,
+          preHeatUpL: wv.preHeatUp,
+          preBoilL: wv.preBoil,
+          endOfBoilL: wv.endOfBoil,
+          preHeatUpHeightCm: (() => {
+            const d = eqSnap?.boilPotDiameter;
+            if (d == null || d <= 0) return null;
+            return parseFloat(((wv.preHeatUp * 1000) / (Math.PI * Math.pow(d / 2, 2))).toFixed(1));
+          })(),
+          preBoilDensityGL: targets.og != null && wv.preHeatUp > 0
+            ? Math.round(1000 + (targets.og - 1000) * wv.fermenterVol / wv.preHeatUp)
+            : null,
+          boilTimeMin: boilTimeMin ?? 60,
+          boilHops: hopRows
+            .filter(h => h.use === "boil" && h.additionTime != null)
+            .map(h => ({ name: h.name ?? h.hop.name, grams: h.grams, additionTime: h.additionTime! })),
         };
         return (
           <BrewdaySection
@@ -2922,8 +2937,6 @@ export function BeerSections({
             onToggleMacerado={() => toggle("bdMacerado")}
             openLavado={open.bdLavado}
             onToggleLavado={() => toggle("bdLavado")}
-            openPreboil={open.bdPreboil}
-            onTogglePreboil={() => toggle("bdPreboil")}
             openHervido={open.bdHervido}
             onToggleHervido={() => toggle("bdHervido")}
             openWhirlpool={open.bdWhirlpool}

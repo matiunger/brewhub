@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -131,6 +131,13 @@ export interface RecipeData {
   mashAcidLabel: string;
   spargeTargetPh: number | null;
   targetPh: number | null;
+  preHeatUpL: number;
+  preHeatUpHeightCm: number | null;
+  preBoilDensityGL: number | null;
+  preBoilL: number;
+  endOfBoilL: number;
+  boilTimeMin: number;
+  boilHops: Array<{ name: string; grams: number; additionTime: number }>;
 }
 
 interface BrewdaySectionProps {
@@ -141,7 +148,6 @@ interface BrewdaySectionProps {
   openMolienda: boolean; onToggleMolienda: () => void;
   openMacerado: boolean; onToggleMacerado: () => void;
   openLavado: boolean; onToggleLavado: () => void;
-  openPreboil: boolean; onTogglePreboil: () => void;
   openHervido: boolean; onToggleHervido: () => void;
   openWhirlpool: boolean; onToggleWhirlpool: () => void;
   openFermentacion: boolean; onToggleFermentacion: () => void;
@@ -154,7 +160,6 @@ export function BrewdaySection({
   openMolienda, onToggleMolienda,
   openMacerado, onToggleMacerado,
   openLavado, onToggleLavado,
-  openPreboil, onTogglePreboil,
   openHervido, onToggleHervido,
   openWhirlpool, onToggleWhirlpool,
   openFermentacion, onToggleFermentacion,
@@ -246,9 +251,22 @@ export function BrewdaySection({
     [hervido, updateBrewday]
   );
 
+  // Ensure boil always has at least start + end entries
+  useEffect(() => {
+    if (hervido.entries.length < 2) {
+      const start: BoilEntry = hervido.entries[0] ?? { id: crypto.randomUUID(), hora: null, alturaCm: null, volumenL: null, volumenObjL: null };
+      const end: BoilEntry = { id: crypto.randomUUID(), hora: null, alturaCm: null, volumenL: null, volumenObjL: null };
+      updateBrewday("hervido", { ...hervido, entries: [start, end] });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const addBoilEntry = useCallback(() => {
     const newEntry: BoilEntry = { id: crypto.randomUUID(), hora: null, alturaCm: null, volumenL: null, volumenObjL: null };
-    updateBrewday("hervido", { ...hervido, entries: [...hervido.entries, newEntry] });
+    const entries = [...hervido.entries];
+    // Insert before last entry (end)
+    entries.splice(Math.max(entries.length - 1, 1), 0, newEntry);
+    updateBrewday("hervido", { ...hervido, entries });
   }, [hervido, updateBrewday]);
 
   const removeBoilEntry = useCallback(
@@ -300,25 +318,25 @@ export function BrewdaySection({
       {/* ---- PREPARACION ---- */}
       <CollapsibleCard title="Preparation" open={openPreparacion} onToggle={onTogglePreparacion}>
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-          <CheckRow checked={preparacion.congelarBotellas} onCheckedChange={(v) => setPrep("congelarBotellas", v)} label="Congelar botellas agua" />
-          <CheckRow checked={preparacion.prepararHeladera} onCheckedChange={(v) => setPrep("prepararHeladera", v)} label="Preparar heladera" />
-          <CheckRow checked={preparacion.armarMolino} onCheckedChange={(v) => setPrep("armarMolino", v)} label="Armar molino" />
-          <CheckRow checked={preparacion.armarSerpentinas} onCheckedChange={(v) => setPrep("armarSerpentinas", v)} label="Armar serpentinas" />
-          <CheckRow checked={preparacion.lavarMacerador} onCheckedChange={(v) => setPrep("lavarMacerador", v)} label="Lavar/armar macerador" />
-          <CheckRow checked={preparacion.prepararAlcohol} onCheckedChange={(v) => setPrep("prepararAlcohol", v)} label="Preparar alcohol 70%" />
-          <CheckRow checked={preparacion.lavarFermentador} onCheckedChange={(v) => setPrep("lavarFermentador", v)} label="Lavar/armar fermentador" />
-          <CheckRow checked={preparacion.cocinaLimpia} onCheckedChange={(v) => setPrep("cocinaLimpia", v)} label="Cocina limpia" />
-          <CheckRow checked={preparacion.pesarMaltas} onCheckedChange={(v) => setPrep("pesarMaltas", v)} label="Pesar maltas" />
-          <CheckRow checked={preparacion.prepararMesa} onCheckedChange={(v) => setPrep("prepararMesa", v)} label="Preparar mesa/elementos" />
-          <CheckRow checked={preparacion.prepararAnafe} onCheckedChange={(v) => setPrep("prepararAnafe", v)} label="Preparar anafe" />
+          <CheckRow checked={preparacion.congelarBotellas} onCheckedChange={(v) => setPrep("congelarBotellas", v)} label="Freeze water bottles" />
+          <CheckRow checked={preparacion.prepararHeladera} onCheckedChange={(v) => setPrep("prepararHeladera", v)} label="Prepare cooler" />
+          <CheckRow checked={preparacion.armarMolino} onCheckedChange={(v) => setPrep("armarMolino", v)} label="Set up mill" />
+          <CheckRow checked={preparacion.armarSerpentinas} onCheckedChange={(v) => setPrep("armarSerpentinas", v)} label="Set up chiller coils" />
+          <CheckRow checked={preparacion.lavarMacerador} onCheckedChange={(v) => setPrep("lavarMacerador", v)} label="Clean/set up mash tun" />
+          <CheckRow checked={preparacion.prepararAlcohol} onCheckedChange={(v) => setPrep("prepararAlcohol", v)} label="Prepare 70% alcohol" />
+          <CheckRow checked={preparacion.lavarFermentador} onCheckedChange={(v) => setPrep("lavarFermentador", v)} label="Clean/set up fermenter" />
+          <CheckRow checked={preparacion.cocinaLimpia} onCheckedChange={(v) => setPrep("cocinaLimpia", v)} label="Clean kitchen" />
+          <CheckRow checked={preparacion.pesarMaltas} onCheckedChange={(v) => setPrep("pesarMaltas", v)} label="Weigh grains" />
+          <CheckRow checked={preparacion.prepararMesa} onCheckedChange={(v) => setPrep("prepararMesa", v)} label="Set up workspace" />
+          <CheckRow checked={preparacion.prepararAnafe} onCheckedChange={(v) => setPrep("prepararAnafe", v)} label="Prepare burner" />
           <div className="flex items-center gap-2">
             <Checkbox checked={!!preparacion.cargaGarrafaKg || preparacion.cargaGarrafaKg === 0} onCheckedChange={() => {}} className="shrink-0" />
-            <span className="text-sm whitespace-nowrap">Carga garrafa:</span>
+            <span className="text-sm whitespace-nowrap">Gas tank:</span>
             <NumInput value={preparacion.cargaGarrafaKg} onChange={(v) => setPrep("cargaGarrafaKg", v)} className="w-24" />
             <span className="text-xs text-muted-foreground">kg</span>
           </div>
-          <CheckRow checked={preparacion.filtrarAgua} onCheckedChange={(v) => setPrep("filtrarAgua", v)} label="Filtrar agua (en fermentador)" />
-          <CheckRow checked={preparacion.calibrarPhmetro} onCheckedChange={(v) => setPrep("calibrarPhmetro", v)} label="Calibrar Phmetro" />
+          <CheckRow checked={preparacion.filtrarAgua} onCheckedChange={(v) => setPrep("filtrarAgua", v)} label="Filter water (in fermenter)" />
+          <CheckRow checked={preparacion.calibrarPhmetro} onCheckedChange={(v) => setPrep("calibrarPhmetro", v)} label="Calibrate pH meter" />
         </div>
       </CollapsibleCard>
 
@@ -608,24 +626,74 @@ export function BrewdaySection({
         </div>
       </CollapsibleCard>
 
-      {/* ---- LAVADO ---- */}
-      <CollapsibleCard title="Sparge" open={openLavado} onToggle={onToggleLavado}>
+      {/* ---- LAVADO / POST-SPARGE ---- */}
+      <CollapsibleCard
+        title="Sparge"
+        open={openLavado}
+        onToggle={onToggleLavado}
+        badge={(() => {
+          const start = lavado.horaInicioLavado;
+          const end = lavado.horaFinLavado;
+          if (!start || !end) return null;
+          const [sh, sm] = start.split(":").map(Number);
+          const [eh, em] = end.split(":").map(Number);
+          const diff = (eh * 60 + em) - (sh * 60 + sm);
+          if (diff <= 0) return null;
+          const hh = String(Math.floor(diff / 60)).padStart(2, "0");
+          const mm = String(diff % 60).padStart(2, "0");
+          return <span className="text-xs text-muted-foreground tabular-nums">{hh}:{mm}</span>;
+        })()}
+      >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border rounded-lg p-3 space-y-2">
-            <div className="grid grid-cols-2 gap-2">
-              <FieldGroup label="Recirculation start">
-                <TimeInput value={lavado.horaInicioRecirculado} onChange={(v) => setLavado("horaInicioRecirculado", v)} />
-              </FieldGroup>
-              <FieldGroup label="Recirculation end">
-                <TimeInput value={lavado.horaFinRecirculado} onChange={(v) => setLavado("horaFinRecirculado", v)} />
-              </FieldGroup>
-            </div>
             <div className="grid grid-cols-2 gap-2">
               <FieldGroup label="Sparge start">
                 <TimeInput value={lavado.horaInicioLavado} onChange={(v) => setLavado("horaInicioLavado", v)} />
               </FieldGroup>
               <FieldGroup label="Sparge end">
                 <TimeInput value={lavado.horaFinLavado} onChange={(v) => setLavado("horaFinLavado", v)} />
+              </FieldGroup>
+            </div>
+            <div className="bg-muted/40 rounded-md p-2 space-y-1">
+              <div className="flex gap-x-4">
+                {recipeData.mashPotVolumeL != null && <RecipeRef label="Pot vol:" value={`${recipeData.mashPotVolumeL} L`} />}
+                {recipeData.mashPotDiameterCm != null && <RecipeRef label="Pot ⌀:" value={`${recipeData.mashPotDiameterCm} cm`} />}
+              </div>
+              <div className="flex gap-x-4">
+                <RecipeRef label="Target vol:" value={`${recipeData.preHeatUpL.toFixed(1)} L`} />
+                {recipeData.preHeatUpHeightCm != null && <RecipeRef label="Target height:" value={`${recipeData.preHeatUpHeightCm} cm`} />}
+              </div>
+              {recipeData.preBoilDensityGL != null && (
+                <div><RecipeRef label="Target density:" value={`${recipeData.preBoilDensityGL} g/L`} /></div>
+              )}
+            </div>
+            {(() => {
+              const d = recipeData.mashPotDiameterCm;
+              const computedVol = d != null && d > 0 && preboil.alturaCm != null
+                ? (Math.PI * Math.pow(d / 2, 2) * preboil.alturaCm / 1000).toFixed(1)
+                : null;
+              return (
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1">
+                    <FieldGroup label="Height cm">
+                      <NumInput value={preboil.alturaCm} onChange={(v) => setPreboil("alturaCm", v)} />
+                    </FieldGroup>
+                    {computedVol != null && (
+                      <RecipeRef label="→ Vol:" value={`${computedVol} L`} />
+                    )}
+                  </div>
+                  <FieldGroup label="Density g/L">
+                    <NumInput value={preboil.densidadGL} onChange={(v) => setPreboil("densidadGL", v)} />
+                  </FieldGroup>
+                </div>
+              );
+            })()}
+            <div className="grid grid-cols-2 gap-2">
+              <FieldGroup label="Temp °C">
+                <NumInput value={preboil.tempC} onChange={(v) => setPreboil("tempC", v)} />
+              </FieldGroup>
+              <FieldGroup label="pH (target: 5.3)">
+                <NumInput value={preboil.ph} onChange={(v) => setPreboil("ph", v)} />
               </FieldGroup>
             </div>
           </div>
@@ -639,107 +707,192 @@ export function BrewdaySection({
                 <NumInput value={lavado.primerMostoPh} onChange={(v) => setLavado("primerMostoPh", v)} />
               </FieldGroup>
             </div>
-          </div>
-        </div>
-      </CollapsibleCard>
-
-      {/* ---- FIN LAVADO / PRE HEAT UP ---- */}
-      <CollapsibleCard title="Post-Sparge / Pre Heat Up" open={openPreboil} onToggle={onTogglePreboil}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="border rounded-lg p-3 space-y-2">
-            <div className="grid grid-cols-3 gap-2">
-              <FieldGroup label="Vol obj Lts">
-                <NumInput value={preboil.volumenObjL} onChange={(v) => setPreboil("volumenObjL", v)} />
-              </FieldGroup>
-              <FieldGroup label="Altura cm">
-                <NumInput value={preboil.alturaObjCm} onChange={(v) => setPreboil("alturaObjCm", v)} />
-              </FieldGroup>
-              <FieldGroup label="Densidad obj gr/L">
-                <NumInput value={preboil.densidadObjGL} onChange={(v) => setPreboil("densidadObjGL", v)} />
-              </FieldGroup>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              <FieldGroup label="Volumen Lts">
-                <NumInput value={preboil.volumenL} onChange={(v) => setPreboil("volumenL", v)} />
-              </FieldGroup>
-              <FieldGroup label="Altura cm">
-                <NumInput value={preboil.alturaCm} onChange={(v) => setPreboil("alturaCm", v)} />
-              </FieldGroup>
-              <FieldGroup label="Densidad gr/L">
-                <NumInput value={preboil.densidadGL} onChange={(v) => setPreboil("densidadGL", v)} />
-              </FieldGroup>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <FieldGroup label="Temp °C">
-                <NumInput value={preboil.tempC} onChange={(v) => setPreboil("tempC", v)} />
-              </FieldGroup>
-              <FieldGroup label="Ph (Obj: 5.3)">
-                <NumInput value={preboil.ph} onChange={(v) => setPreboil("ph", v)} />
-              </FieldGroup>
-            </div>
-          </div>
-          <div className="border rounded-lg p-3 space-y-2">
-            <SubTitle>Last run</SubTitle>
-            <FieldGroup label="Densidad gr/L">
-              <NumInput value={lastRun.densidadGL} onChange={(v) => setLastRun("densidadGL", v)} />
-            </FieldGroup>
-            <FieldGroup label="Ph (Obj &lt;5.6)">
-              <NumInput value={lastRun.ph} onChange={(v) => setLastRun("ph", v)} />
-            </FieldGroup>
+            {recipeData.mashMode !== "biab" && (
+              <div className="mt-6">
+                <SubTitle>Last run</SubTitle>
+                <div className="grid grid-cols-2 gap-2">
+                  <FieldGroup label="Density g/L">
+                    <NumInput value={lastRun.densidadGL} onChange={(v) => setLastRun("densidadGL", v)} />
+                  </FieldGroup>
+                  <FieldGroup label="pH (target: &lt;5.6)">
+                    <NumInput value={lastRun.ph} onChange={(v) => setLastRun("ph", v)} />
+                  </FieldGroup>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </CollapsibleCard>
 
       {/* ---- HERVIDO ---- */}
       <CollapsibleCard title="Boil" open={openHervido} onToggle={onToggleHervido}>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="sm:col-span-2 border rounded-lg p-3 space-y-2">
-            {hervido.entries.length === 0 && (
-              <p className="text-xs text-muted-foreground italic">Sin entradas. Agrega con el botón +.</p>
-            )}
-            {hervido.entries.map((entry, idx) => (
-              <div key={entry.id} className="flex items-end gap-2 flex-wrap">
-                <FieldGroup label={idx === 0 ? "Hora inicio hervido" : idx === hervido.entries.length - 1 ? "Hora fin hervido" : `Hora hervido ${idx}`}>
-                  <TimeInput value={entry.hora} onChange={(v) => setBoilEntry(entry.id, "hora", v)} />
-                </FieldGroup>
-                <FieldGroup label="A cm">
-                  <NumInput value={entry.alturaCm} onChange={(v) => setBoilEntry(entry.id, "alturaCm", v)} className="w-16" />
-                </FieldGroup>
-                <FieldGroup label="V Lts">
-                  <NumInput value={entry.volumenL} onChange={(v) => setBoilEntry(entry.id, "volumenL", v)} className="w-16" />
-                </FieldGroup>
-                {(idx === 0 || idx === hervido.entries.length - 1) && (
-                  <FieldGroup label="V obj Lts">
-                    <NumInput value={entry.volumenObjL} onChange={(v) => setBoilEntry(entry.id, "volumenObjL", v)} className="w-16" />
-                  </FieldGroup>
-                )}
-                <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive shrink-0" onClick={() => removeBoilEntry(entry.id)}>
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
+        <div className="space-y-4">
+          <div>
+            <div className="border rounded-lg p-3 space-y-2">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-1 pr-2 font-medium text-muted-foreground">Step</th>
+                    <th className="text-left py-1 px-2 font-medium text-muted-foreground">Time</th>
+                    <th className="text-left py-1 px-2 font-medium text-muted-foreground">Min</th>
+                    <th className="text-left py-1 px-2 font-medium text-muted-foreground">Height cm</th>
+                    <th className="text-left py-1 px-2 font-medium text-muted-foreground">Vol L</th>
+                    <th className="text-left py-1 px-2 font-medium text-muted-foreground">Target L</th>
+                    <th className="text-left py-1 px-2 font-medium text-muted-foreground">Evaporation</th>
+                    <th className="w-6" />
+                  </tr>
+                </thead>
+                <tbody>
+                  {hervido.entries.map((entry, idx) => {
+                    const isStart = idx === 0;
+                    const isEnd = idx === hervido.entries.length - 1;
+                    const isBeforeEnd = idx === hervido.entries.length - 2;
+                    const label = isStart ? "Boil start" : isEnd ? "Boil end" : `Step ${idx}`;
+                    const d = recipeData.mashPotDiameterCm;
+                    const computedVol = d != null && d > 0 && entry.alturaCm != null
+                      ? (Math.PI * Math.pow(d / 2, 2) * entry.alturaCm / 1000).toFixed(2)
+                      : null;
+                    const targetVol = isStart ? recipeData.preBoilL.toFixed(1) : isEnd ? recipeData.endOfBoilL.toFixed(1) : null;
+
+                    // Evaporation (not applicable to start step)
+                    const startEntry = hervido.entries[0];
+                    const startVolNum = d != null && d > 0 && startEntry.alturaCm != null
+                      ? Math.PI * Math.pow(d / 2, 2) * startEntry.alturaCm / 1000
+                      : null;
+                    const currentVolNum = d != null && d > 0 && entry.alturaCm != null
+                      ? Math.PI * Math.pow(d / 2, 2) * entry.alturaCm / 1000
+                      : null;
+                    const evapL = !isStart && startVolNum != null && currentVolNum != null
+                      ? startVolNum - currentVolNum
+                      : null;
+                    const evapLH = (() => {
+                      if (isStart || evapL == null || !startEntry.hora || !entry.hora) return null;
+                      const [sh, sm] = startEntry.hora.split(":").map(Number);
+                      const [eh, em] = entry.hora.split(":").map(Number);
+                      const diffMin = (eh * 60 + em) - (sh * 60 + sm);
+                      if (diffMin <= 0) return null;
+                      return evapL / (diffMin / 60);
+                    })();
+
+                    const stepMin = calcStepMin(startEntry.hora, entry.hora);
+
+                    return (
+                      <tr key={entry.id} className="border-b last:border-0">
+                        <td className="py-1 pr-2 text-muted-foreground whitespace-nowrap">{label}</td>
+                        <td className="py-1 px-2">
+                          <TimeInput value={entry.hora} onChange={(v) => setBoilEntry(entry.id, "hora", v)} className="w-36" />
+                        </td>
+                        <td className="py-1 px-2 tabular-nums text-muted-foreground">
+                          {!isStart && stepMin != null ? stepMin : ""}
+                        </td>
+                        <td className="py-1 px-2">
+                          <NumInput value={entry.alturaCm} onChange={(v) => setBoilEntry(entry.id, "alturaCm", v)} className="w-20" />
+                        </td>
+                        <td className="py-1 px-2 tabular-nums">
+                          {computedVol != null ? computedVol : "—"}
+                        </td>
+                        <td className="py-1 px-2 tabular-nums text-muted-foreground">
+                          {targetVol ?? ""}
+                        </td>
+                        <td className="py-1 px-2">
+                          {!isStart && (evapL != null || evapLH != null) ? (
+                            <div className="text-xs tabular-nums">
+                              {evapL != null && (
+                                <span>
+                                  {evapL.toFixed(2)} L
+                                  {evapLH != null && <span className="text-muted-foreground"> · {evapLH.toFixed(2)} L/h</span>}
+                                </span>
+                              )}
+                            </div>
+                          ) : null}
+                        </td>
+                        <td className="py-1 pl-1 flex items-center gap-1">
+                          {!isStart && !isEnd && (
+                            <Button type="button" variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeBoilEntry(entry.id)}>
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          )}
+                          {isBeforeEnd && (
+                            <Button type="button" variant="outline" size="sm" onClick={addBoilEntry} className="h-6 text-xs px-2">
+                              <Plus className="h-3 w-3 mr-1" /> Step
+                            </Button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Boil Timeline */}
+          {(() => {
+            const totalMin = recipeData.boilTimeMin;
+            const irishMossG = (recipeData.endOfBoilL / 20 * 2).toFixed(1);
+            const nutrientsG = (recipeData.endOfBoilL / 100).toFixed(2);
+
+            type TimelineGroup = { timeRemaining: number; items: Array<{ label: string; amount: string }> };
+            const groups: TimelineGroup[] = [];
+
+            const addItem = (label: string, amount: string, timeRemaining: number) => {
+              const g = groups.find(g => g.timeRemaining === timeRemaining);
+              if (g) g.items.push({ label, amount });
+              else groups.push({ timeRemaining, items: [{ label, amount }] });
+            };
+
+            [...recipeData.boilHops]
+              .sort((a, b) => b.additionTime - a.additionTime)
+              .forEach(h => addItem(h.name, `${h.grams}g`, h.additionTime));
+            addItem("Irish Moss", `${irishMossG}g`, 5);
+            addItem("Nutrients", `${nutrientsG}g`, 5);
+
+            groups.sort((a, b) => b.timeRemaining - a.timeRemaining);
+
+            return (
+              <div className="border rounded-lg p-3 space-y-3">
+                <SubTitle>Boil Timeline ({totalMin} min)</SubTitle>
+                {/* Bar with alternating labels above/below */}
+                {(() => {
+                  const barTop = "2.5rem";
+                  const barH = "2rem";
+                  const totalH = "8rem";
+                  const shortName = (name: string) => name.length > 5 ? name.slice(0, 5) + "." : name;
+                  return (
+                    <div className="relative" style={{ height: totalH }}>
+                      {/* Bar */}
+                      <div className="absolute inset-x-0 rounded-lg bg-lime-200 dark:bg-lime-900/40" style={{ top: barTop, height: barH }} />
+                      {groups.map((group, i) => {
+                        const pct = ((totalMin - group.timeRemaining) / totalMin) * 100;
+                        const isAbove = i % 2 === 0;
+                        return (
+                          <div key={group.timeRemaining} className="absolute inset-y-0" style={{ left: `${pct}%` }}>
+                            {/* Tick */}
+                            <div className="absolute w-px bg-lime-500" style={{ top: barTop, height: barH }} />
+                            {/* Minute label inside bar */}
+                            <span className="absolute ml-1 text-[10px] font-medium tabular-nums text-lime-600 dark:text-lime-400" style={{ top: "2.65rem" }}>
+                              {group.timeRemaining}
+                            </span>
+                            {/* Items stacked above or below */}
+                            <div
+                              className={`absolute -translate-x-1/2 flex gap-0.5 ${isAbove ? "flex-col-reverse" : "flex-col"}`}
+                              style={isAbove ? { bottom: "6rem" } : { top: "5rem" }}
+                            >
+                              {group.items.map(it => (
+                                <span key={it.label} className="text-[11px] font-bold whitespace-nowrap text-muted-foreground leading-tight">
+                                  {it.amount} {shortName(it.label)}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </div>
-            ))}
-            <Button type="button" variant="outline" size="sm" onClick={addBoilEntry} className="mt-1 h-7 text-xs">
-              <Plus className="h-3.5 w-3.5 mr-1" /> Agregar entrada
-            </Button>
-          </div>
-          <div className="border rounded-lg p-3 space-y-2">
-            <SubTitle>Last 5 min</SubTitle>
-            <div className="flex items-center gap-2">
-              <Checkbox checked={hervido.irishMossCheck} onCheckedChange={(v) => setHervido("irishMossCheck", v === true)} />
-              <span className="text-sm">Irish Moss</span>
-              <NumInput value={hervido.irishMossGr} onChange={(v) => setHervido("irishMossGr", v)} className="w-16" />
-              <span className="text-xs text-muted-foreground">gr</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox checked={hervido.nutrientesCheck} onCheckedChange={(v) => setHervido("nutrientesCheck", v === true)} />
-              <span className="text-sm">Nutrientes</span>
-              <NumInput value={hervido.nutrientesGr} onChange={(v) => setHervido("nutrientesGr", v)} className="w-16" />
-              <span className="text-xs text-muted-foreground">gr</span>
-            </div>
-            <FieldGroup label="Evaporacion Lts">
-              <NumInput value={hervido.evaporacionL} onChange={(v) => setHervido("evaporacionL", v)} />
-            </FieldGroup>
-          </div>
+            );
+          })()}
         </div>
       </CollapsibleCard>
 
@@ -747,11 +900,11 @@ export function BrewdaySection({
       <CollapsibleCard title="Whirlpool &amp; Chilling" open={openWhirlpool} onToggle={onToggleWhirlpool}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border rounded-lg p-3 space-y-2">
-            <FieldGroup label="Hora inicio whirlpool">
+            <FieldGroup label="Whirlpool start">
               <TimeInput value={whirlpoolEnfriado.horaInicioWhirlpool} onChange={(v) => setWhirlpool("horaInicioWhirlpool", v)} />
             </FieldGroup>
             <div className="grid grid-cols-2 gap-2">
-              <FieldGroup label="Hora inicio enfriado">
+              <FieldGroup label="Chilling start">
                 <TimeInput value={whirlpoolEnfriado.horaInicioEnfriado} onChange={(v) => setWhirlpool("horaInicioEnfriado", v)} />
               </FieldGroup>
               <FieldGroup label="Temp °C">
@@ -759,7 +912,7 @@ export function BrewdaySection({
               </FieldGroup>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <FieldGroup label="Hora fin enfriado">
+              <FieldGroup label="Chilling end">
                 <TimeInput value={whirlpoolEnfriado.horaFinEnfriado} onChange={(v) => setWhirlpool("horaFinEnfriado", v)} />
               </FieldGroup>
               <FieldGroup label="Temp °C">
@@ -767,7 +920,7 @@ export function BrewdaySection({
               </FieldGroup>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <FieldGroup label="Hora fin trasvase">
+              <FieldGroup label="Transfer end">
                 <TimeInput value={whirlpoolEnfriado.horaFinTrasvase} onChange={(v) => setWhirlpool("horaFinTrasvase", v)} />
               </FieldGroup>
               <FieldGroup label="Temp °C">
@@ -776,14 +929,14 @@ export function BrewdaySection({
             </div>
           </div>
           <div className="border rounded-lg p-3 space-y-2">
-            <CheckRow checked={whirlpoolEnfriado.muestraOg} onCheckedChange={(v) => setWhirlpool("muestraOg", v)} label="Muestra OG" />
-            <FieldGroup label="Densidad gr/L">
+            <CheckRow checked={whirlpoolEnfriado.muestraOg} onCheckedChange={(v) => setWhirlpool("muestraOg", v)} label="OG sample" />
+            <FieldGroup label="Density g/L">
               <NumInput value={whirlpoolEnfriado.muestraOgDensidad} onChange={(v) => setWhirlpool("muestraOgDensidad", v)} />
             </FieldGroup>
-            <FieldGroup label="Densidad obj gr/L">
+            <FieldGroup label="Target density g/L">
               <NumInput value={whirlpoolEnfriado.muestraOgDensidadObj} onChange={(v) => setWhirlpool("muestraOgDensidadObj", v)} />
             </FieldGroup>
-            <FieldGroup label="Ph (5.2-5.6)">
+            <FieldGroup label="pH (5.2–5.6)">
               <NumInput value={whirlpoolEnfriado.muestraOgPh} onChange={(v) => setWhirlpool("muestraOgPh", v)} />
             </FieldGroup>
           </div>
@@ -794,18 +947,18 @@ export function BrewdaySection({
       <CollapsibleCard title="Fermentation" open={openFermentacion} onToggle={onToggleFermentacion}>
         <div className="space-y-3">
           <div className="grid grid-cols-3 gap-3">
-            <FieldGroup label="Peso total kg">
+            <FieldGroup label="Total weight kg">
               <NumInput value={fermentacion.pesoTotalKg} onChange={(v) => setFermentacion("pesoTotalKg", v)} />
             </FieldGroup>
-            <FieldGroup label="Peso liquido kg">
+            <FieldGroup label="Liquid weight kg">
               <NumInput value={fermentacion.pesoLiquidoKg} onChange={(v) => setFermentacion("pesoLiquidoKg", v)} />
             </FieldGroup>
-            <FieldGroup label="Volumen Lts">
+            <FieldGroup label="Volume L">
               <NumInput value={fermentacion.volumenL} onChange={(v) => setFermentacion("volumenL", v)} />
             </FieldGroup>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <FieldGroup label="Hora pitching">
+            <FieldGroup label="Pitching time">
               <TimeInput value={fermentacion.horaPitching} onChange={(v) => setFermentacion("horaPitching", v)} />
             </FieldGroup>
             <FieldGroup label="Temp °C">
@@ -813,8 +966,8 @@ export function BrewdaySection({
             </FieldGroup>
           </div>
           <div className="flex items-center gap-4">
-            <CheckRow checked={fermentacion.limpiezaCheck} onCheckedChange={(v) => setFermentacion("limpiezaCheck", v)} label="Limpieza" />
-            <FieldGroup label="Peso garrafa final kg">
+            <CheckRow checked={fermentacion.limpiezaCheck} onCheckedChange={(v) => setFermentacion("limpiezaCheck", v)} label="Cleanup" />
+            <FieldGroup label="Final tank weight kg">
               <NumInput value={fermentacion.pesoGarrafaFinalKg} onChange={(v) => setFermentacion("pesoGarrafaFinalKg", v)} />
             </FieldGroup>
           </div>
@@ -827,7 +980,7 @@ export function BrewdaySection({
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2">
               <Checkbox checked={embarrilado.gelatinaCheck} onCheckedChange={(v) => setEmbarrilado("gelatinaCheck", v === true)} />
-              <span className="text-sm whitespace-nowrap">Gelatina:</span>
+              <span className="text-sm whitespace-nowrap">Gelatin:</span>
               <TextInput value={embarrilado.gelatinaText} onChange={(v) => setEmbarrilado("gelatinaText", v)} />
             </div>
             <div className="flex items-center gap-2">
@@ -837,7 +990,7 @@ export function BrewdaySection({
             </div>
           </div>
           <div className="flex items-center gap-4 flex-wrap">
-            <FieldGroup label="Embarrilado Fecha y hora">
+            <FieldGroup label="Kegging date &amp; time">
               <Input
                 type="datetime-local"
                 value={embarrilado.fechaHora ?? ""}
@@ -845,7 +998,7 @@ export function BrewdaySection({
                 className="h-7 text-sm w-52"
               />
             </FieldGroup>
-            <FieldGroup label="Volumen L">
+            <FieldGroup label="Volume L">
               <NumInput value={embarrilado.volumenL} onChange={(v) => setEmbarrilado("volumenL", v)} />
             </FieldGroup>
           </div>
