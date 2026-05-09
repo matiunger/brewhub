@@ -7,7 +7,18 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const data = await request.json();
-  const yeast = await prisma.yeast.create({ data });
+  const body = await request.json();
+  const yeast = await prisma.yeast.create({
+    data: {
+      name: body.name,
+      brand: body.brand ?? null,
+      type: body.type ?? null,
+      cultureType: body.cultureType ?? null,
+      temperatureRange: body.temperatureRange ?? null,
+      profile: body.profile ?? null,
+      uses: body.uses ?? null,
+      attenuation: body.attenuation ?? null,
+    },
+  });
   return NextResponse.json(yeast);
 }

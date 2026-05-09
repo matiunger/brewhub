@@ -353,18 +353,15 @@ export function beerjsonToBatchData(recipe: BeerJsonRecipe): ImportedBatchData {
     targetOg: recipe.original_gravity?.value ?? null,
     targetFg: recipe.final_gravity?.value ?? null,
     targetIbu: recipe.ibu_estimate?.value ?? null,
-    targetSrm: recipe.color_estimate
-      ? colorToLovibond(recipe.color_estimate.value, recipe.color_estimate.unit) * 1.3546 - 0.76 // back to SRM
-      : null,
+    targetSrm: (() => {
+      const ce = recipe.color_estimate;
+      if (!ce) return null;
+      if (ce.unit === "srm") return ce.value;
+      if (ce.unit === "ebc") return ce.value / 1.97;
+      return colorToLovibond(ce.value, ce.unit) * 1.3546 - 0.76;
+    })(),
     draft: true,
   };
-
-  // Keep SRM as-is if already in SRM
-  if (recipe.color_estimate?.unit === "srm") {
-    batch.targetSrm = recipe.color_estimate.value;
-  } else if (recipe.color_estimate?.unit === "ebc") {
-    batch.targetSrm = recipe.color_estimate.value / 1.97;
-  }
 
   const grains = (recipe.fermentable_additions ?? []).map((f) => ({
     name: f.name,

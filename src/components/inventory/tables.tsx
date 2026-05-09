@@ -47,12 +47,15 @@ interface Equipment {
   mashEfficiency: number | null;
   mashTunVolumeL: number | null;
   mashTunDeadSpaceL: number | null;
+  mashTunLossL: number | null;
   boilPotVolumeL: number | null;
   boilPotDiameter: number | null;
   boilEvaporationRateLH: number | null;
   heatingEvaporationRateLH: number | null;
   spargeWaterPotDiameter: number | null;
   grainAbsorptionLKg: number | null;
+  fermenterVolumeL: number | null;
+  fermenterWeightKg: number | null;
   fermenterLossL: number;
   trubLossL: number;
   systemLossPercent: number | null;
@@ -233,6 +236,11 @@ function EquipmentForm({
           onChange={(e) => set("mashTunDeadSpaceL", e.target.value)} />
       </div>
       <div className="space-y-2">
+        <Label>Mash Tun Loss (L)</Label>
+        <Input type="number" step="0.1" value={num(form.mashTunLossL)}
+          onChange={(e) => set("mashTunLossL", e.target.value)} />
+      </div>
+      <div className="space-y-2">
         <Label>Boil Pot Volume (L)</Label>
         <Input type="number" step="0.1" value={num(form.boilPotVolumeL)}
           onChange={(e) => set("boilPotVolumeL", e.target.value)} />
@@ -261,6 +269,16 @@ function EquipmentForm({
         <Label>Grain Absorption (L/kg)</Label>
         <Input type="number" step="0.01" value={num(form.grainAbsorptionLKg)}
           onChange={(e) => set("grainAbsorptionLKg", e.target.value)} />
+      </div>
+      <div className="space-y-2">
+        <Label>Fermenter Volume (L)</Label>
+        <Input type="number" step="0.1" value={num(form.fermenterVolumeL)}
+          onChange={(e) => set("fermenterVolumeL", e.target.value)} />
+      </div>
+      <div className="space-y-2">
+        <Label>Fermenter Weight (kg)</Label>
+        <Input type="number" step="0.1" value={num(form.fermenterWeightKg)}
+          onChange={(e) => set("fermenterWeightKg", e.target.value)} />
       </div>
       <div className="space-y-2">
         <Label>Fermenter Loss (L) *</Label>

@@ -5,22 +5,34 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const data = await request.json();
+  const body = await request.json();
   const { id } = await params;
   const profile = await prisma.waterProfile.update({
     where: { id },
-    data,
+    data: {
+      name: body.name,
+      caPpm: body.caPpm,
+      mgPpm: body.mgPpm,
+      naPpm: body.naPpm,
+      clPpm: body.clPpm,
+      so4Ppm: body.so4Ppm,
+      znPpm: body.znPpm ?? null,
+      hco3Ppm: body.hco3Ppm ?? null,
+      pH: body.pH ?? null,
+    },
   });
   return NextResponse.json(profile);
 }
 
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  await prisma.waterProfile.delete({
-    where: { id },
-  });
-  return NextResponse.json({ success: true });
+  try {
+    await prisma.waterProfile.delete({ where: { id } });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Failed to delete water profile" }, { status: 500 });
+  }
 }

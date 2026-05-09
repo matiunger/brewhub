@@ -11,7 +11,7 @@ interface BatchWithIngredients {
   }[];
   hops: {
     grams: number;
-    additionTime: number;
+    additionTime: number | null;
     use: string;
     alphaAcid?: number | null;
     hop: {
@@ -27,29 +27,136 @@ interface BatchWithIngredients {
   targetFermentarL: number | null;
   equipment: {
     trubLossL: number;
+    brewhouseEfficiency: number;
+    mashEfficiency?: number | null;
   } | null;
   // Equipment snapshot fields (take priority over linked equipment)
   equipmentTrubLossL?: number | null;
+  equipmentBrewhouseEff?: number | null;
+  equipmentMashEff?: number | null;
+}
+
+// --- IBU Calculation (Tinseth + Whirlpool + Dry Hop) ---
+
+function tinsethUtilization(boilGravity: number, timeMinutes: number): number {
+  const bigness = 1.65 * Math.pow(0.000125, boilGravity - 1);
+  const timeFactor = (1 - Math.exp(-0.04 * timeMinutes)) / 4.15;
+  return bigness * timeFactor;
+}
+
+function tinsethIbu(
+  alphaAcidPercent: number,
+  weightGrams: number,
+  boilGravity: number,
+  timeMinutes: number,
+  batchVolumeLiters: number
+): number {
+  const aaDecimal = alphaAcidPercent / 100;
+  const utilization = tinsethUtilization(boilGravity, timeMinutes);
+  return (aaDecimal * weightGrams * utilization * 1000) / batchVolumeLiters;
+}
+
+function whirlpoolTempFactor(tempCelsius: number): number {
+  if (tempCelsius < 60) return 0;
+  return Math.pow(2, (tempCelsius - 100) / 10);
+}
+
+export interface HopIbuResult {
+  ibu: number;
+  perceivedIbu: number;
+  isDryHop: boolean;
+}
+
+export interface IbuBreakdown {
+  totalCalculatedIbu: number;
+  totalPerceivedIbu: number;
+  perHop: HopIbuResult[];
+}
+
+export function calculateIbuBreakdown(
+  hops: Array<{
+    grams: number;
+    additionTime: number | null;
+    use: string;
+    alphaAcid?: number | null;
+    hop: { alphaAcid: number };
+  }>,
+  boilGravity: number,
+  batchVolumeLiters: number,
+  boilTimeMinutes: number,
+  whirlpoolDefaultTempC = 80
+): IbuBreakdown {
+  const volume = Math.max(batchVolumeLiters, 0.001);
+  const gravity = Math.min(Math.max(boilGravity, 1.000), 1.150);
+
+  let totalCalculatedIbu = 0;
+  let totalPerceivedIbu = 0;
+  const perHop: HopIbuResult[] = [];
+
+  for (const bh of hops) {
+    const aa = bh.alphaAcid ?? bh.hop.alphaAcid;
+    const grams = bh.grams;
+    const time = bh.additionTime ?? 0;
+    const use = bh.use;
+
+    let ibu = 0;
+    let perceivedIbu = 0;
+    let isDryHop = false;
+
+    if (use === "dry_hop") {
+      isDryHop = true;
+      perceivedIbu = (0.10 * (aa / 100) * grams * 1000) / volume;
+    } else if (use === "whirlpool" || use === "hop_stand") {
+      const effectiveTime = time * whirlpoolTempFactor(whirlpoolDefaultTempC);
+      ibu = tinsethIbu(aa, grams, gravity, effectiveTime, volume);
+      perceivedIbu = ibu;
+    } else if (use === "fwh" || use === "mash") {
+      const fwhTime = Math.min(boilTimeMinutes, 60);
+      ibu = tinsethIbu(aa, grams, gravity, fwhTime, volume);
+      perceivedIbu = ibu;
+    } else {
+      ibu = tinsethIbu(aa, grams, gravity, Math.max(time, 0), volume);
+      perceivedIbu = ibu;
+    }
+
+    totalCalculatedIbu += ibu;
+    totalPerceivedIbu += perceivedIbu;
+    perHop.push({ ibu, perceivedIbu, isDryHop });
+  }
+
+  return {
+    totalCalculatedIbu: Math.max(0, totalCalculatedIbu),
+    totalPerceivedIbu: Math.max(0, totalPerceivedIbu),
+    perHop,
+  };
 }
 
 export function calculateBrewingStats(batch: BatchWithIngredients) {
   const batchVolume = batch.targetFermentarL || 20; // Default to 20L if not specified
-  
-  // Calculate OG from grains
+  const trubLossL = batch.equipmentTrubLossL ?? batch.equipment?.trubLossL ?? 1.0;
+  const postChillVolumeL = batchVolume + trubLossL;
+
+  // Mash efficiency: snapshot takes priority, fall back to linked equipment, then default 75%
+  const mashEff = (
+    batch.equipmentMashEff ??
+    batch.equipment?.mashEfficiency ??
+    batch.equipmentBrewhouseEff ??
+    batch.equipment?.brewhouseEfficiency ??
+    75
+  ) / 100;
+
+  // Total theoretical extract (kg), then apply mash efficiency
   let totalExtractableSugar = 0;
-  let totalGravityPoints = 0;
-  
   batch.grains.forEach((bg) => {
-    const yield_ = (bg.maxYield ?? bg.grain.maxYield) || 75; // Default 75% yield
-    const extractableSugar = (bg.grams / 1000) * (yield_ / 100); // kg of extract
-    totalExtractableSugar += extractableSugar;
+    const yield_ = (bg.maxYield ?? bg.grain.maxYield) || 75;
+    totalExtractableSugar += (bg.grams / 1000) * (yield_ / 100);
   });
-  
-  // Standard formula: OG = 1 + (points / 1000)
-  // Points = extract (kg) * 384 / batch volume (L)
-  // This gives approximate gravity points
-  const points = (totalExtractableSugar * 384) / batchVolume;
-  const og = 1 + (points / 1000);
+  const adjustedExtract = totalExtractableSugar * mashEff;
+
+  // °P = extract (kg) × 1000 / post-chill volume (L) / 10
+  const plato = (adjustedExtract * 1000) / postChillVolumeL / 10;
+  // Balling formula: SG from °P
+  const og = 1 + plato / (258.6 - plato * (227.1 / 258.2));
   
   // Calculate FG from OG and average yeast attenuation
   let avgAttenuation = 75; // Default 75%
@@ -61,39 +168,18 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
   }
   
   const attenuationFactor = avgAttenuation / 100;
-  const fg = 1 + ((points * (1 - attenuationFactor)) / 1000);
+  const fg = og - (og - 1) * attenuationFactor;
   
   // Calculate ABV
   const abv = (og - fg) * 131.25;
   
   // Calculate IBU using Tinseth formula
-  let totalIbu = 0;
-  batch.hops.forEach((bh) => {
-    const aa = (bh.alphaAcid ?? bh.hop.alphaAcid) / 100;
-    const grams = bh.grams;
-    const time = bh.additionTime;
-    
-    // Tinseth utilization formula
-    // For boil hops: U = 1.65 * 0.000125^(boil gravity - 1) * (1 - e^(-0.04 * time)) / 4.15
-    const boilGravity = (og + 1) / 2; // Average between OG and water (1.000)
-    const utilization = 1.65 * Math.pow(0.000125, boilGravity - 1) * 
-                       (1 - Math.exp(-0.04 * time)) / 4.15;
-    
-    // IBU contribution
-    const ibu = (grams * aa * utilization * 1000) / batchVolume;
-    
-    // Adjust for different hop uses
-    let useFactor = 1;
-    if (bh.use === "fwh") useFactor = 1.1;
-    else if (bh.use === "whirlpool" || bh.use === "hop_stand") useFactor = 0.5;
-    else if (bh.use === "dry_hop") useFactor = 0;
-    
-    totalIbu += ibu * useFactor;
-  });
+  const boilGravityForIbu = (og + 1) / 2; // Average between OG and water
+  const ibuResult = calculateIbuBreakdown(batch.hops, boilGravityForIbu, batchVolume, 60);
+  const totalIbu = ibuResult.totalCalculatedIbu;
   
-  // Calculate post-chill volume for MCU (fermenter + trub loss)
-  const trubLossL = batch.equipmentTrubLossL ?? batch.equipment?.trubLossL ?? 1.0;
-  const postChillGal = (batchVolume + trubLossL) * 0.264172;
+  // Convert post-chill volume to gallons for MCU
+  const postChillGal = postChillVolumeL * 0.264172;
 
   // Calculate SRM (Standard Reference Method)
   // Formula: SRM = 1.4922 * MCU^0.6859
@@ -117,6 +203,9 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
     srm: Math.max(0, srm),
     abv: Math.max(0, abv),
     totalGrainWeight,
+    ogMashEffPct: Math.round(mashEff * 100),
+    ogPostChillVolumeL: Math.round(postChillVolumeL * 10) / 10,
+    ogAdjustedExtractKg: Math.round(adjustedExtract * 100) / 100,
   };
 }
 

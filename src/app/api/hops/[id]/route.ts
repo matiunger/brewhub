@@ -5,11 +5,21 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const data = await request.json();
+  const body = await request.json();
   const { id } = await params;
   const hop = await prisma.hop.update({
     where: { id },
-    data,
+    data: {
+      name: body.name,
+      origin: body.origin ?? null,
+      form: body.form ?? null,
+      hopType: body.hopType ?? null,
+      alphaAcid: body.alphaAcid,
+      betaAcid: body.betaAcid ?? null,
+      profile: body.profile ?? null,
+      styles: body.styles ?? null,
+      alternatives: body.alternatives ?? null,
+    },
   });
   return NextResponse.json(hop);
 }

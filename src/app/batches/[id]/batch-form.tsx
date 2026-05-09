@@ -58,119 +58,78 @@ export function BatchForm({ batch, equipment, updateAction, updateNotesAction, b
   const inner = (
     <>
       <form ref={formRef} className="space-y-4">
-        {isBeer ? (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" defaultValue={batch.name} onChange={scheduleAutoSave} />
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" name="name" defaultValue={batch.name} onChange={scheduleAutoSave} />
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="style">Style</Label>
-                <Input
-                  id="style"
-                  name="style"
-                  list="style-options"
-                  defaultValue={batch.style || ""}
-                  autoComplete="off"
-                  onChange={scheduleAutoSave}
-                />
-                <datalist id="style-options">
-                  {styleNames.map((s) => (
-                    <option key={s} value={s} />
-                  ))}
-                </datalist>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="brewDate">Brew Date</Label>
-                <Input
-                  id="brewDate"
-                  name="brewDate"
-                  type="date"
-                  defaultValue={batch.brewDate?.toISOString().split("T")[0]}
-                  onChange={scheduleAutoSave}
-                />
-              </div>
-
-              <div className="flex items-end pb-2">
-                <div className="flex items-center space-x-2">
-                  <input type="hidden" name="draft" value={draft ? "on" : "off"} />
-                  <Switch
-                    id="draft"
-                    checked={draft}
-                    onCheckedChange={(checked) => { setDraft(checked); scheduleAutoSave(); }}
-                  />
-                  <Label htmlFor="draft" className="text-sm font-normal">Draft</Label>
-                </div>
-              </div>
-            </div>
-
-            {equipment !== undefined && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="equipmentId">Equipment</Label>
-                  <input type="hidden" name="equipmentId" value={equipmentId} />
-                  <Select
-                    value={equipmentId}
-                    onValueChange={(val) => { setEquipmentId(val); scheduleAutoSave(); }}
-                    disabled={equipment.length === 0}
-                  >
-                    <SelectTrigger id="equipmentId">
-                      <SelectValue placeholder={equipment.length === 0 ? "No equipment configured" : "Select equipment…"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {equipment.map((e) => (
-                        <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="style">Style</Label>
+            <Input
+              id="style"
+              name="style"
+              list={isBeer ? "style-options" : undefined}
+              defaultValue={batch.style || ""}
+              autoComplete="off"
+              onChange={scheduleAutoSave}
+            />
+            {isBeer && (
+              <datalist id="style-options">
+                {styleNames.map((s) => (
+                  <option key={s} value={s} />
+                ))}
+              </datalist>
             )}
-          </>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" defaultValue={batch.name} onChange={scheduleAutoSave} />
-              </div>
+          </div>
+        </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="style">Style</Label>
-                <Input id="style" name="style" defaultValue={batch.style || ""} onChange={scheduleAutoSave} />
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="brewDate">Brew Date</Label>
+            <Input
+              id="brewDate"
+              name="brewDate"
+              type="date"
+              defaultValue={batch.brewDate?.toISOString().split("T")[0]}
+              onChange={scheduleAutoSave}
+            />
+          </div>
+
+          <div className="flex items-end pb-2">
+            <div className="flex items-center space-x-2">
+              <input type="hidden" name="draft" value={draft ? "on" : "off"} />
+              <Switch
+                id="draft"
+                checked={draft}
+                onCheckedChange={(checked) => { setDraft(checked); scheduleAutoSave(); }}
+              />
+              <Label htmlFor="draft" className="text-sm font-normal">Draft</Label>
             </div>
+          </div>
+        </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="brewDate">Brew Date</Label>
-                <Input
-                  id="brewDate"
-                  name="brewDate"
-                  type="date"
-                  defaultValue={batch.brewDate?.toISOString().split("T")[0]}
-                  onChange={scheduleAutoSave}
-                />
-              </div>
-
-              <div className="flex items-end pb-2">
-                <div className="flex items-center space-x-2">
-                  <input type="hidden" name="draft" value={draft ? "on" : "off"} />
-                  <Switch
-                    id="draft"
-                    checked={draft}
-                    onCheckedChange={(checked) => { setDraft(checked); scheduleAutoSave(); }}
-                  />
-                  <Label htmlFor="draft" className="text-sm font-normal">Draft</Label>
-                </div>
-              </div>
+        {isBeer && equipment !== undefined && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="equipmentId">Equipment</Label>
+              <input type="hidden" name="equipmentId" value={equipmentId} />
+              <Select
+                value={equipmentId}
+                onValueChange={(val) => { setEquipmentId(val); scheduleAutoSave(); }}
+                disabled={equipment.length === 0}
+              >
+                <SelectTrigger id="equipmentId">
+                  <SelectValue placeholder={equipment.length === 0 ? "No equipment configured" : "Select equipment…"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {equipment.map((e) => (
+                    <SelectItem key={e.id} value={e.id}>{e.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </>
+          </div>
         )}
       </form>
 

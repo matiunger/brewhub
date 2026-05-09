@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BatchForm } from "./batch-form";
 import stylesData from "../../../../styles.json";
 import { srmToHex, srmIsLight } from "@/lib/olfarve";
-import { calculateAcidAddition, calculateSpargeAcidDose, type AcidType } from "@/lib/calculations";
+import { calculateAcidAddition, calculateSpargeAcidDose, calculateIbuBreakdown, type AcidType } from "@/lib/calculations";
 import { parseBrewdayData, type BrewdayData } from "@/lib/brewday-types";
 import { BrewdaySection, type RecipeData } from "./brewday-section";
 
@@ -190,6 +190,9 @@ interface Stats {
   ibu: number;
   srm: number;
   abv: number;
+  ogMashEffPct: number;
+  ogPostChillVolumeL: number;
+  ogAdjustedExtractKg: number;
 }
 
 interface Equipment {
@@ -211,10 +214,13 @@ interface EquipmentSnapshot {
   mashEff: number | null;
   mashTunVolumeL: number | null;
   mashTunDeadSpaceL: number | null;
+  mashTunLossL: number | null;
   boilPotVolumeL: number | null;
   boilEvapRateLH: number | null;
   heatEvapRateLH: number | null;
   grainAbsLKg: number | null;
+  fermenterVolumeL: number | null;
+  fermenterWeightKg: number | null;
   fermenterLossL: number | null;
   trubLossL: number | null;
   systemLossPct: number | null;
@@ -308,6 +314,8 @@ interface BeerSectionsProps {
   updateBatchWaterSnapshotAction: (type: "source" | "target", data: { caPpm: number; mgPpm: number; naPpm: number; clPpm: number; so4Ppm: number; znPpm: number | null; hco3Ppm: number | null; pH: number | null }) => Promise<void>;
   saltAdditions: { saltChalkGL: number | null; saltBakingSodaGL: number | null; saltGypsumGL: number | null; saltCaCl2GL: number | null; saltEpsomGL: number | null; saltNaClGL: number | null };
   updateSaltAdditionsAction: (data: { saltChalkGL: number | null; saltBakingSodaGL: number | null; saltGypsumGL: number | null; saltCaCl2GL: number | null; saltEpsomGL: number | null; saltNaClGL: number | null }) => Promise<void>;
+  acidAddition: { mashAcidType: string; mashAcidDose: number | null };
+  updateAcidAdditionAction: (data: { mashAcidType: string; mashAcidDose: number | null }) => Promise<void>;
   updateBoilTimesAction: (data: { heatUpTimeMin: number | null; boilTimeMin: number | null; whirpoolTimeMin: number | null }) => Promise<void>;
   updateMashParamsAction: (data: { grainTempC: number | null; targetPh: number | null; spargeTargetPh: number | null }) => Promise<void>;
   mashSteps: MashStep[];
@@ -324,6 +332,7 @@ interface BeerSectionsProps {
   deleteMashStepAction: (id: string) => Promise<void>;
   brewdayData: string | null;
   updateBrewdayDataAction: (data: string) => Promise<void>;
+  allKegs: { id: string; name: string; capacity: number; tareWeight: number | null }[];
   equipmentSnapshot: EquipmentSnapshot | null;
   updateEquipmentSnapshotAction: (data: {
     equipmentName: string | null;
@@ -331,10 +340,13 @@ interface BeerSectionsProps {
     equipmentMashEff: number | null;
     equipmentMashTunVolumeL: number | null;
     equipmentMashTunDeadSpaceL: number | null;
+    equipmentMashTunLossL: number | null;
     equipmentBoilPotVolumeL: number | null;
     equipmentBoilEvapRateLH: number | null;
     equipmentHeatEvapRateLH: number | null;
     equipmentGrainAbsLKg: number | null;
+    equipmentFermenterVolumeL: number | null;
+    equipmentFermenterWeightKg: number | null;
     equipmentFermenterLossL: number | null;
     equipmentTrubLossL: number | null;
     equipmentSystemLossPct: number | null;
@@ -484,6 +496,8 @@ export function BeerSections({
   updateBatchWaterSnapshotAction,
   saltAdditions,
   updateSaltAdditionsAction,
+  acidAddition,
+  updateAcidAdditionAction,
   updateBoilTimesAction,
   updateMashParamsAction,
   mashSteps,
@@ -492,6 +506,7 @@ export function BeerSections({
   deleteMashStepAction,
   brewdayData,
   updateBrewdayDataAction,
+  allKegs,
   equipmentSnapshot,
   updateEquipmentSnapshotAction,
 }: BeerSectionsProps) {
@@ -517,8 +532,8 @@ export function BeerSections({
   const [grainTempC, setGrainTempC] = useState<number | null>(batch.grainTempC ?? 20);
   const [targetPh, setTargetPh] = useState<number | null>(batch.targetPh ?? 5.4);
   const [spargeTargetPh, setSpargeTargetPh] = useState<number | null>(batch.spargeTargetPh ?? 5.4);
-  const [acidType, setAcidType] = useState<AcidType>("lactic");
-  const [acidAmount, setAcidAmount] = useState("");
+  const [acidType, setAcidType] = useState<AcidType>((acidAddition.mashAcidType as AcidType) ?? "lactic");
+  const [acidAmount, setAcidAmount] = useState(acidAddition.mashAcidDose != null ? String(acidAddition.mashAcidDose) : "");
 
   const [grainRows, setGrainRows] = useState(grains);
   const [editingGrainId, setEditingGrainId] = useState<string | null>(null);
@@ -625,6 +640,25 @@ export function BeerSections({
     }, 800);
   }, [updateSaltAdditionsAction]);
 
+  const acidRef = useRef({ acidType, acidAmount });
+  acidRef.current = { acidType, acidAmount };
+  const acidTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const scheduleAcidSave = useCallback(() => {
+    if (acidTimerRef.current) clearTimeout(acidTimerRef.current);
+    acidTimerRef.current = setTimeout(async () => {
+      try {
+        const { acidType: t, acidAmount: a } = acidRef.current;
+        await updateAcidAdditionAction({
+          mashAcidType: t,
+          mashAcidDose: parseFloat(a) > 0 ? parseFloat(a) : null,
+        });
+      } catch {
+        toast.error("Failed to save acid addition");
+      }
+    }, 800);
+  }, [updateAcidAdditionAction]);
+
   const [brewday, setBrewday] = useState<BrewdayData>(() => parseBrewdayData(brewdayData));
   const brewdayRef = useRef(brewday);
   brewdayRef.current = brewday;
@@ -727,12 +761,15 @@ export function BeerSections({
       mashEff:            eqSnap.mashEff             != null ? String(eqSnap.mashEff)         : "",
       mashTunVolumeL:     eqSnap.mashTunVolumeL      != null ? String(eqSnap.mashTunVolumeL)  : "",
       mashTunDeadSpaceL:  eqSnap.mashTunDeadSpaceL   != null ? String(eqSnap.mashTunDeadSpaceL) : "",
+      mashTunLossL:       eqSnap.mashTunLossL        != null ? String(eqSnap.mashTunLossL)      : "",
       boilPotVolumeL:       eqSnap.boilPotVolumeL        != null ? String(eqSnap.boilPotVolumeL)        : "",
       boilPotDiameter:      eqSnap.boilPotDiameter       != null ? String(eqSnap.boilPotDiameter)       : "",
       spargeWaterPotDiameter: eqSnap.spargeWaterPotDiameter != null ? String(eqSnap.spargeWaterPotDiameter) : "",
       boilEvapRateLH:     eqSnap.boilEvapRateLH      != null ? String(eqSnap.boilEvapRateLH)  : "",
       heatEvapRateLH:     eqSnap.heatEvapRateLH      != null ? String(eqSnap.heatEvapRateLH)  : "",
       grainAbsLKg:        eqSnap.grainAbsLKg         != null ? String(eqSnap.grainAbsLKg)     : "",
+      fermenterVolumeL:   eqSnap.fermenterVolumeL    != null ? String(eqSnap.fermenterVolumeL)  : "",
+      fermenterWeightKg:  eqSnap.fermenterWeightKg   != null ? String(eqSnap.fermenterWeightKg) : "",
       fermenterLossL:     eqSnap.fermenterLossL      != null ? String(eqSnap.fermenterLossL)  : "",
       trubLossL:          eqSnap.trubLossL           != null ? String(eqSnap.trubLossL)       : "",
       systemLossPct:      eqSnap.systemLossPct       != null ? String(eqSnap.systemLossPct)   : "",
@@ -751,10 +788,13 @@ export function BeerSections({
         mashEff:            n("mashEff"),
         mashTunVolumeL:     n("mashTunVolumeL"),
         mashTunDeadSpaceL:  n("mashTunDeadSpaceL"),
+        mashTunLossL:       n("mashTunLossL"),
         boilPotVolumeL:     n("boilPotVolumeL"),
         boilEvapRateLH:     n("boilEvapRateLH"),
         heatEvapRateLH:     n("heatEvapRateLH"),
         grainAbsLKg:        n("grainAbsLKg"),
+        fermenterVolumeL:   n("fermenterVolumeL"),
+        fermenterWeightKg:  n("fermenterWeightKg"),
         fermenterLossL:     n("fermenterLossL"),
         trubLossL:          n("trubLossL"),
         systemLossPct:      n("systemLossPct"),
@@ -768,10 +808,13 @@ export function BeerSections({
         equipmentMashEff:           updated.mashEff,
         equipmentMashTunVolumeL:    updated.mashTunVolumeL,
         equipmentMashTunDeadSpaceL: updated.mashTunDeadSpaceL,
+        equipmentMashTunLossL:      updated.mashTunLossL,
         equipmentBoilPotVolumeL:    updated.boilPotVolumeL,
         equipmentBoilEvapRateLH:    updated.boilEvapRateLH,
         equipmentHeatEvapRateLH:    updated.heatEvapRateLH,
         equipmentGrainAbsLKg:       updated.grainAbsLKg,
+        equipmentFermenterVolumeL:  updated.fermenterVolumeL,
+        equipmentFermenterWeightKg: updated.fermenterWeightKg,
         equipmentFermenterLossL:    updated.fermenterLossL,
         equipmentTrubLossL:         updated.trubLossL,
         equipmentSystemLossPct:     updated.systemLossPct,
@@ -870,6 +913,7 @@ export function BeerSections({
     const fermenterLossL = eqSnap?.fermenterLossL ?? 1.0;
     const trubLossL = eqSnap?.trubLossL ?? 1.0;
     const systemLossPct = eqSnap?.systemLossPct ?? 3.0;
+    const mashTunLossL = eqSnap?.mashTunLossL ?? 0;
     const mashTunDeadSpaceL = eqSnap?.mashTunDeadSpaceL ?? 0;
     const boilEvapRateLH = eqSnap?.boilEvapRateLH ?? 3.0;
     const heatEvapRateLH = eqSnap?.heatEvapRateLH ?? boilEvapRateLH * 0.4;
@@ -888,7 +932,7 @@ export function BeerSections({
     const systemLossL = preHeatUp * (systemLossPct / 100);
     const totalGrainKg = totalGrainGrams / 1000;
     const grainAbsL = totalGrainKg * grainAbsLpKg;
-    const totalWater = preHeatUp + systemLossL + mashTunDeadSpaceL + grainAbsL;
+    const totalWater = preHeatUp + systemLossL + mashTunLossL + grainAbsL;
     const strikeRatioWater = totalGrainKg * mashRatioInput;
     const mashWater = mashMode === "biab"
       ? totalWater
@@ -900,7 +944,7 @@ export function BeerSections({
       fermenterVol, fermenterLossL,
       trubLossL, postChill, tempContractionPct, tempContractionL, endOfBoil,
       boilEvapL, preBoil, heatUpEvapL, preHeatUp,
-      systemLossPct, systemLossL, mashTunDeadSpaceL, grainAbsL,
+      systemLossPct, systemLossL, mashTunLossL, mashTunDeadSpaceL, grainAbsL,
       totalWater, mashWater, strikeRatioWater, spargeWater, mashRatioActual,
     };
   })();
@@ -951,6 +995,15 @@ export function BeerSections({
     { grams: 0, extract: 0, mcu: 0 }
   );
 
+  const estimatedOG = (() => {
+    if (grainRows.length === 0 || !wv.postChill) return null;
+    const mashEffPct = eqSnap?.mashEff ?? eqSnap?.brewhouseEff ?? 75;
+    const adjustedExtractKg = (grainTotals.extract / 1000) * (mashEffPct / 100);
+    const plato = (adjustedExtractKg * 1000) / wv.postChill / 10;
+    const og = 1 + plato / (258.6 - plato * (227.1 / 258.2));
+    return { og, mashEffPct, adjustedExtractKg, postChillL: wv.postChill };
+  })();
+
   const grainCols = [
     { key: "name",    label: "Name" },
     { key: "grams",   label: "Grams" },
@@ -978,6 +1031,13 @@ export function BeerSections({
     if (k === "grams") return r.grams;
     return "";
   });
+
+  const ibuBreakdown = useMemo(() => {
+    const boilGravity = batch.targetOg ? batch.targetOg / 1000 : 1.050;
+    const batchVolume = batch.targetFermentarL ?? 20;
+    const boilTime = batch.boilTimeMin ?? 60;
+    return calculateIbuBreakdown(hopRows, boilGravity, batchVolume, boilTime);
+  }, [hopRows, batch.targetOg, batch.targetFermentarL, batch.boilTimeMin]);
 
   const HOP_USES = [
     { value: "fwh",       label: "First Wort Hop" },
@@ -1019,6 +1079,8 @@ export function BeerSections({
                 { key: "name",               label: "Name",                     type: "text",   unit: "" },
                 { key: "brewhouseEff",       label: "Brewhouse Efficiency",     type: "number", unit: "%" },
                 { key: "mashEff",            label: "Mash Efficiency",          type: "number", unit: "%" },
+                { key: "fermenterVolumeL",   label: "Fermenter Volume",         type: "number", unit: "L" },
+                { key: "fermenterWeightKg",  label: "Fermenter Weight",         type: "number", unit: "kg" },
                 { key: "fermenterLossL",     label: "Fermenter Loss",           type: "number", unit: "L" },
                 { key: "trubLossL",          label: "Kettle/Chiller Loss",      type: "number", unit: "L" },
                 { key: "systemLossPct",      label: "System Loss",              type: "number", unit: "%" },
@@ -1027,6 +1089,7 @@ export function BeerSections({
                 { key: "tempContractionPct", label: "Temp Contraction",         type: "number", unit: "%" },
                 { key: "grainAbsLKg",        label: "Grain Absorption",         type: "number", unit: "L/kg" },
                 { key: "mashTunDeadSpaceL",  label: "Mash Tun Dead Space",      type: "number", unit: "L" },
+                { key: "mashTunLossL",       label: "Mash Tun Loss",            type: "number", unit: "L" },
                 { key: "mashTunVolumeL",     label: "Mash Tun Volume",          type: "number", unit: "L" },
                 { key: "boilPotVolumeL",          label: "Boil Pot Volume",          type: "number", unit: "L" },
                 { key: "boilPotDiameter",         label: "Boil Pot Diameter",        type: "number", unit: "cm" },
@@ -1055,6 +1118,8 @@ export function BeerSections({
               {([
                 { label: "Brewhouse Efficiency", value: eqSnap.brewhouseEff,       unit: "%" },
                 { label: "Mash Efficiency",      value: eqSnap.mashEff,            unit: "%" },
+                { label: "Fermenter Volume",      value: eqSnap.fermenterVolumeL,   unit: "L" },
+                { label: "Fermenter Weight",      value: eqSnap.fermenterWeightKg,  unit: "kg" },
                 { label: "Fermenter Loss",        value: eqSnap.fermenterLossL,     unit: "L" },
                 { label: "Kettle/Chiller Loss",   value: eqSnap.trubLossL,          unit: "L" },
                 { label: "System Loss",           value: eqSnap.systemLossPct,      unit: "%" },
@@ -1063,6 +1128,7 @@ export function BeerSections({
                 { label: "Temp Contraction",      value: eqSnap.tempContractionPct, unit: "%" },
                 { label: "Grain Absorption",      value: eqSnap.grainAbsLKg,        unit: "L/kg" },
                 { label: "Mash Tun Dead Space",   value: eqSnap.mashTunDeadSpaceL,  unit: "L" },
+                { label: "Mash Tun Loss",         value: eqSnap.mashTunLossL,        unit: "L" },
                 { label: "Mash Tun Volume",       value: eqSnap.mashTunVolumeL,     unit: "L" },
                 { label: "Boil Pot Volume",        value: eqSnap.boilPotVolumeL,          unit: "L" },
                 { label: "Boil Pot Diameter",      value: eqSnap.boilPotDiameter,         unit: "cm" },
@@ -1290,7 +1356,634 @@ export function BeerSections({
         </div>
       </CollapsibleCard>
 
-      {/* 3. Boil */}
+      {/* 4. Fermentables */}
+      <CollapsibleCard
+        title={`Fermentables (${grainRows.length})`}
+        icon={<Wheat className="h-4 w-4" />}
+        open={open.fermentables}
+        onToggle={() => toggle("fermentables")}
+        className="bg-orange-50"
+        actions={
+          <Button size="sm" className="bg-orange-200 hover:bg-orange-300 text-orange-900" onClick={() => setIsAddingGrain((v) => !v)}>+ Add</Button>
+        }
+      >
+        {grainRows.length > 0 ? (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b text-muted-foreground text-xs">
+                  {grainCols.map(({ key, label }) => (
+                    <th key={key} className="text-left font-medium pb-2 pr-3">
+                      <button type="button" className="flex items-center gap-0.5 hover:text-foreground" onClick={() => toggleSort(grainSort, key, setGrainSort)}>
+                        {label}<SortIcon col={key} sort={grainSort} />
+                      </button>
+                    </th>
+                  ))}
+                  <th className="pb-2" />
+                </tr>
+              </thead>
+              <tbody>
+                {sortedGrainRows.map((bg) => {
+                  const isEditing = editingGrainId === bg.id;
+                  const { extract, mcu, pct } = grainCalc(bg);
+                  return (
+                    <tr key={bg.id} className="border-b last:border-0">
+                      <td className="py-2 pr-3">
+                        {isEditing ? (
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-sm font-medium">{bg.name ?? bg.grain.name}</span>
+                            <Input value={editGrainDraft.brand} onChange={(e) => setEditGrainDraft((d) => ({ ...d, brand: e.target.value }))} className="h-7 text-xs w-32" placeholder="Brand" />
+                          </div>
+                        ) : (
+                          <>
+                            <span className="font-medium">{bg.name ?? bg.grain.name}</span>
+                            {(bg.brand ?? bg.grain.brand) && <div className="text-[10px] text-muted-foreground leading-tight">{bg.brand ?? bg.grain.brand}</div>}
+                          </>
+                        )}
+                      </td>
+                      <td className="py-2 pr-3">
+                        {isEditing ? (
+                          <Input type="number" step="1" value={editGrainDraft.grams} onChange={(e) => setEditGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-7 text-sm w-24" />
+                        ) : `${bg.grams} g`}
+                      </td>
+                      <td className="py-2 pr-3 text-muted-foreground">{pct.toFixed(1)}%</td>
+                      <td className="py-2 pr-3 text-muted-foreground">
+                        {isEditing ? (
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-[10px] text-muted-foreground">Yield %</span>
+                            <Input type="number" step="0.1" value={editGrainDraft.maxYield} onChange={(e) => setEditGrainDraft((d) => ({ ...d, maxYield: e.target.value }))} className="h-7 text-sm w-20" placeholder="75" />
+                          </div>
+                        ) : `${extract.toFixed(0)} g`}
+                      </td>
+                      <td className="py-2 pr-3 text-muted-foreground">
+                        {isEditing ? (
+                          <Input type="number" step="0.5" value={editGrainDraft.colorL} onChange={(e) => setEditGrainDraft((d) => ({ ...d, colorL: e.target.value }))} className="h-7 text-sm w-20" placeholder="°L" />
+                        ) : ((bg.colorL ?? bg.grain.colorL) ?? "—")}
+                      </td>
+                      <td className="py-2 pr-3 text-muted-foreground">{mcu.toFixed(2)}</td>
+                      <td className="py-2 text-right">
+                        {isEditing ? (
+                          <div className="flex items-center justify-end gap-1">
+                            <Button size="icon" variant="ghost" className="h-6 w-6"
+                              onClick={async () => {
+                                try {
+                                  const grams = parseFloat(editGrainDraft.grams);
+                                  const colorL = editGrainDraft.colorL !== "" ? parseFloat(editGrainDraft.colorL) : null;
+                                  const maxYield = editGrainDraft.maxYield !== "" ? parseFloat(editGrainDraft.maxYield) : null;
+                                  const brand = editGrainDraft.brand.trim() !== "" ? editGrainDraft.brand.trim() : null;
+                                  await updateGrainAction(bg.id, { grams, colorL, maxYield, brand });
+                                  setGrainRows((rows) => rows.map((r) => r.id === bg.id ? { ...r, grams, colorL, maxYield, brand } : r));
+                                } catch { toast.error("Failed to save"); }
+                                finally { setEditingGrainId(null); }
+                              }}
+                            ><Check className="h-3.5 w-3.5" /></Button>
+                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setEditingGrainId(null)}>
+                              <X className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-end gap-1">
+                            <Button size="icon" variant="ghost" className="h-6 w-6"
+                              onClick={() => {
+                                const effectiveColorL = bg.colorL ?? bg.grain.colorL;
+                                const effectiveMaxYield = bg.maxYield ?? bg.grain.maxYield;
+                                setEditGrainDraft({
+                                  grams: String(bg.grams),
+                                  colorL: effectiveColorL != null ? String(effectiveColorL) : "",
+                                  maxYield: effectiveMaxYield != null ? String(effectiveMaxYield) : "",
+                                  brand: bg.brand ?? bg.grain.brand ?? "",
+                                });
+                                setEditingGrainId(bg.id);
+                              }}
+                            ><Pencil className="h-3.5 w-3.5" /></Button>
+                            <Button size="icon" variant="ghost" className="h-6 w-6 text-destructive hover:text-destructive"
+                              onClick={async () => {
+                                try {
+                                  await deleteGrainAction(bg.id);
+                                  setGrainRows((rows) => rows.filter((r) => r.id !== bg.id));
+                                } catch { toast.error("Failed to delete"); }
+                              }}
+                            ><Trash2 className="h-3.5 w-3.5" /></Button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+                <tr className="border-t font-bold text-xs">
+                  <td className="pt-2 pr-3">Total</td>
+                  <td className="pt-2 pr-3">{grainTotals.grams} g</td>
+                  <td className="pt-2 pr-3">100%</td>
+                  <td className="pt-2 pr-3">{grainTotals.extract.toFixed(0)} g</td>
+                  <td className="pt-2 pr-3" />
+                  <td className="pt-2 pr-3">
+                    {(() => {
+                      const calcSrm = grainTotals.mcu > 0 ? 1.4922 * Math.pow(grainTotals.mcu, 0.6859) : 0;
+                      const hex = srmToHex(calcSrm);
+                      const light = srmIsLight(calcSrm);
+                      const diff = targets.srm != null ? calcSrm - targets.srm : null;
+                      return (
+                        <span className="inline-flex flex-col items-start gap-0.5">
+                          <span
+                            className="px-1.5 py-0.5 rounded font-bold"
+                            style={{ backgroundColor: hex, color: light ? "#1a1a1a" : "#f0f0f0" }}
+                          >
+                            {grainTotals.mcu.toFixed(2)}
+                          </span>
+                          {diff != null && (
+                            <span className="text-[10px] text-muted-foreground leading-none">
+                              {diff > 0 ? "+" : ""}{diff.toFixed(1)} SRM
+                            </span>
+                          )}
+                        </span>
+                      );
+                    })()}
+                  </td>
+                  <td />
+                </tr>
+              </tbody>
+            </table>
+        ) : (
+          <p className="text-muted-foreground text-center py-4">No fermentables added yet</p>
+        )}
+        {isAddingGrain && (
+          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Grain</span>
+              <Select value={addGrainDraft.grainId} onValueChange={(v) => setAddGrainDraft((d) => ({ ...d, grainId: v }))}>
+                <SelectTrigger className="h-8 text-sm w-52"><SelectValue placeholder="Select grain" /></SelectTrigger>
+                <SelectContent>
+                  {allGrains.map((g) => (
+                    <SelectItem key={g.id} value={g.id}>{g.name}{g.brand ? ` (${g.brand})` : ""}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Grams</span>
+              <Input type="number" step="1" placeholder="g" value={addGrainDraft.grams} onChange={(e) => setAddGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-24" />
+            </div>
+            <Button size="sm" disabled={!addGrainDraft.grainId || !addGrainDraft.grams}
+              onClick={async () => {
+                try {
+                  const created = await addGrainAction({ grainId: addGrainDraft.grainId, grams: parseFloat(addGrainDraft.grams) });
+                  setGrainRows((rows) => [...rows, created]);
+                  setAddGrainDraft({ grainId: "", grams: "" });
+                  setIsAddingGrain(false);
+                } catch { toast.error("Failed to add grain"); }
+              }}
+            >Add</Button>
+            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingGrain(false)}><X className="h-4 w-4" /></Button>
+          </div>
+        )}
+        {estimatedOG != null && (
+          <div className="mt-3 flex items-center justify-between rounded-lg border px-3 py-2.5 bg-amber-50 dark:bg-amber-950/30">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-sm font-semibold text-amber-900 dark:text-amber-100">Estimated OG</span>
+              <span className="text-[10px] text-muted-foreground leading-none">
+                {estimatedOG.mashEffPct}% mash eff · {estimatedOG.postChillL.toFixed(1)} L post-chill · {estimatedOG.adjustedExtractKg.toFixed(2)} kg extract
+              </span>
+            </div>
+            <div className="flex items-center gap-2 tabular-nums">
+              <span className="font-bold text-amber-900 dark:text-amber-100">
+                {(estimatedOG.og * 1000).toFixed(1)}
+              </span>
+              {targets.og != null && (
+                <span className="text-xs text-muted-foreground">
+                  / {targets.og.toFixed(1)} target
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+      </CollapsibleCard>
+
+      {/* 5. Hops */}
+      <CollapsibleCard
+        title={`Hops (${hopRows.length})`}
+        icon={<HopIcon className="h-4 w-4" />}
+        open={open.hops}
+        onToggle={() => toggle("hops")}
+        className="bg-lime-50"
+        actions={
+          <Button size="sm" className="bg-lime-200 hover:bg-lime-300 text-lime-900" onClick={() => setIsAddingHop((v) => !v)}>+ Add</Button>
+        }
+      >
+        {hopRows.length > 0 ? (
+          <>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b text-muted-foreground text-xs">
+                {([
+                  { key: "name", label: "Name" },
+                  { key: "alphaAcid", label: "AA%" },
+                  { key: "use", label: "Use" },
+                  { key: "additionTime", label: "Time (min)" },
+                  { key: "grams", label: "Grams" },
+                ] as const).map(({ key, label }) => (
+                  <th key={key} className="text-left font-medium pb-2 pr-3">
+                    <button type="button" className="flex items-center gap-0.5 hover:text-foreground" onClick={() => toggleSort(hopSort, key, setHopSort)}>
+                      {label}<SortIcon col={key} sort={hopSort} />
+                    </button>
+                  </th>
+                ))}
+                <th className="text-left font-medium pb-2 pr-3 text-muted-foreground">IBU</th>
+                <th className="pb-2" />
+              </tr>
+            </thead>
+            <tbody>
+              {sortedHopRows.map((bh) => {
+                const isEditing = editingHopId === bh.id;
+                const useLabel = HOP_USES.find((u) => u.value === bh.use)?.label ?? bh.use;
+                return (
+                  <tr key={bh.id} className="border-b last:border-0">
+                    <td className="py-2 pr-3 font-medium">{bh.name ?? bh.hop.name}</td>
+                    <td className="py-2 pr-3 text-muted-foreground">
+                      {isEditing ? (
+                        <Input
+                          type="number" step="0.1"
+                          value={editHopDraft.alphaAcid}
+                          onChange={(e) => setEditHopDraft((d) => ({ ...d, alphaAcid: e.target.value }))}
+                          className="h-7 text-sm w-20"
+                        />
+                      ) : `${bh.alphaAcid ?? bh.hop.alphaAcid}%`}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {isEditing ? (
+                        <Select value={editHopDraft.use} onValueChange={(v) => setEditHopDraft((d) => ({ ...d, use: v }))}>
+                          <SelectTrigger className="h-7 text-sm w-32"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {HOP_USES.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      ) : useLabel}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {isEditing ? (
+                        <Input
+                          type="number" step="1"
+                          value={editHopDraft.additionTime}
+                          onChange={(e) => setEditHopDraft((d) => ({ ...d, additionTime: e.target.value }))}
+                          className="h-7 text-sm w-20"
+                        />
+                      ) : (bh.additionTime != null ? `${bh.additionTime}` : "—")}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {isEditing ? (
+                        <Input
+                          type="number" step="0.1"
+                          value={editHopDraft.grams}
+                          onChange={(e) => setEditHopDraft((d) => ({ ...d, grams: e.target.value }))}
+                          className="h-7 text-sm w-24"
+                        />
+                      ) : `${bh.grams} g`}
+                    </td>
+                    {(() => {
+                      const hopIdx = hopRows.findIndex((r) => r.id === bh.id);
+                      const hopIbu = ibuBreakdown.perHop[hopIdx];
+                      return (
+                        <td className="py-2 pr-3 text-muted-foreground tabular-nums">
+                          {hopIbu?.isDryHop
+                            ? <span title="Perceived bitterness (dry hop)">{hopIbu.perceivedIbu.toFixed(1)}*</span>
+                            : hopIbu != null ? hopIbu.ibu.toFixed(1) : "—"}
+                        </td>
+                      );
+                    })()}
+                    <td className="py-2 text-right">
+                      {isEditing ? (
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            size="icon" variant="ghost" className="h-6 w-6"
+                            onClick={async () => {
+                              try {
+                                const grams = parseFloat(editHopDraft.grams);
+                                const additionTime = editHopDraft.additionTime !== "" ? parseFloat(editHopDraft.additionTime) : null;
+                                const alphaAcid = parseFloat(editHopDraft.alphaAcid);
+                                await updateHopAction(bh.id, { grams, use: editHopDraft.use, additionTime, alphaAcid });
+                                setHopRows((rows) => rows.map((r) => r.id === bh.id ? { ...r, grams, use: editHopDraft.use, additionTime, alphaAcid } : r));
+                              } catch { toast.error("Failed to save"); }
+                              finally { setEditingHopId(null); }
+                            }}
+                          ><Check className="h-3.5 w-3.5" /></Button>
+                          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setEditingHopId(null)}>
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            size="icon" variant="ghost" className="h-6 w-6"
+                            onClick={() => {
+                              setEditHopDraft({ grams: String(bh.grams), use: bh.use, additionTime: bh.additionTime != null ? String(bh.additionTime) : "", alphaAcid: String(bh.alphaAcid ?? bh.hop.alphaAcid) });
+                              setEditingHopId(bh.id);
+                            }}
+                          ><Pencil className="h-3.5 w-3.5" /></Button>
+                          <Button
+                            size="icon" variant="ghost" className="h-6 w-6 text-destructive hover:text-destructive"
+                            onClick={async () => {
+                              try {
+                                await deleteHopAction(bh.id);
+                                setHopRows((rows) => rows.filter((r) => r.id !== bh.id));
+                              } catch { toast.error("Failed to delete"); }
+                            }}
+                          ><Trash2 className="h-3.5 w-3.5" /></Button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <div className="mt-2 pt-2 border-t flex flex-wrap gap-x-6 gap-y-1 text-sm">
+            <span>
+              <span className="text-muted-foreground">Est. IBU: </span>
+              <span className="font-medium">{ibuBreakdown.totalCalculatedIbu.toFixed(1)}</span>
+              {ibuBreakdown.totalPerceivedIbu > ibuBreakdown.totalCalculatedIbu && (
+                <span className="text-muted-foreground text-xs ml-1">
+                  ({ibuBreakdown.totalPerceivedIbu.toFixed(1)} perceived)
+                </span>
+              )}
+            </span>
+            {batch.targetIbu != null && (
+              <span className="text-muted-foreground">
+                Target: <span className="font-medium">{batch.targetIbu}</span>
+              </span>
+            )}
+          </div>
+          </>
+        ) : (
+          <p className="text-muted-foreground text-center py-4">No hops added yet</p>
+        )}
+        {isAddingHop && (
+          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Hop</span>
+              <Select value={addHopDraft.hopId} onValueChange={(v) => setAddHopDraft((d) => ({ ...d, hopId: v }))}>
+                <SelectTrigger className="h-8 text-sm w-48"><SelectValue placeholder="Select hop" /></SelectTrigger>
+                <SelectContent>
+                  {allHops.map((h) => (
+                    <SelectItem key={h.id} value={h.id}>{h.name} ({h.alphaAcid}% AA)</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Grams</span>
+              <Input type="number" step="0.1" placeholder="g" value={addHopDraft.grams} onChange={(e) => setAddHopDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-20" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Use</span>
+              <Select value={addHopDraft.use} onValueChange={(v) => setAddHopDraft((d) => ({ ...d, use: v }))}>
+                <SelectTrigger className="h-8 text-sm w-32"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {HOP_USES.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Time (min)</span>
+              <Input type="number" step="1" placeholder="min" value={addHopDraft.additionTime} onChange={(e) => setAddHopDraft((d) => ({ ...d, additionTime: e.target.value }))} className="h-8 text-sm w-20" />
+            </div>
+            <Button size="sm" disabled={!addHopDraft.hopId || !addHopDraft.grams || !addHopDraft.additionTime}
+              onClick={async () => {
+                try {
+                  const created = await addHopAction({ hopId: addHopDraft.hopId, grams: parseFloat(addHopDraft.grams), use: addHopDraft.use, additionTime: parseFloat(addHopDraft.additionTime) });
+                  setHopRows((rows) => [...rows, created]);
+                  setAddHopDraft({ hopId: "", grams: "", use: "boil", additionTime: "" });
+                  setIsAddingHop(false);
+                } catch { toast.error("Failed to add hop"); }
+              }}
+            >Add</Button>
+            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingHop(false)}><X className="h-4 w-4" /></Button>
+          </div>
+        )}
+      </CollapsibleCard>
+
+      {/* 6. Cultures */}
+      <CollapsibleCard
+        title={`Cultures (${yeastRows.length})`}
+        icon={<FlaskConical className="h-4 w-4" />}
+        open={open.cultures}
+        onToggle={() => toggle("cultures")}
+        className="bg-purple-50"
+        actions={
+          <Button size="sm" className="bg-purple-200 hover:bg-purple-300 text-purple-900" onClick={() => setIsAddingYeast((v) => !v)}>+ Add</Button>
+        }
+      >
+        {yeastRows.length > 0 ? (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b text-muted-foreground text-xs">
+                <th className="text-left font-medium pb-2 pr-3">Name</th>
+                <th className="text-left font-medium pb-2 pr-3">Brand</th>
+                <th className="text-left font-medium pb-2 pr-3">Attenuation</th>
+                <th className="text-left font-medium pb-2 pr-3">Qty</th>
+                <th className="text-left font-medium pb-2 pr-3">Units</th>
+                <th className="text-left font-medium pb-2 pr-3">Inoculation</th>
+                <th className="text-left font-medium pb-2 pr-3">Temp (°C)</th>
+                <th className="pb-2" />
+              </tr>
+            </thead>
+            <tbody>
+              {yeastRows.map((by) => {
+                const isEditing = editingYeastId === by.id;
+                const isSaving = savingYeastId === by.id;
+                return (
+                  <tr key={by.id} className="border-b last:border-0">
+                    <td className="py-2 pr-3 font-medium">{by.name ?? by.yeast.name}</td>
+                    <td className="py-2 pr-3 text-muted-foreground">{(by.brand ?? by.yeast.brand) ?? "—"}</td>
+                    <td className="py-2 pr-3 text-muted-foreground">
+                      {isEditing ? (
+                        <Input
+                          type="number" step="0.1"
+                          value={editYeastDraft.attenuation}
+                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, attenuation: e.target.value }))}
+                          className="h-7 text-sm w-20"
+                          placeholder="%"
+                        />
+                      ) : (
+                        (by.attenuation ?? by.yeast.attenuation) != null
+                          ? `${by.attenuation ?? by.yeast.attenuation}%`
+                          : "—"
+                      )}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {isEditing ? (
+                        <Input
+                          type="number" step="0.1"
+                          value={editYeastDraft.quantityAmount}
+                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))}
+                          className="h-7 text-sm w-20"
+                          placeholder="0"
+                        />
+                      ) : (
+                        by.quantityAmount != null ? String(by.quantityAmount) : "—"
+                      )}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {isEditing ? (
+                        <Select value={editYeastDraft.quantityUnits} onValueChange={(v) => setEditYeastDraft((d) => ({ ...d, quantityUnits: v }))}>
+                          <SelectTrigger className="h-7 text-sm w-24"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="packet">packet</SelectItem>
+                            <SelectItem value="grams">grams</SelectItem>
+                            <SelectItem value="ml">ml</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        by.quantityUnits ?? "—"
+                      )}
+                    </td>
+                    <td className="py-2 pr-3 text-muted-foreground">
+                      {(() => {
+                        if (by.quantityAmount == null || !batchSize) return "—";
+                        const rate = by.quantityAmount / batchSize;
+                        const unitLabel = by.quantityUnits === "grams" ? "g/L" : by.quantityUnits === "ml" ? "mL/L" : "pkt/L";
+                        return `${rate.toFixed(2)} ${unitLabel}`;
+                      })()}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {isEditing ? (
+                        <Input
+                          type="number"
+                          step="0.1"
+                          value={editYeastDraft.temp}
+                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, temp: e.target.value }))}
+                          className="h-7 text-sm w-20"
+                        />
+                      ) : (
+                        by.temp != null ? `${by.temp}` : "—"
+                      )}
+                    </td>
+                    <td className="py-2 text-right">
+                      {isEditing ? (
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6"
+                            disabled={isSaving}
+                            onClick={async () => {
+                              setSavingYeastId(by.id);
+                              try {
+                                const newTemp = editYeastDraft.temp !== "" ? parseFloat(editYeastDraft.temp) : null;
+                                const newAttenuation = editYeastDraft.attenuation !== "" ? parseFloat(editYeastDraft.attenuation) : null;
+                                const newQtyAmount = editYeastDraft.quantityAmount !== "" ? parseFloat(editYeastDraft.quantityAmount) : null;
+                                const newQtyUnits = editYeastDraft.quantityUnits || null;
+                                await updateYeastAction(by.id, { quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation });
+                                setYeastRows((rows) =>
+                                  rows.map((r) =>
+                                    r.id === by.id ? { ...r, quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation } : r
+                                  )
+                                );
+                              } catch {
+                                toast.error("Failed to save");
+                              } finally {
+                                setSavingYeastId(null);
+                                setEditingYeastId(null);
+                              }
+                            }}
+                          >
+                            <Check className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6"
+                            onClick={() => setEditingYeastId(null)}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-end gap-1">
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6"
+                            onClick={() => {
+                              const effectiveAttenuation = by.attenuation ?? by.yeast.attenuation;
+                              setEditYeastDraft({ quantityAmount: by.quantityAmount != null ? String(by.quantityAmount) : "", quantityUnits: by.quantityUnits ?? "packet", temp: by.temp != null ? String(by.temp) : "", attenuation: effectiveAttenuation != null ? String(effectiveAttenuation) : "" });
+                              setEditingYeastId(by.id);
+                            }}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-6 w-6 text-destructive hover:text-destructive"
+                            onClick={async () => {
+                              try {
+                                await deleteYeastAction(by.id);
+                                setYeastRows((rows) => rows.filter((r) => r.id !== by.id));
+                              } catch {
+                                toast.error("Failed to delete");
+                              }
+                            }}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <p className="text-muted-foreground text-center py-4">No cultures added yet</p>
+        )}
+        {isAddingYeast && (
+          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Yeast</span>
+              <Select value={addYeastDraft.yeastId} onValueChange={(v) => setAddYeastDraft((d) => ({ ...d, yeastId: v }))}>
+                <SelectTrigger className="h-8 text-sm w-52"><SelectValue placeholder="Select yeast" /></SelectTrigger>
+                <SelectContent>
+                  {allYeasts.map((y) => (
+                    <SelectItem key={y.id} value={y.id}>{y.name}{y.brand ? ` (${y.brand})` : ""}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Qty</span>
+              <Input type="number" step="0.1" placeholder="1" value={addYeastDraft.quantityAmount} onChange={(e) => setAddYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))} className="h-8 text-sm w-20" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Units</span>
+              <Select value={addYeastDraft.quantityUnits} onValueChange={(v) => setAddYeastDraft((d) => ({ ...d, quantityUnits: v }))}>
+                <SelectTrigger className="h-8 text-sm w-24"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="packet">packet</SelectItem>
+                  <SelectItem value="grams">grams</SelectItem>
+                  <SelectItem value="ml">ml</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">Temp (°C)</span>
+              <Input type="number" step="0.1" placeholder="°C" value={addYeastDraft.temp} onChange={(e) => setAddYeastDraft((d) => ({ ...d, temp: e.target.value }))} className="h-8 text-sm w-20" />
+            </div>
+            <Button size="sm" disabled={!addYeastDraft.yeastId || !addYeastDraft.quantityAmount}
+              onClick={async () => {
+                try {
+                  const temp = addYeastDraft.temp !== "" ? parseFloat(addYeastDraft.temp) : null;
+                  const created = await addYeastAction({ yeastId: addYeastDraft.yeastId, quantityAmount: parseFloat(addYeastDraft.quantityAmount), quantityUnits: addYeastDraft.quantityUnits, temp });
+                  setYeastRows((rows) => [...rows, created]);
+                  setAddYeastDraft({ yeastId: "", quantityAmount: "", quantityUnits: "packet", temp: "" });
+                  setIsAddingYeast(false);
+                } catch { toast.error("Failed to add yeast"); }
+              }}
+            >Add</Button>
+            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingYeast(false)}><X className="h-4 w-4" /></Button>
+          </div>
+        )}
+      </CollapsibleCard>
+
+      {/* 7. Boil */}
       <CollapsibleCard
         title="Boil"
         icon={<Flame className="h-4 w-4" />}
@@ -1324,7 +2017,7 @@ export function BeerSections({
         </div>
       </CollapsibleCard>
 
-      {/* 5. Mash */}
+      {/* 8. Mash */}
       <CollapsibleCard
         title="Mash"
         icon={<Layers className="h-4 w-4" />}
@@ -1744,584 +2437,7 @@ export function BeerSections({
         </div>
       </CollapsibleCard>
 
-      {/* 6. Fermentables */}
-      <CollapsibleCard
-        title={`Fermentables (${grainRows.length})`}
-        icon={<Wheat className="h-4 w-4" />}
-        open={open.fermentables}
-        onToggle={() => toggle("fermentables")}
-        className="bg-orange-50"
-        actions={
-          <Button size="sm" className="bg-orange-200 hover:bg-orange-300 text-orange-900" onClick={() => setIsAddingGrain((v) => !v)}>+ Add</Button>
-        }
-      >
-        {grainRows.length > 0 ? (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-muted-foreground text-xs">
-                  {grainCols.map(({ key, label }) => (
-                    <th key={key} className="text-left font-medium pb-2 pr-3">
-                      <button type="button" className="flex items-center gap-0.5 hover:text-foreground" onClick={() => toggleSort(grainSort, key, setGrainSort)}>
-                        {label}<SortIcon col={key} sort={grainSort} />
-                      </button>
-                    </th>
-                  ))}
-                  <th className="pb-2" />
-                </tr>
-              </thead>
-              <tbody>
-                {sortedGrainRows.map((bg) => {
-                  const isEditing = editingGrainId === bg.id;
-                  const { extract, mcu, pct } = grainCalc(bg);
-                  return (
-                    <tr key={bg.id} className="border-b last:border-0">
-                      <td className="py-2 pr-3">
-                        {isEditing ? (
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-sm font-medium">{bg.name ?? bg.grain.name}</span>
-                            <Input value={editGrainDraft.brand} onChange={(e) => setEditGrainDraft((d) => ({ ...d, brand: e.target.value }))} className="h-7 text-xs w-32" placeholder="Brand" />
-                          </div>
-                        ) : (
-                          <>
-                            <span className="font-medium">{bg.name ?? bg.grain.name}</span>
-                            {(bg.brand ?? bg.grain.brand) && <div className="text-[10px] text-muted-foreground leading-tight">{bg.brand ?? bg.grain.brand}</div>}
-                          </>
-                        )}
-                      </td>
-                      <td className="py-2 pr-3">
-                        {isEditing ? (
-                          <Input type="number" step="1" value={editGrainDraft.grams} onChange={(e) => setEditGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-7 text-sm w-24" />
-                        ) : `${bg.grams} g`}
-                      </td>
-                      <td className="py-2 pr-3 text-muted-foreground">{pct.toFixed(1)}%</td>
-                      <td className="py-2 pr-3 text-muted-foreground">
-                        {isEditing ? (
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[10px] text-muted-foreground">Yield %</span>
-                            <Input type="number" step="0.1" value={editGrainDraft.maxYield} onChange={(e) => setEditGrainDraft((d) => ({ ...d, maxYield: e.target.value }))} className="h-7 text-sm w-20" placeholder="75" />
-                          </div>
-                        ) : `${extract.toFixed(0)} g`}
-                      </td>
-                      <td className="py-2 pr-3 text-muted-foreground">
-                        {isEditing ? (
-                          <Input type="number" step="0.5" value={editGrainDraft.colorL} onChange={(e) => setEditGrainDraft((d) => ({ ...d, colorL: e.target.value }))} className="h-7 text-sm w-20" placeholder="°L" />
-                        ) : ((bg.colorL ?? bg.grain.colorL) ?? "—")}
-                      </td>
-                      <td className="py-2 pr-3 text-muted-foreground">{mcu.toFixed(2)}</td>
-                      <td className="py-2 text-right">
-                        {isEditing ? (
-                          <div className="flex items-center justify-end gap-1">
-                            <Button size="icon" variant="ghost" className="h-6 w-6"
-                              onClick={async () => {
-                                try {
-                                  const grams = parseFloat(editGrainDraft.grams);
-                                  const colorL = editGrainDraft.colorL !== "" ? parseFloat(editGrainDraft.colorL) : null;
-                                  const maxYield = editGrainDraft.maxYield !== "" ? parseFloat(editGrainDraft.maxYield) : null;
-                                  const brand = editGrainDraft.brand.trim() !== "" ? editGrainDraft.brand.trim() : null;
-                                  await updateGrainAction(bg.id, { grams, colorL, maxYield, brand });
-                                  setGrainRows((rows) => rows.map((r) => r.id === bg.id ? { ...r, grams, colorL, maxYield, brand } : r));
-                                } catch { toast.error("Failed to save"); }
-                                finally { setEditingGrainId(null); }
-                              }}
-                            ><Check className="h-3.5 w-3.5" /></Button>
-                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setEditingGrainId(null)}>
-                              <X className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-end gap-1">
-                            <Button size="icon" variant="ghost" className="h-6 w-6"
-                              onClick={() => {
-                                const effectiveColorL = bg.colorL ?? bg.grain.colorL;
-                                const effectiveMaxYield = bg.maxYield ?? bg.grain.maxYield;
-                                setEditGrainDraft({
-                                  grams: String(bg.grams),
-                                  colorL: effectiveColorL != null ? String(effectiveColorL) : "",
-                                  maxYield: effectiveMaxYield != null ? String(effectiveMaxYield) : "",
-                                  brand: bg.brand ?? bg.grain.brand ?? "",
-                                });
-                                setEditingGrainId(bg.id);
-                              }}
-                            ><Pencil className="h-3.5 w-3.5" /></Button>
-                            <Button size="icon" variant="ghost" className="h-6 w-6 text-destructive hover:text-destructive"
-                              onClick={async () => {
-                                try {
-                                  await deleteGrainAction(bg.id);
-                                  setGrainRows((rows) => rows.filter((r) => r.id !== bg.id));
-                                } catch { toast.error("Failed to delete"); }
-                              }}
-                            ><Trash2 className="h-3.5 w-3.5" /></Button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-                <tr className="border-t font-bold text-xs">
-                  <td className="pt-2 pr-3">Total</td>
-                  <td className="pt-2 pr-3">{grainTotals.grams} g</td>
-                  <td className="pt-2 pr-3">100%</td>
-                  <td className="pt-2 pr-3">{grainTotals.extract.toFixed(0)} g</td>
-                  <td className="pt-2 pr-3" />
-                  <td className="pt-2 pr-3">
-                    {(() => {
-                      const calcSrm = grainTotals.mcu > 0 ? 1.4922 * Math.pow(grainTotals.mcu, 0.6859) : 0;
-                      const hex = srmToHex(calcSrm);
-                      const light = srmIsLight(calcSrm);
-                      const diff = targets.srm != null ? calcSrm - targets.srm : null;
-                      return (
-                        <span className="inline-flex flex-col items-start gap-0.5">
-                          <span
-                            className="px-1.5 py-0.5 rounded font-bold"
-                            style={{ backgroundColor: hex, color: light ? "#1a1a1a" : "#f0f0f0" }}
-                          >
-                            {grainTotals.mcu.toFixed(2)}
-                          </span>
-                          {diff != null && (
-                            <span className="text-[10px] text-muted-foreground leading-none">
-                              {diff > 0 ? "+" : ""}{diff.toFixed(1)} SRM
-                            </span>
-                          )}
-                        </span>
-                      );
-                    })()}
-                  </td>
-                  <td />
-                </tr>
-              </tbody>
-            </table>
-        ) : (
-          <p className="text-muted-foreground text-center py-4">No fermentables added yet</p>
-        )}
-        {isAddingGrain && (
-          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Grain</span>
-              <Select value={addGrainDraft.grainId} onValueChange={(v) => setAddGrainDraft((d) => ({ ...d, grainId: v }))}>
-                <SelectTrigger className="h-8 text-sm w-52"><SelectValue placeholder="Select grain" /></SelectTrigger>
-                <SelectContent>
-                  {allGrains.map((g) => (
-                    <SelectItem key={g.id} value={g.id}>{g.name}{g.brand ? ` (${g.brand})` : ""}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Grams</span>
-              <Input type="number" step="1" placeholder="g" value={addGrainDraft.grams} onChange={(e) => setAddGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-24" />
-            </div>
-            <Button size="sm" disabled={!addGrainDraft.grainId || !addGrainDraft.grams}
-              onClick={async () => {
-                try {
-                  const created = await addGrainAction({ grainId: addGrainDraft.grainId, grams: parseFloat(addGrainDraft.grams) });
-                  setGrainRows((rows) => [...rows, created]);
-                  setAddGrainDraft({ grainId: "", grams: "" });
-                  setIsAddingGrain(false);
-                } catch { toast.error("Failed to add grain"); }
-              }}
-            >Add</Button>
-            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingGrain(false)}><X className="h-4 w-4" /></Button>
-          </div>
-        )}
-      </CollapsibleCard>
-
-      {/* 5. Hops */}
-      <CollapsibleCard
-        title={`Hops (${hopRows.length})`}
-        icon={<HopIcon className="h-4 w-4" />}
-        open={open.hops}
-        onToggle={() => toggle("hops")}
-        className="bg-lime-50"
-        actions={
-          <Button size="sm" className="bg-lime-200 hover:bg-lime-300 text-lime-900" onClick={() => setIsAddingHop((v) => !v)}>+ Add</Button>
-        }
-      >
-        {hopRows.length > 0 ? (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-muted-foreground text-xs">
-                {([
-                  { key: "name", label: "Name" },
-                  { key: "alphaAcid", label: "AA%" },
-                  { key: "use", label: "Use" },
-                  { key: "additionTime", label: "Time (min)" },
-                  { key: "grams", label: "Grams" },
-                ] as const).map(({ key, label }) => (
-                  <th key={key} className="text-left font-medium pb-2 pr-3">
-                    <button type="button" className="flex items-center gap-0.5 hover:text-foreground" onClick={() => toggleSort(hopSort, key, setHopSort)}>
-                      {label}<SortIcon col={key} sort={hopSort} />
-                    </button>
-                  </th>
-                ))}
-                <th className="pb-2" />
-              </tr>
-            </thead>
-            <tbody>
-              {sortedHopRows.map((bh) => {
-                const isEditing = editingHopId === bh.id;
-                const useLabel = HOP_USES.find((u) => u.value === bh.use)?.label ?? bh.use;
-                return (
-                  <tr key={bh.id} className="border-b last:border-0">
-                    <td className="py-2 pr-3 font-medium">{bh.name ?? bh.hop.name}</td>
-                    <td className="py-2 pr-3 text-muted-foreground">
-                      {isEditing ? (
-                        <Input
-                          type="number" step="0.1"
-                          value={editHopDraft.alphaAcid}
-                          onChange={(e) => setEditHopDraft((d) => ({ ...d, alphaAcid: e.target.value }))}
-                          className="h-7 text-sm w-20"
-                        />
-                      ) : `${bh.alphaAcid ?? bh.hop.alphaAcid}%`}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {isEditing ? (
-                        <Select value={editHopDraft.use} onValueChange={(v) => setEditHopDraft((d) => ({ ...d, use: v }))}>
-                          <SelectTrigger className="h-7 text-sm w-32"><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {HOP_USES.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                      ) : useLabel}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {isEditing ? (
-                        <Input
-                          type="number" step="1"
-                          value={editHopDraft.additionTime}
-                          onChange={(e) => setEditHopDraft((d) => ({ ...d, additionTime: e.target.value }))}
-                          className="h-7 text-sm w-20"
-                        />
-                      ) : (bh.additionTime != null ? `${bh.additionTime}` : "—")}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {isEditing ? (
-                        <Input
-                          type="number" step="0.1"
-                          value={editHopDraft.grams}
-                          onChange={(e) => setEditHopDraft((d) => ({ ...d, grams: e.target.value }))}
-                          className="h-7 text-sm w-24"
-                        />
-                      ) : `${bh.grams} g`}
-                    </td>
-                    <td className="py-2 text-right">
-                      {isEditing ? (
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            size="icon" variant="ghost" className="h-6 w-6"
-                            onClick={async () => {
-                              try {
-                                const grams = parseFloat(editHopDraft.grams);
-                                const additionTime = editHopDraft.additionTime !== "" ? parseFloat(editHopDraft.additionTime) : null;
-                                const alphaAcid = parseFloat(editHopDraft.alphaAcid);
-                                await updateHopAction(bh.id, { grams, use: editHopDraft.use, additionTime, alphaAcid });
-                                setHopRows((rows) => rows.map((r) => r.id === bh.id ? { ...r, grams, use: editHopDraft.use, additionTime, alphaAcid } : r));
-                              } catch { toast.error("Failed to save"); }
-                              finally { setEditingHopId(null); }
-                            }}
-                          ><Check className="h-3.5 w-3.5" /></Button>
-                          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setEditingHopId(null)}>
-                            <X className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            size="icon" variant="ghost" className="h-6 w-6"
-                            onClick={() => {
-                              setEditHopDraft({ grams: String(bh.grams), use: bh.use, additionTime: bh.additionTime != null ? String(bh.additionTime) : "", alphaAcid: String(bh.alphaAcid ?? bh.hop.alphaAcid) });
-                              setEditingHopId(bh.id);
-                            }}
-                          ><Pencil className="h-3.5 w-3.5" /></Button>
-                          <Button
-                            size="icon" variant="ghost" className="h-6 w-6 text-destructive hover:text-destructive"
-                            onClick={async () => {
-                              try {
-                                await deleteHopAction(bh.id);
-                                setHopRows((rows) => rows.filter((r) => r.id !== bh.id));
-                              } catch { toast.error("Failed to delete"); }
-                            }}
-                          ><Trash2 className="h-3.5 w-3.5" /></Button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          <p className="text-muted-foreground text-center py-4">No hops added yet</p>
-        )}
-        {isAddingHop && (
-          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Hop</span>
-              <Select value={addHopDraft.hopId} onValueChange={(v) => setAddHopDraft((d) => ({ ...d, hopId: v }))}>
-                <SelectTrigger className="h-8 text-sm w-48"><SelectValue placeholder="Select hop" /></SelectTrigger>
-                <SelectContent>
-                  {allHops.map((h) => (
-                    <SelectItem key={h.id} value={h.id}>{h.name} ({h.alphaAcid}% AA)</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Grams</span>
-              <Input type="number" step="0.1" placeholder="g" value={addHopDraft.grams} onChange={(e) => setAddHopDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-20" />
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Use</span>
-              <Select value={addHopDraft.use} onValueChange={(v) => setAddHopDraft((d) => ({ ...d, use: v }))}>
-                <SelectTrigger className="h-8 text-sm w-32"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {HOP_USES.map((u) => <SelectItem key={u.value} value={u.value}>{u.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Time (min)</span>
-              <Input type="number" step="1" placeholder="min" value={addHopDraft.additionTime} onChange={(e) => setAddHopDraft((d) => ({ ...d, additionTime: e.target.value }))} className="h-8 text-sm w-20" />
-            </div>
-            <Button size="sm" disabled={!addHopDraft.hopId || !addHopDraft.grams || !addHopDraft.additionTime}
-              onClick={async () => {
-                try {
-                  const created = await addHopAction({ hopId: addHopDraft.hopId, grams: parseFloat(addHopDraft.grams), use: addHopDraft.use, additionTime: parseFloat(addHopDraft.additionTime) });
-                  setHopRows((rows) => [...rows, created]);
-                  setAddHopDraft({ hopId: "", grams: "", use: "boil", additionTime: "" });
-                  setIsAddingHop(false);
-                } catch { toast.error("Failed to add hop"); }
-              }}
-            >Add</Button>
-            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingHop(false)}><X className="h-4 w-4" /></Button>
-          </div>
-        )}
-      </CollapsibleCard>
-
-      {/* 6. Cultures */}
-      <CollapsibleCard
-        title={`Cultures (${yeastRows.length})`}
-        icon={<FlaskConical className="h-4 w-4" />}
-        open={open.cultures}
-        onToggle={() => toggle("cultures")}
-        className="bg-purple-50"
-        actions={
-          <Button size="sm" className="bg-purple-200 hover:bg-purple-300 text-purple-900" onClick={() => setIsAddingYeast((v) => !v)}>+ Add</Button>
-        }
-      >
-        {yeastRows.length > 0 ? (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b text-muted-foreground text-xs">
-                <th className="text-left font-medium pb-2 pr-3">Name</th>
-                <th className="text-left font-medium pb-2 pr-3">Brand</th>
-                <th className="text-left font-medium pb-2 pr-3">Attenuation</th>
-                <th className="text-left font-medium pb-2 pr-3">Qty</th>
-                <th className="text-left font-medium pb-2 pr-3">Units</th>
-                <th className="text-left font-medium pb-2 pr-3">Inoculation</th>
-                <th className="text-left font-medium pb-2 pr-3">Temp (°C)</th>
-                <th className="pb-2" />
-              </tr>
-            </thead>
-            <tbody>
-              {yeastRows.map((by) => {
-                const isEditing = editingYeastId === by.id;
-                const isSaving = savingYeastId === by.id;
-                return (
-                  <tr key={by.id} className="border-b last:border-0">
-                    <td className="py-2 pr-3 font-medium">{by.name ?? by.yeast.name}</td>
-                    <td className="py-2 pr-3 text-muted-foreground">{(by.brand ?? by.yeast.brand) ?? "—"}</td>
-                    <td className="py-2 pr-3 text-muted-foreground">
-                      {isEditing ? (
-                        <Input
-                          type="number" step="0.1"
-                          value={editYeastDraft.attenuation}
-                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, attenuation: e.target.value }))}
-                          className="h-7 text-sm w-20"
-                          placeholder="%"
-                        />
-                      ) : (
-                        (by.attenuation ?? by.yeast.attenuation) != null
-                          ? `${by.attenuation ?? by.yeast.attenuation}%`
-                          : "—"
-                      )}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {isEditing ? (
-                        <Input
-                          type="number" step="0.1"
-                          value={editYeastDraft.quantityAmount}
-                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))}
-                          className="h-7 text-sm w-20"
-                          placeholder="0"
-                        />
-                      ) : (
-                        by.quantityAmount != null ? String(by.quantityAmount) : "—"
-                      )}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {isEditing ? (
-                        <Select value={editYeastDraft.quantityUnits} onValueChange={(v) => setEditYeastDraft((d) => ({ ...d, quantityUnits: v }))}>
-                          <SelectTrigger className="h-7 text-sm w-24"><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="packet">packet</SelectItem>
-                            <SelectItem value="grams">grams</SelectItem>
-                            <SelectItem value="ml">ml</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        by.quantityUnits ?? "—"
-                      )}
-                    </td>
-                    <td className="py-2 pr-3 text-muted-foreground">
-                      {(() => {
-                        if (by.quantityAmount == null || !batchSize) return "—";
-                        const rate = by.quantityAmount / batchSize;
-                        const unitLabel = by.quantityUnits === "grams" ? "g/L" : by.quantityUnits === "ml" ? "mL/L" : "pkt/L";
-                        return `${rate.toFixed(2)} ${unitLabel}`;
-                      })()}
-                    </td>
-                    <td className="py-2 pr-3">
-                      {isEditing ? (
-                        <Input
-                          type="number"
-                          step="0.1"
-                          value={editYeastDraft.temp}
-                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, temp: e.target.value }))}
-                          className="h-7 text-sm w-20"
-                        />
-                      ) : (
-                        by.temp != null ? `${by.temp}` : "—"
-                      )}
-                    </td>
-                    <td className="py-2 text-right">
-                      {isEditing ? (
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6"
-                            disabled={isSaving}
-                            onClick={async () => {
-                              setSavingYeastId(by.id);
-                              try {
-                                const newTemp = editYeastDraft.temp !== "" ? parseFloat(editYeastDraft.temp) : null;
-                                const newAttenuation = editYeastDraft.attenuation !== "" ? parseFloat(editYeastDraft.attenuation) : null;
-                                const newQtyAmount = editYeastDraft.quantityAmount !== "" ? parseFloat(editYeastDraft.quantityAmount) : null;
-                                const newQtyUnits = editYeastDraft.quantityUnits || null;
-                                await updateYeastAction(by.id, { quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation });
-                                setYeastRows((rows) =>
-                                  rows.map((r) =>
-                                    r.id === by.id ? { ...r, quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation } : r
-                                  )
-                                );
-                              } catch {
-                                toast.error("Failed to save");
-                              } finally {
-                                setSavingYeastId(null);
-                                setEditingYeastId(null);
-                              }
-                            }}
-                          >
-                            <Check className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6"
-                            onClick={() => setEditingYeastId(null)}
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-end gap-1">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6"
-                            onClick={() => {
-                              const effectiveAttenuation = by.attenuation ?? by.yeast.attenuation;
-                              setEditYeastDraft({ quantityAmount: by.quantityAmount != null ? String(by.quantityAmount) : "", quantityUnits: by.quantityUnits ?? "packet", temp: by.temp != null ? String(by.temp) : "", attenuation: effectiveAttenuation != null ? String(effectiveAttenuation) : "" });
-                              setEditingYeastId(by.id);
-                            }}
-                          >
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            className="h-6 w-6 text-destructive hover:text-destructive"
-                            onClick={async () => {
-                              try {
-                                await deleteYeastAction(by.id);
-                                setYeastRows((rows) => rows.filter((r) => r.id !== by.id));
-                              } catch {
-                                toast.error("Failed to delete");
-                              }
-                            }}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          <p className="text-muted-foreground text-center py-4">No cultures added yet</p>
-        )}
-        {isAddingYeast && (
-          <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Yeast</span>
-              <Select value={addYeastDraft.yeastId} onValueChange={(v) => setAddYeastDraft((d) => ({ ...d, yeastId: v }))}>
-                <SelectTrigger className="h-8 text-sm w-52"><SelectValue placeholder="Select yeast" /></SelectTrigger>
-                <SelectContent>
-                  {allYeasts.map((y) => (
-                    <SelectItem key={y.id} value={y.id}>{y.name}{y.brand ? ` (${y.brand})` : ""}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Qty</span>
-              <Input type="number" step="0.1" placeholder="1" value={addYeastDraft.quantityAmount} onChange={(e) => setAddYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))} className="h-8 text-sm w-20" />
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Units</span>
-              <Select value={addYeastDraft.quantityUnits} onValueChange={(v) => setAddYeastDraft((d) => ({ ...d, quantityUnits: v }))}>
-                <SelectTrigger className="h-8 text-sm w-24"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="packet">packet</SelectItem>
-                  <SelectItem value="grams">grams</SelectItem>
-                  <SelectItem value="ml">ml</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Temp (°C)</span>
-              <Input type="number" step="0.1" placeholder="°C" value={addYeastDraft.temp} onChange={(e) => setAddYeastDraft((d) => ({ ...d, temp: e.target.value }))} className="h-8 text-sm w-20" />
-            </div>
-            <Button size="sm" disabled={!addYeastDraft.yeastId || !addYeastDraft.quantityAmount}
-              onClick={async () => {
-                try {
-                  const temp = addYeastDraft.temp !== "" ? parseFloat(addYeastDraft.temp) : null;
-                  const created = await addYeastAction({ yeastId: addYeastDraft.yeastId, quantityAmount: parseFloat(addYeastDraft.quantityAmount), quantityUnits: addYeastDraft.quantityUnits, temp });
-                  setYeastRows((rows) => [...rows, created]);
-                  setAddYeastDraft({ yeastId: "", quantityAmount: "", quantityUnits: "packet", temp: "" });
-                  setIsAddingYeast(false);
-                } catch { toast.error("Failed to add yeast"); }
-              }}
-            >Add</Button>
-            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setIsAddingYeast(false)}><X className="h-4 w-4" /></Button>
-          </div>
-        )}
-      </CollapsibleCard>
-
-      {/* 4. Volumes */}
+      {/* 9. Volumes */}
       <CollapsibleCard
         title="Volumes"
         icon={<GlassWater className="h-4 w-4" />}
@@ -2389,7 +2505,7 @@ export function BeerSections({
                 {volumeRow("Pre-heat-up volume", wv.preHeatUp)}
                 <div className="h-px bg-border border-t-2" />
                 {lossRow(`System losses (${wv.systemLossPct.toFixed(1)}%)`, wv.systemLossL)}
-                {wv.mashTunDeadSpaceL > 0 && lossRow("Mash tun dead space", wv.mashTunDeadSpaceL)}
+                {wv.mashTunLossL > 0 && lossRow("Mash tun loss", wv.mashTunLossL)}
                 {lossRow("Grain absorption", wv.grainAbsL)}
                 {/* Total water */}
                 <div className="flex items-center gap-3 px-3 py-2 bg-blue-600 dark:bg-blue-700 text-white font-bold">
@@ -2801,7 +2917,7 @@ export function BeerSections({
                   <p className="text-sm font-medium text-muted-foreground">Acid Addition</p>
                   <div className="flex items-center gap-3">
                     <span className="w-44 text-sm shrink-0">Acid type</span>
-                    <Select value={acidType} onValueChange={(v) => { setAcidType(v as AcidType); setAcidAmount(""); }}>
+                    <Select value={acidType} onValueChange={(v) => { setAcidType(v as AcidType); setAcidAmount(""); scheduleAcidSave(); }}>
                       <SelectTrigger className="w-40 h-7 text-sm">
                         <SelectValue />
                       </SelectTrigger>
@@ -2820,7 +2936,7 @@ export function BeerSections({
                         min="0"
                         step="0.1"
                         value={acidAmount}
-                        onChange={(e) => setAcidAmount(e.target.value)}
+                        onChange={(e) => { setAcidAmount(e.target.value); scheduleAcidSave(); }}
                         className="w-24 h-7 text-sm"
                         placeholder="0"
                       />
@@ -2916,19 +3032,27 @@ export function BeerSections({
             if (d == null || d <= 0) return null;
             return parseFloat(((wv.preHeatUp * 1000) / (Math.PI * Math.pow(d / 2, 2))).toFixed(1));
           })(),
-          preBoilDensityGL: targets.og != null && wv.preHeatUp > 0
-            ? Math.round(1000 + (targets.og - 1000) * wv.fermenterVol / wv.preHeatUp)
-            : null,
+          preBoilDensityGL: (() => {
+            if (grainRows.length === 0 || !wv.preHeatUp) return null;
+            const mashEffPct = eqSnap?.mashEff ?? eqSnap?.brewhouseEff ?? 75;
+            const adjustedExtractKg = (grainTotals.extract / 1000) * (mashEffPct / 100);
+            const plato = (adjustedExtractKg * 1000) / wv.preHeatUp / 10;
+            return Math.round((1 + plato / (258.6 - plato * (227.1 / 258.2))) * 10000) / 10;
+          })(),
           boilTimeMin: boilTimeMin ?? 60,
           boilHops: hopRows
             .filter(h => h.use === "boil" && h.additionTime != null)
             .map(h => ({ name: h.name ?? h.hop.name, grams: h.grams, additionTime: h.additionTime! })),
+          targetOg: targets.og,
+          fermenterWeightKg: eqSnap?.fermenterWeightKg ?? null,
+          brewDate: batch.brewDate,
         };
         return (
           <BrewdaySection
             brewday={brewday}
             updateBrewday={updateBrewday}
             recipeData={recipeData}
+            kegInventory={allKegs}
             openPreparacion={open.bdPreparacion}
             onTogglePreparacion={() => toggle("bdPreparacion")}
             openMolienda={open.bdMolienda}

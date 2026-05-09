@@ -7,7 +7,16 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const data = await request.json();
-  const keg = await prisma.keg.create({ data });
+  const body = await request.json();
+  const keg = await prisma.keg.create({
+    data: {
+      name: body.name,
+      type: body.type ?? null,
+      label: body.label ?? null,
+      capacity: body.capacity,
+      tareWeight: body.tareWeight ?? null,
+      notes: body.notes ?? null,
+    },
+  });
   return NextResponse.json(keg);
 }

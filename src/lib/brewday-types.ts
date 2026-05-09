@@ -7,6 +7,18 @@ export interface MashStepEntry {
   revolver: boolean;
 }
 
+export interface FermentationStep {
+  id: string;
+  fechaHora: string | null;
+  volumenL: number | null;
+  densidadGL: number | null;
+  ph: number | null;
+  tempC: number | null;
+  pressureBar: number | null;
+  bubbleIntervalSec: number | null;
+  notes: string | null;
+}
+
 export interface BoilEntry {
   id: string;
   hora: string | null;
@@ -119,10 +131,16 @@ export interface FermentacionData {
   pesoTotalKg: number | null;
   pesoLiquidoKg: number | null;
   volumenL: number | null;
-  horaPitching: string | null;
-  tempPitchingC: number | null;
-  limpiezaCheck: boolean;
   pesoGarrafaFinalKg: number | null;
+  steps: FermentationStep[];
+}
+
+export interface KegEntry {
+  id: string;
+  kegId: string;
+  kegName: string;
+  tareWeightKg: number | null;
+  totalWeightKg: number | null;
 }
 
 export interface EmbarriladoData {
@@ -132,6 +150,7 @@ export interface EmbarriladoData {
   smbText: string | null;
   fechaHora: string | null;
   volumenL: number | null;
+  kegs: KegEntry[];
 }
 
 export interface BrewdayData {
@@ -176,8 +195,8 @@ export const DEFAULT_BREWDAY_DATA: BrewdayData = {
   lastRun: { densidadGL: null, ph: null },
   hervido: { entries: [], irishMossCheck: false, irishMossGr: null, nutrientesCheck: false, nutrientesGr: null, evaporacionL: null },
   whirlpoolEnfriado: { horaInicioWhirlpool: null, horaInicioEnfriado: null, tempInicioC: null, horaFinEnfriado: null, tempFinC: null, horaFinTrasvase: null, tempTrasvaseC: null, muestraOg: false, muestraOgDensidad: null, muestraOgDensidadObj: null, muestraOgPh: null },
-  fermentacion: { pesoTotalKg: null, pesoLiquidoKg: null, volumenL: null, horaPitching: null, tempPitchingC: null, limpiezaCheck: false, pesoGarrafaFinalKg: null },
-  embarrilado: { gelatinaCheck: false, gelatinaText: null, smbCheck: false, smbText: null, fechaHora: null, volumenL: null },
+  fermentacion: { pesoTotalKg: null, pesoLiquidoKg: null, volumenL: null, pesoGarrafaFinalKg: null, steps: [{ id: "pitching", fechaHora: null, volumenL: null, densidadGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null }] },
+  embarrilado: { gelatinaCheck: false, gelatinaText: null, smbCheck: false, smbText: null, fechaHora: null, volumenL: null, kegs: [] },
 };
 
 export function parseBrewdayData(raw: string | null): BrewdayData {
@@ -211,8 +230,24 @@ export function parseBrewdayData(raw: string | null): BrewdayData {
       lastRun: { ...DEFAULT_BREWDAY_DATA.lastRun, ...parsed.lastRun },
       hervido: { ...DEFAULT_BREWDAY_DATA.hervido, ...parsed.hervido },
       whirlpoolEnfriado: { ...DEFAULT_BREWDAY_DATA.whirlpoolEnfriado, ...parsed.whirlpoolEnfriado },
-      fermentacion: { ...DEFAULT_BREWDAY_DATA.fermentacion, ...parsed.fermentacion },
-      embarrilado: { ...DEFAULT_BREWDAY_DATA.embarrilado, ...parsed.embarrilado },
+      fermentacion: {
+        ...DEFAULT_BREWDAY_DATA.fermentacion,
+        ...parsed.fermentacion,
+        steps: Array.isArray(parsed.fermentacion?.steps) && parsed.fermentacion.steps.length > 0
+          ? parsed.fermentacion.steps.map((s: Record<string, unknown>) => ({
+              id: (s.id as string) ?? crypto.randomUUID(),
+              fechaHora: (s.fechaHora as string | null) ?? null,
+              volumenL: (s.volumenL as number | null) ?? null,
+              densidadGL: (s.densidadGL as number | null) ?? null,
+              ph: (s.ph as number | null) ?? null,
+              tempC: (s.tempC as number | null) ?? null,
+              pressureBar: (s.pressureBar as number | null) ?? null,
+              bubbleIntervalSec: (s.bubbleIntervalSec as number | null) ?? null,
+              notes: (s.notes as string | null) ?? null,
+            }))
+          : DEFAULT_BREWDAY_DATA.fermentacion.steps,
+      },
+      embarrilado: { ...DEFAULT_BREWDAY_DATA.embarrilado, ...parsed.embarrilado, kegs: parsed.embarrilado?.kegs ?? [] },
     };
   } catch {
     return DEFAULT_BREWDAY_DATA;

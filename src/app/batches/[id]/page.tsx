@@ -27,10 +27,13 @@ async function updateBatch(id: string, formData: FormData) {
       equipmentSnapshot.equipmentMashEff = eq.mashEfficiency;
       equipmentSnapshot.equipmentMashTunVolumeL = eq.mashTunVolumeL;
       equipmentSnapshot.equipmentMashTunDeadSpaceL = eq.mashTunDeadSpaceL;
+      equipmentSnapshot.equipmentMashTunLossL = eq.mashTunLossL;
       equipmentSnapshot.equipmentBoilPotVolumeL = eq.boilPotVolumeL;
       equipmentSnapshot.equipmentBoilEvapRateLH = eq.boilEvaporationRateLH;
       equipmentSnapshot.equipmentHeatEvapRateLH = eq.heatingEvaporationRateLH;
       equipmentSnapshot.equipmentGrainAbsLKg = eq.grainAbsorptionLKg;
+      equipmentSnapshot.equipmentFermenterVolumeL = eq.fermenterVolumeL;
+      equipmentSnapshot.equipmentFermenterWeightKg = eq.fermenterWeightKg;
       equipmentSnapshot.equipmentFermenterLossL = eq.fermenterLossL;
       equipmentSnapshot.equipmentTrubLossL = eq.trubLossL;
       equipmentSnapshot.equipmentSystemLossPct = eq.systemLossPercent;
@@ -61,10 +64,13 @@ async function updateBatchEquipmentSnapshot(
     equipmentMashEff: number | null;
     equipmentMashTunVolumeL: number | null;
     equipmentMashTunDeadSpaceL: number | null;
+    equipmentMashTunLossL: number | null;
     equipmentBoilPotVolumeL: number | null;
     equipmentBoilEvapRateLH: number | null;
     equipmentHeatEvapRateLH: number | null;
     equipmentGrainAbsLKg: number | null;
+    equipmentFermenterVolumeL: number | null;
+    equipmentFermenterWeightKg: number | null;
     equipmentFermenterLossL: number | null;
     equipmentTrubLossL: number | null;
     equipmentSystemLossPct: number | null;
@@ -259,6 +265,14 @@ async function updateSaltAdditions(
   await prisma.batch.update({ where: { id }, data });
 }
 
+async function updateAcidAddition(
+  id: string,
+  data: { mashAcidType: string; mashAcidDose: number | null }
+) {
+  "use server";
+  await prisma.batch.update({ where: { id }, data });
+}
+
 async function createMashStep(
   batchId: string,
   data: {
@@ -411,6 +425,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const allGrains = await prisma.grain.findMany({ orderBy: { name: "asc" } });
   const allHops = await prisma.hop.findMany({ orderBy: { name: "asc" } });
   const allYeasts = await prisma.yeast.findMany({ orderBy: { name: "asc" } });
+  const allKegs = await prisma.keg.findMany({ orderBy: { name: "asc" } });
 
   const batch = await prisma.batch.findUnique({
     where: { id },
@@ -455,6 +470,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const updateBatchWaterWithId = updateBatchWaterProfiles.bind(null, id);
   const updateBatchWaterSnapshotWithId = updateBatchWaterSnapshot.bind(null, id);
   const updateSaltAdditionsWithId = updateSaltAdditions.bind(null, id);
+  const updateAcidAdditionWithId = updateAcidAddition.bind(null, id);
   const updateBoilTimesWithId = updateBoilTimes.bind(null, id);
   const updateMashParamsWithId = updateMashParams.bind(null, id);
   const createMashStepWithId = createMashStep.bind(null, id);
@@ -467,10 +483,13 @@ export default async function BatchPage({ params }: BatchPageProps) {
     mashEff: batch.equipmentMashEff,
     mashTunVolumeL: batch.equipmentMashTunVolumeL,
     mashTunDeadSpaceL: batch.equipmentMashTunDeadSpaceL,
+    mashTunLossL: batch.equipmentMashTunLossL,
     boilPotVolumeL: batch.equipmentBoilPotVolumeL,
     boilEvapRateLH: batch.equipmentBoilEvapRateLH,
     heatEvapRateLH: batch.equipmentHeatEvapRateLH,
     grainAbsLKg: batch.equipmentGrainAbsLKg,
+    fermenterVolumeL: batch.equipmentFermenterVolumeL,
+    fermenterWeightKg: batch.equipmentFermenterWeightKg,
     fermenterLossL: batch.equipmentFermenterLossL,
     trubLossL: batch.equipmentTrubLossL,
     systemLossPct: batch.equipmentSystemLossPct,
@@ -557,6 +576,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
           deleteMashStepAction={deleteMashStep}
           brewdayData={batch.brewdayData}
           updateBrewdayDataAction={updateBrewdayDataWithId}
+          allKegs={allKegs}
           equipmentSnapshot={equipmentSnapshot}
           updateEquipmentSnapshotAction={updateEquipmentSnapshotWithId}
           saltAdditions={{
@@ -567,6 +587,8 @@ export default async function BatchPage({ params }: BatchPageProps) {
             saltEpsomGL: batch.saltEpsomGL,
             saltNaClGL: batch.saltNaClGL,
           }}
+          acidAddition={{ mashAcidType: batch.mashAcidType ?? "lactic", mashAcidDose: batch.mashAcidDose ?? null }}
+          updateAcidAdditionAction={updateAcidAdditionWithId}
         />
       ) : (
         <BatchForm batch={batch} equipment={allEquipment} updateAction={updateWithId} updateNotesAction={updateNotesWithId} />

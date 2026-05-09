@@ -5,22 +5,31 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const data = await request.json();
+  const body = await request.json();
   const { id } = await params;
   const keg = await prisma.keg.update({
     where: { id },
-    data,
+    data: {
+      name: body.name,
+      type: body.type ?? null,
+      label: body.label ?? null,
+      capacity: body.capacity,
+      tareWeight: body.tareWeight ?? null,
+      notes: body.notes ?? null,
+    },
   });
   return NextResponse.json(keg);
 }
 
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  await prisma.keg.delete({
-    where: { id },
-  });
-  return NextResponse.json({ success: true });
+  try {
+    await prisma.keg.delete({ where: { id } });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Failed to delete keg" }, { status: 500 });
+  }
 }

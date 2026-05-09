@@ -7,7 +7,19 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const data = await request.json();
-  const profile = await prisma.waterProfile.create({ data });
+  const body = await request.json();
+  const profile = await prisma.waterProfile.create({
+    data: {
+      name: body.name,
+      caPpm: body.caPpm,
+      mgPpm: body.mgPpm,
+      naPpm: body.naPpm,
+      clPpm: body.clPpm,
+      so4Ppm: body.so4Ppm,
+      znPpm: body.znPpm ?? null,
+      hco3Ppm: body.hco3Ppm ?? null,
+      pH: body.pH ?? null,
+    },
+  });
   return NextResponse.json(profile);
 }

@@ -23,41 +23,38 @@ export async function POST(req: NextRequest) {
 
   const batch = await prisma.$transaction(async (tx) => {
     // Find-or-create grains (case-insensitive via JS filter)
+    const allGrains = await tx.grain.findMany();
     const grainIds: { grainId: string; grams: number; name: string; brand: string | null; colorL: number | null; maxYield: number | null; grainGroup: string | null }[] = [];
     for (const g of data.grains) {
-      const allGrains = await tx.grain.findMany();
-      const existing = allGrains.find(
-        (r) => r.name.toLowerCase() === g.name.toLowerCase()
-      );
-      const grain = existing ?? (await tx.grain.create({
-        data: { name: g.name, brand: g.brand, colorL: g.colorL, maxYield: g.maxYield },
-      }));
+      let grain = allGrains.find((r) => r.name.toLowerCase() === g.name.toLowerCase());
+      if (!grain) {
+        grain = await tx.grain.create({ data: { name: g.name, brand: g.brand, colorL: g.colorL, maxYield: g.maxYield } });
+        allGrains.push(grain);
+      }
       grainIds.push({ grainId: grain.id, grams: g.grams, name: grain.name, brand: grain.brand, colorL: grain.colorL, maxYield: grain.maxYield, grainGroup: grain.grainGroup });
     }
 
     // Find-or-create hops
+    const allHops = await tx.hop.findMany();
     const hopIds: { hopId: string; grams: number; additionTime: number; use: string; name: string; alphaAcid: number }[] = [];
     for (const h of data.hops) {
-      const allHops = await tx.hop.findMany();
-      const existing = allHops.find(
-        (r) => r.name.toLowerCase() === h.name.toLowerCase()
-      );
-      const hop = existing ?? (await tx.hop.create({
-        data: { name: h.name, alphaAcid: h.alphaAcid },
-      }));
+      let hop = allHops.find((r) => r.name.toLowerCase() === h.name.toLowerCase());
+      if (!hop) {
+        hop = await tx.hop.create({ data: { name: h.name, alphaAcid: h.alphaAcid } });
+        allHops.push(hop);
+      }
       hopIds.push({ hopId: hop.id, grams: h.grams, additionTime: h.additionTime, use: h.use, name: hop.name, alphaAcid: hop.alphaAcid });
     }
 
     // Find-or-create yeasts
+    const allYeasts = await tx.yeast.findMany();
     const yeastIds: { yeastId: string; quantity: string; quantityAmount: number | null; quantityUnits: string | null; temp: number | null; name: string; brand: string | null; attenuation: number | null }[] = [];
     for (const y of data.yeasts) {
-      const allYeasts = await tx.yeast.findMany();
-      const existing = allYeasts.find(
-        (r) => r.name.toLowerCase() === y.name.toLowerCase()
-      );
-      const yeast = existing ?? (await tx.yeast.create({
-        data: { name: y.name, brand: y.brand, type: y.type, attenuation: y.attenuation },
-      }));
+      let yeast = allYeasts.find((r) => r.name.toLowerCase() === y.name.toLowerCase());
+      if (!yeast) {
+        yeast = await tx.yeast.create({ data: { name: y.name, brand: y.brand, type: y.type, attenuation: y.attenuation } });
+        allYeasts.push(yeast);
+      }
       yeastIds.push({ yeastId: yeast.id, quantity: "", quantityAmount: y.quantityAmount, quantityUnits: y.quantityUnits, temp: y.temp, name: yeast.name, brand: yeast.brand, attenuation: yeast.attenuation });
     }
 
