@@ -7,19 +7,23 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const grain = await prisma.grain.create({
-    data: {
-      name: body.name,
-      type: body.type ?? null,
-      origin: body.origin ?? null,
-      grainGroup: body.grainGroup ?? null,
-      brand: body.brand ?? null,
-      maxYield: body.maxYield ?? null,
-      colorL: body.colorL ?? null,
-      profile: body.profile ?? null,
-      uses: body.uses ?? null,
-    },
-  });
-  return NextResponse.json(grain);
+  try {
+    const body = await request.json();
+    const grain = await prisma.grain.create({
+      data: {
+        name: body.name,
+        type: body.type ?? null,
+        origin: body.origin ?? null,
+        grainGroup: body.grainGroup ?? null,
+        brand: body.brand ?? null,
+        maxYield: body.maxYield ?? null,
+        colorL: body.colorL ?? null,
+        profile: body.profile ?? null,
+        uses: body.uses ?? null,
+      },
+    });
+    return NextResponse.json(grain);
+  } catch {
+    return NextResponse.json({ error: "Failed to create grain" }, { status: 500 });
+  }
 }

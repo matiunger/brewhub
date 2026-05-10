@@ -1,4 +1,5 @@
 import { redirect, notFound } from "next/navigation";
+import { type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
 import { calculateBrewingStats } from "@/lib/calculations";
@@ -136,7 +137,7 @@ async function updateBatchHop(batchHopId: string, data: { grams: number; use: st
       grams: data.grams,
       use: data.use,
       alphaAcid: data.alphaAcid,
-      ...(data.additionTime != null ? { additionTime: data.additionTime } : {}),
+      additionTime: data.additionTime,
     },
   });
 }
@@ -165,7 +166,7 @@ async function updateBatchWaterProfiles(
 ) {
   "use server";
 
-  const updateData: any = {};
+  const updateData: Prisma.BatchUpdateInput = {};
 
   if (data.sourceWaterProfileId) {
     const profile = await prisma.waterProfile.findUnique({ where: { id: data.sourceWaterProfileId } });
@@ -220,41 +221,23 @@ async function updateBatchWaterProfiles(
   await prisma.batch.update({ where: { id }, data: updateData });
 }
 
-async function updateBatchWaterSnapshot(
-  id: string,
-  type: "source" | "target",
-  data: { caPpm: number; mgPpm: number; naPpm: number; clPpm: number; so4Ppm: number; znPpm: number | null; hco3Ppm: number | null; pH: number | null }
-) {
+type WaterSnapshotData = { caPpm: number; mgPpm: number; naPpm: number; clPpm: number; so4Ppm: number; znPpm: number | null; hco3Ppm: number | null; pH: number | null };
+
+function buildWaterSnapshotFields(type: "source" | "target", data: WaterSnapshotData) {
+  return type === "source" ? {
+    sourceCaPpm: data.caPpm, sourceMgPpm: data.mgPpm, sourceNaPpm: data.naPpm,
+    sourceClPpm: data.clPpm, sourceSo4Ppm: data.so4Ppm, sourceZnPpm: data.znPpm,
+    sourceHco3Ppm: data.hco3Ppm, sourceWaterPh: data.pH,
+  } : {
+    targetCaPpm: data.caPpm, targetMgPpm: data.mgPpm, targetNaPpm: data.naPpm,
+    targetClPpm: data.clPpm, targetSo4Ppm: data.so4Ppm, targetZnPpm: data.znPpm,
+    targetHco3Ppm: data.hco3Ppm, targetWaterPh: data.pH,
+  };
+}
+
+async function updateBatchWaterSnapshot(id: string, type: "source" | "target", data: WaterSnapshotData) {
   "use server";
-  if (type === "source") {
-    await prisma.batch.update({
-      where: { id },
-      data: {
-        sourceCaPpm: data.caPpm,
-        sourceMgPpm: data.mgPpm,
-        sourceNaPpm: data.naPpm,
-        sourceClPpm: data.clPpm,
-        sourceSo4Ppm: data.so4Ppm,
-        sourceZnPpm: data.znPpm,
-        sourceHco3Ppm: data.hco3Ppm,
-        sourceWaterPh: data.pH,
-      },
-    });
-  } else {
-    await prisma.batch.update({
-      where: { id },
-      data: {
-        targetCaPpm: data.caPpm,
-        targetMgPpm: data.mgPpm,
-        targetNaPpm: data.naPpm,
-        targetClPpm: data.clPpm,
-        targetSo4Ppm: data.so4Ppm,
-        targetZnPpm: data.znPpm,
-        targetHco3Ppm: data.hco3Ppm,
-        targetWaterPh: data.pH,
-      },
-    });
-  }
+  await prisma.batch.update({ where: { id }, data: buildWaterSnapshotFields(type, data) });
 }
 
 async function updateSaltAdditions(

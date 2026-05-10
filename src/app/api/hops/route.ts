@@ -7,19 +7,23 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const hop = await prisma.hop.create({
-    data: {
-      name: body.name,
-      origin: body.origin ?? null,
-      form: body.form ?? null,
-      hopType: body.hopType ?? null,
-      alphaAcid: body.alphaAcid,
-      betaAcid: body.betaAcid ?? null,
-      profile: body.profile ?? null,
-      styles: body.styles ?? null,
-      alternatives: body.alternatives ?? null,
-    },
-  });
-  return NextResponse.json(hop);
+  try {
+    const body = await request.json();
+    const hop = await prisma.hop.create({
+      data: {
+        name: body.name,
+        origin: body.origin ?? null,
+        form: body.form ?? null,
+        hopType: body.hopType ?? null,
+        alphaAcid: body.alphaAcid,
+        betaAcid: body.betaAcid ?? null,
+        profile: body.profile ?? null,
+        styles: body.styles ?? null,
+        alternatives: body.alternatives ?? null,
+      },
+    });
+    return NextResponse.json(hop);
+  } catch {
+    return NextResponse.json({ error: "Failed to create hop" }, { status: 500 });
+  }
 }

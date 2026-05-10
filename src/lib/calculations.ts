@@ -131,6 +131,11 @@ export function calculateIbuBreakdown(
   };
 }
 
+const ABV_FACTOR = 131.25; // Standard simplified formula coefficient
+const L_TO_GAL = 0.264172;
+const G_TO_LBS = 0.00220462;
+const L_PER_KG_TO_QT_PER_LB = 0.4792; // Water-to-grist ratio unit conversion
+
 export function calculateBrewingStats(batch: BatchWithIngredients) {
   const batchVolume = batch.targetFermentarL || 20; // Default to 20L if not specified
   const trubLossL = batch.equipmentTrubLossL ?? batch.equipment?.trubLossL ?? 1.0;
@@ -171,7 +176,7 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
   const fg = og - (og - 1) * attenuationFactor;
   
   // Calculate ABV
-  const abv = (og - fg) * 131.25;
+  const abv = (og - fg) * ABV_FACTOR;
   
   // Calculate IBU using Tinseth formula
   const boilGravityForIbu = (og + 1) / 2; // Average between OG and water
@@ -179,14 +184,14 @@ export function calculateBrewingStats(batch: BatchWithIngredients) {
   const totalIbu = ibuResult.totalCalculatedIbu;
   
   // Convert post-chill volume to gallons for MCU
-  const postChillGal = postChillVolumeL * 0.264172;
+  const postChillGal = postChillVolumeL * L_TO_GAL;
 
   // Calculate SRM (Standard Reference Method)
   // Formula: SRM = 1.4922 * MCU^0.6859
   // MCU (Malt Color Units) = (grain weight in lbs * grain color in L) / post-chill volume in gallons
   let mcu = 0;
   batch.grains.forEach((bg) => {
-    const weightLbs = bg.grams * 0.00220462; // Convert grams to lbs
+    const weightLbs = bg.grams * G_TO_LBS; // Convert grams to lbs
     const colorL = (bg.colorL ?? bg.grain.colorL) || 2; // Default to 2L (pale)
     mcu += (weightLbs * colorL) / postChillGal;
   });
@@ -233,6 +238,15 @@ const ACID_PROPS: Record<AcidType, { pK1: number; pK2: number; pK3: number; MW: 
   citric:     { pK1: 3.14, pK2: 4.77, pK3: 6.39,  MW: 192.13, form: "solid" },
 };
 
+// Fraction of acid in dissociated (active) form at given pH for a polyprotic acid
+function acidDissociationFrac(pH: number, acid: { pK1: number; pK2: number; pK3: number }): number {
+  const Ka1 = Math.pow(10, pH - acid.pK1);
+  const Ka2 = Math.pow(10, pH - acid.pK2);
+  const Ka3 = Math.pow(10, pH - acid.pK3);
+  const D = 1 + Ka1 + Ka1 * Ka2 + Ka1 * Ka2 * Ka3;
+  return Ka1 / D + (2 * Ka1 * Ka2) / D + (3 * Ka1 * Ka2 * Ka3) / D;
+}
+
 /**
  * Sparge water acidification via carbonate equilibrium titration (Bru'n Water method).
  * Returns mL for liquid acids, g for solid acids.
@@ -270,11 +284,7 @@ export function calculateSpargeAcidDose(input: {
 
   // Step 3: frac correction for polyprotic acids
   const acid = ACID_PROPS[acidType];
-  const Ka1 = Math.pow(10, phTarget - acid.pK1);
-  const Ka2 = Math.pow(10, phTarget - acid.pK2);
-  const Ka3 = Math.pow(10, phTarget - acid.pK3);
-  const D_acid = 1 + Ka1 + Ka1 * Ka2 + Ka1 * Ka2 * Ka3;
-  const frac = Ka1 / D_acid + (2 * Ka1 * Ka2) / D_acid + (3 * Ka1 * Ka2 * Ka3) / D_acid;
+  const frac = acidDissociationFrac(phTarget, acid);
   const mM_required = acidRequired / frac;
 
   // Step 4: Dose
@@ -361,7 +371,7 @@ export function calculateAcidAddition(input: {
   const waterAlkalinityMEq = (RA / 50) * mashWaterL;
 
   // Step 7: Water-to-grist ratio (L/kg → qt/lb)
-  const WGR = totalGristKg > 0 ? (mashWaterL / totalGristKg) * 0.4792 : 3;
+  const WGR = totalGristKg > 0 ? (mashWaterL / totalGristKg) * L_PER_KG_TO_QT_PER_LB : 3;
 
   // Step 8–9: Net acidity per liter → estimated mash pH (no acid)
   const netAcidityPerLiter = totalGristKg > 0
@@ -372,11 +382,7 @@ export function calculateAcidAddition(input: {
   // Forward calculation: convert acid dose to mEq, compute final pH
   const acid = ACID_PROPS[acidType];
   // Use estimatedMashPh for frac (good approximation at expected post-acid pH range)
-  const Ka1 = Math.pow(10, estimatedMashPh - acid.pK1);
-  const Ka2 = Math.pow(10, estimatedMashPh - acid.pK2);
-  const Ka3 = Math.pow(10, estimatedMashPh - acid.pK3);
-  const D_acid = 1 + Ka1 + Ka1 * Ka2 + Ka1 * Ka2 * Ka3;
-  const frac = Ka1 / D_acid + (2 * Ka1 * Ka2) / D_acid + (3 * Ka1 * Ka2 * Ka3) / D_acid;
+  const frac = acidDissociationFrac(estimatedMashPh, acid);
 
   let mMTotal = 0;
   if (acidDose > 0) {

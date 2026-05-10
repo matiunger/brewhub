@@ -337,11 +337,12 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
   };
 
   const saveEdit = async () => {
-    await fetch(`/api/equipment/${editingId}`, {
+    const r = await fetch(`/api/equipment/${editingId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
     });
+    if (!r.ok) { toast.error("Failed to save equipment"); return; }
     cancelEdit();
     refresh();
   };
@@ -353,11 +354,12 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
   };
 
   const addItem = async () => {
-    await fetch("/api/equipment", {
+    const r = await fetch("/api/equipment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(addForm),
     });
+    if (!r.ok) { toast.error("Failed to add equipment"); return; }
     setIsAddDialogOpen(false);
     setAddForm({ name: "", brewhouseEfficiency: 75, fermenterLossL: 1, trubLossL: 1, tempContractionPercent: 4 });
     refresh();
@@ -463,11 +465,12 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
-    await fetch(`/api/grains/${editingId}`, {
+    const r = await fetch(`/api/grains/${editingId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
     });
+    if (!r.ok) { toast.error("Failed to save fermentable"); return; }
     setEditingId(null);
     refresh();
   };
@@ -479,11 +482,12 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
   };
 
   const addItem = async () => {
-    await fetch("/api/grains", {
+    const r = await fetch("/api/grains", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(addForm),
     });
+    if (!r.ok) { toast.error("Failed to add fermentable"); return; }
     setIsAddDialogOpen(false);
     setAddForm({ name: "", type: "grain" });
     refresh();
@@ -676,11 +680,12 @@ export function HopsTable({ initialData }: { initialData: Hop[] }) {
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
-    await fetch(`/api/hops/${editingId}`, {
+    const r = await fetch(`/api/hops/${editingId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
     });
+    if (!r.ok) { toast.error("Failed to save hop"); return; }
     setEditingId(null);
     refresh();
   };
@@ -692,11 +697,12 @@ export function HopsTable({ initialData }: { initialData: Hop[] }) {
   };
 
   const addItem = async () => {
-    await fetch("/api/hops", {
+    const r = await fetch("/api/hops", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(addForm),
     });
+    if (!r.ok) { toast.error("Failed to add hop"); return; }
     setIsAddDialogOpen(false);
     setAddForm({ name: "", alphaAcid: 5, form: "pellet" });
     refresh();
@@ -875,11 +881,12 @@ export function YeastsTable({ initialData }: { initialData: Yeast[] }) {
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
-    await fetch(`/api/yeasts/${editingId}`, {
+    const r = await fetch(`/api/yeasts/${editingId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
     });
+    if (!r.ok) { toast.error("Failed to save culture"); return; }
     setEditingId(null);
     refresh();
   };
@@ -891,11 +898,12 @@ export function YeastsTable({ initialData }: { initialData: Yeast[] }) {
   };
 
   const addItem = async () => {
-    await fetch("/api/yeasts", {
+    const r = await fetch("/api/yeasts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(addForm),
     });
+    if (!r.ok) { toast.error("Failed to add culture"); return; }
     setIsAddDialogOpen(false);
     setAddForm({ name: "" });
     refresh();
@@ -1057,11 +1065,12 @@ export function WaterTable({ initialData }: { initialData: WaterProfile[] }) {
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
-    await fetch(`/api/water-profiles/${editingId}`, {
+    const r = await fetch(`/api/water-profiles/${editingId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
     });
+    if (!r.ok) { toast.error("Failed to save water profile"); return; }
     setEditingId(null);
     refresh();
   };
@@ -1073,11 +1082,12 @@ export function WaterTable({ initialData }: { initialData: WaterProfile[] }) {
   };
 
   const addItem = async () => {
-    await fetch("/api/water-profiles", {
+    const r = await fetch("/api/water-profiles", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(addForm),
     });
+    if (!r.ok) { toast.error("Failed to add water profile"); return; }
     setIsAddDialogOpen(false);
     setAddForm({ name: "", caPpm: 0, mgPpm: 0, naPpm: 0, clPpm: 0, so4Ppm: 0 });
     refresh();
@@ -1237,11 +1247,12 @@ export function KegsTable({ initialData }: { initialData: Keg[] }) {
   const cancelEdit = () => { setEditingId(null); setEditForm({}); };
 
   const saveEdit = async () => {
-    await fetch(`/api/kegs/${editingId}`, {
+    const r = await fetch(`/api/kegs/${editingId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
     });
+    if (!r.ok) { toast.error("Failed to save keg"); return; }
     setEditingId(null);
     refresh();
   };
@@ -1253,11 +1264,12 @@ export function KegsTable({ initialData }: { initialData: Keg[] }) {
   };
 
   const addItem = async () => {
-    await fetch("/api/kegs", {
+    const r = await fetch("/api/kegs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(addForm),
     });
+    if (!r.ok) { toast.error("Failed to add keg"); return; }
     setIsAddDialogOpen(false);
     setAddForm({ name: "", capacity: 19, type: null, label: null });
     refresh();

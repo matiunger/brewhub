@@ -7,18 +7,22 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const yeast = await prisma.yeast.create({
-    data: {
-      name: body.name,
-      brand: body.brand ?? null,
-      type: body.type ?? null,
-      cultureType: body.cultureType ?? null,
-      temperatureRange: body.temperatureRange ?? null,
-      profile: body.profile ?? null,
-      uses: body.uses ?? null,
-      attenuation: body.attenuation ?? null,
-    },
-  });
-  return NextResponse.json(yeast);
+  try {
+    const body = await request.json();
+    const yeast = await prisma.yeast.create({
+      data: {
+        name: body.name,
+        brand: body.brand ?? null,
+        type: body.type ?? null,
+        cultureType: body.cultureType ?? null,
+        temperatureRange: body.temperatureRange ?? null,
+        profile: body.profile ?? null,
+        uses: body.uses ?? null,
+        attenuation: body.attenuation ?? null,
+      },
+    });
+    return NextResponse.json(yeast);
+  } catch {
+    return NextResponse.json({ error: "Failed to create culture" }, { status: 500 });
+  }
 }
