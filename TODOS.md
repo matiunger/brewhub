@@ -1,21 +1,30 @@
 
+
+
+in recipe overview, agregar mas metricas como balance, etc
+esquema json en ingles, deslop
+
+
+test
+    acid additions
+    Revisar formular de IBU
+
+visual de agua, losses, etc
+alertar seccion si faltan inpus (o aclarar de que valores depende)
+timers
+tastings
+Create summary or learnings with AI
+
+DONE:
+batches tables
+attenuation
 consider starters
+calculo de tiempos y total batch time
+real Heat-Up Evap. rate
+show real efficiencies
 for all number inputs same decimal, remove small arrow
 fermentarion follow up table
 fermentation chart
-real Heat-Up Evap. rate
-show real efficiencies
-test acid additions
-calculo de tiempos y total batch time
-in recipe overview, agregar mas metricas como balance, etc
-visual de agua, losses, etc
-REvisar formular de IBU
-alertar seccion si faltan inpus (o aclarar de que valores depende)
-timers
-esquema json en ingles
-tastings
-
-DONE:
 in boil brew day, add estimated density.
 fix MCU con post boil volume
 Beer batch

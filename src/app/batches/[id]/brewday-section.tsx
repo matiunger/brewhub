@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { ChevronDown, ChevronRight, ClipboardList, Settings2, Layers, GlassWater, Flame, Snowflake, FlaskConical, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, FileText } from "lucide-react";
@@ -41,8 +43,7 @@ function FieldGroup({ label, children }: { label: string; children: React.ReactN
 
 function NumInput({ value, onChange, placeholder, className }: { value: number | null; onChange: (v: number | null) => void; placeholder?: string; className?: string }) {
   return (
-    <Input
-      type="number"
+    <NumberInput
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
       placeholder={placeholder ?? "—"}
@@ -191,7 +192,7 @@ function FermentacionSection({
       : null;
 
   return (
-    <CollapsibleCard title="Fermentation" open={open} onToggle={onToggle}>
+    <CollapsibleCard title="Fermentation" icon={<FlaskConical className="h-4 w-4" />} open={open} onToggle={onToggle}>
       <div className="space-y-3">
         {/* Mode toggle */}
         <div className="flex gap-2">
@@ -260,6 +261,17 @@ function FermentacionSection({
               {(startingGasTankKg - fermentacion.pesoGarrafaFinalKg) >= 0 ? "−" : "+"}{Math.abs(startingGasTankKg - fermentacion.pesoGarrafaFinalKg).toFixed(2)} kg
             </span>
           )}
+        </div>
+
+        {/* Starter notes */}
+        <div className="space-y-1">
+          <SubTitle>Starter notes</SubTitle>
+          <Textarea
+            value={fermentacion.starterNotes ?? ""}
+            onChange={(e) => setFermentacion("starterNotes", e.target.value || null)}
+            placeholder="Describe how the starter was prepared…"
+            className="text-sm min-h-[72px]"
+          />
         </div>
 
         {/* Follow-up table */}
@@ -501,6 +513,7 @@ interface BrewdaySectionProps {
   updateBrewday: <K extends keyof BrewdayData>(section: K, value: BrewdayData[K]) => void;
   recipeData: RecipeData;
   kegInventory: { id: string; name: string; capacity: number; tareWeight: number | null }[];
+  openBrewday: boolean; onToggleBrewday: () => void;
   openPreparacion: boolean; onTogglePreparacion: () => void;
   openMolienda: boolean; onToggleMolienda: () => void;
   openMacerado: boolean; onToggleMacerado: () => void;
@@ -513,6 +526,7 @@ interface BrewdaySectionProps {
 
 export function BrewdaySection({
   brewday, updateBrewday, recipeData, kegInventory,
+  openBrewday, onToggleBrewday,
   openPreparacion, onTogglePreparacion,
   openMolienda, onToggleMolienda,
   openMacerado, onToggleMacerado,
@@ -724,13 +738,24 @@ export function BrewdaySection({
   return (
     <>
       {/* Brewday title separator */}
-      <div className="flex items-center gap-3 pt-2">
+      <button
+        type="button"
+        onClick={onToggleBrewday}
+        className="flex items-center gap-3 pt-2 w-full text-left"
+      >
+        {openBrewday ? (
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+        )}
         <h2 className="text-lg font-bold tracking-tight whitespace-nowrap">Brewday</h2>
         <div className="flex-1 border-t" />
-      </div>
+      </button>
+
+      {openBrewday && <>
 
       {/* ---- PREPARACION ---- */}
-      <CollapsibleCard title="Preparation" open={openPreparacion} onToggle={onTogglePreparacion}>
+      <CollapsibleCard title="Preparation" icon={<ClipboardList className="h-4 w-4" />} open={openPreparacion} onToggle={onTogglePreparacion}>
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
           <CheckRow checked={preparacion.congelarBotellas} onCheckedChange={(v) => setPrep("congelarBotellas", v)} label="Freeze water bottles" />
           <CheckRow checked={preparacion.prepararHeladera} onCheckedChange={(v) => setPrep("prepararHeladera", v)} label="Prepare cooler" />
@@ -751,11 +776,12 @@ export function BrewdaySection({
           </div>
           <CheckRow checked={preparacion.filtrarAgua} onCheckedChange={(v) => setPrep("filtrarAgua", v)} label="Filter water (in fermenter)" />
           <CheckRow checked={preparacion.calibrarPhmetro} onCheckedChange={(v) => setPrep("calibrarPhmetro", v)} label="Calibrate pH meter" />
+          <CheckRow checked={preparacion.prepararStarter} onCheckedChange={(v) => setPrep("prepararStarter", v)} label="Prepare starter" />
         </div>
       </CollapsibleCard>
 
       {/* ---- MOLIENDA ---- */}
-      <CollapsibleCard title="Milling" open={openMolienda} onToggle={onToggleMolienda}>
+      <CollapsibleCard title="Milling" icon={<Settings2 className="h-4 w-4" />} open={openMolienda} onToggle={onToggleMolienda}>
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-3">
             <FieldLabel>Date &amp; time</FieldLabel>
@@ -768,8 +794,7 @@ export function BrewdaySection({
           </div>
           <div className="flex items-center gap-3">
             <FieldLabel>Roller gap (mm)</FieldLabel>
-            <Input
-              type="number"
+            <NumberInput
               step="0.05"
               min="0"
               value={molienda.gapMm ?? ""}
@@ -794,6 +819,7 @@ export function BrewdaySection({
       {/* ---- MACERADO ---- */}
       <CollapsibleCard
         title="Mash"
+        icon={<Layers className="h-4 w-4" />}
         open={openMacerado}
         onToggle={onToggleMacerado}
         badge={(() => {
@@ -1048,6 +1074,7 @@ export function BrewdaySection({
       {/* ---- LAVADO / POST-SPARGE ---- */}
       <CollapsibleCard
         title="Sparge"
+        icon={<GlassWater className="h-4 w-4" />}
         open={openLavado}
         onToggle={onToggleLavado}
         badge={(() => {
@@ -1146,6 +1173,7 @@ export function BrewdaySection({
       {/* ---- HERVIDO ---- */}
       <CollapsibleCard
         title="Boil"
+        icon={<Flame className="h-4 w-4" />}
         open={openHervido}
         onToggle={onToggleHervido}
         badge={(() => {
@@ -1166,6 +1194,41 @@ export function BrewdaySection({
         })()}
       >
         <div className="space-y-4">
+          {/* Heat-up / Evaporation stats */}
+          {(() => {
+            const toMins = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+            const fmt = (mins: number) => `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
+            const spargeEnd = lavado.horaFinLavado;
+            const startEntry = hervido.entries[0];
+            const d = recipeData.mashPotDiameterCm;
+
+            const heatUpMins = spargeEnd && startEntry?.hora ? toMins(startEntry.hora) - toMins(spargeEnd) : null;
+
+            // Evaporation during heat-up: preboil measurement → boil start
+            const preboilVol = d != null && d > 0 && preboil.alturaCm != null
+              ? Math.PI * Math.pow(d / 2, 2) * preboil.alturaCm / 1000
+              : null;
+            const boilStartVol = d != null && d > 0 && startEntry?.alturaCm != null
+              ? Math.PI * Math.pow(d / 2, 2) * startEntry.alturaCm / 1000
+              : null;
+            const evapL = preboilVol != null && boilStartVol != null ? preboilVol - boilStartVol : null;
+            const evapLH = evapL != null && heatUpMins != null && heatUpMins > 0 ? evapL / (heatUpMins / 60) : null;
+
+            const stats: Array<{ label: string; value: string }> = [];
+            if (heatUpMins != null && heatUpMins > 0) stats.push({ label: "Heat-up", value: fmt(heatUpMins) });
+            if (evapL != null) stats.push({ label: "Evaporation", value: `${evapL.toFixed(2)} L` });
+            if (evapLH != null) stats.push({ label: "Evap. rate", value: `${evapLH.toFixed(2)} L/h` });
+
+            if (stats.length === 0) return null;
+            return (
+              <div className="flex gap-4 text-xs text-muted-foreground">
+                {stats.map(s => (
+                  <span key={s.label}><span className="font-medium text-foreground">{s.label}:</span> {s.value}</span>
+                ))}
+              </div>
+            );
+          })()}
+
           <div>
             <div className="border rounded-lg p-3 space-y-2">
               <table className="w-full text-xs border-collapse">
@@ -1318,6 +1381,7 @@ export function BrewdaySection({
                       {groups.map((group, i) => {
                         const pct = ((totalMin - group.timeRemaining) / totalMin) * 100;
                         const isAbove = i % 2 === 0;
+                        const isStart = pct === 0;
                         return (
                           <div key={group.timeRemaining} className="absolute inset-y-0" style={{ left: `${pct}%` }}>
                             {/* Tick */}
@@ -1328,7 +1392,7 @@ export function BrewdaySection({
                             </span>
                             {/* Items stacked above or below */}
                             <div
-                              className={`absolute -translate-x-1/2 flex gap-0.5 ${isAbove ? "flex-col-reverse" : "flex-col"}`}
+                              className={`absolute flex gap-0.5 ${isStart ? "" : "-translate-x-1/2"} ${isAbove ? "flex-col-reverse" : "flex-col"}`}
                               style={isAbove ? { bottom: "6rem" } : { top: "5rem" }}
                             >
                               {group.items.map(it => (
@@ -1352,6 +1416,7 @@ export function BrewdaySection({
       {/* ---- WHIRLPOOL Y ENFRIADO ---- */}
       <CollapsibleCard
         title="Whirlpool &amp; Chilling"
+        icon={<Snowflake className="h-4 w-4" />}
         open={openWhirlpool}
         onToggle={onToggleWhirlpool}
         badge={(() => {
@@ -1432,7 +1497,7 @@ export function BrewdaySection({
       />
 
       {/* ---- EMBARRILADO ---- */}
-      <CollapsibleCard title="Kegging" open={openEmbarrilado} onToggle={onToggleEmbarrilado}>
+      <CollapsibleCard title="Kegging" icon={<Package className="h-4 w-4" />} open={openEmbarrilado} onToggle={onToggleEmbarrilado}>
         {(() => {
           const kegList = embarrilado.kegs ?? [];
           const usedKegIds = new Set(kegList.map(k => k.kegId));
@@ -1567,6 +1632,8 @@ export function BrewdaySection({
           );
         })()}
       </CollapsibleCard>
+
+      </>}
     </>
   );
 }

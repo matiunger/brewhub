@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -96,15 +96,14 @@ export default async function AddHopPage({ params }: AddHopPageProps) {
 
             <div className="space-y-2">
               <Label htmlFor="grams">Amount (grams) *</Label>
-              <Input id="grams" name="grams" type="number" step="0.1" required />
+              <NumberInput id="grams" name="grams" step="0.1" required />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="additionTime">Addition Time (minutes) *</Label>
-              <Input
+              <NumberInput
                 id="additionTime"
                 name="additionTime"
-                type="number"
                 step="1"
                 placeholder="e.g., 60 for 60 minutes left in boil"
                 required

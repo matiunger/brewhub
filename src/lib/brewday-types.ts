@@ -42,6 +42,7 @@ export interface PreparacionData {
   prepararAlcohol: boolean;
   cocinaLimpia: boolean;
   prepararMesa: boolean;
+  prepararStarter: boolean;
 }
 
 export interface MoliendaData {
@@ -132,6 +133,7 @@ export interface FermentacionData {
   pesoLiquidoKg: number | null;
   volumenL: number | null;
   pesoGarrafaFinalKg: number | null;
+  starterNotes: string | null;
   steps: FermentationStep[];
 }
 
@@ -182,6 +184,7 @@ export const DEFAULT_BREWDAY_DATA: BrewdayData = {
     prepararAlcohol: false,
     cocinaLimpia: false,
     prepararMesa: false,
+    prepararStarter: false,
   },
   molienda: { fechaHora: null, gapMm: null },
   macerado: {
@@ -195,7 +198,7 @@ export const DEFAULT_BREWDAY_DATA: BrewdayData = {
   lastRun: { densidadGL: null, ph: null },
   hervido: { entries: [], irishMossCheck: false, irishMossGr: null, nutrientesCheck: false, nutrientesGr: null, evaporacionL: null },
   whirlpoolEnfriado: { horaInicioWhirlpool: null, horaInicioEnfriado: null, tempInicioC: null, horaFinEnfriado: null, tempFinC: null, horaFinTrasvase: null, tempTrasvaseC: null, muestraOg: false, muestraOgDensidad: null, muestraOgDensidadObj: null, muestraOgPh: null },
-  fermentacion: { pesoTotalKg: null, pesoLiquidoKg: null, volumenL: null, pesoGarrafaFinalKg: null, steps: [{ id: "pitching", fechaHora: null, volumenL: null, densidadGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null }] },
+  fermentacion: { pesoTotalKg: null, pesoLiquidoKg: null, volumenL: null, pesoGarrafaFinalKg: null, starterNotes: null, steps: [{ id: "pitching", fechaHora: null, volumenL: null, densidadGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null }] },
   embarrilado: { gelatinaCheck: false, gelatinaText: null, smbCheck: false, smbText: null, fechaHora: null, volumenL: null, kegs: [] },
 };
 

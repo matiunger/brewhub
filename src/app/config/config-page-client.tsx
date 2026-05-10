@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -315,72 +316,72 @@ function EquipmentTable({
       </div>
       <div className="space-y-2">
         <Label>Brewhouse Efficiency (%) *</Label>
-        <Input type="number" step="0.1" value={num(form.brewhouseEfficiency)}
+        <NumberInput step="0.1" value={num(form.brewhouseEfficiency)}
           onChange={(e) => setForm(setNum(form, "brewhouseEfficiency", e.target.value, true))} />
       </div>
       <div className="space-y-2">
         <Label>Mash Efficiency (%)</Label>
-        <Input type="number" step="0.1" value={num(form.mashEfficiency)}
+        <NumberInput step="0.1" value={num(form.mashEfficiency)}
           onChange={(e) => setForm(setNum(form, "mashEfficiency", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Mash Tun Volume (L)</Label>
-        <Input type="number" step="0.1" value={num(form.mashTunVolumeL)}
+        <NumberInput step="0.1" value={num(form.mashTunVolumeL)}
           onChange={(e) => setForm(setNum(form, "mashTunVolumeL", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Mash Tun Dead Space (L)</Label>
-        <Input type="number" step="0.1" value={num(form.mashTunDeadSpaceL)}
+        <NumberInput step="0.1" value={num(form.mashTunDeadSpaceL)}
           onChange={(e) => setForm(setNum(form, "mashTunDeadSpaceL", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Boil Pot Volume (L)</Label>
-        <Input type="number" step="0.1" value={num(form.boilPotVolumeL)}
+        <NumberInput step="0.1" value={num(form.boilPotVolumeL)}
           onChange={(e) => setForm(setNum(form, "boilPotVolumeL", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Boil Pot Diameter (cm)</Label>
-        <Input type="number" step="0.1" value={num(form.boilPotDiameter)}
+        <NumberInput step="0.1" value={num(form.boilPotDiameter)}
           onChange={(e) => setForm(setNum(form, "boilPotDiameter", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Boil Evaporation Rate (L/h)</Label>
-        <Input type="number" step="0.1" value={num(form.boilEvaporationRateLH)}
+        <NumberInput step="0.1" value={num(form.boilEvaporationRateLH)}
           onChange={(e) => setForm(setNum(form, "boilEvaporationRateLH", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Heating Evaporation Rate (L/h)</Label>
-        <Input type="number" step="0.1" value={num(form.heatingEvaporationRateLH)}
+        <NumberInput step="0.1" value={num(form.heatingEvaporationRateLH)}
           onChange={(e) => setForm(setNum(form, "heatingEvaporationRateLH", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Sparge Water Pot Diameter (cm)</Label>
-        <Input type="number" step="0.1" value={num(form.spargeWaterPotDiameter)}
+        <NumberInput step="0.1" value={num(form.spargeWaterPotDiameter)}
           onChange={(e) => setForm(setNum(form, "spargeWaterPotDiameter", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Grain Absorption (L/kg)</Label>
-        <Input type="number" step="0.01" value={num(form.grainAbsorptionLKg)}
+        <NumberInput step="0.01" value={num(form.grainAbsorptionLKg)}
           onChange={(e) => setForm(setNum(form, "grainAbsorptionLKg", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Fermenter Loss (L) *</Label>
-        <Input type="number" step="0.1" value={num(form.fermenterLossL)}
+        <NumberInput step="0.1" value={num(form.fermenterLossL)}
           onChange={(e) => setForm(setNum(form, "fermenterLossL", e.target.value, true))} />
       </div>
       <div className="space-y-2">
         <Label>Trub Loss (L) *</Label>
-        <Input type="number" step="0.1" value={num(form.trubLossL)}
+        <NumberInput step="0.1" value={num(form.trubLossL)}
           onChange={(e) => setForm(setNum(form, "trubLossL", e.target.value, true))} />
       </div>
       <div className="space-y-2">
         <Label>System Loss (%)</Label>
-        <Input type="number" step="0.1" value={num(form.systemLossPercent)}
+        <NumberInput step="0.1" value={num(form.systemLossPercent)}
           onChange={(e) => setForm(setNum(form, "systemLossPercent", e.target.value))} />
       </div>
       <div className="space-y-2">
         <Label>Temp Contraction (%)</Label>
-        <Input type="number" step="0.1" value={num(form.tempContractionPercent)}
+        <NumberInput step="0.1" value={num(form.tempContractionPercent)}
           onChange={(e) => setForm(setNum(form, "tempContractionPercent", e.target.value))} />
       </div>
     </div>
@@ -552,12 +553,12 @@ function GrainsTable({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Max Yield / Fine Grind (%)</Label>
-                  <Input type="number" step="0.1" value={addForm.maxYield || ""}
+                  <NumberInput step="0.1" value={addForm.maxYield || ""}
                     onChange={(e) => setAddForm({ ...addForm, maxYield: e.target.value ? parseFloat(e.target.value) : null })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Color (Lovibond)</Label>
-                  <Input type="number" step="0.1" value={addForm.colorL || ""}
+                  <NumberInput step="0.1" value={addForm.colorL || ""}
                     onChange={(e) => setAddForm({ ...addForm, colorL: e.target.value ? parseFloat(e.target.value) : null })} />
                 </div>
               </div>
@@ -609,11 +610,11 @@ function GrainsTable({
                       <Input value={editForm.origin || ""} onChange={(e) => setEditForm({ ...editForm, origin: e.target.value })} />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" step="0.1" value={editForm.maxYield || ""}
+                      <NumberInput step="0.1" value={editForm.maxYield || ""}
                         onChange={(e) => setEditForm({ ...editForm, maxYield: e.target.value ? parseFloat(e.target.value) : null })} />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" step="0.1" value={editForm.colorL || ""}
+                      <NumberInput step="0.1" value={editForm.colorL || ""}
                         onChange={(e) => setEditForm({ ...editForm, colorL: e.target.value ? parseFloat(e.target.value) : null })} />
                     </TableCell>
                     <TableCell>
@@ -744,12 +745,12 @@ function HopsTable({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Alpha Acid (%) *</Label>
-                  <Input type="number" step="0.1" value={addForm.alphaAcid}
+                  <NumberInput step="0.1" value={addForm.alphaAcid}
                     onChange={(e) => setAddForm({ ...addForm, alphaAcid: parseFloat(e.target.value) })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Beta Acid (%)</Label>
-                  <Input type="number" step="0.1" value={addForm.betaAcid || ""}
+                  <NumberInput step="0.1" value={addForm.betaAcid || ""}
                     onChange={(e) => setAddForm({ ...addForm, betaAcid: e.target.value ? parseFloat(e.target.value) : null })} />
                 </div>
               </div>
@@ -807,11 +808,11 @@ function HopsTable({
                         onChange={(v) => setEditForm({ ...editForm, hopType: v })} />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" step="0.1" value={editForm.alphaAcid}
+                      <NumberInput step="0.1" value={editForm.alphaAcid}
                         onChange={(e) => setEditForm({ ...editForm, alphaAcid: parseFloat(e.target.value) })} />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" step="0.1" value={editForm.betaAcid || ""}
+                      <NumberInput step="0.1" value={editForm.betaAcid || ""}
                         onChange={(e) => setEditForm({ ...editForm, betaAcid: e.target.value ? parseFloat(e.target.value) : null })} />
                     </TableCell>
                     <TableCell>
@@ -946,7 +947,7 @@ function YeastsTable({
                 </div>
                 <div className="space-y-2">
                   <Label>Attenuation (%)</Label>
-                  <Input type="number" step="0.1" value={addForm.attenuation || ""}
+                  <NumberInput step="0.1" value={addForm.attenuation || ""}
                     onChange={(e) => setAddForm({ ...addForm, attenuation: e.target.value ? parseFloat(e.target.value) : null })} />
                 </div>
               </div>
@@ -995,7 +996,7 @@ function YeastsTable({
                         onChange={(v) => setEditForm({ ...editForm, type: v })} />
                     </TableCell>
                     <TableCell>
-                      <Input type="number" step="0.1" value={editForm.attenuation || ""}
+                      <NumberInput step="0.1" value={editForm.attenuation || ""}
                         onChange={(e) => setEditForm({ ...editForm, attenuation: e.target.value ? parseFloat(e.target.value) : null })} />
                     </TableCell>
                     <TableCell>
@@ -1099,7 +1100,7 @@ function WaterTable({
   ) => (
     <div className="space-y-2">
       <Label>{label}{required ? " *" : ""}</Label>
-      <Input type="number" step={step} value={form[key] != null ? String(form[key]) : ""}
+      <NumberInput step={step} value={form[key] != null ? String(form[key]) : ""}
         onChange={(e) => setForm({ ...form, [key]: e.target.value ? parseFloat(e.target.value) : null })} />
     </div>
   );
@@ -1123,7 +1124,7 @@ function WaterTable({
                 </div>
                 <div className="space-y-2">
                   <Label>pH</Label>
-                  <Input type="number" step="0.01" placeholder="e.g., 7.0" value={addForm.pH != null ? String(addForm.pH) : ""}
+                  <NumberInput step="0.01" placeholder="e.g., 7.0" value={addForm.pH != null ? String(addForm.pH) : ""}
                     onChange={(e) => setAddForm({ ...addForm, pH: e.target.value ? parseFloat(e.target.value) : null })} />
                 </div>
               </div>
@@ -1166,19 +1167,19 @@ function WaterTable({
                 {editingId === item.id ? (
                   <>
                     <TableCell><Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} /></TableCell>
-                    <TableCell><Input type="number" step="0.01" value={editForm.pH != null ? String(editForm.pH) : ""}
+                    <TableCell><NumberInput step="0.01" value={editForm.pH != null ? String(editForm.pH) : ""}
                       onChange={(e) => setEditForm({ ...editForm, pH: e.target.value ? parseFloat(e.target.value) : null })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.caPpm}
+                    <TableCell><NumberInput step="0.1" value={editForm.caPpm}
                       onChange={(e) => setEditForm({ ...editForm, caPpm: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.mgPpm}
+                    <TableCell><NumberInput step="0.1" value={editForm.mgPpm}
                       onChange={(e) => setEditForm({ ...editForm, mgPpm: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.naPpm}
+                    <TableCell><NumberInput step="0.1" value={editForm.naPpm}
                       onChange={(e) => setEditForm({ ...editForm, naPpm: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.clPpm}
+                    <TableCell><NumberInput step="0.1" value={editForm.clPpm}
                       onChange={(e) => setEditForm({ ...editForm, clPpm: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.so4Ppm}
+                    <TableCell><NumberInput step="0.1" value={editForm.so4Ppm}
                       onChange={(e) => setEditForm({ ...editForm, so4Ppm: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.hco3Ppm != null ? String(editForm.hco3Ppm) : ""}
+                    <TableCell><NumberInput step="0.1" value={editForm.hco3Ppm != null ? String(editForm.hco3Ppm) : ""}
                       onChange={(e) => setEditForm({ ...editForm, hco3Ppm: e.target.value ? parseFloat(e.target.value) : null })} /></TableCell>
                     <TableCell>
                       <div className="flex gap-1">
@@ -1307,12 +1308,12 @@ function KegsTable({
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Capacity (L) *</Label>
-                  <Input type="number" step="0.1" value={addForm.capacity}
+                  <NumberInput step="0.1" value={addForm.capacity}
                     onChange={(e) => setAddForm({ ...addForm, capacity: parseFloat(e.target.value) })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Tare Weight (g)</Label>
-                  <Input type="number" step="1" value={addForm.tareWeight || ""}
+                  <NumberInput step="1" value={addForm.tareWeight || ""}
                     onChange={(e) => setAddForm({ ...addForm, tareWeight: e.target.value ? parseFloat(e.target.value) : null })} />
                 </div>
               </div>
@@ -1356,9 +1357,9 @@ function KegsTable({
                       />
                     </TableCell>
                     <TableCell><Input value={editForm.label || ""} onChange={(e) => setEditForm({ ...editForm, label: e.target.value })} /></TableCell>
-                    <TableCell><Input type="number" step="0.1" value={editForm.capacity}
+                    <TableCell><NumberInput step="0.1" value={editForm.capacity}
                       onChange={(e) => setEditForm({ ...editForm, capacity: parseFloat(e.target.value) })} /></TableCell>
-                    <TableCell><Input type="number" step="1" value={editForm.tareWeight || ""}
+                    <TableCell><NumberInput step="1" value={editForm.tareWeight || ""}
                       onChange={(e) => setEditForm({ ...editForm, tareWeight: e.target.value ? parseFloat(e.target.value) : null })} /></TableCell>
                     <TableCell>
                       <div className="flex gap-1">

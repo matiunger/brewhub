@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -89,7 +89,7 @@ export default async function AddGrainPage({ params }: AddGrainPageProps) {
 
             <div className="space-y-2">
               <Label htmlFor="grams">Amount (grams) *</Label>
-              <Input id="grams" name="grams" type="number" step="1" required />
+              <NumberInput id="grams" name="grams" step="1" required />
             </div>
 
             <div className="flex gap-2">

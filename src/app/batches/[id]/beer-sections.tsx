@@ -6,6 +6,7 @@ import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown,
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BatchForm } from "./batch-form";
@@ -356,10 +357,11 @@ interface BeerSectionsProps {
   }) => Promise<void>;
 }
 
-type SectionKey = "basicInfo" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdPreparacion" | "bdMolienda" | "bdMacerado" | "bdLavado" | "bdPreboil" | "bdHervido" | "bdWhirlpool" | "bdFermentacion" | "bdEmbarrilado";
+type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparacion" | "bdMolienda" | "bdMacerado" | "bdLavado" | "bdPreboil" | "bdHervido" | "bdWhirlpool" | "bdFermentacion" | "bdEmbarrilado" | "finalStats" | "finalStatsOverview" | "finalStatsTiming";
 
 const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   basicInfo: true,
+  recipeDesign: true,
   equipment: false,
   recipeOverview: true,
   boil: true,
@@ -369,6 +371,7 @@ const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   hops: true,
   cultures: true,
   water: true,
+  bdBrewday: true,
   bdPreparacion: false,
   bdMolienda: false,
   bdMacerado: false,
@@ -378,6 +381,9 @@ const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   bdWhirlpool: false,
   bdFermentacion: false,
   bdEmbarrilado: false,
+  finalStats: true,
+  finalStatsOverview: true,
+  finalStatsTiming: true,
 };
 
 // ---------- CollapsibleCard ----------
@@ -1061,6 +1067,23 @@ export function BeerSections({
         <BatchForm batch={batch} equipment={equipment} updateAction={updateAction} updateNotesAction={updateNotesAction} bare />
       </CollapsibleCard>
 
+      {/* Recipe Design section header */}
+      <button
+        type="button"
+        onClick={() => toggle("recipeDesign")}
+        className="flex items-center gap-3 pt-2 w-full text-left"
+      >
+        {open.recipeDesign ? (
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+        )}
+        <h2 className="text-lg font-bold tracking-tight whitespace-nowrap">Recipe Design</h2>
+        <div className="flex-1 border-t" />
+      </button>
+
+      {open.recipeDesign && <>
+
       {/* 1b. Equipment */}
       <CollapsibleCard
         title={eqSnap ? `Equipment — ${eqSnap.name ?? "Custom"}` : "Equipment"}
@@ -1160,8 +1183,7 @@ export function BeerSections({
           {/* Batch Size */}
           <div className="flex items-center gap-3">
             <span className="w-8 text-sm font-medium shrink-0">Vol</span>
-            <Input
-              type="number"
+            <NumberInput
               step="0.5"
               min="0"
               value={batchSize ?? ""}
@@ -1218,8 +1240,7 @@ export function BeerSections({
                       </div>
                     )}
                   </span>
-                  <Input
-                    type="number"
+                  <NumberInput
                     step={cfg.step}
                     value={targetVal ?? ""}
                     onChange={(e) => handleTargetChange(cfg.key, e.target.value)}
@@ -1402,7 +1423,7 @@ export function BeerSections({
                       </td>
                       <td className="py-2 pr-3">
                         {isEditing ? (
-                          <Input type="number" step="1" value={editGrainDraft.grams} onChange={(e) => setEditGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-7 text-sm w-24" />
+                          <NumberInput step="1" value={editGrainDraft.grams} onChange={(e) => setEditGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-7 text-sm w-24" />
                         ) : `${bg.grams} g`}
                       </td>
                       <td className="py-2 pr-3 text-muted-foreground">{pct.toFixed(1)}%</td>
@@ -1410,13 +1431,13 @@ export function BeerSections({
                         {isEditing ? (
                           <div className="flex flex-col gap-0.5">
                             <span className="text-[10px] text-muted-foreground">Yield %</span>
-                            <Input type="number" step="0.1" value={editGrainDraft.maxYield} onChange={(e) => setEditGrainDraft((d) => ({ ...d, maxYield: e.target.value }))} className="h-7 text-sm w-20" placeholder="75" />
+                            <NumberInput step="0.1" value={editGrainDraft.maxYield} onChange={(e) => setEditGrainDraft((d) => ({ ...d, maxYield: e.target.value }))} className="h-7 text-sm w-20" placeholder="75" />
                           </div>
                         ) : `${extract.toFixed(0)} g`}
                       </td>
                       <td className="py-2 pr-3 text-muted-foreground">
                         {isEditing ? (
-                          <Input type="number" step="0.5" value={editGrainDraft.colorL} onChange={(e) => setEditGrainDraft((d) => ({ ...d, colorL: e.target.value }))} className="h-7 text-sm w-20" placeholder="°L" />
+                          <NumberInput step="0.5" value={editGrainDraft.colorL} onChange={(e) => setEditGrainDraft((d) => ({ ...d, colorL: e.target.value }))} className="h-7 text-sm w-20" placeholder="°L" />
                         ) : ((bg.colorL ?? bg.grain.colorL) ?? "—")}
                       </td>
                       <td className="py-2 pr-3 text-muted-foreground">{mcu.toFixed(2)}</td>
@@ -1520,7 +1541,7 @@ export function BeerSections({
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Grams</span>
-              <Input type="number" step="1" placeholder="g" value={addGrainDraft.grams} onChange={(e) => setAddGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-24" />
+              <NumberInput step="1" placeholder="g" value={addGrainDraft.grams} onChange={(e) => setAddGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-24" />
             </div>
             <Button size="sm" disabled={!addGrainDraft.grainId || !addGrainDraft.grams}
               onClick={async () => {
@@ -1599,8 +1620,8 @@ export function BeerSections({
                     <td className="py-2 pr-3 font-medium">{bh.name ?? bh.hop.name}</td>
                     <td className="py-2 pr-3 text-muted-foreground">
                       {isEditing ? (
-                        <Input
-                          type="number" step="0.1"
+                        <NumberInput
+                          step="0.1"
                           value={editHopDraft.alphaAcid}
                           onChange={(e) => setEditHopDraft((d) => ({ ...d, alphaAcid: e.target.value }))}
                           className="h-7 text-sm w-20"
@@ -1619,8 +1640,8 @@ export function BeerSections({
                     </td>
                     <td className="py-2 pr-3">
                       {isEditing ? (
-                        <Input
-                          type="number" step="1"
+                        <NumberInput
+                          step="1"
                           value={editHopDraft.additionTime}
                           onChange={(e) => setEditHopDraft((d) => ({ ...d, additionTime: e.target.value }))}
                           className="h-7 text-sm w-20"
@@ -1629,8 +1650,8 @@ export function BeerSections({
                     </td>
                     <td className="py-2 pr-3">
                       {isEditing ? (
-                        <Input
-                          type="number" step="0.1"
+                        <NumberInput
+                          step="0.1"
                           value={editHopDraft.grams}
                           onChange={(e) => setEditHopDraft((d) => ({ ...d, grams: e.target.value }))}
                           className="h-7 text-sm w-24"
@@ -1729,7 +1750,7 @@ export function BeerSections({
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Grams</span>
-              <Input type="number" step="0.1" placeholder="g" value={addHopDraft.grams} onChange={(e) => setAddHopDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-20" />
+              <NumberInput step="0.1" placeholder="g" value={addHopDraft.grams} onChange={(e) => setAddHopDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-20" />
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Use</span>
@@ -1742,7 +1763,7 @@ export function BeerSections({
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Time (min)</span>
-              <Input type="number" step="1" placeholder="min" value={addHopDraft.additionTime} onChange={(e) => setAddHopDraft((d) => ({ ...d, additionTime: e.target.value }))} className="h-8 text-sm w-20" />
+              <NumberInput step="1" placeholder="min" value={addHopDraft.additionTime} onChange={(e) => setAddHopDraft((d) => ({ ...d, additionTime: e.target.value }))} className="h-8 text-sm w-20" />
             </div>
             <Button size="sm" disabled={!addHopDraft.hopId || !addHopDraft.grams || !addHopDraft.additionTime}
               onClick={async () => {
@@ -1794,8 +1815,8 @@ export function BeerSections({
                     <td className="py-2 pr-3 text-muted-foreground">{(by.brand ?? by.yeast.brand) ?? "—"}</td>
                     <td className="py-2 pr-3 text-muted-foreground">
                       {isEditing ? (
-                        <Input
-                          type="number" step="0.1"
+                        <NumberInput
+                          step="0.1"
                           value={editYeastDraft.attenuation}
                           onChange={(e) => setEditYeastDraft((d) => ({ ...d, attenuation: e.target.value }))}
                           className="h-7 text-sm w-20"
@@ -1809,8 +1830,8 @@ export function BeerSections({
                     </td>
                     <td className="py-2 pr-3">
                       {isEditing ? (
-                        <Input
-                          type="number" step="0.1"
+                        <NumberInput
+                          step="0.1"
                           value={editYeastDraft.quantityAmount}
                           onChange={(e) => setEditYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))}
                           className="h-7 text-sm w-20"
@@ -1844,8 +1865,7 @@ export function BeerSections({
                     </td>
                     <td className="py-2 pr-3">
                       {isEditing ? (
-                        <Input
-                          type="number"
+                        <NumberInput
                           step="0.1"
                           value={editYeastDraft.temp}
                           onChange={(e) => setEditYeastDraft((d) => ({ ...d, temp: e.target.value }))}
@@ -1950,7 +1970,7 @@ export function BeerSections({
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Qty</span>
-              <Input type="number" step="0.1" placeholder="1" value={addYeastDraft.quantityAmount} onChange={(e) => setAddYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))} className="h-8 text-sm w-20" />
+              <NumberInput step="0.1" placeholder="1" value={addYeastDraft.quantityAmount} onChange={(e) => setAddYeastDraft((d) => ({ ...d, quantityAmount: e.target.value }))} className="h-8 text-sm w-20" />
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Units</span>
@@ -1965,7 +1985,7 @@ export function BeerSections({
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Temp (°C)</span>
-              <Input type="number" step="0.1" placeholder="°C" value={addYeastDraft.temp} onChange={(e) => setAddYeastDraft((d) => ({ ...d, temp: e.target.value }))} className="h-8 text-sm w-20" />
+              <NumberInput step="0.1" placeholder="°C" value={addYeastDraft.temp} onChange={(e) => setAddYeastDraft((d) => ({ ...d, temp: e.target.value }))} className="h-8 text-sm w-20" />
             </div>
             <Button size="sm" disabled={!addYeastDraft.yeastId || !addYeastDraft.quantityAmount}
               onClick={async () => {
@@ -1998,8 +2018,7 @@ export function BeerSections({
           ].map(({ label, value, set, placeholder }) => (
             <div key={label} className="flex items-center gap-3">
               <span className="w-32 text-sm shrink-0">{label}</span>
-              <Input
-                type="number"
+              <NumberInput
                 step="5"
                 min="0"
                 value={value ?? ""}
@@ -2047,8 +2066,7 @@ export function BeerSections({
         {mashMode === "sparge" && (
           <div className="flex items-center gap-3 mb-4">
             <span className="w-32 text-sm shrink-0">Mash ratio</span>
-            <Input
-              type="number"
+            <NumberInput
               min="1"
               max="10"
               step="0.1"
@@ -2131,8 +2149,7 @@ export function BeerSections({
         <div className="space-y-3 mt-4">
           <div className="flex items-center gap-3">
             <span className="w-32 text-sm shrink-0">Grain temperature</span>
-            <Input
-              type="number"
+            <NumberInput
               step="0.1"
               value={grainTempC ?? ""}
               onChange={(e) => {
@@ -2146,8 +2163,7 @@ export function BeerSections({
           </div>
           <div className="flex items-center gap-3">
             <span className="w-32 text-sm shrink-0">Mash Target pH</span>
-            <Input
-              type="number"
+            <NumberInput
               step="0.01"
               min="4"
               max="8"
@@ -2163,8 +2179,7 @@ export function BeerSections({
           {mashMode === "sparge" && (
             <div className="flex items-center gap-3">
               <span className="w-32 text-sm shrink-0">Sparge Target pH</span>
-              <Input
-                type="number"
+              <NumberInput
                 step="0.01"
                 min="4"
                 max="8"
@@ -2227,27 +2242,27 @@ export function BeerSections({
                         </div>
                         <div>
                           <label className="text-xs text-muted-foreground">Temp (°C)</label>
-                          <Input type="number" step="0.1" value={editMashStepDraft.stepTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTemperatureC: e.target.value }))} className="h-7 text-sm" />
+                          <NumberInput step="0.1" value={editMashStepDraft.stepTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTemperatureC: e.target.value }))} className="h-7 text-sm" />
                         </div>
                         <div>
                           <label className="text-xs text-muted-foreground">Time (min)</label>
-                          <Input type="number" step="1" value={editMashStepDraft.stepTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTimeMin: e.target.value }))} className="h-7 text-sm" />
+                          <NumberInput step="1" value={editMashStepDraft.stepTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTimeMin: e.target.value }))} className="h-7 text-sm" />
                         </div>
                         <div>
                           <label className="text-xs text-muted-foreground">Amount (L)</label>
-                          <Input type="number" step="0.1" value={editMashStepDraft.amountL} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, amountL: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                          <NumberInput step="0.1" value={editMashStepDraft.amountL} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, amountL: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
                         </div>
                         <div>
                           <label className="text-xs text-muted-foreground">Ramp time (min)</label>
-                          <Input type="number" step="1" value={editMashStepDraft.rampTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, rampTimeMin: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                          <NumberInput step="1" value={editMashStepDraft.rampTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, rampTimeMin: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
                         </div>
                         <div>
                           <label className="text-xs text-muted-foreground">End temp (°C)</label>
-                          <Input type="number" step="0.1" value={editMashStepDraft.endTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, endTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                          <NumberInput step="0.1" value={editMashStepDraft.endTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, endTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
                         </div>
                         <div>
                           <label className="text-xs text-muted-foreground">Infuse temp (°C)</label>
-                          <Input type="number" step="0.1" value={editMashStepDraft.infuseTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, infuseTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                          <NumberInput step="0.1" value={editMashStepDraft.infuseTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, infuseTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
                         </div>
                       </div>
                       <div>
@@ -2375,27 +2390,27 @@ export function BeerSections({
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Temp (°C) *</label>
-                  <Input type="number" step="0.1" value={editMashStepDraft.stepTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTemperatureC: e.target.value }))} className="h-7 text-sm" />
+                  <NumberInput step="0.1" value={editMashStepDraft.stepTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTemperatureC: e.target.value }))} className="h-7 text-sm" />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Time (min) *</label>
-                  <Input type="number" step="1" value={editMashStepDraft.stepTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTimeMin: e.target.value }))} className="h-7 text-sm" />
+                  <NumberInput step="1" value={editMashStepDraft.stepTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTimeMin: e.target.value }))} className="h-7 text-sm" />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Amount (L)</label>
-                  <Input type="number" step="0.1" value={editMashStepDraft.amountL} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, amountL: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                  <NumberInput step="0.1" value={editMashStepDraft.amountL} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, amountL: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Ramp time (min)</label>
-                  <Input type="number" step="1" value={editMashStepDraft.rampTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, rampTimeMin: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                  <NumberInput step="1" value={editMashStepDraft.rampTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, rampTimeMin: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">End temp (°C)</label>
-                  <Input type="number" step="0.1" value={editMashStepDraft.endTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, endTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                  <NumberInput step="0.1" value={editMashStepDraft.endTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, endTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Infuse temp (°C)</label>
-                  <Input type="number" step="0.1" value={editMashStepDraft.infuseTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, infuseTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                  <NumberInput step="0.1" value={editMashStepDraft.infuseTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, infuseTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
                 </div>
               </div>
               <div>
@@ -2487,7 +2502,7 @@ export function BeerSections({
 
             return (
               <div>
-                {volumeRow("Bottled volume", bottledVol)}
+                {volumeRow("Kegged volume", bottledVol)}
                 {lossRow("+ Fermenter losses", wv.fermenterLossL)}
                 {divider()}
                 {volumeRow("Fermenter volume", wv.fermenterVol)}
@@ -2723,8 +2738,7 @@ export function BeerSections({
                     {WATER_FIELDS.map(({ key, label: fieldLabel, unit }) => (
                       <div key={key} className="space-y-1">
                         <label className="text-xs text-muted-foreground">{fieldLabel}{unit ? ` (${unit})` : ""}</label>
-                        <Input
-                          type="number"
+                        <NumberInput
                           step="0.1"
                           min="0"
                           value={waterEditDraft[key]}
@@ -2931,8 +2945,7 @@ export function BeerSections({
                   <div className="flex items-center gap-3">
                     <span className="w-44 text-sm shrink-0">Amount</span>
                     <div className="flex items-center gap-1.5">
-                      <Input
-                        type="number"
+                      <NumberInput
                         min="0"
                         step="0.1"
                         value={acidAmount}
@@ -2983,6 +2996,8 @@ export function BeerSections({
           );
         })()}
       </CollapsibleCard>
+
+      </>}
 
       {(() => {
         const recipeData: RecipeData = {
@@ -3053,6 +3068,8 @@ export function BeerSections({
             updateBrewday={updateBrewday}
             recipeData={recipeData}
             kegInventory={allKegs}
+            openBrewday={open.bdBrewday}
+            onToggleBrewday={() => toggle("bdBrewday")}
             openPreparacion={open.bdPreparacion}
             onTogglePreparacion={() => toggle("bdPreparacion")}
             openMolienda={open.bdMolienda}
@@ -3070,6 +3087,421 @@ export function BeerSections({
             openEmbarrilado={open.bdEmbarrilado}
             onToggleEmbarrilado={() => toggle("bdEmbarrilado")}
           />
+        );
+      })()}
+
+      {/* ── Final Stats group ── */}
+      <button
+        type="button"
+        onClick={() => toggle("finalStats")}
+        className="flex items-center gap-3 pt-2 w-full text-left"
+      >
+        {open.finalStats ? (
+          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+        )}
+        <h2 className="text-lg font-bold tracking-tight whitespace-nowrap">Final Stats</h2>
+        <div className="flex-1 border-t" />
+      </button>
+
+      {open.finalStats && (() => {
+        // Estimated values (from recipe)
+        const firstAttenuation = yeasts[0]?.yeast.attenuation ?? null;
+        const estOg = estimatedOG?.og ?? null;
+        const estOgInt = estOg != null ? Math.round(estOg * 1000) : null;
+        const estFgInt = estOg != null && firstAttenuation != null
+          ? Math.round(1000 + (estOg * 1000 - 1000) * (1 - firstAttenuation / 100))
+          : null;
+        const estFg = estFgInt != null ? estFgInt / 1000 : null;
+        const estAbv = estOg != null && estFg != null ? (estOg - estFg) * 131.25 : null;
+        // Same formula as fermentables: MCU over theoretical post-chill volume
+        const estSrm = (() => {
+          if (wv.postChill <= 0) return null;
+          const postChillGal = wv.postChill * 0.264172;
+          const mcu = grainRows.reduce((sum, r) => {
+            const colorL = r.colorL ?? r.grain.colorL;
+            return colorL != null ? sum + (r.grams * 0.00220462 * colorL) / postChillGal : sum;
+          }, 0);
+          return mcu > 0 ? 1.4922 * Math.pow(mcu, 0.6859) : null;
+        })();
+        const estIbu = ibuBreakdown.totalPerceivedIbu > 0 ? ibuBreakdown.totalPerceivedIbu : null;
+        const estVol = batch.targetFermentarL;
+
+        // Final values (from brewday fermentation steps)
+        const stepsWithDensity = brewday.fermentacion.steps.filter(s => s.densidadGL != null);
+        const finalOgInt = stepsWithDensity.length > 0 ? stepsWithDensity[0].densidadGL! : null;
+        const finalFgInt = stepsWithDensity.length > 1 ? stepsWithDensity[stepsWithDensity.length - 1].densidadGL! : null;
+        const finalAbv = finalOgInt != null && finalFgInt != null
+          ? ((finalOgInt - finalFgInt) / 1000) * 131.25
+          : null;
+        const finalVol = brewday.fermentacion.steps[0]?.volumenL ?? null;
+        const estVolKegged = Math.max(0, wv.fermenterVol - wv.fermenterLossL);
+        const fgForKeg = stepsWithDensity.length > 0
+          ? stepsWithDensity[stepsWithDensity.length - 1].densidadGL! / 1000
+          : null;
+        const kegList = brewday.embarrilado.kegs ?? [];
+        const rawVolKegged = fgForKeg != null
+          ? kegList.reduce((sum, k) => {
+              if (k.totalWeightKg == null || k.tareWeightKg == null) return sum;
+              return sum + (k.totalWeightKg - k.tareWeightKg) / fgForKeg;
+            }, 0)
+          : 0;
+        const finalVolKegged = rawVolKegged > 0 ? rawVolKegged : null;
+        const finalIbu = finalOgInt != null
+          ? (() => {
+              const finalOgSg = finalOgInt / 1000;
+              const actualVolumeL = finalVol ?? batch.targetFermentarL ?? 20;
+              const result = calculateIbuBreakdown(hopRows, finalOgSg, actualVolumeL, batch.boilTimeMin ?? 60);
+              return result.totalPerceivedIbu > 0 ? result.totalPerceivedIbu : null;
+            })()
+          : null;
+
+        // Final SRM: grain bill over actual post-chill volume
+        // = last boil entry volume (from alturaCm + pot diameter, or stored volumenL) × thermal contraction
+        // fallback: fermenter volume + trub loss
+        const finalSrm = (() => {
+          const boilEntries = brewday.hervido.entries;
+          const trubLossL = eqSnap?.trubLossL ?? 1.0;
+          const contractionFactor = 1 - ((eqSnap?.tempContractionPct ?? 4) / 100);
+          const d = eqSnap?.boilPotDiameter ?? null;
+
+          // Compute volume from alturaCm if diameter is known, else use stored volumenL
+          const entryVol = (entry: { alturaCm: number | null; volumenL: number | null }): number | null => {
+            if (d != null && d > 0 && entry.alturaCm != null && entry.alturaCm > 0)
+              return Math.PI * Math.pow(d / 2, 2) * entry.alturaCm / 1000;
+            return entry.volumenL ?? null;
+          };
+
+          const lastEntry = [...boilEntries].reverse().find(e => entryVol(e) != null);
+          const endOfBoilL = lastEntry != null ? entryVol(lastEntry) : null;
+          const postChillL = endOfBoilL != null && endOfBoilL > 0
+            ? endOfBoilL * contractionFactor
+            : finalVol != null && finalVol > 0
+              ? finalVol + trubLossL
+              : null;
+          if (postChillL == null) return null;
+          const mcu = grainRows.reduce((sum, r) => {
+            const colorL = r.colorL ?? r.grain.colorL;
+            return colorL != null ? sum + (r.grams * 0.00220462 * colorL) / (postChillL * 0.264172) : sum;
+          }, 0);
+          return mcu > 0 ? 1.4922 * Math.pow(mcu, 0.6859) : null;
+        })();
+
+        // Style ranges
+        const styleOg  = getStyleRange(styleEntry, "ogmin",  "ogmax");
+        const styleFg  = getStyleRange(styleEntry, "fgmin",  "fgmax");
+        const styleIbu = getStyleRange(styleEntry, "ibumin", "ibumax");
+        const styleSrm = getStyleRange(styleEntry, "srmmin", "srmmax");
+        const styleAbv = getStyleRange(styleEntry, "abvmin", "abvmax");
+
+        const inRange = (val: number | null, min: number | null, max: number | null): boolean | null => {
+          if (val == null || min == null || max == null) return null;
+          return val >= min && val <= max;
+        };
+
+        type OverviewRow = {
+          label: string;
+          styleMin: number | null;
+          styleMax: number | null;
+          estVal: number | null;
+          finalVal: number | null;
+          format: (v: number) => string;
+          srmColor?: string | null;
+          finalSrmColor?: string | null;
+        };
+
+        const rows: OverviewRow[] = [
+          {
+            label: "Vol Fermenter",
+            styleMin: null, styleMax: null,
+            estVal: estVol, finalVal: finalVol,
+            format: (v) => `${v.toFixed(1)} L`,
+          },
+          {
+            label: "Vol Kegged",
+            styleMin: null, styleMax: null,
+            estVal: estVolKegged, finalVal: finalVolKegged,
+            format: (v) => `${v.toFixed(1)} L`,
+          },
+          {
+            label: "OG",
+            styleMin: styleOg.min != null ? Math.round(styleOg.min * 1000) : null,
+            styleMax: styleOg.max != null ? Math.round(styleOg.max * 1000) : null,
+            estVal: estOgInt, finalVal: finalOgInt,
+            format: (v) => v.toFixed(0),
+          },
+          {
+            label: "FG",
+            styleMin: styleFg.min != null ? Math.round(styleFg.min * 1000) : null,
+            styleMax: styleFg.max != null ? Math.round(styleFg.max * 1000) : null,
+            estVal: estFgInt, finalVal: finalFgInt,
+            format: (v) => v.toFixed(0),
+          },
+          {
+            label: "Attenuation",
+            styleMin: null, styleMax: null,
+            estVal: firstAttenuation,
+            finalVal: finalOgInt != null && finalFgInt != null && finalOgInt > 1000
+              ? ((finalOgInt - finalFgInt) / (finalOgInt - 1000)) * 100
+              : null,
+            format: (v) => `${v.toFixed(1)}%`,
+          },
+          {
+            label: "IBU",
+            styleMin: styleIbu.min, styleMax: styleIbu.max,
+            estVal: estIbu, finalVal: finalIbu,
+            format: (v) => v.toFixed(1),
+          },
+          {
+            label: "SRM",
+            styleMin: styleSrm.min, styleMax: styleSrm.max,
+            estVal: estSrm, finalVal: finalSrm,
+            format: (v) => v.toFixed(1),
+            srmColor: estSrm != null ? srmToHex(estSrm) : null,
+            finalSrmColor: finalSrm != null ? srmToHex(finalSrm) : null,
+          },
+          {
+            label: "ABV",
+            styleMin: styleAbv.min, styleMax: styleAbv.max,
+            estVal: estAbv, finalVal: finalAbv,
+            format: (v) => `${v.toFixed(1)}%`,
+          },
+        ];
+
+        // Efficiency rows
+        const sgToPlato = (sg: number) => {
+          const k = 227.1 / 258.2;
+          return (sg - 1) * 258.6 / (1 + k * (sg - 1));
+        };
+        const preboilData = brewday.preboil;
+        const boilPotDiam = eqSnap?.boilPotDiameter ?? null;
+        const preboilVolumeL = boilPotDiam != null && boilPotDiam > 0 && preboilData.alturaCm != null
+          ? Math.PI * Math.pow(boilPotDiam / 2, 2) * preboilData.alturaCm / 1000
+          : preboilData.volumenL ?? null;
+        const realMashEff = preboilData.densidadGL != null && preboilVolumeL != null && preboilVolumeL > 0 && grainTotals.extract > 0
+          ? sgToPlato(preboilData.densidadGL / 1000) * 1000 * preboilVolumeL / grainTotals.extract
+          : null;
+        const realBrewhouseEff = finalOgInt != null && finalVol != null && finalVol > 0 && grainTotals.extract > 0
+          ? sgToPlato(finalOgInt / 1000) * 1000 * finalVol / grainTotals.extract
+          : null;
+        const effRows: OverviewRow[] = [
+          {
+            label: "Mash Eff",
+            styleMin: null, styleMax: null,
+            estVal: eqSnap?.mashEff ?? null,
+            finalVal: realMashEff,
+            format: (v) => `${v.toFixed(1)}%`,
+          },
+          {
+            label: "Brew Eff",
+            styleMin: null, styleMax: null,
+            estVal: eqSnap?.brewhouseEff ?? null,
+            finalVal: realBrewhouseEff,
+            format: (v) => `${v.toFixed(1)}%`,
+          },
+        ];
+
+        const parseHHMM = (s: string | null): Date | null => {
+          if (!s) return null;
+          const m = s.match(/^(\d{1,2}):(\d{2})$/);
+          if (!m) return null;
+          const d = new Date(0);
+          d.setHours(Number(m[1]), Number(m[2]), 0, 0);
+          return d;
+        };
+        const diffMin = (a: Date | null, b: Date | null): number | null => {
+          if (!a || !b) return null;
+          let delta = (b.getTime() - a.getTime()) / 60000;
+          if (delta < 0) delta += 24 * 60;
+          return Math.round(delta);
+        };
+        const fmtHHMM = (t: Date | null) =>
+          t != null ? `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}` : null;
+        const fmtDur = (min: number | null): string | null => {
+          if (min == null) return null;
+          const h = Math.floor(min / 60);
+          const m = min % 60;
+          if (h > 0 && m > 0) return `${h} hs ${m} min`;
+          if (h > 0) return `${h} hs`;
+          return `${m} min`;
+        };
+
+        const boilEntries = brewday.hervido.entries;
+        const timingSteps = [
+          { label: "Mash",      start: parseHHMM(brewday.macerado.general.horaCalentarAgua ?? brewday.macerado.general.horaInicioMacerado), end: parseHHMM(brewday.lavado.horaInicioRecirculado ?? brewday.lavado.horaInicioLavado) },
+          { label: "Lautering", start: parseHHMM(brewday.lavado.horaInicioRecirculado ?? brewday.lavado.horaInicioLavado),                   end: parseHHMM(brewday.lavado.horaFinLavado) },
+          { label: "Boil",      start: parseHHMM(boilEntries[0]?.hora ?? null),                                                              end: parseHHMM(boilEntries[boilEntries.length - 1]?.hora ?? null) },
+          { label: "Whirlpool", start: parseHHMM(brewday.whirlpoolEnfriado.horaInicioWhirlpool),                                             end: parseHHMM(brewday.whirlpoolEnfriado.horaInicioEnfriado) },
+          { label: "Chilling",  start: parseHHMM(brewday.whirlpoolEnfriado.horaInicioEnfriado),                                              end: parseHHMM(brewday.whirlpoolEnfriado.horaFinEnfriado) },
+          { label: "Transfer",  start: parseHHMM(brewday.whirlpoolEnfriado.horaFinEnfriado),                                                 end: parseHHMM(brewday.whirlpoolEnfriado.horaFinTrasvase) },
+        ];
+        const totalStart = timingSteps.find(s => s.start != null)?.start ?? null;
+        const totalEnd = [...timingSteps].reverse().find(s => s.end != null)?.end ?? null;
+        const totalMin = diffMin(totalStart, totalEnd);
+
+        return (
+          <>
+            <CollapsibleCard
+              title="Overview"
+              icon={<BarChart2 className="h-4 w-4" />}
+              open={open.finalStatsOverview}
+              onToggle={() => toggle("finalStatsOverview")}
+            >
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-xs text-muted-foreground border-b">
+                    <th className="text-left pb-2 font-medium w-12">Stat</th>
+                    <th className="text-right pb-2 font-medium">Style</th>
+                    <th className="text-right pb-2 font-medium">Recipe</th>
+                    <th className="text-right pb-2 font-medium">Final</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map(({ label, styleMin, styleMax, estVal, finalVal, format, srmColor, finalSrmColor }) => {
+                    const estInRange  = inRange(estVal,   styleMin, styleMax);
+                    const finalInRange = inRange(finalVal, styleMin, styleMax);
+                    const valClass = (ok: boolean | null) =>
+                      ok == null ? "text-foreground" : ok ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400";
+                    return (
+                      <tr key={label} className="border-b last:border-0">
+                        <td className="py-1.5 font-medium text-muted-foreground text-xs">{label}</td>
+                        <td className="text-right py-1.5 tabular-nums text-xs text-muted-foreground">
+                          {styleMin != null || styleMax != null
+                            ? `${styleMin ?? "?"} – ${styleMax ?? "?"}`
+                            : "—"}
+                        </td>
+                        <td className="text-right py-1.5 tabular-nums font-medium">
+                          {estVal != null ? (
+                            <span className={`flex items-center justify-end gap-1.5 ${valClass(estInRange)}`}>
+                              {srmColor && (
+                                <span
+                                  className="inline-block w-3 h-3 rounded-sm shrink-0 border border-black/10"
+                                  style={{ background: srmColor }}
+                                />
+                              )}
+                              {format(estVal)}
+                            </span>
+                          ) : <span className="text-muted-foreground">—</span>}
+                        </td>
+                        <td className="text-right py-1.5 tabular-nums font-medium">
+                          {finalVal != null ? (
+                            <span className={`flex items-center justify-end gap-1.5 ${valClass(finalInRange)}`}>
+                              {finalSrmColor && (
+                                <span
+                                  className="inline-block w-3 h-3 rounded-sm shrink-0 border border-black/10"
+                                  style={{ background: finalSrmColor }}
+                                />
+                              )}
+                              {format(finalVal)}
+                            </span>
+                          ) : <span className="text-muted-foreground">—</span>}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  {effRows.map(({ label, estVal, finalVal, format }) => (
+                    <tr key={label} className="border-b last:border-0">
+                      <td className="py-1.5 font-medium text-muted-foreground text-xs">{label}</td>
+                      <td className="text-right py-1.5 tabular-nums text-xs text-muted-foreground">—</td>
+                      <td className="text-right py-1.5 tabular-nums font-medium">
+                        {estVal != null ? format(estVal) : <span className="text-muted-foreground">—</span>}
+                      </td>
+                      <td className="text-right py-1.5 tabular-nums font-medium">
+                        {finalVal != null ? format(finalVal) : <span className="text-muted-foreground">—</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </CollapsibleCard>
+            <CollapsibleCard
+              title="Timing"
+              icon={<ClipboardList className="h-4 w-4" />}
+              open={open.finalStatsTiming}
+              onToggle={() => toggle("finalStatsTiming")}
+            >
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-xs text-muted-foreground border-b">
+                    <th className="text-left pb-2 font-medium">Step</th>
+                    <th className="text-right pb-2 font-medium">Start</th>
+                    <th className="text-right pb-2 font-medium">End</th>
+                    <th className="text-right pb-2 font-medium">Duration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {timingSteps.map(({ label, start, end }) => {
+                    const dur = diffMin(start, end);
+                    return (
+                      <tr key={label} className="border-b last:border-0">
+                        <td className="py-1.5 text-xs text-muted-foreground font-medium">{label}</td>
+                        <td className="text-right py-1.5 tabular-nums text-xs">{fmtHHMM(start) ?? <span className="text-muted-foreground">—</span>}</td>
+                        <td className="text-right py-1.5 tabular-nums text-xs">{fmtHHMM(end) ?? <span className="text-muted-foreground">—</span>}</td>
+                        <td className="text-right py-1.5 tabular-nums font-medium">{fmtDur(dur) ?? <span className="text-muted-foreground">—</span>}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                {totalMin != null && (
+                  <tfoot>
+                    <tr className="border-t">
+                      <td colSpan={3} className="pt-2 text-xs font-medium">Total</td>
+                      <td className="text-right pt-2 tabular-nums font-bold">{fmtDur(totalMin)}</td>
+                    </tr>
+                  </tfoot>
+                )}
+              </table>
+
+              {(() => {
+                const parseDateTime = (s: string | null): Date | null => {
+                  if (!s) return null;
+                  const d = new Date(s);
+                  return isNaN(d.getTime()) ? null : d;
+                };
+                const fmtDT = (d: Date | null) =>
+                  d != null
+                    ? `${d.toLocaleDateString(undefined, { month: "short", day: "numeric" })} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
+                    : null;
+                const fmtFermDur = (ms: number): string => {
+                  const totalMin = Math.round(ms / 60000);
+                  const days = Math.floor(totalMin / (60 * 24));
+                  const hrs = Math.floor((totalMin % (60 * 24)) / 60);
+                  if (days > 0 && hrs > 0) return `${days} days ${hrs} hs`;
+                  if (days > 0) return `${days} days`;
+                  return `${hrs} hs`;
+                };
+
+                const fermSteps = brewday.fermentacion.steps;
+                const startDate = parseDateTime(fermSteps[0]?.fechaHora ?? null);
+                const endDate = parseDateTime(brewday.embarrilado.fechaHora ?? fermSteps[fermSteps.length - 1]?.fechaHora ?? null);
+                const diffMs = startDate != null && endDate != null && endDate !== startDate ? endDate.getTime() - startDate.getTime() : null;
+
+                if (startDate == null && endDate == null) return null;
+
+                return (
+                  <table className="w-full text-sm mt-4">
+                    <thead>
+                      <tr className="text-xs text-muted-foreground border-b">
+                        <th className="text-left pb-2 font-medium">Period</th>
+                        <th className="text-right pb-2 font-medium">Start</th>
+                        <th className="text-right pb-2 font-medium">End</th>
+                        <th className="text-right pb-2 font-medium">Duration</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="py-1.5 text-xs text-muted-foreground font-medium">Fermentation</td>
+                        <td className="text-right py-1.5 tabular-nums text-xs">{fmtDT(startDate) ?? <span className="text-muted-foreground">—</span>}</td>
+                        <td className="text-right py-1.5 tabular-nums text-xs">{fmtDT(endDate) ?? <span className="text-muted-foreground">—</span>}</td>
+                        <td className="text-right py-1.5 tabular-nums font-medium">{diffMs != null ? fmtFermDur(diffMs) : <span className="text-muted-foreground">—</span>}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                );
+              })()}
+            </CollapsibleCard>
+          </>
         );
       })()}
     </div>

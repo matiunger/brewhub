@@ -123,6 +123,13 @@
   body {
     @apply bg-background text-foreground;
   }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    appearance: none;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }
 
 /* Markdown Styles */

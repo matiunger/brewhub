@@ -3,7 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -92,7 +92,7 @@ export default async function AddYeastPage({ params }: AddYeastPageProps) {
             <div className="flex gap-3">
               <div className="space-y-2 flex-1">
                 <Label htmlFor="quantityAmount">Quantity *</Label>
-                <Input id="quantityAmount" name="quantityAmount" type="number" step="0.1" placeholder="1" required />
+                <NumberInput id="quantityAmount" name="quantityAmount" step="0.1" placeholder="1" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="quantityUnits">Units *</Label>
@@ -109,7 +109,7 @@ export default async function AddYeastPage({ params }: AddYeastPageProps) {
 
             <div className="space-y-2">
               <Label htmlFor="temp">Fermentation Temperature (°C)</Label>
-              <Input id="temp" name="temp" type="number" step="0.1" />
+              <NumberInput id="temp" name="temp" step="0.1" />
             </div>
 
             <div className="flex gap-2">
