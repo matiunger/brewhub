@@ -357,7 +357,7 @@ interface BeerSectionsProps {
   }) => Promise<void>;
 }
 
-type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparacion" | "bdMolienda" | "bdMacerado" | "bdLavado" | "bdPreboil" | "bdHervido" | "bdWhirlpool" | "bdFermentacion" | "bdEmbarrilado" | "finalStats" | "finalStatsOverview" | "finalStatsTiming";
+type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparation" | "bdMilling" | "bdMash" | "bdSparge" | "bdPreboil" | "bdBoil" | "bdWhirlpool" | "bdFermentation" | "bdKegging" | "finalStats" | "finalStatsOverview" | "finalStatsTiming";
 
 const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   basicInfo: true,
@@ -372,15 +372,15 @@ const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   cultures: true,
   water: true,
   bdBrewday: true,
-  bdPreparacion: false,
-  bdMolienda: false,
-  bdMacerado: false,
-  bdLavado: false,
+  bdPreparation: false,
+  bdMilling: false,
+  bdMash: false,
+  bdSparge: false,
   bdPreboil: false,
-  bdHervido: false,
+  bdBoil: false,
   bdWhirlpool: false,
-  bdFermentacion: false,
-  bdEmbarrilado: false,
+  bdFermentation: false,
+  bdKegging: false,
   finalStats: true,
   finalStatsOverview: true,
   finalStatsTiming: true,
@@ -3070,22 +3070,22 @@ export function BeerSections({
             kegInventory={allKegs}
             openBrewday={open.bdBrewday}
             onToggleBrewday={() => toggle("bdBrewday")}
-            openPreparacion={open.bdPreparacion}
-            onTogglePreparacion={() => toggle("bdPreparacion")}
-            openMolienda={open.bdMolienda}
-            onToggleMolienda={() => toggle("bdMolienda")}
-            openMacerado={open.bdMacerado}
-            onToggleMacerado={() => toggle("bdMacerado")}
-            openLavado={open.bdLavado}
-            onToggleLavado={() => toggle("bdLavado")}
-            openHervido={open.bdHervido}
-            onToggleHervido={() => toggle("bdHervido")}
+            openPreparation={open.bdPreparation}
+            onTogglePreparation={() => toggle("bdPreparation")}
+            openMilling={open.bdMilling}
+            onToggleMilling={() => toggle("bdMilling")}
+            openMash={open.bdMash}
+            onToggleMash={() => toggle("bdMash")}
+            openSparge={open.bdSparge}
+            onToggleSparge={() => toggle("bdSparge")}
+            openBoil={open.bdBoil}
+            onToggleBoil={() => toggle("bdBoil")}
             openWhirlpool={open.bdWhirlpool}
             onToggleWhirlpool={() => toggle("bdWhirlpool")}
-            openFermentacion={open.bdFermentacion}
-            onToggleFermentacion={() => toggle("bdFermentacion")}
-            openEmbarrilado={open.bdEmbarrilado}
-            onToggleEmbarrilado={() => toggle("bdEmbarrilado")}
+            openFermentation={open.bdFermentation}
+            onToggleFermentation={() => toggle("bdFermentation")}
+            openKegging={open.bdKegging}
+            onToggleKegging={() => toggle("bdKegging")}
           />
         );
       })()}
@@ -3129,18 +3129,18 @@ export function BeerSections({
         const estVol = batch.targetFermentarL;
 
         // Final values (from brewday fermentation steps)
-        const stepsWithDensity = brewday.fermentacion.steps.filter(s => s.densidadGL != null);
-        const finalOgInt = stepsWithDensity.length > 0 ? stepsWithDensity[0].densidadGL! : null;
-        const finalFgInt = stepsWithDensity.length > 1 ? stepsWithDensity[stepsWithDensity.length - 1].densidadGL! : null;
+        const stepsWithDensity = brewday.fermentation.steps.filter(s => s.densityGL != null);
+        const finalOgInt = stepsWithDensity.length > 0 ? stepsWithDensity[0].densityGL! : null;
+        const finalFgInt = stepsWithDensity.length > 1 ? stepsWithDensity[stepsWithDensity.length - 1].densityGL! : null;
         const finalAbv = finalOgInt != null && finalFgInt != null
           ? ((finalOgInt - finalFgInt) / 1000) * 131.25
           : null;
-        const finalVol = brewday.fermentacion.steps[0]?.volumenL ?? null;
+        const finalVol = brewday.fermentation.steps[0]?.volumeL ?? null;
         const estVolKegged = Math.max(0, wv.fermenterVol - wv.fermenterLossL);
         const fgForKeg = stepsWithDensity.length > 0
-          ? stepsWithDensity[stepsWithDensity.length - 1].densidadGL! / 1000
+          ? stepsWithDensity[stepsWithDensity.length - 1].densityGL! / 1000
           : null;
-        const kegList = brewday.embarrilado.kegs ?? [];
+        const kegList = brewday.kegging.kegs ?? [];
         const rawVolKegged = fgForKeg != null
           ? kegList.reduce((sum, k) => {
               if (k.totalWeightKg == null || k.tareWeightKg == null) return sum;
@@ -3158,19 +3158,19 @@ export function BeerSections({
           : null;
 
         // Final SRM: grain bill over actual post-chill volume
-        // = last boil entry volume (from alturaCm + pot diameter, or stored volumenL) × thermal contraction
+        // = last boil entry volume (from heightCm + pot diameter, or stored volumeL) × thermal contraction
         // fallback: fermenter volume + trub loss
         const finalSrm = (() => {
-          const boilEntries = brewday.hervido.entries;
+          const boilEntries = brewday.boil.entries;
           const trubLossL = eqSnap?.trubLossL ?? 1.0;
           const contractionFactor = 1 - ((eqSnap?.tempContractionPct ?? 4) / 100);
           const d = eqSnap?.boilPotDiameter ?? null;
 
-          // Compute volume from alturaCm if diameter is known, else use stored volumenL
-          const entryVol = (entry: { alturaCm: number | null; volumenL: number | null }): number | null => {
-            if (d != null && d > 0 && entry.alturaCm != null && entry.alturaCm > 0)
-              return Math.PI * Math.pow(d / 2, 2) * entry.alturaCm / 1000;
-            return entry.volumenL ?? null;
+          // Compute volume from heightCm if diameter is known, else use stored volumeL
+          const entryVol = (entry: { heightCm: number | null; volumeL: number | null }): number | null => {
+            if (d != null && d > 0 && entry.heightCm != null && entry.heightCm > 0)
+              return Math.PI * Math.pow(d / 2, 2) * entry.heightCm / 1000;
+            return entry.volumeL ?? null;
           };
 
           const lastEntry = [...boilEntries].reverse().find(e => entryVol(e) != null);
@@ -3276,11 +3276,11 @@ export function BeerSections({
         };
         const preboilData = brewday.preboil;
         const boilPotDiam = eqSnap?.boilPotDiameter ?? null;
-        const preboilVolumeL = boilPotDiam != null && boilPotDiam > 0 && preboilData.alturaCm != null
-          ? Math.PI * Math.pow(boilPotDiam / 2, 2) * preboilData.alturaCm / 1000
-          : preboilData.volumenL ?? null;
-        const realMashEff = preboilData.densidadGL != null && preboilVolumeL != null && preboilVolumeL > 0 && grainTotals.extract > 0
-          ? sgToPlato(preboilData.densidadGL / 1000) * 1000 * preboilVolumeL / grainTotals.extract
+        const preboilVolumeL = boilPotDiam != null && boilPotDiam > 0 && preboilData.heightCm != null
+          ? Math.PI * Math.pow(boilPotDiam / 2, 2) * preboilData.heightCm / 1000
+          : preboilData.volumeL ?? null;
+        const realMashEff = preboilData.densityGL != null && preboilVolumeL != null && preboilVolumeL > 0 && grainTotals.extract > 0
+          ? sgToPlato(preboilData.densityGL / 1000) * 1000 * preboilVolumeL / grainTotals.extract
           : null;
         const realBrewhouseEff = finalOgInt != null && finalVol != null && finalVol > 0 && grainTotals.extract > 0
           ? sgToPlato(finalOgInt / 1000) * 1000 * finalVol / grainTotals.extract
@@ -3327,14 +3327,14 @@ export function BeerSections({
           return `${m} min`;
         };
 
-        const boilEntries = brewday.hervido.entries;
+        const boilEntries = brewday.boil.entries;
         const timingSteps = [
-          { label: "Mash",      start: parseHHMM(brewday.macerado.general.horaCalentarAgua ?? brewday.macerado.general.horaInicioMacerado), end: parseHHMM(brewday.lavado.horaInicioRecirculado ?? brewday.lavado.horaInicioLavado) },
-          { label: "Lautering", start: parseHHMM(brewday.lavado.horaInicioRecirculado ?? brewday.lavado.horaInicioLavado),                   end: parseHHMM(brewday.lavado.horaFinLavado) },
-          { label: "Boil",      start: parseHHMM(boilEntries[0]?.hora ?? null),                                                              end: parseHHMM(boilEntries[boilEntries.length - 1]?.hora ?? null) },
-          { label: "Whirlpool", start: parseHHMM(brewday.whirlpoolEnfriado.horaInicioWhirlpool),                                             end: parseHHMM(brewday.whirlpoolEnfriado.horaInicioEnfriado) },
-          { label: "Chilling",  start: parseHHMM(brewday.whirlpoolEnfriado.horaInicioEnfriado),                                              end: parseHHMM(brewday.whirlpoolEnfriado.horaFinEnfriado) },
-          { label: "Transfer",  start: parseHHMM(brewday.whirlpoolEnfriado.horaFinEnfriado),                                                 end: parseHHMM(brewday.whirlpoolEnfriado.horaFinTrasvase) },
+          { label: "Mash",      start: parseHHMM(brewday.mash.general.heatWaterTime ?? brewday.mash.general.mashStartTime), end: parseHHMM(brewday.sparge.recirculationStartTime ?? brewday.sparge.spargeStartTime) },
+          { label: "Lautering", start: parseHHMM(brewday.sparge.recirculationStartTime ?? brewday.sparge.spargeStartTime),  end: parseHHMM(brewday.sparge.spargeEndTime) },
+          { label: "Boil",      start: parseHHMM(boilEntries[0]?.time ?? null),                                             end: parseHHMM(boilEntries[boilEntries.length - 1]?.time ?? null) },
+          { label: "Whirlpool", start: parseHHMM(brewday.whirlpoolChilling.whirlpoolStartTime),                             end: parseHHMM(brewday.whirlpoolChilling.chillingStartTime) },
+          { label: "Chilling",  start: parseHHMM(brewday.whirlpoolChilling.chillingStartTime),                              end: parseHHMM(brewday.whirlpoolChilling.chillingEndTime) },
+          { label: "Transfer",  start: parseHHMM(brewday.whirlpoolChilling.chillingEndTime),                                end: parseHHMM(brewday.whirlpoolChilling.transferEndTime) },
         ];
         const totalStart = timingSteps.find(s => s.start != null)?.start ?? null;
         const totalEnd = [...timingSteps].reverse().find(s => s.end != null)?.end ?? null;
@@ -3472,9 +3472,9 @@ export function BeerSections({
                   return `${hrs} hs`;
                 };
 
-                const fermSteps = brewday.fermentacion.steps;
-                const startDate = parseDateTime(fermSteps[0]?.fechaHora ?? null);
-                const endDate = parseDateTime(brewday.embarrilado.fechaHora ?? fermSteps[fermSteps.length - 1]?.fechaHora ?? null);
+                const fermSteps = brewday.fermentation.steps;
+                const startDate = parseDateTime(fermSteps[0]?.dateTime ?? null);
+                const endDate = parseDateTime(brewday.kegging.dateTime ?? fermSteps[fermSteps.length - 1]?.dateTime ?? null);
                 const diffMs = startDate != null && endDate != null && endDate !== startDate ? endDate.getTime() - startDate.getTime() : null;
 
                 if (startDate == null && endDate == null) return null;

@@ -1,7 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import { type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { Badge } from "@/components/ui/badge";
+import { Pencil } from "lucide-react";
 import { calculateBrewingStats } from "@/lib/calculations";
 import { DeleteBatchDialog } from "./delete-dialog";
 import { BatchForm } from "./batch-form";
@@ -486,12 +486,9 @@ export default async function BatchPage({ params }: BatchPageProps) {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{batch.name}</h1>
-          <div className="flex items-center gap-2 mt-1">
-            <Badge variant={batch.draft ? "secondary" : "default"}>
-              {batch.draft ? "Draft" : "Executed"}
-            </Badge>
-            <Badge variant="outline">{batch.type}</Badge>
-            {batch.style && <Badge variant="outline">{batch.style}</Badge>}
+          <div className="flex items-center gap-1.5 mt-0.5 text-sm text-muted-foreground">
+            {batch.style && <span>{batch.style}</span>}
+            {batch.draft && <Pencil className="h-3 w-3" />}
           </div>
         </div>
         

@@ -23,7 +23,7 @@ async function createBatch(formData: FormData) {
     data: {
       name: formData.get("name") as string,
       type,
-      style: formData.get("style") as string || null,
+
       notes: formData.get("notes") as string || null,
       draft: true,
     },
@@ -65,11 +65,6 @@ export default function NewBatchPage() {
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="style">Style</Label>
-              <Input id="style" name="style" placeholder="e.g., IPA, Stout, Pale Ale" />
             </div>
 
             <div className="space-y-2">

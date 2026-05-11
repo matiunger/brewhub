@@ -1,6 +1,6 @@
 
-
-
+remove and export icons
+lautering
 in recipe overview, agregar mas metricas como balance, etc
 esquema json en ingles, deslop
 

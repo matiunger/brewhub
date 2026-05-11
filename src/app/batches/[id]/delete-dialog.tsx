@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -29,7 +30,7 @@ export function DeleteBatchDialog({ batchName, deleteAction }: DeleteBatchDialog
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" size="sm">Delete Batch</Button>
+        <Button variant="destructive" size="icon" title="Delete Batch"><Trash2 className="h-4 w-4" /></Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -1,17 +1,17 @@
 export interface MashStepEntry {
   id: string;
-  hora: string | null;
+  time: string | null;
   tempC: number | null;
   ph: number | null;
-  recirculado: boolean;
-  revolver: boolean;
+  recirculated: boolean;
+  stir: boolean;
 }
 
 export interface FermentationStep {
   id: string;
-  fechaHora: string | null;
-  volumenL: number | null;
-  densidadGL: number | null;
+  dateTime: string | null;
+  volumeL: number | null;
+  densityGL: number | null;
   ph: number | null;
   tempC: number | null;
   pressureBar: number | null;
@@ -21,118 +21,118 @@ export interface FermentationStep {
 
 export interface BoilEntry {
   id: string;
-  hora: string | null;
-  alturaCm: number | null;
-  volumenL: number | null;
-  volumenObjL: number | null;
+  time: string | null;
+  heightCm: number | null;
+  volumeL: number | null;
+  targetVolumeL: number | null;
 }
 
-export interface PreparacionData {
-  congelarBotellas: boolean;
-  armarMolino: boolean;
-  lavarMacerador: boolean;
-  lavarFermentador: boolean;
-  pesarMaltas: boolean;
-  prepararAnafe: boolean;
-  cargaGarrafaKg: number | null;
-  filtrarAgua: boolean;
-  calibrarPhmetro: boolean;
-  prepararHeladera: boolean;
-  armarSerpentinas: boolean;
-  prepararAlcohol: boolean;
-  cocinaLimpia: boolean;
-  prepararMesa: boolean;
-  prepararStarter: boolean;
+export interface PreparationData {
+  freezeBottles: boolean;
+  setupMill: boolean;
+  cleanMashTun: boolean;
+  cleanFermenter: boolean;
+  weighGrains: boolean;
+  prepareBurner: boolean;
+  gasTankKg: number | null;
+  filterWater: boolean;
+  calibratePhMeter: boolean;
+  prepareCooler: boolean;
+  setupChillerCoils: boolean;
+  prepareAlcohol: boolean;
+  cleanKitchen: boolean;
+  setupWorkspace: boolean;
+  prepareStarter: boolean;
 }
 
-export interface MoliendaData {
-  fechaHora: string | null;
+export interface MillingData {
+  dateTime: string | null;
   gapMm: number | null;
 }
 
-export interface MaceradoData {
-  aguaMacerado: {
-    lts: number | null;
-    alturaCm: number | null;
+export interface MashData {
+  mashWater: {
+    liters: number | null;
+    heightCm: number | null;
     potDiameterCm: number | null;
-    olla: string | null;
+    pot: string | null;
     tStrikeC: number | null;
     notes: string | null;
   };
-  aguaLavado: {
-    lts: number | null;
-    alturaCm: number | null;
+  spargeWater: {
+    liters: number | null;
+    heightCm: number | null;
     potDiameterCm: number | null;
-    olla: string | null;
+    pot: string | null;
     tempC: number | null;
     ph: number | null;
     notes: string | null;
   };
   general: {
-    checkGustoAgua: boolean;
-    horaCalentarAgua: string | null;
-    horaInicioEmpaste: string | null;
-    horaInicioMacerado: string | null;
-    tempObjetivoC: number | null;
-    tempMashC: number | null;
-    phMash: number | null;
+    checkWaterTaste: boolean;
+    heatWaterTime: string | null;
+    mashInTime: string | null;
+    mashStartTime: string | null;
+    targetTempC: number | null;
+    mashTempC: number | null;
+    mashPh: number | null;
   };
   timeline: MashStepEntry[];
 }
 
-export interface LavadoData {
-  horaInicioRecirculado: string | null;
-  horaFinRecirculado: string | null;
-  horaInicioLavado: string | null;
-  horaFinLavado: string | null;
-  primerMostoDensidad: number | null;
-  primerMostoPh: number | null;
+export interface SpargeData {
+  recirculationStartTime: string | null;
+  recirculationEndTime: string | null;
+  spargeStartTime: string | null;
+  spargeEndTime: string | null;
+  firstRunningsDensity: number | null;
+  firstRunningsPh: number | null;
 }
 
 export interface PreboilData {
-  volumenObjL: number | null;
-  alturaObjCm: number | null;
-  densidadObjGL: number | null;
-  volumenL: number | null;
-  alturaCm: number | null;
-  densidadGL: number | null;
+  targetVolumeL: number | null;
+  targetHeightCm: number | null;
+  targetDensityGL: number | null;
+  volumeL: number | null;
+  heightCm: number | null;
+  densityGL: number | null;
   tempC: number | null;
   ph: number | null;
 }
 
 export interface LastRunData {
-  densidadGL: number | null;
+  densityGL: number | null;
   ph: number | null;
 }
 
-export interface HervidoData {
+export interface BoilData {
   entries: BoilEntry[];
   irishMossCheck: boolean;
   irishMossGr: number | null;
-  nutrientesCheck: boolean;
-  nutrientesGr: number | null;
-  evaporacionL: number | null;
+  nutrientsCheck: boolean;
+  nutrientsGr: number | null;
+  evaporationL: number | null;
 }
 
-export interface WhirlpoolEnfriadoData {
-  horaInicioWhirlpool: string | null;
-  horaInicioEnfriado: string | null;
-  tempInicioC: number | null;
-  horaFinEnfriado: string | null;
-  tempFinC: number | null;
-  horaFinTrasvase: string | null;
-  tempTrasvaseC: number | null;
-  muestraOg: boolean;
-  muestraOgDensidad: number | null;
-  muestraOgDensidadObj: number | null;
-  muestraOgPh: number | null;
+export interface WhirlpoolChillingData {
+  whirlpoolStartTime: string | null;
+  chillingStartTime: string | null;
+  startTempC: number | null;
+  chillingEndTime: string | null;
+  endTempC: number | null;
+  transferEndTime: string | null;
+  transferTempC: number | null;
+  ogSample: boolean;
+  ogSampleDensity: number | null;
+  ogSampleTargetDensity: number | null;
+  ogSamplePh: number | null;
 }
 
-export interface FermentacionData {
-  pesoTotalKg: number | null;
-  pesoLiquidoKg: number | null;
-  volumenL: number | null;
-  pesoGarrafaFinalKg: number | null;
+export interface FermentationData {
+  totalWeightKg: number | null;
+  liquidWeightKg: number | null;
+  volumeL: number | null;
+  endGasTankKg: number | null;
   starterNotes: string | null;
   steps: FermentationStep[];
 }
@@ -145,61 +145,61 @@ export interface KegEntry {
   totalWeightKg: number | null;
 }
 
-export interface EmbarriladoData {
-  gelatinaCheck: boolean;
-  gelatinaText: string | null;
+export interface KeggingData {
+  gelatinCheck: boolean;
+  gelatinText: string | null;
   smbCheck: boolean;
   smbText: string | null;
-  fechaHora: string | null;
-  volumenL: number | null;
+  dateTime: string | null;
+  volumeL: number | null;
   kegs: KegEntry[];
 }
 
 export interface BrewdayData {
-  preparacion: PreparacionData;
-  molienda: MoliendaData;
-  macerado: MaceradoData;
-  lavado: LavadoData;
+  preparation: PreparationData;
+  milling: MillingData;
+  mash: MashData;
+  sparge: SpargeData;
   preboil: PreboilData;
   lastRun: LastRunData;
-  hervido: HervidoData;
-  whirlpoolEnfriado: WhirlpoolEnfriadoData;
-  fermentacion: FermentacionData;
-  embarrilado: EmbarriladoData;
+  boil: BoilData;
+  whirlpoolChilling: WhirlpoolChillingData;
+  fermentation: FermentationData;
+  kegging: KeggingData;
 }
 
 export const DEFAULT_BREWDAY_DATA: BrewdayData = {
-  preparacion: {
-    congelarBotellas: false,
-    armarMolino: false,
-    lavarMacerador: false,
-    lavarFermentador: false,
-    pesarMaltas: false,
-    prepararAnafe: false,
-    cargaGarrafaKg: null,
-    filtrarAgua: false,
-    calibrarPhmetro: false,
-    prepararHeladera: false,
-    armarSerpentinas: false,
-    prepararAlcohol: false,
-    cocinaLimpia: false,
-    prepararMesa: false,
-    prepararStarter: false,
+  preparation: {
+    freezeBottles: false,
+    setupMill: false,
+    cleanMashTun: false,
+    cleanFermenter: false,
+    weighGrains: false,
+    prepareBurner: false,
+    gasTankKg: null,
+    filterWater: false,
+    calibratePhMeter: false,
+    prepareCooler: false,
+    setupChillerCoils: false,
+    prepareAlcohol: false,
+    cleanKitchen: false,
+    setupWorkspace: false,
+    prepareStarter: false,
   },
-  molienda: { fechaHora: null, gapMm: null },
-  macerado: {
-    aguaMacerado: { lts: null, alturaCm: null, potDiameterCm: null, olla: null, tStrikeC: null, notes: null },
-    aguaLavado: { lts: null, alturaCm: null, potDiameterCm: null, olla: null, tempC: null, ph: null, notes: null },
-    general: { checkGustoAgua: false, horaCalentarAgua: null, horaInicioEmpaste: null, horaInicioMacerado: null, tempObjetivoC: null, tempMashC: null, phMash: null },
-    timeline: [{ id: "initial", hora: null, tempC: null, ph: null, recirculado: false, revolver: false }],
+  milling: { dateTime: null, gapMm: null },
+  mash: {
+    mashWater: { liters: null, heightCm: null, potDiameterCm: null, pot: null, tStrikeC: null, notes: null },
+    spargeWater: { liters: null, heightCm: null, potDiameterCm: null, pot: null, tempC: null, ph: null, notes: null },
+    general: { checkWaterTaste: false, heatWaterTime: null, mashInTime: null, mashStartTime: null, targetTempC: null, mashTempC: null, mashPh: null },
+    timeline: [{ id: "initial", time: null, tempC: null, ph: null, recirculated: false, stir: false }],
   },
-  lavado: { horaInicioRecirculado: null, horaFinRecirculado: null, horaInicioLavado: null, horaFinLavado: null, primerMostoDensidad: null, primerMostoPh: null },
-  preboil: { volumenObjL: null, alturaObjCm: null, densidadObjGL: null, volumenL: null, alturaCm: null, densidadGL: null, tempC: null, ph: null },
-  lastRun: { densidadGL: null, ph: null },
-  hervido: { entries: [], irishMossCheck: false, irishMossGr: null, nutrientesCheck: false, nutrientesGr: null, evaporacionL: null },
-  whirlpoolEnfriado: { horaInicioWhirlpool: null, horaInicioEnfriado: null, tempInicioC: null, horaFinEnfriado: null, tempFinC: null, horaFinTrasvase: null, tempTrasvaseC: null, muestraOg: false, muestraOgDensidad: null, muestraOgDensidadObj: null, muestraOgPh: null },
-  fermentacion: { pesoTotalKg: null, pesoLiquidoKg: null, volumenL: null, pesoGarrafaFinalKg: null, starterNotes: null, steps: [{ id: "pitching", fechaHora: null, volumenL: null, densidadGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null }] },
-  embarrilado: { gelatinaCheck: false, gelatinaText: null, smbCheck: false, smbText: null, fechaHora: null, volumenL: null, kegs: [] },
+  sparge: { recirculationStartTime: null, recirculationEndTime: null, spargeStartTime: null, spargeEndTime: null, firstRunningsDensity: null, firstRunningsPh: null },
+  preboil: { targetVolumeL: null, targetHeightCm: null, targetDensityGL: null, volumeL: null, heightCm: null, densityGL: null, tempC: null, ph: null },
+  lastRun: { densityGL: null, ph: null },
+  boil: { entries: [], irishMossCheck: false, irishMossGr: null, nutrientsCheck: false, nutrientsGr: null, evaporationL: null },
+  whirlpoolChilling: { whirlpoolStartTime: null, chillingStartTime: null, startTempC: null, chillingEndTime: null, endTempC: null, transferEndTime: null, transferTempC: null, ogSample: false, ogSampleDensity: null, ogSampleTargetDensity: null, ogSamplePh: null },
+  fermentation: { totalWeightKg: null, liquidWeightKg: null, volumeL: null, endGasTankKg: null, starterNotes: null, steps: [{ id: "pitching", dateTime: null, volumeL: null, densityGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null }] },
+  kegging: { gelatinCheck: false, gelatinText: null, smbCheck: false, smbText: null, dateTime: null, volumeL: null, kegs: [] },
 };
 
 export function parseBrewdayData(raw: string | null): BrewdayData {
@@ -209,48 +209,48 @@ export function parseBrewdayData(raw: string | null): BrewdayData {
     return {
       ...DEFAULT_BREWDAY_DATA,
       ...parsed,
-      preparacion: { ...DEFAULT_BREWDAY_DATA.preparacion, ...parsed.preparacion },
-      molienda: { ...DEFAULT_BREWDAY_DATA.molienda, ...parsed.molienda },
-      macerado: {
-        ...DEFAULT_BREWDAY_DATA.macerado,
-        ...parsed.macerado,
-        aguaMacerado: { ...DEFAULT_BREWDAY_DATA.macerado.aguaMacerado, ...parsed.macerado?.aguaMacerado },
-        aguaLavado: { ...DEFAULT_BREWDAY_DATA.macerado.aguaLavado, ...parsed.macerado?.aguaLavado },
-        general: { ...DEFAULT_BREWDAY_DATA.macerado.general, ...parsed.macerado?.general },
-        timeline: Array.isArray(parsed.macerado?.timeline) && parsed.macerado.timeline.length > 0
-          ? parsed.macerado.timeline.map((e: Record<string, unknown>) => ({
+      preparation: { ...DEFAULT_BREWDAY_DATA.preparation, ...parsed.preparation },
+      milling: { ...DEFAULT_BREWDAY_DATA.milling, ...parsed.milling },
+      mash: {
+        ...DEFAULT_BREWDAY_DATA.mash,
+        ...parsed.mash,
+        mashWater: { ...DEFAULT_BREWDAY_DATA.mash.mashWater, ...parsed.mash?.mashWater },
+        spargeWater: { ...DEFAULT_BREWDAY_DATA.mash.spargeWater, ...parsed.mash?.spargeWater },
+        general: { ...DEFAULT_BREWDAY_DATA.mash.general, ...parsed.mash?.general },
+        timeline: Array.isArray(parsed.mash?.timeline) && parsed.mash.timeline.length > 0
+          ? parsed.mash.timeline.map((e: Record<string, unknown>) => ({
               id: (e.id as string) ?? crypto.randomUUID(),
-              hora: (e.hora as string | null) ?? null,
+              time: (e.time as string | null) ?? null,
               tempC: (e.tempC as number | null) ?? null,
               ph: (e.ph as number | null) ?? null,
-              recirculado: (e.recirculado as boolean) ?? false,
-              revolver: (e.revolver as boolean) ?? false,
+              recirculated: (e.recirculated as boolean) ?? false,
+              stir: (e.stir as boolean) ?? false,
             }))
-          : DEFAULT_BREWDAY_DATA.macerado.timeline,
+          : DEFAULT_BREWDAY_DATA.mash.timeline,
       },
-      lavado: { ...DEFAULT_BREWDAY_DATA.lavado, ...parsed.lavado },
+      sparge: { ...DEFAULT_BREWDAY_DATA.sparge, ...parsed.sparge },
       preboil: { ...DEFAULT_BREWDAY_DATA.preboil, ...parsed.preboil },
       lastRun: { ...DEFAULT_BREWDAY_DATA.lastRun, ...parsed.lastRun },
-      hervido: { ...DEFAULT_BREWDAY_DATA.hervido, ...parsed.hervido },
-      whirlpoolEnfriado: { ...DEFAULT_BREWDAY_DATA.whirlpoolEnfriado, ...parsed.whirlpoolEnfriado },
-      fermentacion: {
-        ...DEFAULT_BREWDAY_DATA.fermentacion,
-        ...parsed.fermentacion,
-        steps: Array.isArray(parsed.fermentacion?.steps) && parsed.fermentacion.steps.length > 0
-          ? parsed.fermentacion.steps.map((s: Record<string, unknown>) => ({
+      boil: { ...DEFAULT_BREWDAY_DATA.boil, ...parsed.boil },
+      whirlpoolChilling: { ...DEFAULT_BREWDAY_DATA.whirlpoolChilling, ...parsed.whirlpoolChilling },
+      fermentation: {
+        ...DEFAULT_BREWDAY_DATA.fermentation,
+        ...parsed.fermentation,
+        steps: Array.isArray(parsed.fermentation?.steps) && parsed.fermentation.steps.length > 0
+          ? parsed.fermentation.steps.map((s: Record<string, unknown>) => ({
               id: (s.id as string) ?? crypto.randomUUID(),
-              fechaHora: (s.fechaHora as string | null) ?? null,
-              volumenL: (s.volumenL as number | null) ?? null,
-              densidadGL: (s.densidadGL as number | null) ?? null,
+              dateTime: (s.dateTime as string | null) ?? null,
+              volumeL: (s.volumeL as number | null) ?? null,
+              densityGL: (s.densityGL as number | null) ?? null,
               ph: (s.ph as number | null) ?? null,
               tempC: (s.tempC as number | null) ?? null,
               pressureBar: (s.pressureBar as number | null) ?? null,
               bubbleIntervalSec: (s.bubbleIntervalSec as number | null) ?? null,
               notes: (s.notes as string | null) ?? null,
             }))
-          : DEFAULT_BREWDAY_DATA.fermentacion.steps,
+          : DEFAULT_BREWDAY_DATA.fermentation.steps,
       },
-      embarrilado: { ...DEFAULT_BREWDAY_DATA.embarrilado, ...parsed.embarrilado, kegs: parsed.embarrilado?.kegs ?? [] },
+      kegging: { ...DEFAULT_BREWDAY_DATA.kegging, ...parsed.kegging, kegs: parsed.kegging?.kegs ?? [] },
     };
   } catch {
     return DEFAULT_BREWDAY_DATA;

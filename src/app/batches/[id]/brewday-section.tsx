@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ChevronDown, ChevronRight, ClipboardList, Settings2, Layers, GlassWater, Flame, Snowflake, FlaskConical, Package } from "lucide-react";
+import { ChevronDown, ChevronRight, ClipboardList, Settings2, Layers, GlassWater, Flame, Snowflake, FlaskConical, Package, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,16 +12,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { CollapsibleCard } from "./beer-sections";
 import {
   type BrewdayData,
-  type MaceradoData,
+  type MashData,
   type MashStepEntry,
-  type LavadoData,
+  type SpargeData,
   type PreboilData,
   type LastRunData,
-  type HervidoData,
-  type WhirlpoolEnfriadoData,
-  type FermentacionData,
+  type BoilData,
+  type WhirlpoolChillingData,
+  type FermentationData,
   type FermentationStep,
-  type EmbarriladoData,
+  type KeggingData,
   type KegEntry,
   type BoilEntry,
 } from "@/lib/brewday-types";
@@ -147,9 +147,9 @@ export interface RecipeData {
   brewDate: Date | null;
 }
 
-function FermentacionSection({
-  fermentacion,
-  setFermentacion,
+function FermentationSection({
+  fermentation,
+  setFermentation,
   addStep,
   removeStep,
   setStep,
@@ -160,8 +160,8 @@ function FermentacionSection({
   open,
   onToggle,
 }: {
-  fermentacion: FermentacionData;
-  setFermentacion: (key: keyof FermentacionData, val: string | number | boolean | null) => void;
+  fermentation: FermentationData;
+  setFermentation: (key: keyof FermentationData, val: string | number | boolean | null) => void;
   addStep: () => void;
   removeStep: (id: string) => void;
   setStep: (id: string, key: keyof FermentationStep, val: string | number | null) => void;
@@ -181,9 +181,9 @@ function FermentacionSection({
 
   const computedLiquidKg =
     mode === "weight" &&
-    fermentacion.pesoTotalKg != null &&
+    fermentation.totalWeightKg != null &&
     fermenterWeightKg != null
-      ? Math.max(0, fermentacion.pesoTotalKg - fermenterWeightKg)
+      ? Math.max(0, fermentation.totalWeightKg - fermenterWeightKg)
       : null;
 
   const computedVolumenL =
@@ -222,12 +222,12 @@ function FermentacionSection({
 
         {mode === "direct" ? (
           <FieldGroup label="Volume L">
-            <NumInput value={fermentacion.volumenL} onChange={(v) => setFermentacion("volumenL", v)} />
+            <NumInput value={fermentation.volumeL} onChange={(v) => setFermentation("volumeL", v)} />
           </FieldGroup>
         ) : (
           <div className="space-y-3">
             <FieldGroup label="Total fermenter weight kg">
-              <NumInput value={fermentacion.pesoTotalKg} onChange={(v) => setFermentacion("pesoTotalKg", v)} />
+              <NumInput value={fermentation.totalWeightKg} onChange={(v) => setFermentation("totalWeightKg", v)} />
             </FieldGroup>
             {fermenterWeightKg != null && (
               <div className="text-xs text-muted-foreground">
@@ -254,11 +254,11 @@ function FermentacionSection({
 
         <div className="flex items-end gap-3">
           <FieldGroup label="End gas weight kg">
-            <NumInput value={fermentacion.pesoGarrafaFinalKg} onChange={(v) => setFermentacion("pesoGarrafaFinalKg", v)} />
+            <NumInput value={fermentation.endGasTankKg} onChange={(v) => setFermentation("endGasTankKg", v)} />
           </FieldGroup>
-          {fermentacion.pesoGarrafaFinalKg != null && startingGasTankKg != null && (
+          {fermentation.endGasTankKg != null && startingGasTankKg != null && (
             <span className="h-7 flex items-center text-sm text-muted-foreground tabular-nums">
-              {(startingGasTankKg - fermentacion.pesoGarrafaFinalKg) >= 0 ? "−" : "+"}{Math.abs(startingGasTankKg - fermentacion.pesoGarrafaFinalKg).toFixed(2)} kg
+              {(startingGasTankKg - fermentation.endGasTankKg) >= 0 ? "−" : "+"}{Math.abs(startingGasTankKg - fermentation.endGasTankKg).toFixed(2)} kg
             </span>
           )}
         </div>
@@ -267,8 +267,8 @@ function FermentacionSection({
         <div className="space-y-1">
           <SubTitle>Starter notes</SubTitle>
           <Textarea
-            value={fermentacion.starterNotes ?? ""}
-            onChange={(e) => setFermentacion("starterNotes", e.target.value || null)}
+            value={fermentation.starterNotes ?? ""}
+            onChange={(e) => setFermentation("starterNotes", e.target.value || null)}
             placeholder="Describe how the starter was prepared…"
             className="text-sm min-h-[72px]"
           />
@@ -294,11 +294,11 @@ function FermentacionSection({
               </tr>
             </thead>
             <tbody>
-              {fermentacion.steps.map((step, idx) => {
+              {fermentation.steps.map((step, idx) => {
                 const isPitching = step.id === "pitching";
-                const pitchingStep = fermentacion.steps.find(s => s.id === "pitching");
-                const pitchingDt = pitchingStep?.fechaHora ? new Date(pitchingStep.fechaHora) : null;
-                const stepDt = step.fechaHora ? new Date(step.fechaHora) : null;
+                const pitchingStep = fermentation.steps.find(s => s.id === "pitching");
+                const pitchingDt = pitchingStep?.dateTime ? new Date(pitchingStep.dateTime) : null;
+                const stepDt = step.dateTime ? new Date(step.dateTime) : null;
                 const diffMs = pitchingDt && stepDt && !isPitching ? stepDt.getTime() - pitchingDt.getTime() : null;
                 const diffHs = diffMs != null ? diffMs / 1000 / 3600 : null;
                 const diffDays = diffHs != null ? diffHs / 24 : null;
@@ -311,8 +311,8 @@ function FermentacionSection({
                     <td className="py-1 px-2">
                       <Input
                         type="datetime-local"
-                        value={step.fechaHora ?? (isPitching ? (brewDateDefault ?? "") : "")}
-                        onChange={(e) => setStep(step.id, "fechaHora", e.target.value || null)}
+                        value={step.dateTime ?? (isPitching ? (brewDateDefault ?? "") : "")}
+                        onChange={(e) => setStep(step.id, "dateTime", e.target.value || null)}
                         className="h-7 text-xs w-52"
                       />
                     </td>
@@ -323,10 +323,10 @@ function FermentacionSection({
                       {diffDays != null ? diffDays.toFixed(1) : ""}
                     </td>
                     <td className="py-1 px-2">
-                      <NumInput value={step.volumenL} onChange={(v) => setStep(step.id, "volumenL", v)} className="w-16" />
+                      <NumInput value={step.volumeL} onChange={(v) => setStep(step.id, "volumeL", v)} className="w-16" />
                     </td>
                     <td className="py-1 px-2">
-                      <NumInput value={step.densidadGL} onChange={(v) => setStep(step.id, "densidadGL", v)} className="w-16" />
+                      <NumInput value={step.densityGL} onChange={(v) => setStep(step.id, "densityGL", v)} className="w-16" />
                     </td>
                     <td className="py-1 px-2">
                       <NumInput value={step.ph} onChange={(v) => setStep(step.id, "ph", v)} className="w-14" />
@@ -372,12 +372,12 @@ function FermentacionSection({
 
         {/* Density chart */}
         {(() => {
-          const rawPoints = fermentacion.steps
-            .filter(s => s.densidadGL != null)
+          const rawPoints = fermentation.steps
+            .filter(s => s.densityGL != null)
             .map((s, idx) => ({
               idx,
-              t: s.fechaHora != null ? new Date(s.fechaHora).getTime() : null,
-              d: s.densidadGL!,
+              t: s.dateTime != null ? new Date(s.dateTime).getTime() : null,
+              d: s.densityGL!,
             }));
 
           if (rawPoints.length < 2) return null;
@@ -486,12 +486,12 @@ function FermentacionSection({
 
         {/* Notes modal */}
         {(() => {
-          const step = fermentacion.steps.find(s => s.id === notesModalId);
+          const step = fermentation.steps.find(s => s.id === notesModalId);
           return (
             <Dialog open={notesModalId != null} onOpenChange={(open) => { if (!open) setNotesModalId(null); }}>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Notes — {step?.id === "pitching" ? "Pitching" : step ? `Step ${fermentacion.steps.indexOf(step)}` : ""}</DialogTitle>
+                  <DialogTitle>Notes — {step?.id === "pitching" ? "Pitching" : step ? `Step ${fermentation.steps.indexOf(step)}` : ""}</DialogTitle>
                 </DialogHeader>
                 <Textarea
                   value={step?.notes ?? ""}
@@ -514,91 +514,91 @@ interface BrewdaySectionProps {
   recipeData: RecipeData;
   kegInventory: { id: string; name: string; capacity: number; tareWeight: number | null }[];
   openBrewday: boolean; onToggleBrewday: () => void;
-  openPreparacion: boolean; onTogglePreparacion: () => void;
-  openMolienda: boolean; onToggleMolienda: () => void;
-  openMacerado: boolean; onToggleMacerado: () => void;
-  openLavado: boolean; onToggleLavado: () => void;
-  openHervido: boolean; onToggleHervido: () => void;
+  openPreparation: boolean; onTogglePreparation: () => void;
+  openMilling: boolean; onToggleMilling: () => void;
+  openMash: boolean; onToggleMash: () => void;
+  openSparge: boolean; onToggleSparge: () => void;
+  openBoil: boolean; onToggleBoil: () => void;
   openWhirlpool: boolean; onToggleWhirlpool: () => void;
-  openFermentacion: boolean; onToggleFermentacion: () => void;
-  openEmbarrilado: boolean; onToggleEmbarrilado: () => void;
+  openFermentation: boolean; onToggleFermentation: () => void;
+  openKegging: boolean; onToggleKegging: () => void;
 }
 
 export function BrewdaySection({
   brewday, updateBrewday, recipeData, kegInventory,
   openBrewday, onToggleBrewday,
-  openPreparacion, onTogglePreparacion,
-  openMolienda, onToggleMolienda,
-  openMacerado, onToggleMacerado,
-  openLavado, onToggleLavado,
-  openHervido, onToggleHervido,
+  openPreparation, onTogglePreparation,
+  openMilling, onToggleMilling,
+  openMash, onToggleMash,
+  openSparge, onToggleSparge,
+  openBoil, onToggleBoil,
   openWhirlpool, onToggleWhirlpool,
-  openFermentacion, onToggleFermentacion,
-  openEmbarrilado, onToggleEmbarrilado,
+  openFermentation, onToggleFermentation,
+  openKegging, onToggleKegging,
 }: BrewdaySectionProps) {
-  const { preparacion, molienda, macerado, lavado, preboil, lastRun, hervido, whirlpoolEnfriado, fermentacion, embarrilado } = brewday;
+  const { preparation, milling, mash, sparge, preboil, lastRun, boil, whirlpoolChilling, fermentation, kegging } = brewday;
 
   const setPrep = useCallback(
-    (key: keyof typeof preparacion, val: boolean | number | null) => {
-      updateBrewday("preparacion", { ...preparacion, [key]: val });
+    (key: keyof typeof preparation, val: boolean | number | null) => {
+      updateBrewday("preparation", { ...preparation, [key]: val });
     },
-    [preparacion, updateBrewday]
+    [preparation, updateBrewday]
   );
 
-  const setAguaMacerado = useCallback(
-    (key: keyof MaceradoData["aguaMacerado"], val: string | number | null) => {
-      updateBrewday("macerado", { ...macerado, aguaMacerado: { ...macerado.aguaMacerado, [key]: val } });
+  const setMashWater = useCallback(
+    (key: keyof MashData["mashWater"], val: string | number | null) => {
+      updateBrewday("mash", { ...mash, mashWater: { ...mash.mashWater, [key]: val } });
     },
-    [macerado, updateBrewday]
+    [mash, updateBrewday]
   );
 
-  const setAguaLavado = useCallback(
-    (key: keyof MaceradoData["aguaLavado"], val: number | null) => {
-      updateBrewday("macerado", { ...macerado, aguaLavado: { ...macerado.aguaLavado, [key]: val } });
+  const setSpargeWater = useCallback(
+    (key: keyof MashData["spargeWater"], val: string | number | null) => {
+      updateBrewday("mash", { ...mash, spargeWater: { ...mash.spargeWater, [key]: val } });
     },
-    [macerado, updateBrewday]
+    [mash, updateBrewday]
   );
 
-  const setAguaLavadoOlla = useCallback(
+  const setSpargeWaterPot = useCallback(
     (val: string | null) => {
-      updateBrewday("macerado", { ...macerado, aguaLavado: { ...macerado.aguaLavado, olla: val } });
+      updateBrewday("mash", { ...mash, spargeWater: { ...mash.spargeWater, pot: val } });
     },
-    [macerado, updateBrewday]
+    [mash, updateBrewday]
   );
 
-  const setMaceradoGeneral = useCallback(
-    (key: keyof MaceradoData["general"], val: string | number | boolean | null) => {
-      updateBrewday("macerado", { ...macerado, general: { ...macerado.general, [key]: val } });
+  const setMashGeneral = useCallback(
+    (key: keyof MashData["general"], val: string | number | boolean | null) => {
+      updateBrewday("mash", { ...mash, general: { ...mash.general, [key]: val } });
     },
-    [macerado, updateBrewday]
+    [mash, updateBrewday]
   );
 
   const addMashStep = useCallback(() => {
     const now = new Date();
     const hora = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-    const newStep: MashStepEntry = { id: crypto.randomUUID(), hora, tempC: null, ph: null, recirculado: false, revolver: false };
-    updateBrewday("macerado", { ...macerado, timeline: [...macerado.timeline, newStep] });
-  }, [macerado, updateBrewday]);
+    const newStep: MashStepEntry = { id: crypto.randomUUID(), time: hora, tempC: null, ph: null, recirculated: false, stir: false };
+    updateBrewday("mash", { ...mash, timeline: [...mash.timeline, newStep] });
+  }, [mash, updateBrewday]);
 
   const removeMashStep = useCallback((id: string) => {
-    updateBrewday("macerado", { ...macerado, timeline: macerado.timeline.filter((s) => s.id !== id) });
-  }, [macerado, updateBrewday]);
+    updateBrewday("mash", { ...mash, timeline: mash.timeline.filter((s) => s.id !== id) });
+  }, [mash, updateBrewday]);
 
   const setMashStep = useCallback(
     (id: string, key: keyof MashStepEntry, val: string | number | boolean | null) => {
-      updateBrewday("macerado", {
-        ...macerado,
-        timeline: macerado.timeline.map((s) => (s.id === id ? { ...s, [key]: val } : s)),
+      updateBrewday("mash", {
+        ...mash,
+        timeline: mash.timeline.map((s) => (s.id === id ? { ...s, [key]: val } : s)),
       });
     },
-    [macerado, updateBrewday]
+    [mash, updateBrewday]
   );
 
-  const setLavado = useCallback(
-    (key: keyof LavadoData, val: string | number | null) => {
-      updateBrewday("lavado", { ...lavado, [key]: val });
+  const setSparge = useCallback(
+    (key: keyof SpargeData, val: string | number | null) => {
+      updateBrewday("sparge", { ...sparge, [key]: val });
     },
-    [lavado, updateBrewday]
+    [sparge, updateBrewday]
   );
 
   const setPreboil = useCallback(
@@ -615,96 +615,96 @@ export function BrewdaySection({
     [lastRun, updateBrewday]
   );
 
-  const setHervido = useCallback(
-    (key: keyof Omit<HervidoData, "entries">, val: boolean | number | null) => {
-      updateBrewday("hervido", { ...hervido, [key]: val });
+  const setBoil = useCallback(
+    (key: keyof Omit<BoilData, "entries">, val: boolean | number | null) => {
+      updateBrewday("boil", { ...boil, [key]: val });
     },
-    [hervido, updateBrewday]
+    [boil, updateBrewday]
   );
 
   // Ensure boil always has at least start + end entries
   useEffect(() => {
-    if (hervido.entries.length < 2) {
-      const start: BoilEntry = hervido.entries[0] ?? { id: crypto.randomUUID(), hora: null, alturaCm: null, volumenL: null, volumenObjL: null };
-      const end: BoilEntry = { id: crypto.randomUUID(), hora: null, alturaCm: null, volumenL: null, volumenObjL: null };
-      updateBrewday("hervido", { ...hervido, entries: [start, end] });
+    if (boil.entries.length < 2) {
+      const start: BoilEntry = boil.entries[0] ?? { id: crypto.randomUUID(), time: null, heightCm: null, volumeL: null, targetVolumeL: null };
+      const end: BoilEntry = { id: crypto.randomUUID(), time: null, heightCm: null, volumeL: null, targetVolumeL: null };
+      updateBrewday("boil", { ...boil, entries: [start, end] });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addBoilEntry = useCallback(() => {
-    const newEntry: BoilEntry = { id: crypto.randomUUID(), hora: null, alturaCm: null, volumenL: null, volumenObjL: null };
-    const entries = [...hervido.entries];
+    const newEntry: BoilEntry = { id: crypto.randomUUID(), time: null, heightCm: null, volumeL: null, targetVolumeL: null };
+    const entries = [...boil.entries];
     // Insert before last entry (end)
     entries.splice(Math.max(entries.length - 1, 1), 0, newEntry);
-    updateBrewday("hervido", { ...hervido, entries });
-  }, [hervido, updateBrewday]);
+    updateBrewday("boil", { ...boil, entries });
+  }, [boil, updateBrewday]);
 
   const removeBoilEntry = useCallback(
     (id: string) => {
-      updateBrewday("hervido", { ...hervido, entries: hervido.entries.filter((e) => e.id !== id) });
+      updateBrewday("boil", { ...boil, entries: boil.entries.filter((e) => e.id !== id) });
     },
-    [hervido, updateBrewday]
+    [boil, updateBrewday]
   );
 
   const setBoilEntry = useCallback(
     (id: string, key: keyof BoilEntry, val: string | number | null) => {
-      updateBrewday("hervido", {
-        ...hervido,
-        entries: hervido.entries.map((e) => (e.id === id ? { ...e, [key]: val } : e)),
+      updateBrewday("boil", {
+        ...boil,
+        entries: boil.entries.map((e) => (e.id === id ? { ...e, [key]: val } : e)),
       });
     },
-    [hervido, updateBrewday]
+    [boil, updateBrewday]
   );
 
   const setWhirlpool = useCallback(
-    (key: keyof WhirlpoolEnfriadoData, val: string | number | boolean | null) => {
-      updateBrewday("whirlpoolEnfriado", { ...whirlpoolEnfriado, [key]: val });
+    (key: keyof WhirlpoolChillingData, val: string | number | boolean | null) => {
+      updateBrewday("whirlpoolChilling", { ...whirlpoolChilling, [key]: val });
     },
-    [whirlpoolEnfriado, updateBrewday]
+    [whirlpoolChilling, updateBrewday]
   );
 
-  const setFermentacion = useCallback(
-    (key: keyof FermentacionData, val: string | number | boolean | null) => {
-      updateBrewday("fermentacion", { ...fermentacion, [key]: val });
+  const setFermentation = useCallback(
+    (key: keyof FermentationData, val: string | number | boolean | null) => {
+      updateBrewday("fermentation", { ...fermentation, [key]: val });
     },
-    [fermentacion, updateBrewday]
+    [fermentation, updateBrewday]
   );
 
   const addFermentationStep = useCallback(() => {
-    const newStep: FermentationStep = { id: crypto.randomUUID(), fechaHora: null, volumenL: null, densidadGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null };
-    updateBrewday("fermentacion", { ...fermentacion, steps: [...fermentacion.steps, newStep] });
-  }, [fermentacion, updateBrewday]);
+    const newStep: FermentationStep = { id: crypto.randomUUID(), dateTime: null, volumeL: null, densityGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null };
+    updateBrewday("fermentation", { ...fermentation, steps: [...fermentation.steps, newStep] });
+  }, [fermentation, updateBrewday]);
 
   const removeFermentationStep = useCallback((id: string) => {
-    updateBrewday("fermentacion", { ...fermentacion, steps: fermentacion.steps.filter(s => s.id !== id) });
-  }, [fermentacion, updateBrewday]);
+    updateBrewday("fermentation", { ...fermentation, steps: fermentation.steps.filter(s => s.id !== id) });
+  }, [fermentation, updateBrewday]);
 
   const setFermentationStep = useCallback(
     (id: string, key: keyof FermentationStep, val: string | number | null) => {
-      updateBrewday("fermentacion", {
-        ...fermentacion,
-        steps: fermentacion.steps.map(s => s.id === id ? { ...s, [key]: val } : s),
+      updateBrewday("fermentation", {
+        ...fermentation,
+        steps: fermentation.steps.map(s => s.id === id ? { ...s, [key]: val } : s),
       });
     },
-    [fermentacion, updateBrewday]
+    [fermentation, updateBrewday]
   );
 
   const [gelatinaVolL, setGelatinaVolL] = useState<number | null>(null);
   const [smbVolL, setSmbVolL] = useState<number | null>(null);
 
-  const setEmbarrilado = useCallback(
-    (key: keyof EmbarriladoData, val: string | number | boolean | null) => {
-      updateBrewday("embarrilado", { ...embarrilado, [key]: val });
+  const setKegging = useCallback(
+    (key: keyof KeggingData, val: string | number | boolean | null) => {
+      updateBrewday("kegging", { ...kegging, [key]: val });
     },
-    [embarrilado, updateBrewday]
+    [kegging, updateBrewday]
   );
 
   const addKeg = useCallback(
     (kegId: string) => {
       const inv = kegInventory.find(k => k.id === kegId);
       if (!inv) return;
-      const existing = (embarrilado.kegs ?? []);
+      const existing = (kegging.kegs ?? []);
       if (existing.some(k => k.kegId === kegId)) return;
       const entry: KegEntry = {
         id: `${kegId}-${Date.now()}`,
@@ -713,26 +713,26 @@ export function BrewdaySection({
         tareWeightKg: inv.tareWeight != null ? inv.tareWeight / 1000 : null,
         totalWeightKg: null,
       };
-      updateBrewday("embarrilado", { ...embarrilado, kegs: [...existing, entry] });
+      updateBrewday("kegging", { ...kegging, kegs: [...existing, entry] });
     },
-    [embarrilado, kegInventory, updateBrewday]
+    [kegging, kegInventory, updateBrewday]
   );
 
   const removeKeg = useCallback(
     (id: string) => {
-      updateBrewday("embarrilado", { ...embarrilado, kegs: (embarrilado.kegs ?? []).filter(k => k.id !== id) });
+      updateBrewday("kegging", { ...kegging, kegs: (kegging.kegs ?? []).filter(k => k.id !== id) });
     },
-    [embarrilado, updateBrewday]
+    [kegging, updateBrewday]
   );
 
   const setKegWeight = useCallback(
     (id: string, totalWeightKg: number | null) => {
-      updateBrewday("embarrilado", {
-        ...embarrilado,
-        kegs: (embarrilado.kegs ?? []).map(k => k.id === id ? { ...k, totalWeightKg } : k),
+      updateBrewday("kegging", {
+        ...kegging,
+        kegs: (kegging.kegs ?? []).map(k => k.id === id ? { ...k, totalWeightKg } : k),
       });
     },
-    [embarrilado, updateBrewday]
+    [kegging, updateBrewday]
   );
 
   return (
@@ -754,41 +754,41 @@ export function BrewdaySection({
 
       {openBrewday && <>
 
-      {/* ---- PREPARACION ---- */}
-      <CollapsibleCard title="Preparation" icon={<ClipboardList className="h-4 w-4" />} open={openPreparacion} onToggle={onTogglePreparacion}>
+      {/* ---- PREPARATION ---- */}
+      <CollapsibleCard title="Preparation" icon={<ClipboardList className="h-4 w-4" />} open={openPreparation} onToggle={onTogglePreparation}>
         <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-          <CheckRow checked={preparacion.congelarBotellas} onCheckedChange={(v) => setPrep("congelarBotellas", v)} label="Freeze water bottles" />
-          <CheckRow checked={preparacion.prepararHeladera} onCheckedChange={(v) => setPrep("prepararHeladera", v)} label="Prepare cooler" />
-          <CheckRow checked={preparacion.armarMolino} onCheckedChange={(v) => setPrep("armarMolino", v)} label="Set up mill" />
-          <CheckRow checked={preparacion.armarSerpentinas} onCheckedChange={(v) => setPrep("armarSerpentinas", v)} label="Set up chiller coils" />
-          <CheckRow checked={preparacion.lavarMacerador} onCheckedChange={(v) => setPrep("lavarMacerador", v)} label="Clean/set up mash tun" />
-          <CheckRow checked={preparacion.prepararAlcohol} onCheckedChange={(v) => setPrep("prepararAlcohol", v)} label="Prepare 70% alcohol" />
-          <CheckRow checked={preparacion.lavarFermentador} onCheckedChange={(v) => setPrep("lavarFermentador", v)} label="Clean/set up fermenter" />
-          <CheckRow checked={preparacion.cocinaLimpia} onCheckedChange={(v) => setPrep("cocinaLimpia", v)} label="Clean kitchen" />
-          <CheckRow checked={preparacion.pesarMaltas} onCheckedChange={(v) => setPrep("pesarMaltas", v)} label="Weigh grains" />
-          <CheckRow checked={preparacion.prepararMesa} onCheckedChange={(v) => setPrep("prepararMesa", v)} label="Set up workspace" />
-          <CheckRow checked={preparacion.prepararAnafe} onCheckedChange={(v) => setPrep("prepararAnafe", v)} label="Prepare burner" />
+          <CheckRow checked={preparation.freezeBottles} onCheckedChange={(v) => setPrep("freezeBottles", v)} label="Freeze water bottles" />
+          <CheckRow checked={preparation.prepareCooler} onCheckedChange={(v) => setPrep("prepareCooler", v)} label="Prepare cooler" />
+          <CheckRow checked={preparation.setupMill} onCheckedChange={(v) => setPrep("setupMill", v)} label="Set up mill" />
+          <CheckRow checked={preparation.setupChillerCoils} onCheckedChange={(v) => setPrep("setupChillerCoils", v)} label="Set up chiller coils" />
+          <CheckRow checked={preparation.cleanMashTun} onCheckedChange={(v) => setPrep("cleanMashTun", v)} label="Clean/set up mash tun" />
+          <CheckRow checked={preparation.prepareAlcohol} onCheckedChange={(v) => setPrep("prepareAlcohol", v)} label="Prepare 70% alcohol" />
+          <CheckRow checked={preparation.cleanFermenter} onCheckedChange={(v) => setPrep("cleanFermenter", v)} label="Clean/set up fermenter" />
+          <CheckRow checked={preparation.cleanKitchen} onCheckedChange={(v) => setPrep("cleanKitchen", v)} label="Clean kitchen" />
+          <CheckRow checked={preparation.weighGrains} onCheckedChange={(v) => setPrep("weighGrains", v)} label="Weigh grains" />
+          <CheckRow checked={preparation.setupWorkspace} onCheckedChange={(v) => setPrep("setupWorkspace", v)} label="Set up workspace" />
+          <CheckRow checked={preparation.prepareBurner} onCheckedChange={(v) => setPrep("prepareBurner", v)} label="Prepare burner" />
           <div className="flex items-center gap-2">
-            <Checkbox checked={!!preparacion.cargaGarrafaKg || preparacion.cargaGarrafaKg === 0} onCheckedChange={() => {}} className="shrink-0" />
+            <Checkbox checked={!!preparation.gasTankKg || preparation.gasTankKg === 0} onCheckedChange={() => {}} className="shrink-0" />
             <span className="text-sm whitespace-nowrap">Gas tank:</span>
-            <NumInput value={preparacion.cargaGarrafaKg} onChange={(v) => setPrep("cargaGarrafaKg", v)} className="w-24" />
+            <NumInput value={preparation.gasTankKg} onChange={(v) => setPrep("gasTankKg", v)} className="w-24" />
             <span className="text-xs text-muted-foreground">kg</span>
           </div>
-          <CheckRow checked={preparacion.filtrarAgua} onCheckedChange={(v) => setPrep("filtrarAgua", v)} label="Filter water (in fermenter)" />
-          <CheckRow checked={preparacion.calibrarPhmetro} onCheckedChange={(v) => setPrep("calibrarPhmetro", v)} label="Calibrate pH meter" />
-          <CheckRow checked={preparacion.prepararStarter} onCheckedChange={(v) => setPrep("prepararStarter", v)} label="Prepare starter" />
+          <CheckRow checked={preparation.filterWater} onCheckedChange={(v) => setPrep("filterWater", v)} label="Filter water (in fermenter)" />
+          <CheckRow checked={preparation.calibratePhMeter} onCheckedChange={(v) => setPrep("calibratePhMeter", v)} label="Calibrate pH meter" />
+          <CheckRow checked={preparation.prepareStarter} onCheckedChange={(v) => setPrep("prepareStarter", v)} label="Prepare starter" />
         </div>
       </CollapsibleCard>
 
-      {/* ---- MOLIENDA ---- */}
-      <CollapsibleCard title="Milling" icon={<Settings2 className="h-4 w-4" />} open={openMolienda} onToggle={onToggleMolienda}>
+      {/* ---- MILLING ---- */}
+      <CollapsibleCard title="Milling" icon={<Settings2 className="h-4 w-4" />} open={openMilling} onToggle={onToggleMilling}>
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-3">
             <FieldLabel>Date &amp; time</FieldLabel>
             <Input
               type="datetime-local"
-              value={molienda.fechaHora ?? ""}
-              onChange={(e) => updateBrewday("molienda", { ...molienda, fechaHora: e.target.value || null })}
+              value={milling.dateTime ?? ""}
+              onChange={(e) => updateBrewday("milling", { ...milling, dateTime: e.target.value || null })}
               className="h-7 text-sm w-52"
             />
           </div>
@@ -797,13 +797,13 @@ export function BrewdaySection({
             <NumberInput
               step="0.05"
               min="0"
-              value={molienda.gapMm ?? ""}
-              onChange={(e) => updateBrewday("molienda", { ...molienda, gapMm: e.target.value === "" ? null : parseFloat(e.target.value) })}
+              value={milling.gapMm ?? ""}
+              onChange={(e) => updateBrewday("milling", { ...milling, gapMm: e.target.value === "" ? null : parseFloat(e.target.value) })}
               placeholder="0.8"
               className="h-7 text-sm w-24"
             />
-            {molienda.gapMm != null && (() => {
-              const gap = molienda.gapMm;
+            {milling.gapMm != null && (() => {
+              const gap = milling.gapMm;
               const [label, color] =
                 gap < 0.5  ? ["Very fine",  "text-red-500"] :
                 gap < 0.7  ? ["Fine",       "text-orange-500"] :
@@ -816,19 +816,19 @@ export function BrewdaySection({
         </div>
       </CollapsibleCard>
 
-      {/* ---- MACERADO ---- */}
+      {/* ---- MASH ---- */}
       <CollapsibleCard
         title="Mash"
         icon={<Layers className="h-4 w-4" />}
-        open={openMacerado}
-        onToggle={onToggleMacerado}
+        open={openMash}
+        onToggle={onToggleMash}
         badge={(() => {
           const toMins = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
           const fmt = (mins: number) => `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
-          const heatStart = macerado.general.horaCalentarAgua;
-          const mashStart = macerado.general.horaInicioEmpaste;
-          const lastStep = macerado.timeline[macerado.timeline.length - 1];
-          const mashEnd = lastStep?.hora;
+          const heatStart = mash.general.heatWaterTime;
+          const mashStart = mash.general.mashInTime;
+          const lastStep = mash.timeline[mash.timeline.length - 1];
+          const mashEnd = lastStep?.time;
           if (!heatStart || !mashStart || !mashEnd) return null;
           const heatMins = toMins(mashStart) - toMins(heatStart);
           const mashMins = toMins(mashEnd) - toMins(mashStart);
@@ -897,14 +897,14 @@ export function BrewdaySection({
                   </div>
 
                   <CheckRow
-                    checked={macerado.general.checkGustoAgua}
-                    onCheckedChange={(v) => setMaceradoGeneral("checkGustoAgua", v)}
+                    checked={mash.general.checkWaterTaste}
+                    onCheckedChange={(v) => setMashGeneral("checkWaterTaste", v)}
                     label="Check water taste"
                   />
                   <FieldGroup label="Notes">
                     <Textarea
-                      value={macerado.aguaMacerado.notes ?? ""}
-                      onChange={(e) => setAguaMacerado("notes", e.target.value || null)}
+                      value={mash.mashWater.notes ?? ""}
+                      onChange={(e) => setMashWater("notes", e.target.value || null)}
                       placeholder="—"
                       className="text-sm min-h-[60px] resize-none"
                     />
@@ -965,12 +965,12 @@ export function BrewdaySection({
                   {/* Actuals */}
                   <div className="grid grid-cols-1 gap-2">
                     <FieldGroup label={`pH${recipeData.spargeTargetPh != null ? ` (target: ${recipeData.spargeTargetPh})` : ""}`}>
-                      <NumInput value={macerado.aguaLavado.ph} onChange={(v) => setAguaLavado("ph", v)} />
+                      <NumInput value={mash.spargeWater.ph} onChange={(v) => setSpargeWater("ph", v)} />
                     </FieldGroup>
                     <FieldGroup label="Notes">
                       <Textarea
-                        value={macerado.aguaLavado.notes ?? ""}
-                        onChange={(e) => setAguaLavado("notes", e.target.value || null)}
+                        value={mash.spargeWater.notes ?? ""}
+                        onChange={(e) => setSpargeWater("notes", e.target.value || null)}
                         placeholder="—"
                         className="text-sm min-h-[60px] resize-none"
                       />
@@ -985,17 +985,17 @@ export function BrewdaySection({
           <div className="space-y-3">
             <div className="grid grid-cols-3 gap-3">
               <FieldGroup label="Heat water time">
-                <TimeInput value={macerado.general.horaCalentarAgua} onChange={(v) => setMaceradoGeneral("horaCalentarAgua", v)} />
+                <TimeInput value={mash.general.heatWaterTime} onChange={(v) => setMashGeneral("heatWaterTime", v)} />
               </FieldGroup>
               <FieldGroup label="Mash in time">
-                <TimeInput value={macerado.general.horaInicioEmpaste} onChange={(v) => setMaceradoGeneral("horaInicioEmpaste", v)} />
+                <TimeInput value={mash.general.mashInTime} onChange={(v) => setMashGeneral("mashInTime", v)} />
               </FieldGroup>
               <div className="flex flex-col gap-1">
                 <FieldLabel>Heat duration</FieldLabel>
                 <span className="text-sm font-semibold tabular-nums h-7 flex items-center">
                   {(() => {
-                    const a = macerado.general.horaCalentarAgua;
-                    const b = macerado.general.horaInicioEmpaste;
+                    const a = mash.general.heatWaterTime;
+                    const b = mash.general.mashInTime;
                     if (!a || !b) return "—";
                     const [ah, am] = a.split(":").map(Number);
                     const [bh, bm] = b.split(":").map(Number);
@@ -1029,13 +1029,13 @@ export function BrewdaySection({
                 </tr>
               </thead>
               <tbody>
-                {macerado.timeline.map((step, idx) => {
-                  const firstHora = macerado.timeline[0]?.hora;
-                  const minVal = idx === 0 ? 0 : calcStepMin(firstHora, step.hora);
+                {mash.timeline.map((step, idx) => {
+                  const firstHora = mash.timeline[0]?.time;
+                  const minVal = idx === 0 ? 0 : calcStepMin(firstHora, step.time);
                   return (
                     <tr key={step.id} className="border-b last:border-0">
                       <td className="py-1 pr-2">
-                        <TimeInput value={step.hora} onChange={(v) => setMashStep(step.id, "hora", v)} className="w-44" />
+                        <TimeInput value={step.time} onChange={(v) => setMashStep(step.id, "time", v)} className="w-44" />
                       </td>
                       <td className="py-1 px-2 tabular-nums text-muted-foreground">
                         {minVal != null ? minVal : "—"}
@@ -1047,10 +1047,10 @@ export function BrewdaySection({
                         <NumInput value={step.ph} onChange={(v) => setMashStep(step.id, "ph", v)} className="w-20" />
                       </td>
                       <td className="py-1 px-2 text-center">
-                        <Checkbox checked={step.recirculado} onCheckedChange={(v) => setMashStep(step.id, "recirculado", v === true)} className="mx-auto" />
+                        <Checkbox checked={step.recirculated} onCheckedChange={(v) => setMashStep(step.id, "recirculated", v === true)} className="mx-auto" />
                       </td>
                       <td className="py-1 px-2 text-center">
-                        <Checkbox checked={step.revolver} onCheckedChange={(v) => setMashStep(step.id, "revolver", v === true)} className="mx-auto" />
+                        <Checkbox checked={step.stir} onCheckedChange={(v) => setMashStep(step.id, "stir", v === true)} className="mx-auto" />
                       </td>
                       <td className="py-1 pl-1">
                         {idx > 0 && (
@@ -1071,15 +1071,15 @@ export function BrewdaySection({
         </div>
       </CollapsibleCard>
 
-      {/* ---- LAVADO / POST-SPARGE ---- */}
+      {/* ---- SPARGE ---- */}
       <CollapsibleCard
-        title="Sparge"
-        icon={<GlassWater className="h-4 w-4" />}
-        open={openLavado}
-        onToggle={onToggleLavado}
+        title="Lautering & Sparge"
+        icon={<Filter className="h-4 w-4" />}
+        open={openSparge}
+        onToggle={onToggleSparge}
         badge={(() => {
-          const start = lavado.horaInicioLavado;
-          const end = lavado.horaFinLavado;
+          const start = sparge.spargeStartTime;
+          const end = sparge.spargeEndTime;
           if (!start || !end) return null;
           const [sh, sm] = start.split(":").map(Number);
           const [eh, em] = end.split(":").map(Number);
@@ -1094,10 +1094,10 @@ export function BrewdaySection({
           <div className="border rounded-lg p-3 space-y-2">
             <div className="grid grid-cols-2 gap-2">
               <FieldGroup label="Sparge start">
-                <TimeInput value={lavado.horaInicioLavado} onChange={(v) => setLavado("horaInicioLavado", v)} />
+                <TimeInput value={sparge.spargeStartTime} onChange={(v) => setSparge("spargeStartTime", v)} />
               </FieldGroup>
               <FieldGroup label="Sparge end">
-                <TimeInput value={lavado.horaFinLavado} onChange={(v) => setLavado("horaFinLavado", v)} />
+                <TimeInput value={sparge.spargeEndTime} onChange={(v) => setSparge("spargeEndTime", v)} />
               </FieldGroup>
             </div>
             <div className="bg-muted/40 rounded-md p-2 space-y-1">
@@ -1115,21 +1115,21 @@ export function BrewdaySection({
             </div>
             {(() => {
               const d = recipeData.mashPotDiameterCm;
-              const computedVol = d != null && d > 0 && preboil.alturaCm != null
-                ? (Math.PI * Math.pow(d / 2, 2) * preboil.alturaCm / 1000).toFixed(1)
+              const computedVol = d != null && d > 0 && preboil.heightCm != null
+                ? (Math.PI * Math.pow(d / 2, 2) * preboil.heightCm / 1000).toFixed(1)
                 : null;
               return (
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-1">
                     <FieldGroup label="Height cm">
-                      <NumInput value={preboil.alturaCm} onChange={(v) => setPreboil("alturaCm", v)} />
+                      <NumInput value={preboil.heightCm} onChange={(v) => setPreboil("heightCm", v)} />
                     </FieldGroup>
                     {computedVol != null && (
                       <RecipeRef label="→ Vol:" value={`${computedVol} L`} />
                     )}
                   </div>
                   <FieldGroup label="Density g/L">
-                    <NumInput value={preboil.densidadGL} onChange={(v) => setPreboil("densidadGL", v)} />
+                    <NumInput value={preboil.densityGL} onChange={(v) => setPreboil("densityGL", v)} />
                   </FieldGroup>
                 </div>
               );
@@ -1147,10 +1147,10 @@ export function BrewdaySection({
             <SubTitle>First Runnings</SubTitle>
             <div className="grid grid-cols-2 gap-2">
               <FieldGroup label="Density g/L">
-                <NumInput value={lavado.primerMostoDensidad} onChange={(v) => setLavado("primerMostoDensidad", v)} />
+                <NumInput value={sparge.firstRunningsDensity} onChange={(v) => setSparge("firstRunningsDensity", v)} />
               </FieldGroup>
               <FieldGroup label="pH">
-                <NumInput value={lavado.primerMostoPh} onChange={(v) => setLavado("primerMostoPh", v)} />
+                <NumInput value={sparge.firstRunningsPh} onChange={(v) => setSparge("firstRunningsPh", v)} />
               </FieldGroup>
             </div>
             {recipeData.mashMode !== "biab" && (
@@ -1158,7 +1158,7 @@ export function BrewdaySection({
                 <SubTitle>Last run</SubTitle>
                 <div className="grid grid-cols-2 gap-2">
                   <FieldGroup label="Density g/L">
-                    <NumInput value={lastRun.densidadGL} onChange={(v) => setLastRun("densidadGL", v)} />
+                    <NumInput value={lastRun.densityGL} onChange={(v) => setLastRun("densityGL", v)} />
                   </FieldGroup>
                   <FieldGroup label="pH (target: &lt;5.6)">
                     <NumInput value={lastRun.ph} onChange={(v) => setLastRun("ph", v)} />
@@ -1170,18 +1170,18 @@ export function BrewdaySection({
         </div>
       </CollapsibleCard>
 
-      {/* ---- HERVIDO ---- */}
+      {/* ---- BOIL ---- */}
       <CollapsibleCard
         title="Boil"
         icon={<Flame className="h-4 w-4" />}
-        open={openHervido}
-        onToggle={onToggleHervido}
+        open={openBoil}
+        onToggle={onToggleBoil}
         badge={(() => {
           const toMins = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
           const fmt = (mins: number) => `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
-          const spargeEnd = lavado.horaFinLavado;
-          const boilStart = hervido.entries[0]?.hora;
-          const boilEnd = hervido.entries[hervido.entries.length - 1]?.hora;
+          const spargeEnd = sparge.spargeEndTime;
+          const boilStart = boil.entries[0]?.time;
+          const boilEnd = boil.entries[boil.entries.length - 1]?.time;
           if (!spargeEnd || !boilStart || !boilEnd || boilStart === boilEnd) return null;
           const heatMins = toMins(boilStart) - toMins(spargeEnd);
           const boilMins = toMins(boilEnd) - toMins(boilStart);
@@ -1198,18 +1198,18 @@ export function BrewdaySection({
           {(() => {
             const toMins = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
             const fmt = (mins: number) => `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
-            const spargeEnd = lavado.horaFinLavado;
-            const startEntry = hervido.entries[0];
+            const spargeEnd = sparge.spargeEndTime;
+            const startEntry = boil.entries[0];
             const d = recipeData.mashPotDiameterCm;
 
-            const heatUpMins = spargeEnd && startEntry?.hora ? toMins(startEntry.hora) - toMins(spargeEnd) : null;
+            const heatUpMins = spargeEnd && startEntry?.time ? toMins(startEntry.time) - toMins(spargeEnd) : null;
 
             // Evaporation during heat-up: preboil measurement → boil start
-            const preboilVol = d != null && d > 0 && preboil.alturaCm != null
-              ? Math.PI * Math.pow(d / 2, 2) * preboil.alturaCm / 1000
+            const preboilVol = d != null && d > 0 && preboil.heightCm != null
+              ? Math.PI * Math.pow(d / 2, 2) * preboil.heightCm / 1000
               : null;
-            const boilStartVol = d != null && d > 0 && startEntry?.alturaCm != null
-              ? Math.PI * Math.pow(d / 2, 2) * startEntry.alturaCm / 1000
+            const boilStartVol = d != null && d > 0 && startEntry?.heightCm != null
+              ? Math.PI * Math.pow(d / 2, 2) * startEntry.heightCm / 1000
               : null;
             const evapL = preboilVol != null && boilStartVol != null ? preboilVol - boilStartVol : null;
             const evapLH = evapL != null && heatUpMins != null && heatUpMins > 0 ? evapL / (heatUpMins / 60) : null;
@@ -1246,50 +1246,50 @@ export function BrewdaySection({
                   </tr>
                 </thead>
                 <tbody>
-                  {hervido.entries.map((entry, idx) => {
+                  {boil.entries.map((entry, idx) => {
                     const isStart = idx === 0;
-                    const isEnd = idx === hervido.entries.length - 1;
-                    const isBeforeEnd = idx === hervido.entries.length - 2;
+                    const isEnd = idx === boil.entries.length - 1;
+                    const isBeforeEnd = idx === boil.entries.length - 2;
                     const label = isStart ? "Boil start" : isEnd ? "Boil end" : `Step ${idx}`;
                     const d = recipeData.mashPotDiameterCm;
-                    const computedVol = d != null && d > 0 && entry.alturaCm != null
-                      ? (Math.PI * Math.pow(d / 2, 2) * entry.alturaCm / 1000).toFixed(2)
+                    const computedVol = d != null && d > 0 && entry.heightCm != null
+                      ? (Math.PI * Math.pow(d / 2, 2) * entry.heightCm / 1000).toFixed(2)
                       : null;
                     const targetVol = isStart ? recipeData.preBoilL.toFixed(1) : isEnd ? recipeData.endOfBoilL.toFixed(1) : null;
 
                     // Evaporation (not applicable to start step)
-                    const startEntry = hervido.entries[0];
-                    const startVolNum = d != null && d > 0 && startEntry.alturaCm != null
-                      ? Math.PI * Math.pow(d / 2, 2) * startEntry.alturaCm / 1000
+                    const startEntry = boil.entries[0];
+                    const startVolNum = d != null && d > 0 && startEntry.heightCm != null
+                      ? Math.PI * Math.pow(d / 2, 2) * startEntry.heightCm / 1000
                       : null;
-                    const currentVolNum = d != null && d > 0 && entry.alturaCm != null
-                      ? Math.PI * Math.pow(d / 2, 2) * entry.alturaCm / 1000
+                    const currentVolNum = d != null && d > 0 && entry.heightCm != null
+                      ? Math.PI * Math.pow(d / 2, 2) * entry.heightCm / 1000
                       : null;
                     const evapL = !isStart && startVolNum != null && currentVolNum != null
                       ? startVolNum - currentVolNum
                       : null;
                     const evapLH = (() => {
-                      if (isStart || evapL == null || !startEntry.hora || !entry.hora) return null;
-                      const [sh, sm] = startEntry.hora.split(":").map(Number);
-                      const [eh, em] = entry.hora.split(":").map(Number);
+                      if (isStart || evapL == null || !startEntry.time || !entry.time) return null;
+                      const [sh, sm] = startEntry.time.split(":").map(Number);
+                      const [eh, em] = entry.time.split(":").map(Number);
                       const diffMin = (eh * 60 + em) - (sh * 60 + sm);
                       if (diffMin <= 0) return null;
                       return evapL / (diffMin / 60);
                     })();
 
-                    const stepMin = calcStepMin(startEntry.hora, entry.hora);
+                    const stepMin = calcStepMin(startEntry.time, entry.time);
 
                     return (
                       <tr key={entry.id} className="border-b last:border-0">
                         <td className="py-1 pr-2 text-muted-foreground whitespace-nowrap">{label}</td>
                         <td className="py-1 px-2">
-                          <TimeInput value={entry.hora} onChange={(v) => setBoilEntry(entry.id, "hora", v)} className="w-36" />
+                          <TimeInput value={entry.time} onChange={(v) => setBoilEntry(entry.id, "time", v)} className="w-36" />
                         </td>
                         <td className="py-1 px-2 tabular-nums text-muted-foreground">
                           {!isStart && stepMin != null ? stepMin : ""}
                         </td>
                         <td className="py-1 px-2">
-                          <NumInput value={entry.alturaCm} onChange={(v) => setBoilEntry(entry.id, "alturaCm", v)} className="w-20" />
+                          <NumInput value={entry.heightCm} onChange={(v) => setBoilEntry(entry.id, "heightCm", v)} className="w-20" />
                         </td>
                         <td className="py-1 px-2 tabular-nums">
                           {computedVol != null ? computedVol : "—"}
@@ -1297,11 +1297,11 @@ export function BrewdaySection({
                         <td className="py-1 px-2 tabular-nums">
                           {(() => {
                             if (currentVolNum == null || currentVolNum <= 0) return "—";
-                            const refDensity = preboil.densidadGL ?? recipeData.preBoilDensityGL;
+                            const refDensity = preboil.densityGL ?? recipeData.preBoilDensityGL;
                             if (refDensity == null) return "—";
                             const refVolumeL = (() => {
-                              if (preboil.densidadGL != null && preboil.alturaCm != null && d != null && d > 0)
-                                return Math.PI * Math.pow(d / 2, 2) * preboil.alturaCm / 1000;
+                              if (preboil.densityGL != null && preboil.heightCm != null && d != null && d > 0)
+                                return Math.PI * Math.pow(d / 2, 2) * preboil.heightCm / 1000;
                               return recipeData.preBoilL;
                             })();
                             return (1000 + (refDensity - 1000) * refVolumeL / currentVolNum).toFixed(1);
@@ -1422,9 +1422,9 @@ export function BrewdaySection({
         badge={(() => {
           const toMins = (t: string) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
           const fmt = (mins: number) => `${String(Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`;
-          const wpStart = whirlpoolEnfriado.horaInicioWhirlpool;
-          const chillStart = whirlpoolEnfriado.horaInicioEnfriado;
-          const chillEnd = whirlpoolEnfriado.horaFinEnfriado;
+          const wpStart = whirlpoolChilling.whirlpoolStartTime;
+          const chillStart = whirlpoolChilling.chillingStartTime;
+          const chillEnd = whirlpoolChilling.chillingEndTime;
           if (!wpStart || !chillStart || !chillEnd) return null;
           const wpMins = toMins(chillStart) - toMins(wpStart);
           const chillMins = toMins(chillEnd) - toMins(chillStart);
@@ -1439,72 +1439,72 @@ export function BrewdaySection({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="border rounded-lg p-3 space-y-2">
             <FieldGroup label="Whirlpool start">
-              <TimeInput value={whirlpoolEnfriado.horaInicioWhirlpool} onChange={(v) => setWhirlpool("horaInicioWhirlpool", v)} />
+              <TimeInput value={whirlpoolChilling.whirlpoolStartTime} onChange={(v) => setWhirlpool("whirlpoolStartTime", v)} />
             </FieldGroup>
             <div className="grid grid-cols-2 gap-2">
               <FieldGroup label="Chilling start">
-                <TimeInput value={whirlpoolEnfriado.horaInicioEnfriado} onChange={(v) => setWhirlpool("horaInicioEnfriado", v)} />
+                <TimeInput value={whirlpoolChilling.chillingStartTime} onChange={(v) => setWhirlpool("chillingStartTime", v)} />
               </FieldGroup>
               <FieldGroup label="Temp °C">
-                <NumInput value={whirlpoolEnfriado.tempInicioC} onChange={(v) => setWhirlpool("tempInicioC", v)} />
+                <NumInput value={whirlpoolChilling.startTempC} onChange={(v) => setWhirlpool("startTempC", v)} />
               </FieldGroup>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <FieldGroup label="Chilling end">
-                <TimeInput value={whirlpoolEnfriado.horaFinEnfriado} onChange={(v) => setWhirlpool("horaFinEnfriado", v)} />
+                <TimeInput value={whirlpoolChilling.chillingEndTime} onChange={(v) => setWhirlpool("chillingEndTime", v)} />
               </FieldGroup>
               <FieldGroup label="Temp °C">
-                <NumInput value={whirlpoolEnfriado.tempFinC} onChange={(v) => setWhirlpool("tempFinC", v)} />
+                <NumInput value={whirlpoolChilling.endTempC} onChange={(v) => setWhirlpool("endTempC", v)} />
               </FieldGroup>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <FieldGroup label="Transfer end">
-                <TimeInput value={whirlpoolEnfriado.horaFinTrasvase} onChange={(v) => setWhirlpool("horaFinTrasvase", v)} />
+                <TimeInput value={whirlpoolChilling.transferEndTime} onChange={(v) => setWhirlpool("transferEndTime", v)} />
               </FieldGroup>
               <FieldGroup label="Temp °C">
-                <NumInput value={whirlpoolEnfriado.tempTrasvaseC} onChange={(v) => setWhirlpool("tempTrasvaseC", v)} />
+                <NumInput value={whirlpoolChilling.transferTempC} onChange={(v) => setWhirlpool("transferTempC", v)} />
               </FieldGroup>
             </div>
           </div>
           <div className="border rounded-lg p-3 space-y-2">
-            <CheckRow checked={whirlpoolEnfriado.muestraOg} onCheckedChange={(v) => setWhirlpool("muestraOg", v)} label="OG sample" />
+            <CheckRow checked={whirlpoolChilling.ogSample} onCheckedChange={(v) => setWhirlpool("ogSample", v)} label="OG sample" />
             <FieldGroup label="Density g/L">
-              <NumInput value={whirlpoolEnfriado.muestraOgDensidad} onChange={(v) => setWhirlpool("muestraOgDensidad", v)} />
+              <NumInput value={whirlpoolChilling.ogSampleDensity} onChange={(v) => setWhirlpool("ogSampleDensity", v)} />
             </FieldGroup>
             <FieldGroup label="Target density g/L">
               <span className="text-sm font-medium">{recipeData.targetOg ?? "—"}</span>
             </FieldGroup>
             <FieldGroup label="pH (5.2–5.6)">
-              <NumInput value={whirlpoolEnfriado.muestraOgPh} onChange={(v) => setWhirlpool("muestraOgPh", v)} />
+              <NumInput value={whirlpoolChilling.ogSamplePh} onChange={(v) => setWhirlpool("ogSamplePh", v)} />
             </FieldGroup>
           </div>
         </div>
       </CollapsibleCard>
 
-      {/* ---- FERMENTACION ---- */}
-      <FermentacionSection
-        fermentacion={fermentacion}
-        setFermentacion={setFermentacion}
+      {/* ---- FERMENTATION ---- */}
+      <FermentationSection
+        fermentation={fermentation}
+        setFermentation={setFermentation}
         addStep={addFermentationStep}
         removeStep={removeFermentationStep}
         setStep={setFermentationStep}
-        og={whirlpoolEnfriado.muestraOgDensidad != null ? whirlpoolEnfriado.muestraOgDensidad / 1000 : recipeData.targetOg}
+        og={whirlpoolChilling.ogSampleDensity != null ? whirlpoolChilling.ogSampleDensity / 1000 : recipeData.targetOg}
         fermenterWeightKg={recipeData.fermenterWeightKg}
-        startingGasTankKg={preparacion.cargaGarrafaKg}
+        startingGasTankKg={preparation.gasTankKg}
         brewDate={recipeData.brewDate}
-        open={openFermentacion}
-        onToggle={onToggleFermentacion}
+        open={openFermentation}
+        onToggle={onToggleFermentation}
       />
 
-      {/* ---- EMBARRILADO ---- */}
-      <CollapsibleCard title="Kegging" icon={<Package className="h-4 w-4" />} open={openEmbarrilado} onToggle={onToggleEmbarrilado}>
+      {/* ---- KEGGING ---- */}
+      <CollapsibleCard title="Kegging" icon={<Package className="h-4 w-4" />} open={openKegging} onToggle={onToggleKegging}>
         {(() => {
-          const kegList = embarrilado.kegs ?? [];
+          const kegList = kegging.kegs ?? [];
           const usedKegIds = new Set(kegList.map(k => k.kegId));
           const availableKegs = kegInventory.filter(k => !usedKegIds.has(k.id));
           // FG: last fermentation step with a density reading
-          const stepsWithDensity = fermentacion.steps.filter(s => s.densidadGL != null);
-          const fg = stepsWithDensity.length > 0 ? stepsWithDensity[stepsWithDensity.length - 1].densidadGL! / 1000 : null;
+          const stepsWithDensity = fermentation.steps.filter(s => s.densityGL != null);
+          const fg = stepsWithDensity.length > 0 ? stepsWithDensity[stepsWithDensity.length - 1].densityGL! / 1000 : null;
           const totalKegVolume = kegList.reduce((sum, k) => {
             if (k.totalWeightKg == null || k.tareWeightKg == null || fg == null) return sum;
             return sum + (k.totalWeightKg - k.tareWeightKg) / fg;
@@ -1515,15 +1515,15 @@ export function BrewdaySection({
                 <FieldGroup label="Kegging date &amp; time">
                   <Input
                     type="datetime-local"
-                    value={embarrilado.fechaHora ?? ""}
-                    onChange={(e) => setEmbarrilado("fechaHora", e.target.value || null)}
+                    value={kegging.dateTime ?? ""}
+                    onChange={(e) => setKegging("dateTime", e.target.value || null)}
                     className="h-7 text-sm w-52"
                   />
                 </FieldGroup>
                 <FieldGroup label="Final gravity">
                   <span className="text-sm font-medium">
                     {stepsWithDensity.length > 0
-                      ? stepsWithDensity[stepsWithDensity.length - 1].densidadGL
+                      ? stepsWithDensity[stepsWithDensity.length - 1].densityGL
                       : <span className="text-muted-foreground italic">—</span>}
                   </span>
                 </FieldGroup>
@@ -1610,7 +1610,7 @@ export function BrewdaySection({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center gap-2">
-                  <Checkbox checked={embarrilado.gelatinaCheck} onCheckedChange={(v) => setEmbarrilado("gelatinaCheck", v === true)} />
+                  <Checkbox checked={kegging.gelatinCheck} onCheckedChange={(v) => setKegging("gelatinCheck", v === true)} />
                   <span className="text-sm whitespace-nowrap">Gelatin:</span>
                   <NumInput value={gelatinaVolL} onChange={setGelatinaVolL} placeholder="L" className="w-16" />
                   <span className="text-xs text-muted-foreground">L →</span>
@@ -1619,7 +1619,7 @@ export function BrewdaySection({
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Checkbox checked={embarrilado.smbCheck} onCheckedChange={(v) => setEmbarrilado("smbCheck", v === true)} />
+                  <Checkbox checked={kegging.smbCheck} onCheckedChange={(v) => setKegging("smbCheck", v === true)} />
                   <span className="text-sm whitespace-nowrap">SMB:</span>
                   <NumInput value={smbVolL} onChange={setSmbVolL} placeholder="L" className="w-16" />
                   <span className="text-xs text-muted-foreground">L →</span>

@@ -37,10 +37,10 @@ type DisplayValues = { og: number | null; ibu: number | null; srm: number | null
 
 function computeDisplayValues(batch: BatchWithRelations): DisplayValues {
   const data = parseBrewdayData(batch.brewdayData);
-  const stepsWithDensity = data.fermentacion.steps.filter((s) => s.densidadGL != null);
-  const finalOg = stepsWithDensity.length > 0 ? stepsWithDensity[0].densidadGL! : null;
-  const finalFg = stepsWithDensity.length > 1 ? stepsWithDensity[stepsWithDensity.length - 1].densidadGL! : null;
-  const finalVol = data.fermentacion.steps[0]?.volumenL ?? null;
+  const stepsWithDensity = data.fermentation.steps.filter((s) => s.densityGL != null);
+  const finalOg = stepsWithDensity.length > 0 ? stepsWithDensity[0].densityGL! : null;
+  const finalFg = stepsWithDensity.length > 1 ? stepsWithDensity[stepsWithDensity.length - 1].densityGL! : null;
+  const finalVol = data.fermentation.steps[0]?.volumeL ?? null;
 
   // Final IBU — same formula as final stats panel
   let finalIbu: number | null = null;
@@ -57,15 +57,15 @@ function computeDisplayValues(batch: BatchWithRelations): DisplayValues {
   // Final SRM — grain bill over actual post-chill volume
   let finalSrm: number | null = null;
   {
-    const boilEntries = data.hervido.entries;
+    const boilEntries = data.boil.entries;
     const d = batch.equipmentBoilPotDiameter;
     const trubLossL = batch.equipmentTrubLossL ?? 1.0;
     const contractionFactor = 1 - ((batch.equipmentTempContractionPct ?? 4) / 100);
 
-    const entryVol = (e: { alturaCm: number | null; volumenL: number | null }): number | null => {
-      if (d != null && d > 0 && e.alturaCm != null && e.alturaCm > 0)
-        return Math.PI * Math.pow(d / 2, 2) * e.alturaCm / 1000;
-      return e.volumenL ?? null;
+    const entryVol = (e: { heightCm: number | null; volumeL: number | null }): number | null => {
+      if (d != null && d > 0 && e.heightCm != null && e.heightCm > 0)
+        return Math.PI * Math.pow(d / 2, 2) * e.heightCm / 1000;
+      return e.volumeL ?? null;
     };
 
     const lastEntry = [...boilEntries].reverse().find((e) => entryVol(e) != null);
@@ -251,7 +251,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   </td>
                   <td className={`px-4 py-3 ${batch.draft ? "text-amber-500" : "text-muted-foreground"}`}>
                     {batch.brewDate
-                      ? batch.brewDate.toLocaleDateString()
+                      ? batch.brewDate.toLocaleDateString('en-GB', { timeZone: 'UTC' })
                       : <span className="opacity-40">—</span>}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
