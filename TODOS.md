@@ -1,10 +1,3 @@
-
-remove and export icons
-lautering
-in recipe overview, agregar mas metricas como balance, etc
-esquema json en ingles, deslop
-
-
 test
     acid additions
     Revisar formular de IBU
@@ -16,6 +9,10 @@ tastings
 Create summary or learnings with AI
 
 DONE:
+remove and export icons
+lautering
+in recipe overview, agregar mas metricas como balance, etc
+esquema json en ingles, deslop
 batches tables
 attenuation
 consider starters

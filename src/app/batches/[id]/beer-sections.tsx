@@ -1182,7 +1182,7 @@ export function BeerSections({
         <div className="space-y-3">
           {/* Batch Size */}
           <div className="flex items-center gap-3">
-            <span className="w-8 text-sm font-medium shrink-0">Vol</span>
+            <span className="w-14 text-sm font-medium shrink-0">Vol</span>
             <NumberInput
               step="0.5"
               min="0"
@@ -1226,7 +1226,7 @@ export function BeerSections({
             return (
               <div key={cfg.key} className="space-y-0">
                 <div className="flex items-center gap-3">
-                  <span className="w-8 text-sm font-medium shrink-0 flex items-center gap-0.5">
+                  <span className="w-14 text-sm font-medium shrink-0 flex items-center gap-0.5">
                     {cfg.label}
                     {cfg.key === "fg" && suggestedFg != null && (
                       <div className="relative group">
@@ -1316,8 +1316,8 @@ export function BeerSections({
             return (
               <div className="space-y-0.5">
                 <div className="flex items-center gap-3">
-                  <span className="w-8 text-sm font-medium shrink-0">ABV</span>
-                  <div className="w-24 h-7 flex items-center shrink-0">
+                  <span className="w-14 text-sm font-medium shrink-0">ABV</span>
+                  <div className="w-24 h-7 flex items-center justify-center shrink-0">
                     <span className="text-sm font-medium tabular-nums">
                       {(targetAbv ?? stats.abv).toFixed(1)}%
                     </span>
@@ -1371,6 +1371,29 @@ export function BeerSections({
                     </div>
                   </div>
                 </div>
+              </div>
+            );
+          })()}
+
+          {/* BU:GU */}
+          {(() => {
+            const ibu = targets.ibu ?? stats.ibu;
+            const ogPts = (targets.og ?? (stats.og * 1000)) - 1000;
+            if (ogPts <= 0) return null;
+            const buGu = ibu / ogPts;
+            const label =
+              buGu < 0.38 ? "Very Malty" :
+              buGu < 0.45 ? "Malty" :
+              buGu < 0.54 ? "Balanced" :
+              buGu < 0.67 ? "Slightly Hoppy" :
+              "Very Hoppy";
+            return (
+              <div className="flex items-center gap-3">
+                <span className="w-14 text-sm font-medium shrink-0">BU:GU</span>
+                <div className="w-24 h-7 flex items-center justify-center shrink-0">
+                  <span className="text-sm font-medium tabular-nums">{buGu.toFixed(2)}</span>
+                </div>
+                <span className="text-sm text-muted-foreground">{label}</span>
               </div>
             );
           })()}
@@ -3266,6 +3289,16 @@ export function BeerSections({
             styleMin: styleAbv.min, styleMax: styleAbv.max,
             estVal: estAbv, finalVal: finalAbv,
             format: (v) => `${v.toFixed(1)}%`,
+          },
+          {
+            label: "BU:GU",
+            styleMin: null, styleMax: null,
+            estVal: estIbu != null && estOgInt != null && estOgInt > 1000 ? estIbu / (estOgInt - 1000) : null,
+            finalVal: finalIbu != null && finalOgInt != null && finalOgInt > 1000 ? finalIbu / (finalOgInt - 1000) : null,
+            format: (v) => {
+              const lbl = v < 0.38 ? "Very Malty" : v < 0.45 ? "Malty" : v < 0.54 ? "Balanced" : v < 0.67 ? "Slightly Hoppy" : "Very Hoppy";
+              return `${v.toFixed(2)} ${lbl}`;
+            },
           },
         ];
 
