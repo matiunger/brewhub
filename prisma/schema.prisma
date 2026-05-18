@@ -196,6 +196,7 @@ model Batch {
   hops                  BatchHop[]
   yeasts                BatchYeast[]
   mashSteps             MashStep[]
+  tastings              Tasting[]
 
   @@map("batches")
 }
@@ -267,6 +268,19 @@ model MashStep {
   sortOrder         Int      @default(0) @map("sort_order")
 
   @@map("mash_steps")
+}
+
+model Tasting {
+  id          String   @id @default(uuid())
+  batch       Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId     String   @map("batch_id")
+  date        DateTime
+  servingType String   @map("serving_type")
+  data        String
+  totalScore  Float?   @map("total_score")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("tastings")
 }
 
 model WikiPage {

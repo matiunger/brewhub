@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ChevronDown, ChevronRight, ClipboardList, Settings2, Layers, GlassWater, Flame, Snowflake, FlaskConical, Package, Filter } from "lucide-react";
+import { ChevronDown, ChevronRight, ClipboardList, Settings2, Layers, GlassWater, Flame, Snowflake, FlaskConical, Package, Filter, Barrel } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,9 +22,32 @@ import {
   type FermentationData,
   type FermentationStep,
   type KeggingData,
+  type LageringData,
+  type BottlingData,
   type KegEntry,
   type BoilEntry,
 } from "@/lib/brewday-types";
+
+// ---- carbonation ----
+
+const CARB_PRESETS = [
+  { label: "Very Low",    vols: 1.2 },
+  { label: "Low",         vols: 1.5 },
+  { label: "Low-Medium",  vols: 1.8 },
+  { label: "Medium-Low",  vols: 2.1 },
+  { label: "Medium",      vols: 2.4 },
+  { label: "Medium-High", vols: 2.6 },
+  { label: "High",        vols: 2.8 },
+  { label: "Very High",   vols: 3.0 },
+  { label: "Extra High",  vols: 3.3 },
+  { label: "Maximum",     vols: 3.5 },
+] as const;
+
+/** Gauge pressure in bar using Bunsen absorption coefficient for CO2 */
+function calcCarbPressure(vols: number, tempC: number): number {
+  const alpha = 1.713 * Math.exp(-0.0334 * tempC);
+  return Math.max(0, (vols / alpha - 1) * 1.01325);
+}
 
 // ---- helpers ----
 
@@ -522,6 +545,8 @@ interface BrewdaySectionProps {
   openWhirlpool: boolean; onToggleWhirlpool: () => void;
   openFermentation: boolean; onToggleFermentation: () => void;
   openKegging: boolean; onToggleKegging: () => void;
+  openLagering: boolean; onToggleLagering: () => void;
+  openBottling: boolean; onToggleBottling: () => void;
 }
 
 export function BrewdaySection({
@@ -535,8 +560,10 @@ export function BrewdaySection({
   openWhirlpool, onToggleWhirlpool,
   openFermentation, onToggleFermentation,
   openKegging, onToggleKegging,
+  openLagering, onToggleLagering,
+  openBottling, onToggleBottling,
 }: BrewdaySectionProps) {
-  const { preparation, milling, mash, sparge, preboil, lastRun, boil, whirlpoolChilling, fermentation, kegging } = brewday;
+  const { preparation, milling, mash, sparge, preboil, lastRun, boil, whirlpoolChilling, fermentation, kegging, lagering, bottling } = brewday;
 
   const setPrep = useCallback(
     (key: keyof typeof preparation, val: boolean | number | null) => {
@@ -690,15 +717,29 @@ export function BrewdaySection({
     [fermentation, updateBrewday]
   );
 
-  const [gelatinaVolL, setGelatinaVolL] = useState<number | null>(null);
-  const [smbVolL, setSmbVolL] = useState<number | null>(null);
-
   const setKegging = useCallback(
     (key: keyof KeggingData, val: string | number | boolean | null) => {
       updateBrewday("kegging", { ...kegging, [key]: val });
     },
     [kegging, updateBrewday]
   );
+
+  const setLagering = useCallback(
+    (key: keyof LageringData, val: string | number | boolean | null) => {
+      updateBrewday("lagering", { ...lagering, [key]: val });
+    },
+    [lagering, updateBrewday]
+  );
+
+  const setBottling = useCallback(
+    (key: keyof BottlingData, val: string | number | null) => {
+      updateBrewday("bottling", { ...bottling, [key]: val });
+    },
+    [bottling, updateBrewday]
+  );
+
+  const [gelatinaVolL, setGelatinaVolL] = useState<number | null>(null);
+  const [smbVolL, setSmbVolL] = useState<number | null>(null);
 
   const addKeg = useCallback(
     (kegId: string) => {
@@ -1073,7 +1114,7 @@ export function BrewdaySection({
 
       {/* ---- SPARGE ---- */}
       <CollapsibleCard
-        title="Lautering & Sparge"
+        title="Lauter & Sparge"
         icon={<Filter className="h-4 w-4" />}
         open={openSparge}
         onToggle={onToggleSparge}
@@ -1497,7 +1538,7 @@ export function BrewdaySection({
       />
 
       {/* ---- KEGGING ---- */}
-      <CollapsibleCard title="Kegging" icon={<Package className="h-4 w-4" />} open={openKegging} onToggle={onToggleKegging}>
+      <CollapsibleCard title="Kegging & Carbonation" icon={<Package className="h-4 w-4" />} open={openKegging} onToggle={onToggleKegging}>
         {(() => {
           const kegList = kegging.kegs ?? [];
           const usedKegIds = new Set(kegList.map(k => k.kegId));
@@ -1536,9 +1577,9 @@ export function BrewdaySection({
                     <thead>
                       <tr className="border-b bg-muted/40">
                         <th className="text-left px-3 py-1.5 text-xs font-medium text-muted-foreground">Keg</th>
-                        <th className="text-right px-3 py-1.5 text-xs font-medium text-muted-foreground">Tare (kg)</th>
-                        <th className="text-right px-3 py-1.5 text-xs font-medium text-muted-foreground">Total (kg)</th>
-                        <th className="text-right px-3 py-1.5 text-xs font-medium text-muted-foreground">Volume (L)</th>
+                        <th className="text-left px-3 py-1.5 text-xs font-medium text-muted-foreground">Tare (kg)</th>
+                        <th className="text-left px-3 py-1.5 text-xs font-medium text-muted-foreground">Total (kg)</th>
+                        <th className="text-left px-3 py-1.5 text-xs font-medium text-muted-foreground">Volume (L)</th>
                         <th className="px-2 py-1.5" />
                       </tr>
                     </thead>
@@ -1550,17 +1591,17 @@ export function BrewdaySection({
                         return (
                           <tr key={k.id} className="border-b last:border-0">
                             <td className="px-3 py-1.5">{k.kegName}</td>
-                            <td className="px-3 py-1.5 text-right text-muted-foreground">
+                            <td className="px-3 py-1.5 text-muted-foreground">
                               {k.tareWeightKg != null ? k.tareWeightKg.toFixed(2) : <span className="text-xs italic">—</span>}
                             </td>
                             <td className="px-2 py-1">
                               <NumInput
                                 value={k.totalWeightKg}
                                 onChange={(v) => setKegWeight(k.id, v)}
-                                className="w-20 ml-auto"
+                                className="w-20"
                               />
                             </td>
-                            <td className="px-3 py-1.5 text-right font-medium">
+                            <td className="px-3 py-1.5 font-medium">
                               {vol != null ? vol : fg == null ? <span className="text-xs text-muted-foreground italic">no FG</span> : <span className="text-muted-foreground">—</span>}
                             </td>
                             <td className="px-2 py-1.5">
@@ -1576,7 +1617,7 @@ export function BrewdaySection({
                       <tfoot>
                         <tr className="border-t bg-muted/20">
                           <td colSpan={3} className="px-3 py-1.5 text-xs text-muted-foreground">Total</td>
-                          <td className="px-3 py-1.5 text-right font-medium text-sm">{totalKegVolume > 0 ? totalKegVolume.toFixed(2) : "—"}</td>
+                          <td className="px-3 py-1.5 font-medium text-sm">{totalKegVolume > 0 ? totalKegVolume.toFixed(2) : "—"}</td>
                           <td />
                         </tr>
                       </tfoot>
@@ -1608,29 +1649,110 @@ export function BrewdaySection({
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex items-center gap-2">
-                  <Checkbox checked={kegging.gelatinCheck} onCheckedChange={(v) => setKegging("gelatinCheck", v === true)} />
-                  <span className="text-sm whitespace-nowrap">Gelatin:</span>
-                  <NumInput value={gelatinaVolL} onChange={setGelatinaVolL} placeholder="L" className="w-16" />
-                  <span className="text-xs text-muted-foreground">L →</span>
-                  <span className="text-xs font-medium">
-                    {gelatinaVolL != null ? `${(gelatinaVolL * 3 / 20).toFixed(1)} g` : "—"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Checkbox checked={kegging.smbCheck} onCheckedChange={(v) => setKegging("smbCheck", v === true)} />
-                  <span className="text-sm whitespace-nowrap">SMB:</span>
-                  <NumInput value={smbVolL} onChange={setSmbVolL} placeholder="L" className="w-16" />
-                  <span className="text-xs text-muted-foreground">L →</span>
-                  <span className="text-xs font-medium">
-                    {smbVolL != null ? `${(smbVolL * 0.3 / 20).toFixed(2)} g` : "—"}
-                  </span>
-                </div>
+              {/* Carbonation */}
+              <div className="flex items-end gap-4 flex-wrap">
+                <FieldGroup label="Carbonation">
+                  <select
+                    className="h-7 text-sm border rounded px-2 bg-background"
+                    value={kegging.carbonationVols ?? ""}
+                    onChange={(e) => setKegging("carbonationVols", e.target.value ? parseFloat(e.target.value) : null)}
+                  >
+                    <option value="">Select…</option>
+                    {CARB_PRESETS.map(p => (
+                      <option key={p.vols} value={p.vols}>
+                        {p.label} — {p.vols} vol
+                      </option>
+                    ))}
+                  </select>
+                </FieldGroup>
+                <FieldGroup label="Temp (°C)">
+                  <NumInput
+                    value={kegging.carbonationTempC}
+                    onChange={(v) => setKegging("carbonationTempC", v)}
+                    placeholder="°C"
+                    className="w-16"
+                  />
+                </FieldGroup>
+                {kegging.carbonationVols != null && kegging.carbonationTempC != null && (
+                  <FieldGroup label="Pressure">
+                    <span className="text-sm font-medium h-7 flex items-center">
+                      {calcCarbPressure(kegging.carbonationVols, kegging.carbonationTempC).toFixed(2)} bar
+                    </span>
+                  </FieldGroup>
+                )}
               </div>
+
             </div>
           );
         })()}
+      </CollapsibleCard>
+
+      {/* ---- LAGERING ---- */}
+      <CollapsibleCard title="Lagering" icon={<Barrel className="h-4 w-4" />} open={openLagering} onToggle={onToggleLagering}>
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center gap-2">
+              <Checkbox checked={lagering.gelatinCheck} onCheckedChange={(v) => setLagering("gelatinCheck", v === true)} />
+              <span className="text-sm whitespace-nowrap">Gelatin:</span>
+              <NumInput value={gelatinaVolL} onChange={setGelatinaVolL} placeholder="L" className="w-16" />
+              <span className="text-xs text-muted-foreground">L →</span>
+              <span className="text-xs font-medium">
+                {gelatinaVolL != null ? `${(gelatinaVolL * 3 / 20).toFixed(1)} g` : "—"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox checked={lagering.smbCheck} onCheckedChange={(v) => setLagering("smbCheck", v === true)} />
+              <span className="text-sm whitespace-nowrap">SMB:</span>
+              <NumInput value={smbVolL} onChange={setSmbVolL} placeholder="L" className="w-16" />
+              <span className="text-xs text-muted-foreground">L →</span>
+              <span className="text-xs font-medium">
+                {smbVolL != null ? `${(smbVolL * 0.3 / 20).toFixed(2)} g` : "—"}
+              </span>
+            </div>
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground mb-1 block">Notes</label>
+            <Textarea
+              value={lagering.notes ?? ""}
+              onChange={(e) => setLagering("notes", e.target.value || null)}
+              placeholder="Lagering notes…"
+              className="text-sm min-h-[80px]"
+            />
+          </div>
+        </div>
+      </CollapsibleCard>
+
+      {/* ---- BOTTLING ---- */}
+      <CollapsibleCard title="Bottling" icon={<GlassWater className="h-4 w-4" />} open={openBottling} onToggle={onToggleBottling}>
+        <div className="space-y-3">
+          <div className="flex items-center gap-4 flex-wrap">
+            <FieldGroup label="Bottling date &amp; time">
+              <Input
+                type="datetime-local"
+                value={bottling.dateTime ?? ""}
+                onChange={(e) => setBottling("dateTime", e.target.value || null)}
+                className="h-7 text-sm w-52"
+              />
+            </FieldGroup>
+            <FieldGroup label="Volume bottled (L)">
+              <NumInput
+                value={bottling.volumeL}
+                onChange={(v) => setBottling("volumeL", v)}
+                placeholder="L"
+                className="w-20"
+              />
+            </FieldGroup>
+          </div>
+          <div>
+            <label className="text-xs text-muted-foreground mb-1 block">Notes</label>
+            <Textarea
+              value={bottling.notes ?? ""}
+              onChange={(e) => setBottling("notes", e.target.value || null)}
+              placeholder="Bottling notes…"
+              className="text-sm min-h-[80px]"
+            />
+          </div>
+        </div>
       </CollapsibleCard>
 
       </>}

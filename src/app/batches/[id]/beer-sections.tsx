@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ClipboardList, Wrench, BarChart2, Flame, Layers, Wheat, Hop as HopIcon, FlaskConical, GlassWater, Droplet } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -334,6 +335,8 @@ interface BeerSectionsProps {
   brewdayData: string | null;
   updateBrewdayDataAction: (data: string) => Promise<void>;
   allKegs: { id: string; name: string; capacity: number; tareWeight: number | null }[];
+  tastings: { id: string; date: Date; servingType: string; totalScore: number | null }[];
+  deleteTastingAction: (tastingId: string) => Promise<void>;
   equipmentSnapshot: EquipmentSnapshot | null;
   updateEquipmentSnapshotAction: (data: {
     equipmentName: string | null;
@@ -357,7 +360,7 @@ interface BeerSectionsProps {
   }) => Promise<void>;
 }
 
-type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparation" | "bdMilling" | "bdMash" | "bdSparge" | "bdPreboil" | "bdBoil" | "bdWhirlpool" | "bdFermentation" | "bdKegging" | "finalStats" | "finalStatsOverview" | "finalStatsTiming";
+type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparation" | "bdMilling" | "bdMash" | "bdSparge" | "bdPreboil" | "bdBoil" | "bdWhirlpool" | "bdFermentation" | "bdKegging" | "bdLagering" | "bdBottling" | "finalStats" | "finalStatsOverview" | "finalStatsTiming" | "finalStatsTastings";
 
 const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   basicInfo: true,
@@ -381,9 +384,12 @@ const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   bdWhirlpool: false,
   bdFermentation: false,
   bdKegging: false,
+  bdLagering: false,
+  bdBottling: false,
   finalStats: true,
   finalStatsOverview: true,
   finalStatsTiming: true,
+  finalStatsTastings: true,
 };
 
 // ---------- CollapsibleCard ----------
@@ -513,6 +519,8 @@ export function BeerSections({
   brewdayData,
   updateBrewdayDataAction,
   allKegs,
+  tastings,
+  deleteTastingAction,
   equipmentSnapshot,
   updateEquipmentSnapshotAction,
 }: BeerSectionsProps) {
@@ -3109,6 +3117,10 @@ export function BeerSections({
             onToggleFermentation={() => toggle("bdFermentation")}
             openKegging={open.bdKegging}
             onToggleKegging={() => toggle("bdKegging")}
+            openLagering={open.bdLagering}
+            onToggleLagering={() => toggle("bdLagering")}
+            openBottling={open.bdBottling}
+            onToggleBottling={() => toggle("bdBottling")}
           />
         );
       })()}
@@ -3533,6 +3545,76 @@ export function BeerSections({
                   </table>
                 );
               })()}
+            </CollapsibleCard>
+
+            {/* ── Tastings ── */}
+            <CollapsibleCard
+              title="Tastings"
+              icon={<GlassWater className="h-4 w-4" />}
+              open={open.finalStatsTastings}
+              onToggle={() => toggle("finalStatsTastings")}
+              actions={
+                <Link href={`/batches/${batchId}/tastings/new`}>
+                  <Button size="sm" variant="outline">Add Tasting</Button>
+                </Link>
+              }
+            >
+              {tastings.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">No tastings logged yet.</p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-xs text-muted-foreground border-b">
+                      <th className="text-left pb-2 font-medium">Date</th>
+                      <th className="text-left pb-2 font-medium">Serving</th>
+                      <th className="text-right pb-2 font-medium">Age</th>
+                      <th className="text-right pb-2 font-medium">Score</th>
+                      <th className="pb-2" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tastings.map((t) => {
+                      const packagingDateStr = brewday.kegging.dateTime ?? brewday.bottling.dateTime;
+                      const packagingDate = packagingDateStr ? (() => { const d = new Date(packagingDateStr); return isNaN(d.getTime()) ? null : d; })() : null;
+                      const tastingDate = new Date(t.date);
+                      const ageMs = packagingDate ? tastingDate.getTime() - packagingDate.getTime() : null;
+                      const ageDays = ageMs != null ? Math.round(ageMs / (1000 * 60 * 60 * 24)) : null;
+                      return (
+                        <tr
+                          key={t.id}
+                          className="border-b last:border-0 hover:bg-muted/40 cursor-pointer"
+                          onClick={() => router.push(`/batches/${batchId}/tastings/${t.id}`)}
+                        >
+                          <td className="py-1.5 text-xs">{tastingDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</td>
+                          <td className="py-1.5 text-xs capitalize">{t.servingType}</td>
+                          <td className="py-1.5 text-right text-xs tabular-nums">{ageDays != null ? `${ageDays}d` : <span className="text-muted-foreground">—</span>}</td>
+                          <td className="py-1.5 text-right text-xs tabular-nums font-medium">{t.totalScore != null ? `${t.totalScore}/50` : <span className="text-muted-foreground">—</span>}</td>
+                          <td className="py-1.5 text-right">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              className="h-6 w-6"
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                if (!confirm("Delete this tasting?")) return;
+                                try {
+                                  await deleteTastingAction(t.id);
+                                  toast.success("Tasting deleted");
+                                  router.refresh();
+                                } catch {
+                                  toast.error("Failed to delete tasting");
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
             </CollapsibleCard>
           </>
         );

@@ -146,13 +146,25 @@ export interface KegEntry {
 }
 
 export interface KeggingData {
+  dateTime: string | null;
+  volumeL: number | null;
+  kegs: KegEntry[];
+  carbonationVols: number | null;
+  carbonationTempC: number | null;
+}
+
+export interface LageringData {
   gelatinCheck: boolean;
   gelatinText: string | null;
   smbCheck: boolean;
   smbText: string | null;
+  notes: string | null;
+}
+
+export interface BottlingData {
   dateTime: string | null;
   volumeL: number | null;
-  kegs: KegEntry[];
+  notes: string | null;
 }
 
 export interface BrewdayData {
@@ -166,6 +178,8 @@ export interface BrewdayData {
   whirlpoolChilling: WhirlpoolChillingData;
   fermentation: FermentationData;
   kegging: KeggingData;
+  lagering: LageringData;
+  bottling: BottlingData;
 }
 
 export const DEFAULT_BREWDAY_DATA: BrewdayData = {
@@ -199,7 +213,9 @@ export const DEFAULT_BREWDAY_DATA: BrewdayData = {
   boil: { entries: [], irishMossCheck: false, irishMossGr: null, nutrientsCheck: false, nutrientsGr: null, evaporationL: null },
   whirlpoolChilling: { whirlpoolStartTime: null, chillingStartTime: null, startTempC: null, chillingEndTime: null, endTempC: null, transferEndTime: null, transferTempC: null, ogSample: false, ogSampleDensity: null, ogSampleTargetDensity: null, ogSamplePh: null },
   fermentation: { totalWeightKg: null, liquidWeightKg: null, volumeL: null, endGasTankKg: null, starterNotes: null, steps: [{ id: "pitching", dateTime: null, volumeL: null, densityGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null }] },
-  kegging: { gelatinCheck: false, gelatinText: null, smbCheck: false, smbText: null, dateTime: null, volumeL: null, kegs: [] },
+  kegging: { dateTime: null, volumeL: null, kegs: [], carbonationVols: null, carbonationTempC: null },
+  lagering: { gelatinCheck: false, gelatinText: null, smbCheck: false, smbText: null, notes: null },
+  bottling: { dateTime: null, volumeL: null, notes: null },
 };
 
 export function parseBrewdayData(raw: string | null): BrewdayData {
@@ -251,6 +267,18 @@ export function parseBrewdayData(raw: string | null): BrewdayData {
           : DEFAULT_BREWDAY_DATA.fermentation.steps,
       },
       kegging: { ...DEFAULT_BREWDAY_DATA.kegging, ...parsed.kegging, kegs: parsed.kegging?.kegs ?? [] },
+      lagering: (() => {
+        const base = { ...DEFAULT_BREWDAY_DATA.lagering, ...parsed.lagering };
+        // Migration: if lagering is absent but old kegging had gelatin/SMB fields
+        if (!parsed.lagering && parsed.kegging) {
+          if (parsed.kegging.gelatinCheck !== undefined) base.gelatinCheck = parsed.kegging.gelatinCheck;
+          if (parsed.kegging.gelatinText !== undefined) base.gelatinText = parsed.kegging.gelatinText;
+          if (parsed.kegging.smbCheck !== undefined) base.smbCheck = parsed.kegging.smbCheck;
+          if (parsed.kegging.smbText !== undefined) base.smbText = parsed.kegging.smbText;
+        }
+        return base;
+      })(),
+      bottling: { ...DEFAULT_BREWDAY_DATA.bottling, ...parsed.bottling },
     };
   } catch {
     return DEFAULT_BREWDAY_DATA;

@@ -333,6 +333,11 @@ async function updateBrewdayData(id: string, data: string) {
   await prisma.batch.update({ where: { id }, data: { brewdayData: data } });
 }
 
+async function deleteTasting(tastingId: string) {
+  "use server";
+  await prisma.tasting.delete({ where: { id: tastingId } });
+}
+
 async function deleteBatch(id: string) {
   "use server";
 
@@ -431,6 +436,12 @@ export default async function BatchPage({ params }: BatchPageProps) {
     },
   });
 
+  const tastings = await prisma.tasting.findMany({
+    where: { batchId: id },
+    orderBy: { date: "desc" },
+    select: { id: true, date: true, servingType: true, totalScore: true },
+  });
+
   if (!batch) {
     notFound();
   }
@@ -459,6 +470,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const createMashStepWithId = createMashStep.bind(null, id);
   const updateBrewdayDataWithId = updateBrewdayData.bind(null, id);
   const updateEquipmentSnapshotWithId = updateBatchEquipmentSnapshot.bind(null, id);
+  const deleteTastingWithId = deleteTasting;
 
   const equipmentSnapshot = batch.equipmentFermenterLossL != null ? {
     name: batch.equipmentName,
@@ -559,6 +571,8 @@ export default async function BatchPage({ params }: BatchPageProps) {
           allKegs={allKegs}
           equipmentSnapshot={equipmentSnapshot}
           updateEquipmentSnapshotAction={updateEquipmentSnapshotWithId}
+          tastings={tastings}
+          deleteTastingAction={deleteTastingWithId}
           saltAdditions={{
             saltChalkGL: batch.saltChalkGL,
             saltBakingSodaGL: batch.saltBakingSodaGL,
