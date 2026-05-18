@@ -43,10 +43,14 @@ const CARB_PRESETS = [
   { label: "Maximum",     vols: 3.5 },
 ] as const;
 
-/** Gauge pressure in bar using Bunsen absorption coefficient for CO2 */
-function calcCarbPressure(vols: number, tempC: number): number {
-  const alpha = 1.713 * Math.exp(-0.0334 * tempC);
-  return Math.max(0, (vols / alpha - 1) * 1.01325);
+/** Gauge pressure from carbonation — returns { psi, bar } */
+function calcCarbPressure(vols: number, tempC: number): { psi: number; bar: number } {
+  const T = tempC * 9 / 5 + 32; // °C → °F
+  const V = vols;
+  const psi = Math.max(0,
+    -16.6999 - 0.0101059 * T + 0.00116512 * T * T + 0.173354 * T * V + 4.24267 * V - 0.0684226 * V * V
+  );
+  return { psi, bar: psi * 0.0689476 };
 }
 
 // ---- helpers ----
@@ -1673,13 +1677,17 @@ export function BrewdaySection({
                     className="w-16"
                   />
                 </FieldGroup>
-                {kegging.carbonationVols != null && kegging.carbonationTempC != null && (
-                  <FieldGroup label="Pressure">
-                    <span className="text-sm font-medium h-7 flex items-center">
-                      {calcCarbPressure(kegging.carbonationVols, kegging.carbonationTempC).toFixed(2)} bar
-                    </span>
-                  </FieldGroup>
-                )}
+                {kegging.carbonationVols != null && kegging.carbonationTempC != null && (() => {
+                  const p = calcCarbPressure(kegging.carbonationVols, kegging.carbonationTempC);
+                  return (
+                    <FieldGroup label="Pressure">
+                      <span className="text-sm font-medium h-7 flex items-center gap-2">
+                        {p.psi.toFixed(2)} PSI
+                        <span className="text-muted-foreground font-normal">/ {p.bar.toFixed(2)} bar</span>
+                      </span>
+                    </FieldGroup>
+                  );
+                })()}
               </div>
 
             </div>
