@@ -84,7 +84,7 @@ export function calculateIbuBreakdown(
   boilGravity: number,
   batchVolumeLiters: number,
   boilTimeMinutes: number,
-  whirlpoolDefaultTempC = 80
+  whirlpoolDefaultTempC = 90
 ): IbuBreakdown {
   const volume = Math.max(batchVolumeLiters, 0.001);
   const gravity = Math.min(Math.max(boilGravity, 1.000), 1.150);
@@ -107,7 +107,7 @@ export function calculateIbuBreakdown(
       isDryHop = true;
       perceivedIbu = (0.10 * (aa / 100) * grams * 1000) / volume;
     } else if (use === "whirlpool" || use === "hop_stand") {
-      const effectiveTime = time * whirlpoolTempFactor(whirlpoolDefaultTempC);
+      const effectiveTime = 15 * whirlpoolTempFactor(whirlpoolDefaultTempC);
       ibu = tinsethIbu(aa, grams, gravity, effectiveTime, volume);
       perceivedIbu = ibu;
     } else if (use === "fwh" || use === "mash") {

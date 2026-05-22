@@ -409,6 +409,7 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
             <TableRow className="bg-gray-100 hover:bg-gray-100">
               <TableHead>Name</TableHead>
               <TableHead>Brewhouse Eff.</TableHead>
+              <TableHead>Mash Eff.</TableHead>
               <TableHead>Fermenter Loss</TableHead>
               <TableHead>Trub Loss</TableHead>
               <TableHead className="w-[150px]">Actions</TableHead>
@@ -419,6 +420,7 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{item.name}</TableCell>
                 <TableCell>{item.brewhouseEfficiency}%</TableCell>
+                <TableCell>{item.mashEfficiency != null ? `${item.mashEfficiency}%` : "—"}</TableCell>
                 <TableCell>{item.fermenterLossL} L</TableCell>
                 <TableCell>{item.trubLossL} L</TableCell>
                 <TableCell>
@@ -431,7 +433,7 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
             ))}
             {data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                   No equipment yet. Click &quot;Add Equipment&quot; to create one.
                 </TableCell>
               </TableRow>

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { BatchForm } from "./batch-form";
 import stylesData from "../../../../styles.json";
 import { srmToHex, srmIsLight } from "@/lib/olfarve";
@@ -561,6 +562,7 @@ export function BeerSections({
   const [editHopDraft, setEditHopDraft] = useState<{ grams: string; use: string; additionTime: string; alphaAcid: string }>({ grams: "", use: "", additionTime: "", alphaAcid: "" });
   const [hopSort, setHopSort] = useState<{ key: string; dir: "asc" | "desc" } | null>(null);
   const [isAddingHop, setIsAddingHop] = useState(false);
+  const [showIbuInfo, setShowIbuInfo] = useState(false);
   const [addHopDraft, setAddHopDraft] = useState<{ hopId: string; grams: string; use: string; additionTime: string }>({ hopId: "", grams: "", use: "boil", additionTime: "" });
 
   const [yeastRows, setYeastRows] = useState(yeasts);
@@ -1539,7 +1541,7 @@ export function BeerSections({
                             className="px-1.5 py-0.5 rounded font-bold"
                             style={{ backgroundColor: hex, color: light ? "#1a1a1a" : "#f0f0f0" }}
                           >
-                            {grainTotals.mcu.toFixed(2)}
+                            {calcSrm.toFixed(1)}
                           </span>
                           {diff != null && (
                             <span className="text-[10px] text-muted-foreground leading-none">
@@ -1561,14 +1563,13 @@ export function BeerSections({
           <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Grain</span>
-              <Select value={addGrainDraft.grainId} onValueChange={(v) => setAddGrainDraft((d) => ({ ...d, grainId: v }))}>
-                <SelectTrigger className="h-8 text-sm w-52"><SelectValue placeholder="Select grain" /></SelectTrigger>
-                <SelectContent>
-                  {allGrains.map((g) => (
-                    <SelectItem key={g.id} value={g.id}>{g.name}{g.brand ? ` (${g.brand})` : ""}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <SearchableSelect
+                value={addGrainDraft.grainId}
+                onValueChange={(v) => setAddGrainDraft((d) => ({ ...d, grainId: v }))}
+                placeholder="Select grain"
+                className="w-52"
+                options={allGrains.map((g) => ({ value: g.id, label: g.name + (g.brand ? ` (${g.brand})` : "") }))}
+              />
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Grams</span>
@@ -1747,13 +1748,38 @@ export function BeerSections({
             </tbody>
           </table>
           <div className="mt-2 pt-2 border-t flex flex-wrap gap-x-6 gap-y-1 text-sm">
-            <span>
-              <span className="text-muted-foreground">Est. IBU: </span>
+            <span className="relative">
+              <span className="text-muted-foreground">
+                <button
+                  type="button"
+                  onClick={() => setShowIbuInfo((v) => !v)}
+                  className="inline-flex items-center gap-0.5 hover:text-foreground transition-colors"
+                >
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+                {" "}Est. IBU:{" "}
+              </span>
               <span className="font-medium">{ibuBreakdown.totalCalculatedIbu.toFixed(1)}</span>
               {ibuBreakdown.totalPerceivedIbu > ibuBreakdown.totalCalculatedIbu && (
                 <span className="text-muted-foreground text-xs ml-1">
                   ({ibuBreakdown.totalPerceivedIbu.toFixed(1)} perceived)
                 </span>
+              )}
+              {showIbuInfo && (
+                <div className="absolute bottom-full left-0 mb-2 z-50 w-72 rounded-md border bg-popover p-3 text-xs text-popover-foreground shadow-md space-y-2">
+                  <div className="flex justify-between items-start">
+                    <span className="font-semibold text-sm">IBU Calculation</span>
+                    <button type="button" onClick={() => setShowIbuInfo(false)} className="text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" /></button>
+                  </div>
+                  <p>Uses the <strong>Tinseth</strong> formula. Higher gravity and shorter boil times reduce hop utilization.</p>
+                  <div className="space-y-1">
+                    <p><strong>Boil</strong> — standard Tinseth with addition time.</p>
+                    <p><strong>FWH / Mash</strong> — Tinseth capped at 60 min.</p>
+                    <p><strong>Whirlpool / Hop Stand</strong> — fixed 15 min at 90°C (temp-adjusted).</p>
+                    <p><strong>Dry Hop</strong> — 0 calculated IBU, but adds ~10% utilization as <em>perceived</em> bitterness.</p>
+                  </div>
+                  <p className="text-muted-foreground">Perceived IBU includes dry hop contribution. Estimated IBU does not.</p>
+                </div>
               )}
             </span>
             {batch.targetIbu != null && (
@@ -1770,14 +1796,13 @@ export function BeerSections({
           <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Hop</span>
-              <Select value={addHopDraft.hopId} onValueChange={(v) => setAddHopDraft((d) => ({ ...d, hopId: v }))}>
-                <SelectTrigger className="h-8 text-sm w-48"><SelectValue placeholder="Select hop" /></SelectTrigger>
-                <SelectContent>
-                  {allHops.map((h) => (
-                    <SelectItem key={h.id} value={h.id}>{h.name} ({h.alphaAcid}% AA)</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <SearchableSelect
+                value={addHopDraft.hopId}
+                onValueChange={(v) => setAddHopDraft((d) => ({ ...d, hopId: v }))}
+                placeholder="Select hop"
+                className="w-48"
+                options={allHops.map((h) => ({ value: h.id, label: `${h.name} (${h.alphaAcid}% AA)` }))}
+              />
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Grams</span>
@@ -1990,14 +2015,13 @@ export function BeerSections({
           <div className="mt-3 pt-3 border-t flex flex-wrap gap-2 items-end">
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Yeast</span>
-              <Select value={addYeastDraft.yeastId} onValueChange={(v) => setAddYeastDraft((d) => ({ ...d, yeastId: v }))}>
-                <SelectTrigger className="h-8 text-sm w-52"><SelectValue placeholder="Select yeast" /></SelectTrigger>
-                <SelectContent>
-                  {allYeasts.map((y) => (
-                    <SelectItem key={y.id} value={y.id}>{y.name}{y.brand ? ` (${y.brand})` : ""}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <SearchableSelect
+                value={addYeastDraft.yeastId}
+                onValueChange={(v) => setAddYeastDraft((d) => ({ ...d, yeastId: v }))}
+                placeholder="Select yeast"
+                className="w-52"
+                options={allYeasts.map((y) => ({ value: y.id, label: y.name + (y.brand ? ` (${y.brand})` : "") }))}
+              />
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Qty</span>
