@@ -27,6 +27,7 @@ import {
   type KegEntry,
   type BoilEntry,
 } from "@/lib/brewday-types";
+import { type StepInfusionResult } from "@/lib/calculations";
 
 // ---- carbonation ----
 
@@ -144,7 +145,7 @@ function SaltRef({ label, grams }: { label: string; grams: number }) {
 // ---- Main component ----
 
 export interface RecipeData {
-  mashMode: "sparge" | "biab";
+  mashMode: "sparge" | "biab" | "step_infusion";
   mashWaterL: number;
   spargeWaterL: number;
   saltMash: { cacl2: number; gypsum: number; epsom: number; nacl: number; chalk: number; bakingSoda: number };
@@ -172,6 +173,8 @@ export interface RecipeData {
   targetOg: number | null;
   fermenterWeightKg: number | null;
   brewDate: Date | null;
+  stepInfusionSchedule: StepInfusionResult[] | null;
+  mashStepNames: string[];
 }
 
 function FermentationSection({
@@ -958,8 +961,40 @@ export function BrewdaySection({
               );
             })()}
 
-            {/* Sparge Water — hidden in BIAB mode */}
-            {recipeData.mashMode !== "biab" && (() => {
+            {/* Infusion Steps — step infusion mode */}
+            {recipeData.mashMode === "step_infusion" && recipeData.stepInfusionSchedule != null && recipeData.stepInfusionSchedule.length > 1 && (
+              <div className="border rounded-lg p-3 space-y-2">
+                <SubTitle>Infusion Steps</SubTitle>
+                <div className="space-y-1.5">
+                  {recipeData.stepInfusionSchedule.slice(1).map((step, i) => {
+                    const stepName = recipeData.mashStepNames[step.stepIndex] || `Step ${step.stepIndex + 1}`;
+                    if (step.waterAddedL === 0) return null;
+                    const d = recipeData.spargePotDiameterCm;
+                    const heightCm = d != null && d > 0 && isFinite(step.waterAddedL)
+                      ? ((step.waterAddedL * 1000) / (Math.PI * Math.pow(d / 2, 2))).toFixed(1)
+                      : null;
+                    return (
+                      <div key={i} className="bg-muted/40 rounded-md p-2 space-y-0.5">
+                        <div className="text-xs font-medium">{stepName}</div>
+                        <div className="flex gap-x-4">
+                          <RecipeRef
+                            label="Add:"
+                            value={isFinite(step.waterAddedL)
+                              ? `${step.waterAddedL.toFixed(1)} L${heightCm != null ? ` (${heightCm} cm, ⌀${d})` : ""}`
+                              : "—"}
+                          />
+                          <RecipeRef label="at" value={`${step.infuseTemperatureC.toFixed(1)} °C`} />
+                        </div>
+                        <div className="text-xs text-muted-foreground">Cumulative: {step.cumulativeWaterL.toFixed(1)} L</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Sparge Water — only in sparge mode */}
+            {recipeData.mashMode === "sparge" && (() => {
               const spargeH =
                 recipeData.spargePotDiameterCm != null && recipeData.spargePotDiameterCm > 0
                   ? ((recipeData.spargeWaterL * 1000) / (Math.PI * Math.pow(recipeData.spargePotDiameterCm / 2, 2))).toFixed(1)
@@ -1198,7 +1233,7 @@ export function BrewdaySection({
                 <NumInput value={sparge.firstRunningsPh} onChange={(v) => setSparge("firstRunningsPh", v)} />
               </FieldGroup>
             </div>
-            {recipeData.mashMode !== "biab" && (
+            {recipeData.mashMode === "sparge" && (
               <div className="mt-6">
                 <SubTitle>Last run</SubTitle>
                 <div className="grid grid-cols-2 gap-2">

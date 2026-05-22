@@ -301,6 +301,108 @@ export function calculateSpargeAcidDose(input: {
   }
 }
 
+// --- Step Infusion Mash Calculations ---
+
+const L_PER_KG_GRAIN_VOLUME = 0.67; // 1 kg of grain displaces ~0.67 L
+
+export function calculateStrikeTemperature(input: {
+  targetTempC: number;
+  grainTempC: number;
+  mashRatioLKg: number;
+}): number {
+  const { targetTempC, grainTempC, mashRatioLKg } = input;
+  const rQtLb = mashRatioLKg * L_PER_KG_TO_QT_PER_LB;
+  return (0.2 / rQtLb) * (targetTempC - grainTempC) + targetTempC;
+}
+
+export function calculateInfusionVolume(input: {
+  targetTempC: number;
+  currentTempC: number;
+  grainKg: number;
+  currentWaterL: number;
+  infuseWaterTempC: number;
+}): number {
+  const { targetTempC, currentTempC, grainKg, currentWaterL, infuseWaterTempC } = input;
+  if (infuseWaterTempC <= targetTempC) return Infinity;
+  return (targetTempC - currentTempC) * (grainKg * 0.4 + currentWaterL) / (infuseWaterTempC - targetTempC);
+}
+
+export interface StepInfusionResult {
+  stepIndex: number;
+  waterAddedL: number;
+  infuseTemperatureC: number;
+  cumulativeWaterL: number;
+  mashTunOccupiedL: number;
+}
+
+export function calculateStepInfusionSchedule(input: {
+  steps: Array<{ stepTemperatureC: number; type: string; infuseTemperatureC: number | null }>;
+  grainKg: number;
+  grainTempC: number;
+  mashRatioLKg: number;
+  mashTunDeadSpaceL: number;
+  defaultInfuseTempC: number;
+}): StepInfusionResult[] {
+  const { steps, grainKg, grainTempC, mashRatioLKg, mashTunDeadSpaceL, defaultInfuseTempC } = input;
+  if (steps.length === 0) return [];
+
+  const results: StepInfusionResult[] = [];
+  let cumulativeWaterL = 0;
+  let currentTempC = grainTempC;
+
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+
+    if (i === 0) {
+      const waterAddedL = grainKg * mashRatioLKg + mashTunDeadSpaceL;
+      const strikeTemp = calculateStrikeTemperature({
+        targetTempC: step.stepTemperatureC,
+        grainTempC,
+        mashRatioLKg,
+      });
+      cumulativeWaterL = waterAddedL;
+      currentTempC = step.stepTemperatureC;
+      results.push({
+        stepIndex: i,
+        waterAddedL,
+        infuseTemperatureC: strikeTemp,
+        cumulativeWaterL,
+        mashTunOccupiedL: cumulativeWaterL + grainKg * L_PER_KG_GRAIN_VOLUME,
+      });
+    } else if (step.type === "infusion") {
+      const infuseTemp = step.infuseTemperatureC ?? defaultInfuseTempC;
+      const waterAddedL = calculateInfusionVolume({
+        targetTempC: step.stepTemperatureC,
+        currentTempC,
+        grainKg,
+        currentWaterL: cumulativeWaterL,
+        infuseWaterTempC: infuseTemp,
+      });
+      cumulativeWaterL += isFinite(waterAddedL) ? waterAddedL : 0;
+      currentTempC = step.stepTemperatureC;
+      results.push({
+        stepIndex: i,
+        waterAddedL,
+        infuseTemperatureC: infuseTemp,
+        cumulativeWaterL,
+        mashTunOccupiedL: cumulativeWaterL + grainKg * L_PER_KG_GRAIN_VOLUME,
+      });
+    } else {
+      // temperature/decoction steps: no water added, but temperature changes
+      currentTempC = step.stepTemperatureC;
+      results.push({
+        stepIndex: i,
+        waterAddedL: 0,
+        infuseTemperatureC: 0,
+        cumulativeWaterL,
+        mashTunOccupiedL: cumulativeWaterL + grainKg * L_PER_KG_GRAIN_VOLUME,
+      });
+    }
+  }
+
+  return results;
+}
+
 export function calculateAcidAddition(input: {
   grains: { grams: number; colorL?: number | null; grainGroup?: string | null; grain: { colorL: number | null; grainGroup: string | null } }[];
   mashWaterL: number;

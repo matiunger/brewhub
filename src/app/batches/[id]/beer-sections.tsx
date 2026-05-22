@@ -14,7 +14,7 @@ import { SearchableSelect } from "@/components/ui/searchable-select";
 import { BatchForm } from "./batch-form";
 import stylesData from "../../../../styles.json";
 import { srmToHex, srmIsLight } from "@/lib/olfarve";
-import { calculateAcidAddition, calculateSpargeAcidDose, calculateIbuBreakdown, type AcidType } from "@/lib/calculations";
+import { calculateAcidAddition, calculateSpargeAcidDose, calculateIbuBreakdown, calculateStepInfusionSchedule, type AcidType, type StepInfusionResult } from "@/lib/calculations";
 import { parseBrewdayData, type BrewdayData } from "@/lib/brewday-types";
 import { BrewdaySection, type RecipeData } from "./brewday-section";
 
@@ -363,6 +363,67 @@ interface BeerSectionsProps {
 
 type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparation" | "bdMilling" | "bdMash" | "bdSparge" | "bdPreboil" | "bdBoil" | "bdWhirlpool" | "bdFermentation" | "bdKegging" | "bdLagering" | "bdBottling" | "finalStats" | "finalStatsOverview" | "finalStatsTiming" | "finalStatsTastings";
 
+const MASH_STEP_PRESETS = [
+  { name: "Acid rest (35–45°C)", temp: 40, description: "Lowers mash pH; mostly historical now since modern malts are well-modified and brewers adjust pH chemically." },
+  { name: "Ferulic acid rest (43–45°C)", temp: 44, description: "Releases ferulic acid, a precursor to the clove-like 4-vinyl guaiacol phenol in German hefeweizens." },
+  { name: "Protein rest (45–55°C)", temp: 50, description: "Breaks down proteins. Useful for under-modified malts or high-adjunct grists; can hurt head retention if overdone with modern malts." },
+  { name: "Beta-glucan rest (35–45°C)", temp: 40, description: "Breaks down gummy beta-glucans to improve lautering, especially with oats, rye, or wheat." },
+  { name: "Beta-amylase rest (60–65°C)", temp: 63, description: "Beta-amylase produces maltose, yielding a more fermentable, drier, higher-alcohol beer." },
+  { name: "Alpha-amylase rest (68–72°C)", temp: 70, description: "Alpha-amylase produces more dextrins, yielding a fuller-bodied, sweeter, less fermentable beer." },
+  { name: "Saccharification rest (65–68°C)", temp: 67, description: "The most common single-infusion mash temp; balanced fermentability and body." },
+  { name: "Mash-out (76–78°C)", temp: 77, description: "Halts enzyme activity and lowers wort viscosity for easier lautering." },
+] as const;
+
+function MashStepNameInput({ value, onChange, onSelect, placeholder, className }: {
+  value: string;
+  onChange: (value: string) => void;
+  onSelect: (preset: typeof MASH_STEP_PRESETS[number]) => void;
+  placeholder?: string;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  const filtered = value
+    ? MASH_STEP_PRESETS.filter((p) => p.name.toLowerCase().includes(value.toLowerCase()))
+    : MASH_STEP_PRESETS;
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div ref={wrapRef} className="relative">
+      <Input
+        value={value}
+        onChange={(e) => { onChange(e.target.value); setOpen(true); }}
+        onFocus={() => setOpen(true)}
+        placeholder={placeholder}
+        className={className}
+      />
+      {open && filtered.length > 0 && (
+        <div className="absolute z-50 mt-1 w-full max-h-52 overflow-y-auto rounded-md border bg-popover text-popover-foreground shadow-md">
+          {filtered.map((p) => (
+            <button
+              key={p.name}
+              type="button"
+              className="flex w-full items-start gap-2 rounded-sm px-2 py-1.5 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => { onSelect(p); setOpen(false); }}
+            >
+              <span className="font-medium">{p.name}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   basicInfo: true,
   recipeDesign: true,
@@ -530,8 +591,9 @@ export function BeerSections({
 
   const [open, setOpen] = useState<Record<SectionKey, boolean>>(SECTION_DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
-  const [mashMode, setMashMode] = useState<"sparge" | "biab">("sparge");
+  const [mashMode, setMashMode] = useState<"sparge" | "biab" | "step_infusion">("sparge");
   const [mashRatioInput, setMashRatioInput] = useState(3.0);
+  const [infuseTemp, setInfuseTemp] = useState(100);
 
   const [targets, setTargets] = useState<Record<TargetKey, number | null>>({
     og: batch.targetOg,
@@ -876,9 +938,11 @@ export function BeerSections({
       const stored = localStorage.getItem(storageKey);
       if (stored) setOpen({ ...SECTION_DEFAULTS, ...JSON.parse(stored) });
       const storedMashMode = localStorage.getItem(`brewhub:batch:${batchId}:mashMode`);
-      if (storedMashMode === "biab" || storedMashMode === "sparge") setMashMode(storedMashMode);
+      if (storedMashMode === "biab" || storedMashMode === "sparge" || storedMashMode === "step_infusion") setMashMode(storedMashMode);
       const storedRatio = parseFloat(localStorage.getItem(`brewhub:batch:${batchId}:mashRatio`) ?? "");
       if (!isNaN(storedRatio) && storedRatio > 0) setMashRatioInput(storedRatio);
+      const storedInfuseTemp = parseFloat(localStorage.getItem(`brewhub:batch:${batchId}:infuseTemp`) ?? "");
+      if (!isNaN(storedInfuseTemp) && storedInfuseTemp > 0) setInfuseTemp(storedInfuseTemp);
     } catch {
       // ignore
     }
@@ -952,8 +1016,10 @@ export function BeerSections({
     const strikeRatioWater = totalGrainKg * mashRatioInput;
     const mashWater = mashMode === "biab"
       ? totalWater
-      : strikeRatioWater + mashTunDeadSpaceL;
-    const spargeWater = mashMode === "biab" ? 0 : totalWater - mashWater;
+      : mashMode === "step_infusion"
+        ? totalGrainKg * mashRatioInput + mashTunDeadSpaceL
+        : strikeRatioWater + mashTunDeadSpaceL;
+    const spargeWater = mashMode === "biab" || mashMode === "step_infusion" ? 0 : totalWater - mashWater;
     const mashRatioActual = totalGrainKg > 0 ? mashWater / totalGrainKg : 0;
 
     return {
@@ -994,6 +1060,18 @@ export function BeerSections({
     return { mash, sparge };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetPh, spargeTargetPh, grainRows, wv.mashWater, wv.spargeWater, sourceSnapshotLocal, salts, acidType, acidAmount]);
+
+  const stepInfusionCalc = useMemo(() => {
+    if (mashMode !== "step_infusion") return null;
+    return calculateStepInfusionSchedule({
+      steps: mashStepRows,
+      grainKg: totalGrainGrams / 1000,
+      grainTempC: grainTempC ?? 20,
+      mashRatioLKg: mashRatioInput,
+      mashTunDeadSpaceL: eqSnap?.mashTunDeadSpaceL ?? 0,
+      defaultInfuseTempC: infuseTemp,
+    });
+  }, [mashMode, mashStepRows, totalGrainGrams, grainTempC, mashRatioInput, eqSnap?.mashTunDeadSpaceL, infuseTemp]);
 
   const grainCalc = (r: typeof grainRows[0]) => {
     const effectiveMaxYield = r.maxYield ?? r.grain.maxYield;
@@ -2100,7 +2178,7 @@ export function BeerSections({
       >
         {/* Mode toggle */}
         <div className="flex gap-1 mb-4 p-1 bg-muted rounded-lg w-fit">
-          {(["sparge", "biab"] as const).map((mode) => (
+          {(["sparge", "biab", "step_infusion"] as const).map((mode) => (
             <button
               key={mode}
               onClick={() => {
@@ -2113,29 +2191,51 @@ export function BeerSections({
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {mode === "sparge" ? "Sparge" : "Full Volume Mash"}
+              {mode === "sparge" ? "Sparge" : mode === "biab" ? "Full Volume Mash" : "Step Infusion"}
             </button>
           ))}
         </div>
 
-        {mashMode === "sparge" && (
-          <div className="flex items-center gap-3 mb-4">
-            <span className="w-32 text-sm shrink-0">Mash ratio</span>
-            <NumberInput
-              min="1"
-              max="10"
-              step="0.1"
-              value={mashRatioInput}
-              onChange={(e) => {
-                const v = parseFloat(e.target.value);
-                if (!isNaN(v) && v > 0) {
-                  setMashRatioInput(v);
-                  try { localStorage.setItem(`brewhub:batch:${batchId}:mashRatio`, String(v)); } catch { /* ignore */ }
-                }
-              }}
-              className="w-24 h-7 text-sm"
-            />
-            <span className="text-sm text-muted-foreground">L/kg</span>
+        {mashMode !== "biab" && (
+          <div className="space-y-2 mb-4">
+            <div className="flex items-center gap-3">
+              <span className="w-32 text-sm shrink-0">Mash ratio</span>
+              <NumberInput
+                min="1"
+                max="10"
+                step="0.1"
+                value={mashRatioInput}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  if (!isNaN(v) && v > 0) {
+                    setMashRatioInput(v);
+                    try { localStorage.setItem(`brewhub:batch:${batchId}:mashRatio`, String(v)); } catch { /* ignore */ }
+                  }
+                }}
+                className="w-24 h-7 text-sm"
+              />
+              <span className="text-sm text-muted-foreground">L/kg</span>
+            </div>
+            {mashMode === "step_infusion" && (
+              <div className="flex items-center gap-3">
+                <span className="w-32 text-sm shrink-0">Infusion water temp</span>
+                <NumberInput
+                  min="50"
+                  max="100"
+                  step="0.1"
+                  value={infuseTemp}
+                  onChange={(e) => {
+                    const v = parseFloat(e.target.value);
+                    if (!isNaN(v) && v > 0) {
+                      setInfuseTemp(v);
+                      try { localStorage.setItem(`brewhub:batch:${batchId}:infuseTemp`, String(v)); } catch { /* ignore */ }
+                    }
+                  }}
+                  className="w-24 h-7 text-sm"
+                />
+                <span className="text-sm text-muted-foreground">°C</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -2149,7 +2249,7 @@ export function BeerSections({
             </div>
           </div>
 
-          {mashMode === "sparge" && (
+          {mashMode !== "biab" && (
             <>
               <div className="flex items-center justify-between px-3 py-1.5 pl-6 text-xs text-muted-foreground">
                 <span>Grain × ratio</span>
@@ -2176,6 +2276,50 @@ export function BeerSections({
             </span>
           </div>
 
+          {mashMode === "step_infusion" && stepInfusionCalc != null && (() => {
+            const infusionWaterSum = stepInfusionCalc.slice(1).reduce((s, r) => s + (isFinite(r.waterAddedL) ? r.waterAddedL : 0), 0);
+            const totalInfusionSum = wv.mashWater + infusionWaterSum;
+            const waterDelta = totalInfusionSum - wv.totalWater;
+            const spargeDiam = eqSnap?.spargeWaterPotDiameter;
+            const infusionHeightCm = spargeDiam != null && spargeDiam > 0 && infusionWaterSum > 0
+              ? ((infusionWaterSum * 1000) / (Math.PI * Math.pow(spargeDiam / 2, 2))).toFixed(1)
+              : null;
+            return (
+              <>
+                <div className="h-px bg-border" />
+                <div className="flex items-center justify-between px-3 py-2.5 bg-teal-50 dark:bg-teal-950/30 font-semibold text-teal-900 dark:text-teal-100">
+                  <span>
+                    Infusion water
+                    {infusionHeightCm != null && (
+                      <span className="text-xs font-normal text-teal-600 dark:text-teal-400 ml-1.5">({infusionHeightCm} cm, ⌀{spargeDiam})</span>
+                    )}
+                  </span>
+                  <div className="flex items-center gap-1.5 tabular-nums">
+                    <span>{infusionWaterSum.toFixed(1)}</span>
+                    <span className="text-teal-500 dark:text-teal-400 font-normal">L</span>
+                  </div>
+                </div>
+
+                <div className="h-px bg-border" />
+
+                <div className="flex items-center justify-between px-3 py-2.5 font-bold">
+                  <span>Total water</span>
+                  <div className="flex items-center gap-1.5 tabular-nums">
+                    <span>{wv.totalWater.toFixed(1)}</span>
+                    <span className="font-normal text-muted-foreground">L</span>
+                  </div>
+                </div>
+
+                {Math.abs(waterDelta) > 0.1 && (
+                  <div className={`flex items-center justify-between px-3 py-1.5 text-xs ${waterDelta > 0 ? "text-amber-600" : "text-blue-600"}`}>
+                    <span>Water delta (infusions vs needed)</span>
+                    <span className="tabular-nums font-medium">{waterDelta > 0 ? "+" : ""}{waterDelta.toFixed(1)} L</span>
+                  </div>
+                )}
+              </>
+            );
+          })()}
+
           {mashMode === "sparge" && (
             <>
               <div className="h-px bg-border" />
@@ -2189,17 +2333,32 @@ export function BeerSections({
             </>
           )}
 
-          <div className="h-px bg-border" />
+          {mashMode !== "step_infusion" && (
+            <>
+              <div className="h-px bg-border" />
 
-          {/* Total water */}
-          <div className="flex items-center justify-between px-3 py-2.5 font-bold">
-            <span>Total water</span>
-            <div className="flex items-center gap-1.5 tabular-nums">
-              <span>{wv.totalWater.toFixed(1)}</span>
-              <span className="font-normal text-muted-foreground">L</span>
-            </div>
-          </div>
+              {/* Total water */}
+              <div className="flex items-center justify-between px-3 py-2.5 font-bold">
+                <span>Total water</span>
+                <div className="flex items-center gap-1.5 tabular-nums">
+                  <span>{wv.totalWater.toFixed(1)}</span>
+                  <span className="font-normal text-muted-foreground">L</span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
+
+        {/* Mash tun overflow warning */}
+        {mashMode === "step_infusion" && stepInfusionCalc != null && eqSnap?.mashTunVolumeL != null && eqSnap.mashTunVolumeL > 0 && (() => {
+          const maxOccupied = Math.max(...stepInfusionCalc.map(s => s.mashTunOccupiedL));
+          if (maxOccupied <= eqSnap.mashTunVolumeL!) return null;
+          return (
+            <div className="mt-2 rounded-md bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
+              Mash tun capacity ({eqSnap.mashTunVolumeL!.toFixed(1)} L) exceeded — peak volume is {maxOccupied.toFixed(1)} L
+            </div>
+          );
+        })()}
 
         <div className="space-y-3 mt-4">
           <div className="flex items-center gap-3">
@@ -2282,7 +2441,12 @@ export function BeerSections({
                       <div className="grid grid-cols-2 gap-2">
                         <div>
                           <label className="text-xs text-muted-foreground">Name</label>
-                          <Input value={editMashStepDraft.name} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, name: e.target.value }))} className="h-7 text-sm" />
+                          <MashStepNameInput
+                            value={editMashStepDraft.name}
+                            onChange={(v) => setEditMashStepDraft((d) => ({ ...d, name: v }))}
+                            onSelect={(p) => setEditMashStepDraft((d) => ({ ...d, name: p.name, stepTemperatureC: String(p.temp), description: p.description }))}
+                            className="h-7 text-sm"
+                          />
                         </div>
                         <div>
                           <label className="text-xs text-muted-foreground">Type</label>
@@ -2372,7 +2536,8 @@ export function BeerSections({
                   );
                 }
                 return (
-                  <div key={step.id} className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm">
+                  <div key={step.id} className="rounded-lg border px-3 py-2 text-sm">
+                    <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <span className="text-xs text-muted-foreground w-5">{idx + 1}.</span>
                       <div>
@@ -2419,6 +2584,49 @@ export function BeerSections({
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
+                    </div>
+                    {/* Step infusion annotations */}
+                    {mashMode === "step_infusion" && stepInfusionCalc != null && (() => {
+                      const info = stepInfusionCalc.find(s => s.stepIndex === idx);
+                      if (!info) return null;
+                      const mashTunVol = eqSnap?.mashTunVolumeL;
+                      const overflows = mashTunVol != null && mashTunVol > 0 && info.mashTunOccupiedL > mashTunVol;
+                      if (idx === 0) {
+                        return (
+                          <div className="flex items-center gap-3 mt-1 pl-8 text-xs text-blue-600 dark:text-blue-400">
+                            <span>Strike: {info.waterAddedL.toFixed(1)} L @ {info.infuseTemperatureC.toFixed(1)}°C</span>
+                            {overflows && <span className="text-amber-600 dark:text-amber-400">Mash tun overflow</span>}
+                          </div>
+                        );
+                      }
+                      if (step.type === "infusion") {
+                        if (!isFinite(info.waterAddedL)) {
+                          return (
+                            <div className="flex items-center gap-3 mt-1 pl-8 text-xs text-red-600 dark:text-red-400">
+                              <span>Infusion water too cold</span>
+                            </div>
+                          );
+                        }
+                        const spargeDiam = eqSnap?.spargeWaterPotDiameter;
+                        const infuseHeightCm = spargeDiam != null && spargeDiam > 0
+                          ? ((info.waterAddedL * 1000) / (Math.PI * Math.pow(spargeDiam / 2, 2))).toFixed(1)
+                          : null;
+                        return (
+                          <div className="flex items-center gap-3 mt-1 pl-8 text-xs text-teal-600 dark:text-teal-400">
+                            <span>
+                              Infuse: {info.waterAddedL.toFixed(1)} L
+                              {infuseHeightCm != null && (
+                                <span className="text-muted-foreground"> ({infuseHeightCm} cm, ⌀{spargeDiam})</span>
+                              )}
+                              {" @ "}{info.infuseTemperatureC.toFixed(1)}°C
+                            </span>
+                            <span className="text-muted-foreground">Cumulative: {info.cumulativeWaterL.toFixed(1)} L</span>
+                            {overflows && <span className="text-amber-600 dark:text-amber-400">Mash tun overflow</span>}
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()}
                   </div>
                 );
               })}
@@ -2430,7 +2638,13 @@ export function BeerSections({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="text-xs text-muted-foreground">Name *</label>
-                  <Input value={editMashStepDraft.name} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, name: e.target.value }))} className="h-7 text-sm" placeholder="e.g. Saccharification" />
+                  <MashStepNameInput
+                    value={editMashStepDraft.name}
+                    onChange={(v) => setEditMashStepDraft((d) => ({ ...d, name: v }))}
+                    onSelect={(p) => setEditMashStepDraft((d) => ({ ...d, name: p.name, stepTemperatureC: String(p.temp), description: p.description }))}
+                    placeholder="e.g. Saccharification"
+                    className="h-7 text-sm"
+                  />
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Type *</label>
@@ -3116,6 +3330,8 @@ export function BeerSections({
           targetOg: targets.og,
           fermenterWeightKg: eqSnap?.fermenterWeightKg ?? null,
           brewDate: batch.brewDate,
+          stepInfusionSchedule: stepInfusionCalc,
+          mashStepNames: mashStepRows.map(s => s.name),
         };
         return (
           <BrewdaySection
