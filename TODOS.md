@@ -1,3 +1,14 @@
+
+all salts in mash?
+
+step mash water strike temperature
+ojometro checkpoints
+
+Wiki:
+starter
+cleaning
+reuse yeast
+
 calculadora de carbonatacion
 
 test
@@ -8,7 +19,7 @@ visual de agua, losses, etc
 alertar seccion si faltan inpus (o aclarar de que valores depende)
 timers
 tastings
-Create summary or learnings with AI
+Create summary or learnings with AI -> Skills y usar claude
 
 DONE:
 remove and export icons

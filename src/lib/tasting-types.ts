@@ -1,7 +1,7 @@
 export interface TastingAroma {
-  malt: number;      // 0-3
-  hops: number;      // 0-3
-  fermentation: number; // 0-3
+  malt: number;      // 0-5
+  hops: number;      // 0-5
+  fermentation: number; // 0-5
   inappropriateProps: string[]; // property names flagged as inappropriate
   other: string;
   score: number;     // /12
@@ -10,8 +10,8 @@ export interface TastingAroma {
 export interface TastingAppearance {
   color: string;     // very pale, pale, gold, amber, brown, dark
   clarity: string;   // brilliant, clear, slightly hazy, hazy, opaque
-  headSize: number;  // 0-3
-  headRetention: number; // 0-3
+  headSize: number;  // 0-5
+  headRetention: number; // 0-5
   headColor: string; // white, off-white, cream, tan
   inappropriateProps: string[];
   other: string;
@@ -19,9 +19,9 @@ export interface TastingAppearance {
 }
 
 export interface TastingFlavor {
-  sweetness: number;   // 0-3
-  bitterness: number;  // 0-3
-  acidity: number;     // 0-3
+  sweetness: number;   // 0-5
+  bitterness: number;  // 0-5
+  acidity: number;     // 0-5
   balance: number;     // 0-4 (0=hoppy, 4=malty)
   finish: number;      // 0-4 (0=dry, 4=sweet)
   inappropriateProps: string[];
@@ -30,11 +30,11 @@ export interface TastingFlavor {
 }
 
 export interface TastingMouthfeel {
-  body: number;         // 0-3
-  carbonation: number;  // 0-3
-  warmth: number;       // 0-3
-  creaminess: number;   // 0-3
-  astringency: number;  // 0-3
+  body: number;         // 0-5
+  carbonation: number;  // 0-5
+  warmth: number;       // 0-5
+  creaminess: number;   // 0-5
+  astringency: number;  // 0-5
   inappropriateProps: string[];
   other: string;
   score: number;        // /5
@@ -57,14 +57,15 @@ export interface TastingScoreData {
   overall: TastingOverall;
   descriptors: string[];
   flaws: { name: string; severity: "L" | "M" | "H" }[];
+  notes: string;
+  ageDays: number | null;
 }
 
-export const COMMON_DESCRIPTORS = [
-  "Bready", "Biscuity", "Grainy", "Toasty", "Caramel", "Toffee", "Chocolate", "Coffee",
-  "Roasty", "Fruity", "Estery", "Floral", "Citrus", "Piney", "Tropical", "Herbal",
-  "Spicy", "Earthy", "Hoppy", "Bitter", "Sweet", "Dry", "Clean", "Crisp",
-  "Smooth", "Creamy", "Light-bodied", "Full-bodied", "Malty", "Balanced",
-];
+export const DESCRIPTOR_GROUPS = {
+  malt:         ["Bready", "Biscuity", "Grainy", "Toasty", "Caramel", "Toffee", "Chocolate", "Coffee", "Roasty", "Sweet", "Malty", "Nutty", "Dark Fruit", "Honey", "Smoky"],
+  hops:         ["Citrus", "Piney", "Tropical", "Herbal", "Floral", "Spicy", "Earthy", "Hoppy", "Bitter", "Resinous", "Grapefruit"],
+  fermentation: ["Fruity", "Estery", "Clean", "Banana", "Clove", "Pepper", "Tart"],
+};
 
 export const FLAW_NAMES = [
   "Acetaldehyde", "Acetic", "Astringency", "DMS", "Diacetyl", "Earthy",
@@ -80,6 +81,8 @@ export const DEFAULT_TASTING_SCORE_DATA: TastingScoreData = {
   overall: { styleAccuracy: 2, technicalQuality: 2, intangibles: 2, inappropriateProps: [], feedback: "", score: 0 },
   descriptors: [],
   flaws: [],
+  notes: "",
+  ageDays: null,
 };
 
 export function parseTastingData(json: string): TastingScoreData {
