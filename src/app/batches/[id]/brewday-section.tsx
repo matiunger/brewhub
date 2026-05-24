@@ -858,7 +858,12 @@ export function BrewdaySection({
                 gap < 0.9  ? ["Standard",   "text-green-600"] :
                 gap < 1.1  ? ["Coarse",     "text-amber-500"] :
                              ["Very coarse","text-red-500"];
-              return <span className={`text-xs font-medium ${color}`}>{label}</span>;
+              return (
+                <span className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">{(gap / 25.4).toFixed(4)}"</span>
+                  <span className={`text-xs font-medium ${color}`}>{label}</span>
+                </span>
+              );
             })()}
           </div>
         </div>
@@ -917,8 +922,15 @@ export function BrewdaySection({
                     </div>
                     {/* Line 2: Volume + Height */}
                     <div className="flex gap-x-4">
-                      <RecipeRef label="Volume:" value={`${recipeData.mashWaterL.toFixed(1)} L`} />
-                      {mashH != null && <RecipeRef label="Height:" value={`${mashH} cm`} />}
+                      <RecipeRef
+                        label="Volume:"
+                        value={
+                          (recipeData.mashMode === "biab" || recipeData.mashMode === "step_infusion") && mashH != null
+                            ? `${recipeData.mashWaterL.toFixed(1)} L (${mashH} cm, ⌀${recipeData.mashPotDiameterCm})`
+                            : `${recipeData.mashWaterL.toFixed(1)} L`
+                        }
+                      />
+                      {recipeData.mashMode === "sparge" && mashH != null && <RecipeRef label="Height:" value={`${mashH} cm`} />}
                     </div>
                     {/* Line 3: Strike temp */}
                     {strikeCalc != null && (

@@ -321,6 +321,10 @@ interface BeerSectionsProps {
   updateAcidAdditionAction: (data: { mashAcidType: string; mashAcidDose: number | null }) => Promise<void>;
   updateBoilTimesAction: (data: { heatUpTimeMin: number | null; boilTimeMin: number | null; whirpoolTimeMin: number | null }) => Promise<void>;
   updateMashParamsAction: (data: { grainTempC: number | null; targetPh: number | null; spargeTargetPh: number | null }) => Promise<void>;
+  updateMashSettingsAction: (data: { mashMode: string; mashRatioLKg: number; mashInfuseTempC: number }) => Promise<void>;
+  initialMashMode: string | null;
+  initialMashRatioLKg: number | null;
+  initialMashInfuseTempC: number | null;
   mashSteps: MashStep[];
   createMashStepAction: (data: {
     name: string; type: string; stepTemperatureC: number; stepTimeMin: number;
@@ -574,6 +578,10 @@ export function BeerSections({
   updateAcidAdditionAction,
   updateBoilTimesAction,
   updateMashParamsAction,
+  updateMashSettingsAction,
+  initialMashMode,
+  initialMashRatioLKg,
+  initialMashInfuseTempC,
   mashSteps,
   createMashStepAction,
   updateMashStepAction,
@@ -591,9 +599,11 @@ export function BeerSections({
 
   const [open, setOpen] = useState<Record<SectionKey, boolean>>(SECTION_DEFAULTS);
   const [hydrated, setHydrated] = useState(false);
-  const [mashMode, setMashMode] = useState<"sparge" | "biab" | "step_infusion">("sparge");
-  const [mashRatioInput, setMashRatioInput] = useState(3.0);
-  const [infuseTemp, setInfuseTemp] = useState(100);
+  const [mashMode, setMashMode] = useState<"sparge" | "biab" | "step_infusion">(
+    (initialMashMode as "sparge" | "biab" | "step_infusion") ?? "sparge"
+  );
+  const [mashRatioInput, setMashRatioInput] = useState(initialMashRatioLKg ?? 3.0);
+  const [infuseTemp, setInfuseTemp] = useState(initialMashInfuseTempC ?? 100);
 
   const [targets, setTargets] = useState<Record<TargetKey, number | null>>({
     og: batch.targetOg,
@@ -814,6 +824,21 @@ export function BeerSections({
     }, 800);
   }, [updateMashParamsAction]);
 
+  const mashSettingsRef = useRef({ mashMode, mashRatioLKg: mashRatioInput, mashInfuseTempC: infuseTemp });
+  mashSettingsRef.current = { mashMode, mashRatioLKg: mashRatioInput, mashInfuseTempC: infuseTemp };
+  const mashSettingsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const scheduleMashSettingsSave = useCallback(() => {
+    if (mashSettingsTimerRef.current) clearTimeout(mashSettingsTimerRef.current);
+    mashSettingsTimerRef.current = setTimeout(async () => {
+      try {
+        await updateMashSettingsAction(mashSettingsRef.current);
+      } catch {
+        toast.error("Failed to save mash settings");
+      }
+    }, 800);
+  }, [updateMashSettingsAction]);
+
   const handleTargetChange = useCallback(
     (key: TargetKey, raw: string) => {
       const num = raw === "" ? null : parseFloat(raw);
@@ -937,12 +962,18 @@ export function BeerSections({
     try {
       const stored = localStorage.getItem(storageKey);
       if (stored) setOpen({ ...SECTION_DEFAULTS, ...JSON.parse(stored) });
-      const storedMashMode = localStorage.getItem(`brewhub:batch:${batchId}:mashMode`);
-      if (storedMashMode === "biab" || storedMashMode === "sparge" || storedMashMode === "step_infusion") setMashMode(storedMashMode);
-      const storedRatio = parseFloat(localStorage.getItem(`brewhub:batch:${batchId}:mashRatio`) ?? "");
-      if (!isNaN(storedRatio) && storedRatio > 0) setMashRatioInput(storedRatio);
-      const storedInfuseTemp = parseFloat(localStorage.getItem(`brewhub:batch:${batchId}:infuseTemp`) ?? "");
-      if (!isNaN(storedInfuseTemp) && storedInfuseTemp > 0) setInfuseTemp(storedInfuseTemp);
+      if (!initialMashMode) {
+        const storedMashMode = localStorage.getItem(`brewhub:batch:${batchId}:mashMode`);
+        if (storedMashMode === "biab" || storedMashMode === "sparge" || storedMashMode === "step_infusion") setMashMode(storedMashMode);
+      }
+      if (initialMashRatioLKg == null) {
+        const storedRatio = parseFloat(localStorage.getItem(`brewhub:batch:${batchId}:mashRatio`) ?? "");
+        if (!isNaN(storedRatio) && storedRatio > 0) setMashRatioInput(storedRatio);
+      }
+      if (initialMashInfuseTempC == null) {
+        const storedInfuseTemp = parseFloat(localStorage.getItem(`brewhub:batch:${batchId}:infuseTemp`) ?? "");
+        if (!isNaN(storedInfuseTemp) && storedInfuseTemp > 0) setInfuseTemp(storedInfuseTemp);
+      }
     } catch {
       // ignore
     }
@@ -2184,6 +2215,7 @@ export function BeerSections({
               onClick={() => {
                 setMashMode(mode);
                 try { localStorage.setItem(`brewhub:batch:${batchId}:mashMode`, mode); } catch { /* ignore */ }
+                scheduleMashSettingsSave();
               }}
               className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
                 mashMode === mode
@@ -2210,6 +2242,7 @@ export function BeerSections({
                   if (!isNaN(v) && v > 0) {
                     setMashRatioInput(v);
                     try { localStorage.setItem(`brewhub:batch:${batchId}:mashRatio`, String(v)); } catch { /* ignore */ }
+                    scheduleMashSettingsSave();
                   }
                 }}
                 className="w-24 h-7 text-sm"
@@ -2229,6 +2262,7 @@ export function BeerSections({
                     if (!isNaN(v) && v > 0) {
                       setInfuseTemp(v);
                       try { localStorage.setItem(`brewhub:batch:${batchId}:infuseTemp`, String(v)); } catch { /* ignore */ }
+                      scheduleMashSettingsSave();
                     }
                   }}
                   className="w-24 h-7 text-sm"
@@ -2242,7 +2276,16 @@ export function BeerSections({
         <div className="rounded-lg overflow-hidden border text-sm">
           {/* Strike / mash water */}
           <div className="flex items-center justify-between px-3 py-2.5 bg-blue-50 dark:bg-blue-950/30 font-semibold text-blue-900 dark:text-blue-100">
-            <span>{mashMode === "biab" ? "Mash water (full volume)" : "Strike water"}</span>
+            <span>
+              {mashMode === "biab" ? "Mash water (full volume)" : "Strike water"}
+              {(() => {
+                if (mashMode !== "biab" && mashMode !== "step_infusion") return null;
+                const d = eqSnap?.boilPotDiameter;
+                if (d == null || d <= 0) return null;
+                const h = ((wv.mashWater * 1000) / (Math.PI * Math.pow(d / 2, 2))).toFixed(1);
+                return <span className="text-xs font-normal text-blue-600 dark:text-blue-400 ml-1.5">({h} cm, ⌀{d})</span>;
+              })()}
+            </span>
             <div className="flex items-center gap-1.5 tabular-nums">
               <span>{wv.mashWater.toFixed(1)}</span>
               <span className="text-blue-500 dark:text-blue-400 font-normal">L</span>
@@ -2303,7 +2346,15 @@ export function BeerSections({
                 <div className="h-px bg-border" />
 
                 <div className="flex items-center justify-between px-3 py-2.5 font-bold">
-                  <span>Total water</span>
+                  <span>
+                    Total water
+                    {(() => {
+                      const d = eqSnap?.boilPotDiameter;
+                      if (d == null || d <= 0) return null;
+                      const h = ((wv.totalWater * 1000) / (Math.PI * Math.pow(d / 2, 2))).toFixed(1);
+                      return <span className="text-xs font-normal text-muted-foreground ml-1.5">({h} cm, ⌀{d})</span>;
+                    })()}
+                  </span>
                   <div className="flex items-center gap-1.5 tabular-nums">
                     <span>{wv.totalWater.toFixed(1)}</span>
                     <span className="font-normal text-muted-foreground">L</span>
@@ -2339,7 +2390,15 @@ export function BeerSections({
 
               {/* Total water */}
               <div className="flex items-center justify-between px-3 py-2.5 font-bold">
-                <span>Total water</span>
+                <span>
+                  Total water
+                  {mashMode === "biab" && (() => {
+                    const d = eqSnap?.boilPotDiameter;
+                    if (d == null || d <= 0) return null;
+                    const h = ((wv.totalWater * 1000) / (Math.PI * Math.pow(d / 2, 2))).toFixed(1);
+                    return <span className="text-xs font-normal text-muted-foreground ml-1.5">({h} cm, ⌀{d})</span>;
+                  })()}
+                </span>
                 <div className="flex items-center gap-1.5 tabular-nums">
                   <span>{wv.totalWater.toFixed(1)}</span>
                   <span className="font-normal text-muted-foreground">L</span>

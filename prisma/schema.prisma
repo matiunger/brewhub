@@ -142,6 +142,10 @@ model Batch {
   targetPh              Float?        @map("target_ph")
   spargeTargetPh        Float?        @map("sparge_target_ph")
 
+  mashMode          String? @map("mash_mode")         // sparge, biab, step_infusion
+  mashRatioLKg      Float?  @map("mash_ratio_l_kg")
+  mashInfuseTempC   Float?  @map("mash_infuse_temp_c")
+
   mashAcidType      String? @map("mash_acid_type")
   mashAcidDose      Float?  @map("mash_acid_dose")
 

@@ -119,6 +119,14 @@ async function updateMashParams(
   await prisma.batch.update({ where: { id }, data });
 }
 
+async function updateMashSettings(
+  id: string,
+  data: { mashMode: string; mashRatioLKg: number; mashInfuseTempC: number }
+) {
+  "use server";
+  await prisma.batch.update({ where: { id }, data });
+}
+
 async function updateBatchGrain(batchGrainId: string, data: { grams: number; colorL: number | null; maxYield: number | null; brand: string | null }) {
   "use server";
   await prisma.batchGrain.update({ where: { id: batchGrainId }, data });
@@ -467,6 +475,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const updateAcidAdditionWithId = updateAcidAddition.bind(null, id);
   const updateBoilTimesWithId = updateBoilTimes.bind(null, id);
   const updateMashParamsWithId = updateMashParams.bind(null, id);
+  const updateMashSettingsWithId = updateMashSettings.bind(null, id);
   const createMashStepWithId = createMashStep.bind(null, id);
   const updateBrewdayDataWithId = updateBrewdayData.bind(null, id);
   const updateEquipmentSnapshotWithId = updateBatchEquipmentSnapshot.bind(null, id);
@@ -562,6 +571,10 @@ export default async function BatchPage({ params }: BatchPageProps) {
           updateSaltAdditionsAction={updateSaltAdditionsWithId}
           updateBoilTimesAction={updateBoilTimesWithId}
           updateMashParamsAction={updateMashParamsWithId}
+          updateMashSettingsAction={updateMashSettingsWithId}
+          initialMashMode={batch.mashMode}
+          initialMashRatioLKg={batch.mashRatioLKg}
+          initialMashInfuseTempC={batch.mashInfuseTempC}
           mashSteps={batch.mashSteps}
           createMashStepAction={createMashStepWithId}
           updateMashStepAction={updateMashStep}
