@@ -90,7 +90,7 @@ export function Sidebar() {
         <div className="mt-6">
           {!collapsed && (
             <div className="px-3 mb-2">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 Inventory
               </h3>
             </div>
@@ -120,7 +120,7 @@ export function Sidebar() {
         <div className="mt-6">
           {!collapsed && (
             <div className="flex items-center justify-between px-3 mb-2">
-              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 Wiki
               </h3>
               <Link

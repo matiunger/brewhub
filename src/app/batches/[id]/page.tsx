@@ -506,7 +506,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{batch.name}</h1>
+          <h1 className="text-3xl font-bold">{batch.name}</h1>
           <div className="flex items-center gap-1.5 mt-0.5 text-sm text-muted-foreground">
             {batch.style && <span>{batch.style}</span>}
             {batch.draft && <Pencil className="h-3 w-3" />}
