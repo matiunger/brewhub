@@ -145,7 +145,7 @@ async function updateBatchHop(batchHopId: string, data: { grams: number; use: st
       grams: data.grams,
       use: data.use,
       alphaAcid: data.alphaAcid,
-      additionTime: data.additionTime,
+      additionTime: data.additionTime ?? undefined,
     },
   });
 }
@@ -346,6 +346,18 @@ async function deleteTasting(tastingId: string) {
   await prisma.tasting.delete({ where: { id: tastingId } });
 }
 
+async function importTasting(batchId: string, stateJson: string) {
+  "use server";
+  const { getTotalScore } = await import("@/lib/evaluation-score-utils");
+  const state = JSON.parse(stateJson);
+  const date = state.header?.date ? new Date(state.header.date) : new Date();
+  const servingType = state.header?.presentation?.toLowerCase() ?? "bottle";
+  const totalScore = getTotalScore(state);
+  await prisma.tasting.create({
+    data: { batchId, date, servingType, data: stateJson, totalScore },
+  });
+}
+
 async function deleteBatch(id: string) {
   "use server";
 
@@ -480,6 +492,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const updateBrewdayDataWithId = updateBrewdayData.bind(null, id);
   const updateEquipmentSnapshotWithId = updateBatchEquipmentSnapshot.bind(null, id);
   const deleteTastingWithId = deleteTasting;
+  const importTastingWithId = importTasting.bind(null, id);
 
   const equipmentSnapshot = batch.equipmentFermenterLossL != null ? {
     name: batch.equipmentName,
@@ -586,6 +599,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
           updateEquipmentSnapshotAction={updateEquipmentSnapshotWithId}
           tastings={tastings}
           deleteTastingAction={deleteTastingWithId}
+          importTastingAction={importTastingWithId}
           saltAdditions={{
             saltChalkGL: batch.saltChalkGL,
             saltBakingSodaGL: batch.saltBakingSodaGL,

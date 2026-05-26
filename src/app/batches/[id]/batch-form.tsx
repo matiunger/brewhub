@@ -9,9 +9,13 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MarkdownNotes } from "./markdown-notes";
-import styles from "../../../../styles.json";
+import bjcpStyles from "../../../../styles.json";
+import baStyles from "../../../data/ba_styles.json";
 
-const styleNames = styles.map((s) => `${s.number} ${s.name}`);
+const styleNames = [
+  ...bjcpStyles.map((s) => `${s.number} ${s.name}`.trim()),
+  ...baStyles.map((s) => `BA: ${s.name}`),
+];
 
 interface BatchFormProps {
   batch: {

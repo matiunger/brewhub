@@ -1,4 +1,5 @@
-import styles from "../../styles.json";
+import bjcpStyles from "../../styles.json";
+import baStyles from "../data/ba_styles.json";
 
 export interface StyleHints {
   appearance: string;
@@ -18,12 +19,18 @@ interface StyleEntry {
   overallimpression: string;
 }
 
+const allStyles = [
+  ...bjcpStyles as StyleEntry[],
+  ...(baStyles as StyleEntry[]).map((s) => ({ ...s, number: `BA: ${s.name}` })),
+];
+
 export function findStyleHints(style: string | null): StyleHints | null {
   if (!style) return null;
   const normalized = style.toLowerCase().trim();
-  const entry = (styles as StyleEntry[]).find((s) =>
+  const entry = allStyles.find((s) =>
     s.number.toLowerCase() === normalized ||
     s.name.toLowerCase() === normalized ||
+    `ba: ${s.name}`.toLowerCase() === normalized ||
     s.name.toLowerCase().includes(normalized) ||
     normalized.includes(s.name.toLowerCase())
   );

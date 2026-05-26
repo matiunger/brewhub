@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { BatchForm } from "./batch-form";
 import stylesData from "../../../../styles.json";
+import baStylesData from "../../../data/ba_styles.json";
 import { srmToHex, srmIsLight } from "@/lib/olfarve";
 import { calculateAcidAddition, calculateSpargeAcidDose, calculateIbuBreakdown, calculateStepInfusionSchedule, type AcidType, type StepInfusionResult } from "@/lib/calculations";
 import { parseBrewdayData, type BrewdayData } from "@/lib/brewday-types";
@@ -342,6 +343,7 @@ interface BeerSectionsProps {
   allKegs: { id: string; name: string; capacity: number; tareWeight: number | null }[];
   tastings: { id: string; date: Date; servingType: string; totalScore: number | null }[];
   deleteTastingAction: (tastingId: string) => Promise<void>;
+  importTastingAction: (stateJson: string) => Promise<void>;
   equipmentSnapshot: EquipmentSnapshot | null;
   updateEquipmentSnapshotAction: (data: {
     equipmentName: string | null;
@@ -591,6 +593,7 @@ export function BeerSections({
   allKegs,
   tastings,
   deleteTastingAction,
+  importTastingAction,
   equipmentSnapshot,
   updateEquipmentSnapshotAction,
 }: BeerSectionsProps) {
@@ -937,11 +940,15 @@ export function BeerSections({
 
   const styleEntry = useMemo(() => {
     if (!batch.style) return null;
-    return (
-      (stylesData as Record<string, string>[]).find(
-        (s) => `${s.number} ${s.name}` === batch.style
-      ) ?? null
+    const bjcp = (stylesData as Record<string, string>[]).find(
+      (s) => `${s.number} ${s.name}`.trim() === batch.style
     );
+    if (bjcp) return bjcp;
+    if (batch.style.startsWith("BA: ")) {
+      const baName = batch.style.slice(4);
+      return (baStylesData as Record<string, string>[]).find((s) => s.name === baName) ?? null;
+    }
+    return null;
   }, [batch.style]);
 
   // Target ABV derived from OG/FG targets (stored as integer gravity points e.g. 1048)
@@ -3853,9 +3860,36 @@ export function BeerSections({
               open={open.finalStatsTastings}
               onToggle={() => toggle("finalStatsTastings")}
               actions={
-                <Link href={`/batches/${batchId}/tastings/new`}>
-                  <Button size="sm" variant="outline">Add Tasting</Button>
-                </Link>
+                <div className="flex items-center gap-1.5">
+                  <label
+                    className="cursor-pointer inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border hover:bg-muted transition-colors font-medium"
+                    title="Import from Brewtaste JSON"
+                  >
+                    <input
+                      type="file"
+                      accept=".json"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const text = await file.text();
+                        try {
+                          JSON.parse(text); // validate JSON
+                          await importTastingAction(text);
+                          router.refresh();
+                          toast.success("Tasting imported");
+                        } catch {
+                          toast.error("Invalid Brewtaste JSON file");
+                        }
+                        e.target.value = '';
+                      }}
+                    />
+                    Import
+                  </label>
+                  <Link href={`/batches/${batchId}/tastings/new`}>
+                    <Button size="sm" variant="outline">Add Tasting</Button>
+                  </Link>
+                </div>
               }
             >
               {tastings.length === 0 ? (

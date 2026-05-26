@@ -1,36 +1,49 @@
 import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { parseBrewdayData } from "@/lib/brewday-types";
-import { parseTastingData } from "@/lib/tasting-types";
-import { TastingForm } from "./tasting-form";
+import type { EvaluationState } from "@/lib/evaluation-types";
+import { getTotalScore } from "@/lib/evaluation-score-utils";
+import EvaluationForm from "@/components/tasting-form/EvaluationForm";
+import { LocaleProvider } from "@/lib/locale-context";
+import { EvaluateProvider } from "@/lib/evaluate-context";
 
 interface TastingPageProps {
   params: Promise<{ id: string; tastingId: string }>;
 }
 
-async function saveTasting(
+async function saveTastingAction(
   batchId: string,
   tastingId: string | null,
-  data: { date: Date; servingType: string; scoreData: string; totalScore: number | null }
+  state: EvaluationState
 ) {
   "use server";
+  const stateJson = JSON.stringify(state);
+  const date = state.header.date ? new Date(state.header.date) : new Date();
+  const servingType = state.header.presentation?.toLowerCase() ?? "bottle";
+  const totalScore = getTotalScore(state);
   if (tastingId) {
     await prisma.tasting.update({
       where: { id: tastingId },
-      data: { date: data.date, servingType: data.servingType, data: data.scoreData, totalScore: data.totalScore },
+      data: { date, servingType, data: stateJson, totalScore },
     });
   } else {
     await prisma.tasting.create({
-      data: { batchId, date: data.date, servingType: data.servingType, data: data.scoreData, totalScore: data.totalScore },
+      data: { batchId, date, servingType, data: stateJson, totalScore },
     });
   }
   redirect(`/batches/${batchId}`);
 }
 
-async function deleteTasting(batchId: string, tastingId: string) {
-  "use server";
-  await prisma.tasting.delete({ where: { id: tastingId } });
-  redirect(`/batches/${batchId}`);
+function parseEvaluationState(json: string): EvaluationState | undefined {
+  try {
+    const parsed = JSON.parse(json);
+    if (parsed && parsed.header && parsed.sections) {
+      return parsed as EvaluationState;
+    }
+  } catch {
+    // ignore
+  }
+  return undefined;
 }
 
 export default async function TastingPage({ params }: TastingPageProps) {
@@ -44,32 +57,46 @@ export default async function TastingPage({ params }: TastingPageProps) {
 
   if (!batch) notFound();
 
-  const brewday = parseBrewdayData(batch.brewdayData);
-  const packagingDateStr = brewday.kegging.dateTime ?? brewday.bottling.dateTime;
-
-  let existingTasting: { id: string; date: Date; servingType: string; data: string; totalScore: number | null } | null = null;
+  let existingTasting: { id: string; data: string } | null = null;
   if (!isNew) {
-    existingTasting = await prisma.tasting.findUnique({ where: { id: tastingId } });
+    existingTasting = await prisma.tasting.findUnique({
+      where: { id: tastingId },
+      select: { id: true, data: true },
+    });
     if (!existingTasting) notFound();
   }
 
-  const initialData = existingTasting ? parseTastingData(existingTasting.data) : undefined;
+  const brewday = batch.brewdayData ? parseBrewdayData(batch.brewdayData) : null;
+  const keggingDate = brewday?.kegging?.dateTime ?? null;
 
-  const saveAction = saveTasting.bind(null, batchId, isNew ? null : tastingId);
-  const deleteAction = isNew ? null : deleteTasting.bind(null, batchId, tastingId);
+  const initialState = existingTasting ? parseEvaluationState(existingTasting.data) : undefined;
+  const onSave = saveTastingAction.bind(null, batchId, isNew ? null : tastingId);
 
   return (
-    <TastingForm
-      batchId={batchId}
-      batchName={batch.name}
-      batchStyle={batch.style ?? null}
-      tastingId={isNew ? null : tastingId}
-      initialDate={existingTasting?.date ?? null}
-      initialServingType={existingTasting?.servingType ?? "draft"}
-      initialData={initialData}
-      packagingDateStr={packagingDateStr}
-      saveAction={saveAction}
-      deleteAction={deleteAction}
-    />
+    <LocaleProvider>
+      <EvaluateProvider>
+        <div className="px-4 py-4 max-w-3xl mx-auto">
+          <div className="mb-4 flex items-center gap-2">
+            <a
+              href={`/batches/${batchId}`}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              ← {batch.name}
+            </a>
+            <span className="text-muted-foreground">/</span>
+            <span className="text-sm font-medium">
+              {isNew ? "New Tasting" : "Edit Tasting"}
+            </span>
+          </div>
+          <EvaluationForm
+            initialState={initialState}
+            onSave={onSave}
+            batchName={batch.name}
+            batchStyle={batch.style ?? undefined}
+            keggingDate={keggingDate ?? undefined}
+          />
+        </div>
+      </EvaluateProvider>
+    </LocaleProvider>
   );
 }

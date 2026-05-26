@@ -1,0 +1,466 @@
+{
+  "version": "1.0",
+  "total_points": 50,
+  "intensity_scale": [
+    { "id": "none",        "label": "None" },
+    { "id": "low",         "label": "Low" },
+    { "id": "low_medium",  "label": "Low-Medium" },
+    { "id": "medium",      "label": "Medium" },
+    { "id": "medium_high", "label": "Medium-High" },
+    { "id": "high",        "label": "High" }
+  ],
+  "descriptors": [
+    { "id": "grainy",      "name": "Grainy",                "sections": ["aroma_flavor"] },
+    { "id": "cereal",      "name": "Cereal",                "sections": ["aroma_flavor"] },
+    { "id": "caramel",     "name": "Caramel",               "sections": ["aroma_flavor"] },
+    { "id": "toffee",      "name": "Toffee",                "sections": ["aroma_flavor"] },
+    { "id": "bread",       "name": "Bread",                 "sections": ["aroma_flavor"] },
+    { "id": "bread_crust", "name": "Bread Crust",           "sections": ["aroma_flavor"] },
+    { "id": "biscuit",     "name": "Biscuit",               "sections": ["aroma_flavor"] },
+    { "id": "cracker",     "name": "Cracker",               "sections": ["aroma_flavor"] },
+    { "id": "toasty",      "name": "Toasty",                "sections": ["aroma_flavor"] },
+    { "id": "nutty",       "name": "Nutty",                 "sections": ["aroma_flavor"] },
+    { "id": "roasty",      "name": "Roasty",                "sections": ["aroma_flavor"],  "hint": "Dry, espresso-like character from dark malts. Think dark bread crust or coffee grounds." },
+    { "id": "burnt",       "name": "Burnt",                 "sections": ["aroma_flavor"],  "hint": "Acrid, carbon-like — more extreme than roasty. Can indicate over-roasted malt or a process flaw." },
+    { "id": "chocolate",   "name": "Chocolate",             "sections": ["aroma_flavor"] },
+    { "id": "coffee",      "name": "Coffee",                "sections": ["aroma_flavor"] },
+    { "id": "dark_fruit",  "name": "Dark Fruit",            "sections": ["aroma_flavor"],  "hint": "Plum, prune, fig — typically derived from heavily kilned malts or fermentation at high temperatures." },
+    { "id": "dried_fruit", "name": "Dried Fruit",           "sections": ["aroma_flavor"],  "hint": "Raisin, prune, fig — common in oxidized beers or strong dark ales like barleywines and old ales." },
+    { "id": "honey",       "name": "Honey",                 "sections": ["aroma_flavor"] },
+    { "id": "molasses",    "name": "Molasses",              "sections": ["aroma_flavor"] },
+    { "id": "vanilla",     "name": "Vanilla",               "sections": ["aroma_flavor"] },
+    { "id": "rich",        "name": "Rich",                  "sections": ["aroma_flavor"],  "hint": "Deep, full, concentrated malt presence — like malt extract or wort. Not a flaw, but can be excessive." },
+    { "id": "smoky",       "name": "Smoky",                 "sections": ["aroma_flavor"], "hint": "Wood smoke character — from smoked malts (Rauchbier) or smoked water. Intentional in Bamberg-style lagers; may be a flaw in other styles." },
+    { "id": "citrus",      "name": "Citrus",                "sections": ["aroma_flavor"],  "hint": "Lemon, orange, grapefruit — bright and zesty. Common in American and New World hop varieties." },
+    { "id": "herbal",      "name": "Herbal",                "sections": ["aroma_flavor"],  "hint": "Fresh or dried herbs like rosemary, oregano, thyme, or mint. Typical of noble and traditional European hops." },
+    { "id": "floral",      "name": "Floral",                "sections": ["aroma_flavor"],  "hint": "Rose, lavender, jasmine — delicate and perfume-like. Often found in lager and English ale hops." },
+    { "id": "resinous",    "name": "Resinous",              "sections": ["aroma_flavor"],  "hint": "Pine sap, cannabis — from high-alpha hops like Chinook, Simcoe, or Columbus." },
+    { "id": "spicy",       "name": "Spicy",                 "sections": ["aroma_flavor"],  "hint": "Black pepper, clove, or peppery bite from hops. Common in noble varieties like Saaz and Hallertau." },
+    { "id": "pine",        "name": "Pine",                  "sections": ["aroma_flavor"] },
+    { "id": "tropical",    "name": "Tropical",              "sections": ["aroma_flavor"],  "hint": "Mango, pineapple, guava, maracuyá — characteristic of New World hops like Citra, Galaxy, or Mosaic." },
+    { "id": "melon",       "name": "Melon",                 "sections": ["aroma_flavor"] },
+    { "id": "pineapple",   "name": "Pineapple",             "sections": ["aroma_flavor"] },
+    { "id": "grapefruit",  "name": "Grapefruit",            "sections": ["aroma_flavor"] },
+    { "id": "earthy",      "name": "Earthy",                "sections": ["aroma_flavor"],  "hint": "Damp soil, roots, cellar — that forest-after-a-rainstorm aroma. Can be a hop character (English varieties) or light Brett influence." },
+    { "id": "minty",       "name": "Minty",                 "sections": ["aroma_flavor"] },
+    { "id": "woody",       "name": "Woody",                 "sections": ["aroma_flavor"],  "hint": "Raw wood, cellar, sawdust. Different from oak — less structured, more rough." },
+    { "id": "grassy",      "name": "Grassy",                "sections": ["aroma_flavor"],  "hint": "Fresh-cut grass or green, vegetal hop character. Common with fresh/wet hops or early harvest varieties." },
+    { "id": "green",       "name": "Green",                 "sections": ["aroma_flavor"], "hint": "Raw, green hop character from freshly harvested or undried hops — similar to grassy but more vegetal and unripe." },
+    { "id": "apple",       "name": "Apple",                 "sections": ["aroma_flavor"] },
+    { "id": "pear",        "name": "Pear",                  "sections": ["aroma_flavor"] },
+    { "id": "banana",      "name": "Banana",                "sections": ["aroma_flavor"],  "hint": "Isoamyl acetate — a classic Hefeweizen ester. A flaw in lagers or IPAs; desirable in wheat beers." },
+    { "id": "cherry",      "name": "Cherry",                "sections": ["aroma_flavor"] },
+    { "id": "red_berries", "name": "Red Berries",           "sections": ["aroma_flavor"] },
+    { "id": "orange",      "name": "Orange",                "sections": ["aroma_flavor"] },
+    { "id": "grape",       "name": "Grape",                 "sections": ["aroma_flavor"] },
+    { "id": "stone_fruit", "name": "Stone Fruit",           "sections": ["aroma_flavor"],  "hint": "Peach, apricot, nectarine, plum — typical of ale yeast esters at moderate fermentation temperatures." },
+    { "id": "clove",       "name": "Clove",                 "sections": ["aroma_flavor"],  "hint": "4-vinylguaiacol — a phenol desirable in Hefeweizen and Witbier. A flaw in most other styles." },
+    { "id": "cinnamon",    "name": "Cinnamon",              "sections": ["aroma_flavor"] },
+    { "id": "pepper",      "name": "Pepper",                "sections": ["aroma_flavor"] },
+    { "id": "medicinal",   "name": "Medicinal",             "sections": ["aroma_flavor"],  "hint": "Band-aid, antiseptic, TCP — chlorophenol from wild yeast (S. diastaticus) or chlorinated rinse water. Always a flaw." },
+    { "id": "solvent",     "name": "Solvent / Fusel",       "sections": ["aroma_flavor"],  "hint": "Acetone, nail polish remover, or sharp hot alcohol — fusel alcohols from stressed or over-heated yeast. Always a flaw." },
+    { "id": "sweet",       "name": "Sweet",                 "sections": ["aroma_flavor"] },
+    { "id": "burnt_sugar", "name": "Burnt Sugar",           "sections": ["aroma_flavor"] },
+    { "id": "syrup",       "name": "Syrup",                 "sections": ["aroma_flavor"],  "hint": "Heavy, sticky sweetness — can indicate incomplete fermentation or very high residual sugar." },
+    { "id": "citric",      "name": "Citric",                "sections": ["aroma_flavor"],  "hint": "Bright, lemon-like acidity. Common in wheat beers and some sours. Lighter and crisper than lactic." },
+    { "id": "sour",        "name": "Sour / Acidic",         "sections": ["aroma_flavor"], "hint": "General sourness from organic acids. Can be lactic (smooth, yogurt-like) or acetic (sharp, vinegar-like). Assess whether appropriate for the style." },
+    { "id": "lactic",      "name": "Lactic",                "sections": ["aroma_flavor"],  "hint": "Smooth, yogurt-like sourness from Lactobacillus. Desirable in Berliner Weisse, Gose, and kettle sours." },
+    { "id": "brettanomyces","name": "Brettanomyces",        "sections": ["aroma_flavor"],  "hint": "Wild yeast producing leather, barnyard, earthy, and funky notes. Prized in Belgian and wild ales; a flaw in clean styles." },
+    { "id": "oak",         "name": "Oak",                   "sections": ["aroma_flavor"],  "hint": "Vanilla, coconut, toasted wood tannins — from barrel aging. Can add complexity or dominate if over-oaked." },
+    { "id": "oxidized",    "name": "Oxidized",              "sections": ["aroma_flavor"],  "hint": "Wet cardboard, paper, sherry-like — from oxygen exposure post-fermentation. Always a flaw in fresh beers." },
+    { "id": "sulfur",      "name": "Sulfur",                "sections": ["aroma_flavor"],            "hint": "Struck match, gunpowder, or rotten egg (H₂S) — from lager yeasts or stress. Often dissipates with lagering or gentle swirling." },
+    { "id": "vegetal",     "name": "Vegetal",               "sections": ["aroma_flavor"],  "hint": "Cooked vegetables, cabbage, broccoli — DMS-related. A flaw in nearly all styles." },
+    { "id": "musty",       "name": "Musty",                 "sections": ["aroma_flavor"],  "hint": "Damp cellar, mold, old cork — from mold contamination or poorly sanitized equipment and storage." },
+    { "id": "yeasty",      "name": "Yeasty",                "sections": ["aroma_flavor"],  "hint": "Bread dough or autolysis (meaty, savory) — from excess yeast in suspension or yeast breakdown during aging." },
+    { "id": "diacetyl",    "name": "Diacetyl",              "sections": ["aroma_flavor"], "hint": "Butter or butterscotch — from incomplete fermentation or Pediococcus contamination. A flaw in most styles except some English ales." },
+    { "id": "acetaldehyde","name": "Acetaldehyde",          "sections": ["aroma_flavor"], "hint": "Green apple, cucumber — an intermediate compound from incomplete fermentation. Indicates immature or under-attenuated beer." },
+    { "id": "dms",         "name": "DMS",                   "sections": ["aroma_flavor"], "hint": "Dimethyl sulfide — cooked corn, canned vegetables, vegetable broth. From insufficient boil or slow wort chilling. Always a flaw." },
+    { "id": "estery",      "name": "Estery",                "sections": ["aroma_flavor"], "hint": "Overly fruity, ester-driven character beyond style expectations — from high fermentation temperatures or certain yeast strains." },
+    { "id": "light_struck","name": "Light-Struck",          "sections": ["aroma_flavor"], "hint": "Skunky, sulfur-like — from UV or fluorescent light reacting with iso-alpha acids. Worse in clear or green bottles." },
+    { "id": "spices",      "name": "Spices",                "sections": ["aroma_flavor"] },
+    { "id": "flat",        "name": "Flat",                  "sections": ["appearance", "mouthfeel"] },
+    { "id": "lacing",      "name": "Lacing",                "sections": ["appearance"],       "hint": "Foam rings left on the glass as you drink — a sign of good protein and hop content." },
+    { "id": "legs",        "name": "Legs",                  "sections": ["appearance"],       "hint": "Droplets running down the glass after swirling — indicates high alcohol or significant residual sugar." },
+    { "id": "effervescent","name": "Effervescent",          "sections": ["appearance"] },
+    { "id": "particles",   "name": "Particles in Suspension","sections": ["appearance"],      "hint": "Visible particles — often live yeast in bottle-conditioned or unfiltered beers. Desirable in some styles." },
+    { "id": "soft",        "name": "Soft",                  "sections": ["aroma_flavor"] },
+    { "id": "refreshing",  "name": "Refreshing",            "sections": ["aroma_flavor"] },
+    { "id": "aggressive",  "name": "Aggressive",            "sections": ["aroma_flavor"] },
+    { "id": "harsh",       "name": "Harsh",                 "sections": ["aroma_flavor", "mouthfeel"] },
+    { "id": "lingering",   "name": "Lingering",             "sections": ["aroma_flavor"],           "hint": "Bitterness or flavor that persists long after swallowing. Can be a positive quality or a sign of excess." },
+    { "id": "cloying",     "name": "Cloying",               "sections": ["aroma_flavor", "mouthfeel"], "hint": "Heavy, sticky sweetness that coats the mouth and does not invite another sip. Indicates incomplete attenuation." },
+    { "id": "salty",       "name": "Salty",                 "sections": ["aroma_flavor"] },
+    { "id": "metallic",    "name": "Metallic",              "sections": ["aroma_flavor"],           "hint": "Coins, blood, iron — from rusty equipment, high-iron water, or hop compounds reacting with metal surfaces." },
+    { "id": "butter",      "name": "Butter",                "sections": ["aroma_flavor"],           "hint": "Butterscotch — diacetyl from incomplete fermentation or Pediococcus contamination. A flaw in most styles." },
+    { "id": "cooked_corn", "name": "Cooked Corn",           "sections": ["aroma_flavor"],           "hint": "DMS (dimethyl sulfide) in flavor — canned corn, vegetable broth. From insufficient boil or slow wort chilling." },
+    { "id": "green_apple", "name": "Green Apple",           "sections": ["aroma_flavor"],           "hint": "Acetaldehyde — an intermediate fermentation compound. Indicates immature beer or incomplete fermentation." },
+    { "id": "gushing",     "name": "Gushing",               "sections": ["mouthfeel"],        "hint": "Beer foams uncontrollably when opened — from over-carbonation, infection, or nucleation sites in the liquid." },
+    { "id": "hot_burning", "name": "Hot / Burning",         "sections": ["mouthfeel"],        "hint": "Burning sensation in the mouth or throat from excessive fusel alcohols or carbonation." },
+    { "id": "slick",       "name": "Slick",                 "sections": ["mouthfeel"],        "hint": "Oily or slippery texture — can indicate yeast autolysis, infection, or excessive diacetyl." }
+  ],
+  "scoring_guide": [
+    { "min": 0,  "max": 13, "text": "Problematic", "description": "Major off flavors and aromas dominate" },
+    { "min": 14, "max": 20, "text": "Fair",         "description": "Off flavors/aromas or major style deficiencies" },
+    { "min": 21, "max": 29, "text": "Good",         "description": "Misses the mark on style and/or moderate flaws" },
+    { "min": 30, "max": 37, "text": "Very Good",    "description": "Generally within style parameters, minor flaws" },
+    { "min": 38, "max": 44, "text": "Excellent",    "description": "Exemplifies style well, requires minor fine-tuning" },
+    { "min": 45, "max": 50, "text": "Exceptional",  "description": "World-class example of style" }
+  ],
+  "header": {
+    "fields": [
+      { "id": "date",         "label": "Date",         "type": "date",         "default": "today" },
+      { "id": "taster",       "label": "Taster",       "type": "text" },
+      { "id": "name",         "label": "Beer Name",    "type": "text" },
+      { "id": "brewery",      "label": "Brewery",      "type": "text" },
+      { "id": "style",        "label": "Style",        "type": "style_picker" },
+      { "id": "age",          "label": "Age",          "type": "text" },
+      { "id": "presentation", "label": "Presentation", "type": "select",
+        "options": ["Bottle", "Can", "Draft"] }
+    ]
+  },
+  "tasting_procedure": {
+    "label": "Tasting Procedure",
+    "steps": [
+      { "title": "1. Aroma", "hint": "Sniff immediately after pouring, while volatiles are most intense. Evaluate malt, hops, fermentation character, and any off-aromas. Gentle swirl to release more compounds." },
+      { "title": "2. Appearance", "hint": "Assess color, clarity, and head. Use good lighting against a white background when possible." },
+      { "title": "3. Flavor", "hint": "Take a moderate sip and let it coat the palate. Evaluate malt character, hop flavor and bitterness, fermentation byproducts, balance, finish/aftertaste, and any off-flavors." },
+      { "title": "4. Mouthfeel", "hint": "Note body, carbonation level, warmth (alcohol), creaminess, and astringency." },
+      { "title": "5. Overall Impression", "hint": "A holistic judgment: how well the beer fits its declared style, drinkability, overall enjoyment, and constructive feedback." }
+    ]
+  },
+  "sections": [
+    {
+      "id": "appearance",
+      "label": "Appearance",
+      "phase": "Visual Phase",
+      "max_points": 3,
+      "tasting_hints": [
+        "Use proper lighting. Hold the glass up to the light or against a white background to assess the true color.",
+        "Tilt and look through the edges — it may reveal reddish or copper hues.",
+        "Haze can be intentional (NEIPA, Hefeweizen) or a flaw depending on style."
+      ],
+      "aspects": [
+        {
+          "id": "color",
+          "label": "Color",
+          "quick": true,
+          "type": "srm",
+          "options": [
+            { "ebc":  4, "srm_min":  1, "srm_max":  2, "label": "Pale Straw  ", "hex": "#FFD878" },
+            { "ebc":  6, "srm_min":  3, "srm_max":  4, "label": "Straw       ", "hex": "#FFCA5A" },
+            { "ebc":  8, "srm_min":  5, "srm_max":  5, "label": "Yellow      ", "hex": "#FFBF42" },
+            { "ebc": 12, "srm_min":  6, "srm_max":  7, "label": "Gold        ", "hex": "#F8A600" },
+            { "ebc": 18, "srm_min":  8, "srm_max":  9, "label": "Pale Amber  ", "hex": "#E58500" },
+            { "ebc": 24, "srm_min": 10, "srm_max": 11, "label": "Amber       ", "hex": "#CF6900" },
+            { "ebc": 30, "srm_min": 12, "srm_max": 14, "label": "Copper      ", "hex": "#BB5100" },
+            { "ebc": 35, "srm_min": 15, "srm_max": 22, "label": "Brown       ", "hex": "#A63E00" },
+            { "ebc": 59, "srm_min": 23, "srm_max": 33, "label": "Deep Brown  ", "hex": "#5E0B00" },
+            { "ebc": 79, "srm_min": 34, "srm_max": 50, "label": "Black       ", "hex": "#36080A" }
+          ],
+          "tasting_hint": "SRM (Standard Reference Method) measures light absorption. Color doesn't always predict flavor — a stout can be smooth, a golden beer very bitter."
+        },
+        {
+          "id": "clarity",
+          "label": "Clarity",
+          "quick": true,
+          "options": ["Brilliant", "Clear", "Slight Haze", "Turbid", "Opaque"],
+          "tasting_hint": "Brilliant means perfectly filtered. Hazy can be intentional (NEIPA, Hefeweizen) or indicate contamination. Opaque is normal in some unfiltered wheat beers."
+        },
+        {
+          "id": "head_color",
+          "label": "Head Color",
+          "options": ["White", "Ivory", "Cream", "Tan", "Brown"],
+          "tasting_hint": "Darker malts produce darker foam. Very beige foam on a pale lager can indicate lipid contamination."
+        },
+        {
+          "id": "head_size",
+          "label": "Head Formation",
+          "options": ["None", "Small", "Medium", "Large"],
+          "tasting_hint": "Head is affected by temperature, CO2 level, and pour technique. A glass with detergent residue will destroy head formation."
+        },
+        {
+          "id": "head_retention",
+          "label": "Head Retention",
+          "quick": true,
+          "options": ["None", "Poor", "Moderate", "Good", "Excellent"],
+          "tasting_hint": "Time how long the head lasts after pouring: Poor = under 15s, Moderate = 15–60s, Good = over 60s. Malt proteins and iso-alpha acids from hops are the main contributors."
+        },
+        {
+          "id": "other_appearance",
+          "label": "Other",
+          "descriptors": ["flat", "lacing", "legs", "effervescent", "particles"],
+          "tasting_hint": "Lacing on the glass indicates good protein quality. Legs suggest high alcohol or residual sugar. Particles may be live yeast — desirable in some styles."
+        }
+      ]
+    },
+    {
+      "id": "aroma_flavor",
+      "label": "Aroma & Flavor",
+      "phase": "Tasting Phase",
+      "max_points": 32,
+      "sub_scores": [
+        { "id": "aroma", "label": "Aroma", "max_points": 12 },
+        { "id": "flavor", "label": "Flavor", "max_points": 20 }
+      ],
+      "tasting_hints": [
+        "Take short sniffs right after pouring — volatile aromas are most intense early.",
+        "First sip: assess temperature and carbonation. Second sip: let the beer coat your entire palate.",
+        "Look for how aromas and flavors connect: attack, mid-palate development, and finish.",
+        "Gently chew the beer to release CO2 and reveal more flavors."
+      ],
+      "aspects": [
+        {
+          "id": "malt",
+          "label": "Malt",
+          "quick": true,
+          "intensity_scale": true,
+          "descriptors": ["grainy", "bread", "cereal", "corn", "cracker", "biscuit", "bread_crust", "sweet", "rich", "honey", "caramel", "toffee", "toasty", "nutty", "dried_fruit", "coffee", "chocolate", "roasty", "burnt", "smoky"],
+          "tasting_hint": "Evaluate both aroma and flavor: grain, bread, caramel, and dark malt notes. Malt sweetness should balance bitterness in the mid-palate."
+        },
+        {
+          "id": "hops",
+          "label": "Hops",
+          "quick": true,
+          "intensity_scale": true,
+          "descriptors": ["floral", "herbal", "citrus", "spicy", "earthy", "resinous", "pine", "tropical", "grapefruit", "minty", "woody", "grassy", "fruity", "green", "melon", "pineapple"],
+          "tasting_hint": "New World hops give citrus and tropical notes; traditional European hops are herbal, floral, and spicy. Hop flavor (from dry hopping, late additions) is separate from bitterness."
+        },
+        {
+          "id": "fermentation_character",
+          "label": "Fermentation Character",
+          "quick": true,
+          "intensity_scale": true,
+          "descriptors": ["apple", "pear", "banana", "cherry", "red_berries", "orange", "grape", "stone_fruit", "pineapple", "cinnamon", "clove", "pepper", "spicy"],
+          "tasting_hint": "Esters (fruity) and phenols (spicy/earthy) from yeast. A strong banana in a lager is a flaw; clove in a Hefeweizen is expected."
+        },
+        {
+          "id": "other_flaws",
+          "label": "Off-Flavors / Flaws",
+          "quick": true,
+          "descriptors": ["diacetyl", "acetaldehyde", "dms", "oxidized", "sulfur", "vegetal", "musty", "yeasty", "estery", "brettanomyces", "oak", "lactic", "sour", "salty", "light_struck", "metallic", "medicinal", "solvent", "smoky"],
+          "tasting_hint": "Diacetyl = butter. DMS = cooked corn. Acetaldehyde = green apple. Oxidized = wet cardboard. Medicinal/plastic is always a flaw. Sulfur may dissipate with swirling."
+        },
+        {
+          "id": "sweetness",
+          "label": "Sweetness",
+          "intensity_scale": true,
+          "tasting_hint": "Perceived at the tip of the tongue. Excessive sweetness in a dry style indicates incomplete attenuation."
+        },
+        {
+          "id": "bitterness",
+          "label": "Bitterness",
+          "quick": true,
+          "intensity_scale": true,
+          "tasting_hint": "Felt on the palate and in the finish. Harsh or astringent bitterness can indicate excessive late hopping, incorrect water chemistry, or tannin extraction."
+        },
+        {
+          "id": "acidity",
+          "label": "Acidity",
+          "intensity_scale": true,
+          "tasting_hint": "Lactic (smooth, rounded) is desirable in Gose, Berliner Weisse, and sours. Acetic (vinegar-like) is sharper, felt in the throat — a flaw in most styles."
+        },
+        {
+          "id": "balance",
+          "label": "Balance",
+          "quick": true,
+          "type": "slider",
+          "options": ["Very Malty", "Malty", "Balanced", "Hoppy", "Very Hoppy"],
+          "tasting_hint": "Balance doesn't mean everything should be in the middle — an IPA should be bitter, a Märzen malty. Evaluate whether the balance fits the style."
+        },
+        {
+          "id": "finish",
+          "label": "Finish / Aftertaste",
+          "quick": true,
+          "options": ["Biting", "Dry", "Medium", "Sweet", "Cloying"],
+          "tasting_hint": "The finish is what lingers after swallowing. A dry, clean finish invites another sip. Assess whether it is appropriate for the style."
+        }
+      ]
+    },
+    {
+      "id": "mouthfeel",
+      "label": "Mouthfeel",
+      "phase": "Gustatory Phase",
+      "max_points": 5,
+      "tasting_hints": [
+        "Mouthfeel is evaluated alongside flavor — focus on texture rather than taste.",
+        "Notice how the beer feels at the beginning, during, and after swallowing.",
+        "Astringency is that dry, rough feeling, like biting into an unripe fruit skin."
+      ],
+      "aspects": [
+        {
+          "id": "body",
+          "label": "Body",
+          "quick": true,
+          "options": ["Thin", "Light", "Medium", "Full", "Heavy"],
+          "tasting_hint": "The weight and viscosity you feel as beer coats your mouth. Think skim milk (thin) vs. whole milk (medium) vs. cream (full/heavy). Residual sugars, proteins, and dextrins build body. A thin stout or a heavy lager are style faults."
+        },
+        {
+          "id": "carbonation",
+          "label": "Carbonation",
+          "quick": true,
+          "options": ["Flat", "Low", "Medium", "High", "Fizzy"],
+          "tasting_hint": "Bubbles should be fine and persistent — a sign of quality. Large, quickly dissipating bubbles often indicate aggressive forced carbonation."
+        },
+        {
+          "id": "warmth",
+          "label": "Alcohol Warmth",
+          "options": ["None", "Gentle", "Moderate", "Intense", "Burning"],
+          "tasting_hint": "A slight warmth is desirable in high-ABV beers. If it's burning or solvent-like, the yeast fermented at too high a temperature."
+        },
+        {
+          "id": "creaminess",
+          "label": "Creaminess",
+          "options": ["Watery", "Normal", "Smooth", "Creamy", "Very Creamy"],
+          "tasting_hint": "The texture of the beer as it moves across the palate — silky and coating in creamy beers, sharp and fleeting in watery ones. Distinct from body (weight); this is purely surface texture. Oats, wheat, and nitrogen all produce creaminess."
+        },
+        {
+          "id": "astringency",
+          "label": "Astringency",
+          "options": ["None", "Slight", "Moderate", "High"],
+          "tasting_hint": "Astringency feels like rough dryness on gums and cheeks. It can come from tannins due to over-milling, high-temperature sparging, or excessive hopping."
+        },
+        {
+          "id": "mouthfeel_flaws",
+          "label": "Flaws",
+          "descriptors": ["flat", "gushing", "hot_burning", "harsh", "cloying", "slick"],
+          "tasting_hint": "A flat beer (no CO2) or gushing beer (too much gas) are process or service flaws. Slick or oily texture can indicate yeast autolysis or infection."
+        }
+      ]
+    },
+    {
+      "id": "overall",
+      "label": "Overall Impression",
+      "phase": "Overall",
+      "max_points": 10,
+      "tasting_hints": [
+        "Step back from individual aspects: do you want another glass?",
+        "Think about the complete experience — do all the elements work together?",
+        "If evaluating against style, consider whether this beer would represent that style well.",
+        "Consider the 4 main fault categories: Infected (wild yeast, bacteria), Fermentation off-flavors (diacetyl, acetaldehyde, fusels), Oxidized (cardboard, sherry, stale), Style deviations (wrong bitterness, color, body, aroma profile)."
+      ],
+      "aspects": [
+        {
+          "id": "style_accuracy",
+          "label": "Style Accuracy",
+          "quick": true,
+          "intensity_scale": true,
+          "tasting_hint": "Does it meet the style parameters? Could someone identify the style without being told? Consult the BJCP style guidelines for exact parameters."
+        },
+        {
+          "id": "technical_merit",
+          "label": "Technical Merit",
+          "quick": true,
+          "intensity_scale": true,
+          "tasting_hint": "Is it well-crafted? Look for absence of flaws, clean fermentation, clarity (where applicable), correct head. A beer can be a minor style but impeccably made."
+        },
+        {
+          "id": "drinkability",
+          "label": "Drinkability",
+          "quick": true,
+          "intensity_scale": true,
+          "tasting_hint": "Do you want to keep drinking it? Would you share it with someone? A beer can be stylistically correct but fatiguing. Drinkability is key to the overall experience."
+        }
+      ]
+    }
+  ],
+  "defects_guide": [
+    {
+      "id": "diacetyl",
+      "label": "Diacetyl",
+      "perception": "Butter, butterscotch, buttery caramel",
+      "cause": "Incomplete fermentation, yeast that did not reabsorb diacetyl, Pediococcus contamination",
+      "style_exception": "Acceptable at very low levels in some English ales and Czech lagers"
+    },
+    {
+      "id": "dms",
+      "label": "DMS (Dimethyl Sulfide)",
+      "perception": "Cooked corn, canned vegetables, vegetable broth",
+      "cause": "Insufficient boil, slow wort chilling, bacterial contamination",
+      "style_exception": "Very low level acceptable in some American lagers"
+    },
+    {
+      "id": "acetaldehyde",
+      "label": "Acetaldehyde",
+      "perception": "Green apple, cucumber, freshly cut grass",
+      "cause": "Incomplete fermentation, immature yeast, insufficient conditioning",
+      "style_exception": "None"
+    },
+    {
+      "id": "oxidation",
+      "label": "Oxidation",
+      "perception": "Wet cardboard, paper, sherry, stale apple",
+      "cause": "Post-fermentation oxygen exposure, high storage temperature, poorly sealed bottle",
+      "style_exception": "Desirable in barrel-aged beers, Old Ale, aged Barleywine"
+    },
+    {
+      "id": "astringency",
+      "label": "Astringency",
+      "perception": "Rough dryness, unripe fruit skin, tannin",
+      "cause": "Over-milling, excessively hot sparging, excessive hopping, prolonged mash",
+      "style_exception": "None"
+    },
+    {
+      "id": "plastic_phenol",
+      "label": "Medicinal / Plastic Phenol",
+      "perception": "Band-aid, medicine, plastic, disinfectant",
+      "cause": "Wild yeast (Saccharomyces diastaticus), chloramines in rinse water",
+      "style_exception": "None (distinct from the desirable spicy phenol in Hefeweizen)"
+    },
+    {
+      "id": "sulfur",
+      "label": "Sulfur",
+      "perception": "Rotten egg, matches, sulfur",
+      "cause": "Certain yeast strains (lager), yeast stress, Zymomonas contamination",
+      "style_exception": "Can appear in fresh lagers and dissipates with lagering. Very low level acceptable."
+    },
+    {
+      "id": "acetic_acid",
+      "label": "Acetic Acid",
+      "perception": "Vinegar, sharp sensation in the throat",
+      "cause": "Acetobacter contamination (vinegar bacteria), oxygen exposure during fermentation",
+      "style_exception": "Sought after and desired in Lambic, Gueuze, and some American Wild Ales"
+    },
+    {
+      "id": "metallic",
+      "label": "Metallic",
+      "perception": "Coins, blood, iron",
+      "cause": "Rusty equipment, high-iron water, hop reaction with metals",
+      "style_exception": "None"
+    },
+    {
+      "id": "solvent",
+      "label": "Solvent / Fusel",
+      "perception": "Acetone, nail polish, rubbing alcohol",
+      "cause": "Fermentation at too high a temperature, stressed yeast, insufficient yeast nutrition",
+      "style_exception": "None"
+    },
+    {
+      "id": "excess_lactic",
+      "label": "Excessive Lactic Acid",
+      "perception": "Yogurt, curdled milk, intense sourness",
+      "cause": "Uncontrolled Lactobacillus contamination in styles that do not require it",
+      "style_exception": "Desired and sought in Berliner Weisse, Gose, Lambic, and sours in general"
+    },
+    {
+      "id": "light_struck",
+      "label": "Light-Struck (Skunky)",
+      "perception": "Skunk, burnt rubber",
+      "cause": "Exposure to UV or fluorescent light (especially in green or clear bottles)",
+      "style_exception": "None (though some consumers mistakenly associate it with certain imported brands)"
+    },
+    {
+      "id": "musty",
+      "label": "Musty",
+      "perception": "Damp cellar, mold, cork, old basement",
+      "cause": "Mold contamination, infected cork, poorly sanitized equipment or storage",
+      "style_exception": "None"
+    },
+    {
+      "id": "yeasty",
+      "label": "Yeasty",
+      "perception": "Bread dough, yeast, autolysis",
+      "cause": "Excessive yeast in suspension, yeast autolysis from aging on dead yeast, poor filtration",
+      "style_exception": "Low levels acceptable in bottle-conditioned and unfiltered styles"
+    }
+  ]
+}
