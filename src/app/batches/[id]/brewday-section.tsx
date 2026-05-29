@@ -403,26 +403,39 @@ function FermentationSection({
         {/* Density chart */}
         {(() => {
           const rawPoints = fermentation.steps
-            .filter(s => s.densityGL != null)
+            .filter(s => s.densityGL != null && s.densityGL >= 950 && s.densityGL <= 1300)
             .map((s, idx) => ({
               idx,
               t: s.dateTime != null ? new Date(s.dateTime).getTime() : null,
               d: s.densityGL!,
+              b: s.bubbleIntervalSec,
             }));
 
           if (rawPoints.length < 2) return null;
 
           const hasTime = rawPoints.every(p => p.t != null);
-          const points = rawPoints.map((p, i) => ({ x: hasTime ? p.t! : i, d: p.d }));
+          const points = rawPoints.map((p, i) => ({ x: hasTime ? p.t! : i, d: p.d, b: p.b }));
           if (hasTime) points.sort((a, b) => a.x - b.x);
 
-          const W = 600, H = 220, padL = 48, padR = 16, padT = 12, padB = 28;
-          const innerW = W - padL - padR;
-          const innerH = H - padT - padB;
+          const W = 600, padL = 48, padR = 16, padT = 40, padB = 28;
 
-          const minX = points[0].x, maxX = points[points.length - 1].x;
+          // Extend x-range to include all bubble steps (even those without density)
+          const bubbleAllXs: number[] = hasTime
+            ? fermentation.steps
+                .filter(s => s.bubbleIntervalSec != null && s.bubbleIntervalSec > 0 && s.dateTime != null)
+                .map(s => new Date(s.dateTime!).getTime())
+            : [];
+          const minX = Math.min(points[0].x, ...bubbleAllXs.length ? bubbleAllXs : [points[0].x]);
+          const maxX = Math.max(points[points.length - 1].x, ...bubbleAllXs.length ? bubbleAllXs : [points[points.length - 1].x]);
+
+          // H adapts to day span: taller chart for longer fermentations
+          const totalDays = hasTime ? (maxX - minX) / 86400000 : points.length - 1;
+          const innerH = Math.max(140, Math.min(220, Math.round(140 + totalDays * 4)));
+          const H = padT + padB + innerH;
+          const innerW = W - padL - padR;
           const rawMaxD = Math.max(...points.map(p => p.d));
-          const minD = 1000;
+          const rawMinD = Math.min(...points.map(p => p.d));
+          const minD = Math.floor((rawMinD - 5) / 10) * 10;
           const maxD = Math.ceil((rawMaxD + 5) / 10) * 10;
           const dRange = maxD - minD || 1;
 
@@ -431,21 +444,83 @@ function FermentationSection({
 
           const coords = points.map(p => ({ x: padL + xScale(p.x), y: padT + yScale(p.d) }));
 
-          // Centripetal Catmull-Rom (alpha=0.5) — no overshoot on uneven spacing
-          const pathD = coords.map((pt, i) => {
-            if (i === 0) return `M ${pt.x.toFixed(1)} ${pt.y.toFixed(1)}`;
-            const p1 = coords[i - 1];
-            const p2 = pt;
-            const p0 = i >= 2 ? coords[i - 2] : { x: 2 * p1.x - p2.x, y: 2 * p1.y - p2.y };
-            const p3 = i < coords.length - 1 ? coords[i + 1] : { x: 2 * p2.x - p1.x, y: 2 * p2.y - p1.y };
-            const t01 = Math.pow(Math.hypot(p1.x - p0.x, p1.y - p0.y), 0.5) || 1e-4;
-            const t12 = Math.pow(Math.hypot(p2.x - p1.x, p2.y - p1.y), 0.5) || 1e-4;
-            const t23 = Math.pow(Math.hypot(p3.x - p2.x, p3.y - p2.y), 0.5) || 1e-4;
-            const m1x = t12 * ((p1.x - p0.x) / t01 - (p2.x - p0.x) / (t01 + t12) + (p2.x - p1.x) / t12);
-            const m1y = t12 * ((p1.y - p0.y) / t01 - (p2.y - p0.y) / (t01 + t12) + (p2.y - p1.y) / t12);
-            const m2x = t12 * ((p2.x - p1.x) / t12 - (p3.x - p1.x) / (t12 + t23) + (p3.x - p2.x) / t23);
-            const m2y = t12 * ((p2.y - p1.y) / t12 - (p3.y - p1.y) / (t12 + t23) + (p3.y - p2.y) / t23);
-            return `C ${(p1.x + m1x / 3).toFixed(1)} ${(p1.y + m1y / 3).toFixed(1)}, ${(p2.x - m2x / 3).toFixed(1)} ${(p2.y - m2y / 3).toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+          // Bubble speed line — all steps with bubble data, no range filter
+          let bubbleActivityPts: { x: number; b: number }[];
+          if (hasTime) {
+            bubbleActivityPts = fermentation.steps
+              .filter(s => s.bubbleIntervalSec != null && s.bubbleIntervalSec > 0 && s.dateTime != null)
+              .map(s => ({ x: new Date(s.dateTime!).getTime(), b: s.bubbleIntervalSec! }))
+              .sort((a, b) => a.x - b.x)
+              .map(p => ({ x: padL + xScale(p.x), b: p.b }));
+          } else {
+            bubbleActivityPts = points
+              .map((p, i) => ({ x: coords[i].x, b: p.b }))
+              .filter((p): p is { x: number; b: number } => p.b != null && p.b > 0);
+          }
+          let speedPathD = "";
+          if (bubbleActivityPts.length >= 2) {
+            // Use raw activity values (not pre-normalized) so Lagrange evaluates in original space
+            const activities = bubbleActivityPts.map(p => 1 / p.b);
+            const xs = bubbleActivityPts.map(p => p.x);
+            const lagrange = (x: number) => {
+              let result = 0;
+              for (let i = 0; i < xs.length; i++) {
+                let term = activities[i];
+                for (let j = 0; j < xs.length; j++) {
+                  if (j !== i) term *= (x - xs[j]) / (xs[i] - xs[j]);
+                }
+                result += term;
+              }
+              return result;
+            };
+            const samples = 80;
+            const x0 = xs[0], x1 = xs[xs.length - 1];
+            // Sample first to find actual range (including polynomial overshoots)
+            const sampled = Array.from({ length: samples }, (_, i) => ({
+              x: x0 + (i / (samples - 1)) * (x1 - x0),
+              v: lagrange(x0 + (i / (samples - 1)) * (x1 - x0)),
+            }));
+            const actMin = Math.min(0, ...sampled.map(s => s.v));
+            const actMax = Math.max(...sampled.map(s => s.v));
+            const actRange = actMax - actMin || 1;
+            // Normalize using actual sample range → curve always fits, no clamping
+            speedPathD = sampled.map((s, i) => {
+              const y = (s.v - actMin) / actRange;
+              const cy = padT + innerH - y * innerH;
+              return i === 0 ? `M ${s.x.toFixed(1)} ${cy.toFixed(1)}` : `L ${s.x.toFixed(1)} ${cy.toFixed(1)}`;
+            }).join(" ");
+          }
+
+          // Monotone cubic spline (Fritsch-Carlson) — smooth, no oscillation
+          const dxs = coords.map(c => c.x);
+          const dys = points.map(p => p.d);
+          const n = dxs.length;
+          const delta = Array.from({ length: n - 1 }, (_, i) => (dys[i + 1] - dys[i]) / (dxs[i + 1] - dxs[i]));
+          const m = new Array<number>(n);
+          m[0] = delta[0];
+          m[n - 1] = delta[n - 2];
+          for (let i = 1; i < n - 1; i++) m[i] = (delta[i - 1] + delta[i]) / 2;
+          for (let i = 0; i < n - 1; i++) {
+            if (Math.abs(delta[i]) < 1e-10) { m[i] = 0; m[i + 1] = 0; }
+            else {
+              const a = m[i] / delta[i], b = m[i + 1] / delta[i];
+              const h = Math.hypot(a, b);
+              if (h > 3) { m[i] = 3 * delta[i] / h * a; m[i + 1] = 3 * delta[i] / h * b; }
+            }
+          }
+          const spline = (x: number) => {
+            let lo = 0, hi = n - 1;
+            while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (dxs[mid] <= x) lo = mid; else hi = mid; }
+            if (x <= dxs[lo]) return dys[lo];
+            if (x >= dxs[hi]) return dys[hi];
+            const hx = dxs[hi] - dxs[lo], t = (x - dxs[lo]) / hx;
+            return (2*t*t*t - 3*t*t + 1)*dys[lo] + (t*t*t - 2*t*t + t)*hx*m[lo]
+              + (-2*t*t*t + 3*t*t)*dys[hi] + (t*t*t - t*t)*hx*m[hi];
+          };
+          const pathD = Array.from({ length: 80 }, (_, i) => {
+            const x = dxs[0] + (i / 79) * (dxs[n - 1] - dxs[0]);
+            const cy = padT + yScale(spline(x));
+            return i === 0 ? `M ${x.toFixed(1)} ${cy.toFixed(1)}` : `L ${x.toFixed(1)} ${cy.toFixed(1)}`;
           }).join(" ");
 
           // Y-axis: major ticks every 10, minor ticks every 2
@@ -454,15 +529,23 @@ function FermentationSection({
           const minorTicks: number[] = [];
           for (let v = minD + 2; v < maxD; v += 2) if (v % 10 !== 0) minorTicks.push(v);
 
-          // X-axis ticks
+          // X-axis ticks: every 1 day when hasTime, else by step index
           const pitchingX = points[0].x;
-          const xTickCount = Math.min(points.length, 5);
-          const xTicks = points.filter((_, i) => i === 0 || i === points.length - 1 || points.length <= xTickCount);
+          const dayMs = 86400000;
+          const xTicks: { x: number; label: string }[] = hasTime
+            ? Array.from(
+                { length: Math.floor((maxX - pitchingX) / dayMs) + 1 },
+                (_, i) => {
+                  const t = pitchingX + i * dayMs;
+                  return { x: t, label: i === 0 ? "0d" : `${i}d` };
+                }
+              ).filter(t => t.x <= maxX)
+            : points.map((p, i) => ({ x: p.x, label: `S${i + 1}` }));
 
           return (
             <div className="border rounded-lg p-3">
               <p className="text-xs text-muted-foreground mb-2">Density evolution</p>
-              <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 220 }}>
+              <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: H }}>
                 {/* Minor grid lines every 2 */}
                 {minorTicks.map((v, i) => (
                   <line key={i} x1={padL} y1={padT + yScale(v)} x2={padL + innerW} y2={padT + yScale(v)}
@@ -480,25 +563,21 @@ function FermentationSection({
                     {v.toFixed(0)}
                   </text>
                 ))}
-                {/* X axis labels */}
-                {xTicks.map((p, i) => {
-                  let label: string;
-                  if (hasTime) {
-                    const hs = (p.x - pitchingX) / 3600000;
-                    label = hs < 24 ? `${hs.toFixed(0)}h` : `${(hs / 24).toFixed(1)}d`;
-                  } else {
-                    label = `S${points.indexOf(p) + 1}`;
-                  }
-                  return (
-                    <text
-                      key={i}
-                      x={padL + xScale(p.x)} y={H - 4}
-                      textAnchor="middle" fontSize={9} fill="currentColor" opacity={0.5}
-                    >
-                      {label}
-                    </text>
-                  );
-                })}
+                {/* X axis labels — every 1 day */}
+                {xTicks.map((t, i) => (
+                  <text
+                    key={i}
+                    x={padL + xScale(t.x)} y={H - 4}
+                    textAnchor="middle" fontSize={9} fill="currentColor" opacity={0.5}
+                  >
+                    {t.label}
+                  </text>
+                ))}
+                {/* Fermentation speed (bubble activity) — dashed background line */}
+                {speedPathD && (
+                  <path d={speedPathD} fill="none" stroke="#22c55e" strokeWidth={1.5}
+                    strokeDasharray="4 4" strokeLinecap="round" opacity={0.35} />
+                )}
                 {/* Line */}
                 <path d={pathD} fill="none" stroke="#3b82f6" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
                 {/* Dots */}
@@ -509,6 +588,22 @@ function FermentationSection({
                     r={3.5} fill="#3b82f6"
                   />
                 ))}
+                {/* Point labels: density + attenuation (skip first point) */}
+                {coords.map((pt, i) => {
+                  if (i === 0) return null;
+                  const og = points[0].d;
+                  const att = og > 1000 ? ((og - points[i].d) / (og - 1000)) * 100 : 0;
+                  return (
+                    <g key={`lbl-${i}`}>
+                      <text x={pt.x} y={pt.y - 18} textAnchor="middle" fontSize={8.5} fill="currentColor" opacity={0.75} fontWeight="500">
+                        {points[i].d.toFixed(0)}
+                      </text>
+                      <text x={pt.x} y={pt.y - 8} textAnchor="middle" fontSize={8} fill="#3b82f6" opacity={0.9}>
+                        {att.toFixed(0)}%
+                      </text>
+                    </g>
+                  );
+                })}
               </svg>
             </div>
           );
