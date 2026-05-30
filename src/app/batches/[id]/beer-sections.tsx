@@ -156,6 +156,7 @@ interface Yeast {
 interface BatchGrain {
   id: string;
   grams: number;
+  mashAddition: string | null;
   // Snapshot fields (copied from inventory at add time, editable per batch)
   name: string | null;
   brand: string | null;
@@ -300,8 +301,8 @@ interface BeerSectionsProps {
     targetSrm: number | null;
     targetFermentarL: number | null;
   }) => Promise<void>;
-  addGrainAction: (data: { grainId: string; grams: number }) => Promise<BatchGrain>;
-  updateGrainAction: (id: string, data: { grams: number; colorL: number | null; maxYield: number | null; brand: string | null }) => Promise<void>;
+  addGrainAction: (data: { grainId: string; grams: number; mashAddition: string }) => Promise<BatchGrain>;
+  updateGrainAction: (id: string, data: { grams: number; colorL: number | null; maxYield: number | null; brand: string | null; mashAddition: string }) => Promise<void>;
   deleteGrainAction: (id: string) => Promise<void>;
   addHopAction: (data: { hopId: string; grams: number; use: string; additionTime: number }) => Promise<BatchHop>;
   updateHopAction: (id: string, data: { grams: number; use: string; additionTime: number | null; alphaAcid: number }) => Promise<void>;
@@ -368,6 +369,12 @@ interface BeerSectionsProps {
 }
 
 type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparation" | "bdMilling" | "bdMash" | "bdSparge" | "bdPreboil" | "bdBoil" | "bdWhirlpool" | "bdFermentation" | "bdKegging" | "bdLagering" | "bdBottling" | "finalStats" | "finalStatsOverview" | "finalStatsTiming" | "finalStatsTastings";
+
+const MASH_ADDITIONS = [
+  { value: "mash",     label: "Mash" },
+  { value: "mash_out", label: "Mash out" },
+  { value: "sparge",   label: "Sparge" },
+] as const;
 
 const MASH_STEP_PRESETS = [
   { name: "Acid rest (35–45°C)", temp: 40, description: "Lowers mash pH; mostly historical now since modern malts are well-modified and brewers adjust pH chemically." },
@@ -627,10 +634,10 @@ export function BeerSections({
 
   const [grainRows, setGrainRows] = useState(grains);
   const [editingGrainId, setEditingGrainId] = useState<string | null>(null);
-  const [editGrainDraft, setEditGrainDraft] = useState<{ grams: string; colorL: string; maxYield: string; brand: string }>({ grams: "", colorL: "", maxYield: "", brand: "" });
+  const [editGrainDraft, setEditGrainDraft] = useState<{ grams: string; colorL: string; maxYield: string; brand: string; mashAddition: string }>({ grams: "", colorL: "", maxYield: "", brand: "", mashAddition: "mash" });
   const [grainSort, setGrainSort] = useState<{ key: string; dir: "asc" | "desc" } | null>(null);
   const [isAddingGrain, setIsAddingGrain] = useState(false);
-  const [addGrainDraft, setAddGrainDraft] = useState<{ grainId: string; grams: string }>({ grainId: "", grams: "" });
+  const [addGrainDraft, setAddGrainDraft] = useState<{ grainId: string; grams: string; mashAddition: string }>({ grainId: "", grams: "", mashAddition: "mash" });
 
   const [hopRows, setHopRows] = useState(hops);
   const [editingHopId, setEditingHopId] = useState<string | null>(null);
@@ -1071,8 +1078,9 @@ export function BeerSections({
 
   const acidCalc = useMemo(() => {
     if (targetPh == null || grainRows.length === 0) return null;
+    const mashGrains = grainRows.filter((r) => (r.mashAddition ?? "mash") === "mash");
     const common = {
-      grains: grainRows.map((r) => ({ grams: r.grams, colorL: r.colorL ?? r.grain.colorL, grainGroup: r.grainGroup ?? r.grain.grainGroup, grain: { colorL: r.grain.colorL, grainGroup: r.grain.grainGroup } })),
+      grains: mashGrains.map((r) => ({ grams: r.grams, colorL: r.colorL ?? r.grain.colorL, grainGroup: r.grainGroup ?? r.grain.grainGroup, grain: { colorL: r.grain.colorL, grainGroup: r.grain.grainGroup } })),
       sourceHco3Ppm: sourceSnapshotLocal?.hco3Ppm ?? 0,
       sourceCaPpm:   sourceSnapshotLocal?.caPpm   ?? 0,
       sourceMgPpm:   sourceSnapshotLocal?.mgPpm   ?? 0,
@@ -1137,16 +1145,18 @@ export function BeerSections({
   })();
 
   const grainCols = [
-    { key: "name",    label: "Name" },
-    { key: "grams",   label: "Grams" },
-    { key: "pct",     label: "%" },
-    { key: "extract", label: "Extract (g)" },
-    { key: "colorL",  label: "Color (°L)" },
-    { key: "mcu",     label: "MCU" },
+    { key: "name",         label: "Name" },
+    { key: "mashAddition", label: "When" },
+    { key: "grams",        label: "Grams" },
+    { key: "pct",          label: "%" },
+    { key: "extract",      label: "Extract (g)" },
+    { key: "colorL",       label: "Color (°L)" },
+    { key: "mcu",          label: "MCU" },
   ] as const;
 
   const sortedGrainRows = sortRows(grainRows, grainSort, (r, k) => {
     if (k === "name") return r.name ?? r.grain.name;
+    if (k === "mashAddition") return r.mashAddition ?? "mash";
     if (k === "grams") return r.grams;
     if (k === "colorL") return (r.colorL ?? r.grain.colorL) ?? -1;
     if (k === "pct") return grainCalc(r).pct;
@@ -1570,6 +1580,16 @@ export function BeerSections({
                           </>
                         )}
                       </td>
+                      <td className="py-2 pr-3 text-muted-foreground">
+                        {isEditing ? (
+                          <Select value={editGrainDraft.mashAddition} onValueChange={(v) => setEditGrainDraft((d) => ({ ...d, mashAddition: v }))}>
+                            <SelectTrigger className="h-7 text-sm w-28"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {MASH_ADDITIONS.map((a) => <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        ) : MASH_ADDITIONS.find((a) => a.value === (bg.mashAddition ?? "mash"))?.label}
+                      </td>
                       <td className="py-2 pr-3">
                         {isEditing ? (
                           <NumberInput step="1" value={editGrainDraft.grams} onChange={(e) => setEditGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-7 text-sm w-24" />
@@ -1600,8 +1620,9 @@ export function BeerSections({
                                   const colorL = editGrainDraft.colorL !== "" ? parseFloat(editGrainDraft.colorL) : null;
                                   const maxYield = editGrainDraft.maxYield !== "" ? parseFloat(editGrainDraft.maxYield) : null;
                                   const brand = editGrainDraft.brand.trim() !== "" ? editGrainDraft.brand.trim() : null;
-                                  await updateGrainAction(bg.id, { grams, colorL, maxYield, brand });
-                                  setGrainRows((rows) => rows.map((r) => r.id === bg.id ? { ...r, grams, colorL, maxYield, brand } : r));
+                                  const mashAddition = editGrainDraft.mashAddition;
+                                  await updateGrainAction(bg.id, { grams, colorL, maxYield, brand, mashAddition });
+                                  setGrainRows((rows) => rows.map((r) => r.id === bg.id ? { ...r, grams, colorL, maxYield, brand, mashAddition } : r));
                                 } catch { toast.error("Failed to save"); }
                                 finally { setEditingGrainId(null); }
                               }}
@@ -1621,6 +1642,7 @@ export function BeerSections({
                                   colorL: effectiveColorL != null ? String(effectiveColorL) : "",
                                   maxYield: effectiveMaxYield != null ? String(effectiveMaxYield) : "",
                                   brand: bg.brand ?? bg.grain.brand ?? "",
+                                  mashAddition: bg.mashAddition ?? "mash",
                                 });
                                 setEditingGrainId(bg.id);
                               }}
@@ -1641,6 +1663,7 @@ export function BeerSections({
                 })}
                 <tr className="border-t font-bold text-xs">
                   <td className="pt-2 pr-3">Total</td>
+                  <td className="pt-2 pr-3" />
                   <td className="pt-2 pr-3">{grainTotals.grams} g</td>
                   <td className="pt-2 pr-3">100%</td>
                   <td className="pt-2 pr-3">{grainTotals.extract.toFixed(0)} g</td>
@@ -1688,15 +1711,24 @@ export function BeerSections({
               />
             </div>
             <div className="flex flex-col gap-1">
+              <span className="text-xs text-muted-foreground">When</span>
+              <Select value={addGrainDraft.mashAddition} onValueChange={(v) => setAddGrainDraft((d) => ({ ...d, mashAddition: v }))}>
+                <SelectTrigger className="h-8 text-sm w-28"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {MASH_ADDITIONS.map((a) => <SelectItem key={a.value} value={a.value}>{a.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
               <span className="text-xs text-muted-foreground">Grams</span>
               <NumberInput step="1" placeholder="g" value={addGrainDraft.grams} onChange={(e) => setAddGrainDraft((d) => ({ ...d, grams: e.target.value }))} className="h-8 text-sm w-24" />
             </div>
             <Button size="sm" disabled={!addGrainDraft.grainId || !addGrainDraft.grams}
               onClick={async () => {
                 try {
-                  const created = await addGrainAction({ grainId: addGrainDraft.grainId, grams: parseFloat(addGrainDraft.grams) });
+                  const created = await addGrainAction({ grainId: addGrainDraft.grainId, grams: parseFloat(addGrainDraft.grams), mashAddition: addGrainDraft.mashAddition });
                   setGrainRows((rows) => [...rows, created]);
-                  setAddGrainDraft({ grainId: "", grams: "" });
+                  setAddGrainDraft({ grainId: "", grams: "", mashAddition: "mash" });
                   setIsAddingGrain(false);
                 } catch { toast.error("Failed to add grain"); }
               }}

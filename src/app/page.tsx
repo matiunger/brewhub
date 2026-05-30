@@ -31,6 +31,7 @@ function calcAbv(og: number | null | undefined, fg: number | null | undefined): 
 type BatchWithRelations = Awaited<ReturnType<typeof prisma.batch.findMany>>[number] & {
   grains: { grams: number; colorL: number | null; grain: { colorL: number | null } }[];
   hops: { grams: number; alphaAcid: number | null; additionTime: number; use: string; hop: { alphaAcid: number } }[];
+  tastings: { totalScore: number | null }[];
 };
 
 type DisplayValues = { og: number | null; ibu: number | null; srm: number | null; abv: number | null };
@@ -94,7 +95,7 @@ function computeDisplayValues(batch: BatchWithRelations): DisplayValues {
   };
 }
 
-type SortKey = "name" | "style" | "brewDate" | "og" | "ibu" | "srm" | "abv";
+type SortKey = "name" | "style" | "brewDate" | "og" | "ibu" | "srm" | "abv" | "score";
 
 function buildUrl(params: Record<string, string | undefined>): string {
   const p = new URLSearchParams();
@@ -117,6 +118,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     include: {
       grains: { include: { grain: { select: { colorL: true } } } },
       hops: { include: { hop: { select: { alphaAcid: true } } } },
+      tastings: { select: { totalScore: true } },
     },
   }) as BatchWithRelations[];
 
@@ -135,18 +137,19 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       case "ibu":      av = da.ibu ?? 0;                      bv = db.ibu ?? 0;                      break;
       case "srm":      av = da.srm ?? 0;                      bv = db.srm ?? 0;                      break;
       case "abv":      av = da.abv ?? 0;                      bv = db.abv ?? 0;                      break;
+      case "score":    av = Math.max(0, ...a.tastings.map((t) => t.totalScore ?? 0)); bv = Math.max(0, ...b.tastings.map((t) => t.totalScore ?? 0)); break;
       default:         av = a.brewDate?.getTime() ?? 0;       bv = b.brewDate?.getTime() ?? 0;
     }
     const cmp = typeof av === "string" ? av.localeCompare(bv as string) : (av as number) - (bv as number);
     return order === "asc" ? cmp : -cmp;
   });
 
-  function thLink(label: string, col: SortKey, align: "left" | "right" = "left") {
+  function thLink(label: string, col: SortKey, align: "left" | "right" = "left", extraClass?: string) {
     const isActive = sort === col;
     const nextOrder = isActive && order === "asc" ? "desc" : "asc";
     const href = buildUrl({ type: typeFilter, draft: draftFilter, sort: col, order: nextOrder });
     return (
-      <th className={`px-4 py-3 font-medium text-${align}`}>
+      <th className={`px-4 py-3 font-medium text-${align}${extraClass ? ` ${extraClass}` : ""}`}>
         <a href={href} className={`inline-flex items-center gap-1 hover:text-foreground transition-colors ${isActive ? "text-foreground" : ""}`}>
           {label}
           <span className="text-[10px] w-3">
@@ -221,13 +224,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <thead>
             <tr className="bg-muted/50 text-muted-foreground text-xs uppercase tracking-wide">
               <th className="px-4 py-3 w-8" />
-              {thLink("Name", "name", "left")}
+              {thLink("Name", "name", "left", "w-64")}
               {thLink("Style", "style", "left")}
               {thLink("Brew Date", "brewDate", "left")}
               {thLink("OG", "og", "right")}
               {thLink("IBU", "ibu", "right")}
               {thLink("SRM", "srm", "right")}
               {thLink("ABV", "abv", "right")}
+              {thLink("Score", "score", "right")}
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -242,9 +246,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                     />
                   </td>
                   <td className="px-4 py-3 font-medium">
-                    <Link href={`/batches/${batch.id}`} className="hover:underline">
-                      {batch.name}
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link href={`/batches/${batch.id}`} className="hover:underline">
+                        {batch.name}
+                      </Link>
+                      {batch.draft && (
+                        <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-700 leading-tight">
+                          Draft
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {batch.style || <span className="opacity-40">—</span>}
@@ -266,12 +277,21 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
                     {dv.abv != null ? dv.abv.toFixed(1) + "%" : <span className="opacity-40">—</span>}
                   </td>
+                  <td className="px-4 py-3 text-right">
+                    {(() => {
+                      const scores = batch.tastings.map((t) => t.totalScore).filter((s): s is number => s != null);
+                      const best = scores.length > 0 ? Math.max(...scores) : null;
+                      if (best == null) return <span className="opacity-40">—</span>;
+                      const color = best >= 38 ? "bg-green-100 text-green-800" : best >= 21 ? "bg-orange-100 text-orange-800" : "bg-red-100 text-red-800";
+                      return <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold tabular-nums ${color}`}>{best.toFixed(1)}</span>;
+                    })()}
+                  </td>
                 </tr>
               );
             })}
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-12 text-center text-muted-foreground">
+                <td colSpan={9} className="px-4 py-12 text-center text-muted-foreground">
                   No batches found
                 </td>
               </tr>

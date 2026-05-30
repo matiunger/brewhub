@@ -206,18 +206,19 @@ model Batch {
 }
 
 model BatchGrain {
-  id         String   @id @default(uuid())
-  batch      Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
-  batchId    String   @map("batch_id")
-  grain      Grain    @relation(fields: [grainId], references: [id])
-  grainId    String   @map("grain_id")
-  grams      Float
+  id           String   @id @default(uuid())
+  batch        Batch    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  batchId      String   @map("batch_id")
+  grain        Grain    @relation(fields: [grainId], references: [id])
+  grainId      String   @map("grain_id")
+  grams        Float
+  mashAddition String?  @map("mash_addition") @default("mash") // mash, mash_out, sparge
   // Snapshot fields — copied from inventory at add time, editable per batch
-  name       String?
-  brand      String?
-  colorL     Float?   @map("color_l")
-  maxYield   Float?   @map("max_yield")
-  grainGroup String?  @map("grain_group")
+  name         String?
+  brand        String?
+  colorL       Float?   @map("color_l")
+  maxYield     Float?   @map("max_yield")
+  grainGroup   String?  @map("grain_group")
 
   @@map("batch_grains")
 }

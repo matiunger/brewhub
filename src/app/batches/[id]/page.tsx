@@ -1,12 +1,13 @@
 import { redirect, notFound } from "next/navigation";
 import { type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { Pencil } from "lucide-react";
+import { Pencil, Copy } from "lucide-react";
 import { calculateBrewingStats } from "@/lib/calculations";
 import { DeleteBatchDialog } from "./delete-dialog";
 import { BatchForm } from "./batch-form";
 import { BeerSections } from "./beer-sections";
 import { ExportBeerJsonButton } from "@/components/export-beerjson-button";
+import { Button } from "@/components/ui/button";
 
 interface BatchPageProps {
   params: Promise<{ id: string }>;
@@ -127,7 +128,7 @@ async function updateMashSettings(
   await prisma.batch.update({ where: { id }, data });
 }
 
-async function updateBatchGrain(batchGrainId: string, data: { grams: number; colorL: number | null; maxYield: number | null; brand: string | null }) {
+async function updateBatchGrain(batchGrainId: string, data: { grams: number; colorL: number | null; maxYield: number | null; brand: string | null; mashAddition: string }) {
   "use server";
   await prisma.batchGrain.update({ where: { id: batchGrainId }, data });
 }
@@ -368,7 +369,133 @@ async function deleteBatch(id: string) {
   redirect("/");
 }
 
-async function addBatchGrain(batchId: string, data: { grainId: string; grams: number }) {
+async function copyBatch(id: string) {
+  "use server";
+
+  const src = await prisma.batch.findUnique({
+    where: { id },
+    include: {
+      grains: true,
+      hops: true,
+      yeasts: true,
+      mashSteps: { orderBy: { sortOrder: "asc" } },
+    },
+  });
+  if (!src) throw new Error("Batch not found");
+
+  const copy = await prisma.batch.create({
+    data: {
+      name: `Copy of ${src.name}`,
+      type: src.type,
+      style: src.style,
+      notes: src.notes,
+      draft: true,
+      brewDate: null,
+      brewdayData: null,
+      // Target stats
+      targetFermentarL: src.targetFermentarL,
+      targetOg: src.targetOg,
+      targetFg: src.targetFg,
+      targetIbu: src.targetIbu,
+      targetSrm: src.targetSrm,
+      // Equipment
+      equipmentId: src.equipmentId,
+      equipmentName: src.equipmentName,
+      equipmentBrewhouseEff: src.equipmentBrewhouseEff,
+      equipmentMashEff: src.equipmentMashEff,
+      equipmentMashTunVolumeL: src.equipmentMashTunVolumeL,
+      equipmentMashTunDeadSpaceL: src.equipmentMashTunDeadSpaceL,
+      equipmentMashTunLossL: src.equipmentMashTunLossL,
+      equipmentBoilPotVolumeL: src.equipmentBoilPotVolumeL,
+      equipmentBoilEvapRateLH: src.equipmentBoilEvapRateLH,
+      equipmentHeatEvapRateLH: src.equipmentHeatEvapRateLH,
+      equipmentGrainAbsLKg: src.equipmentGrainAbsLKg,
+      equipmentFermenterVolumeL: src.equipmentFermenterVolumeL,
+      equipmentFermenterWeightKg: src.equipmentFermenterWeightKg,
+      equipmentFermenterLossL: src.equipmentFermenterLossL,
+      equipmentTrubLossL: src.equipmentTrubLossL,
+      equipmentSystemLossPct: src.equipmentSystemLossPct,
+      equipmentTempContractionPct: src.equipmentTempContractionPct,
+      equipmentBoilPotDiameter: src.equipmentBoilPotDiameter,
+      equipmentSpargeWaterPotDiameter: src.equipmentSpargeWaterPotDiameter,
+      // Mash
+      grainTempC: src.grainTempC,
+      targetPh: src.targetPh,
+      spargeTargetPh: src.spargeTargetPh,
+      mashMode: src.mashMode,
+      mashRatioLKg: src.mashRatioLKg,
+      mashInfuseTempC: src.mashInfuseTempC,
+      mashAcidType: src.mashAcidType,
+      mashAcidDose: src.mashAcidDose,
+      // Boil times
+      heatUpTimeMin: src.heatUpTimeMin,
+      boilTimeMin: src.boilTimeMin,
+      whirpoolTimeMin: src.whirpoolTimeMin,
+      // Salts
+      saltChalkGL: src.saltChalkGL,
+      saltBakingSodaGL: src.saltBakingSodaGL,
+      saltGypsumGL: src.saltGypsumGL,
+      saltCaCl2GL: src.saltCaCl2GL,
+      saltEpsomGL: src.saltEpsomGL,
+      saltNaClGL: src.saltNaClGL,
+      // Water profiles + snapshots
+      sourceWaterProfileId: src.sourceWaterProfileId,
+      targetWaterProfileId: src.targetWaterProfileId,
+      sourceCaPpm: src.sourceCaPpm,
+      sourceMgPpm: src.sourceMgPpm,
+      sourceNaPpm: src.sourceNaPpm,
+      sourceClPpm: src.sourceClPpm,
+      sourceSo4Ppm: src.sourceSo4Ppm,
+      sourceZnPpm: src.sourceZnPpm,
+      sourceHco3Ppm: src.sourceHco3Ppm,
+      sourceWaterPh: src.sourceWaterPh,
+      targetCaPpm: src.targetCaPpm,
+      targetMgPpm: src.targetMgPpm,
+      targetNaPpm: src.targetNaPpm,
+      targetClPpm: src.targetClPpm,
+      targetSo4Ppm: src.targetSo4Ppm,
+      targetZnPpm: src.targetZnPpm,
+      targetHco3Ppm: src.targetHco3Ppm,
+      targetWaterPh: src.targetWaterPh,
+    },
+  });
+
+  await prisma.batchGrain.createMany({
+    data: src.grains.map((g) => ({
+      batchId: copy.id, grainId: g.grainId, grams: g.grams,
+      mashAddition: g.mashAddition, name: g.name, brand: g.brand,
+      colorL: g.colorL, maxYield: g.maxYield, grainGroup: g.grainGroup,
+    })),
+  });
+
+  await prisma.batchHop.createMany({
+    data: src.hops.map((h) => ({
+      batchId: copy.id, hopId: h.hopId, grams: h.grams,
+      additionTime: h.additionTime, use: h.use, name: h.name, alphaAcid: h.alphaAcid,
+    })),
+  });
+
+  await prisma.batchYeast.createMany({
+    data: src.yeasts.map((y) => ({
+      batchId: copy.id, yeastId: y.yeastId, quantity: y.quantity,
+      quantityAmount: y.quantityAmount, quantityUnits: y.quantityUnits,
+      temp: y.temp, name: y.name, brand: y.brand, attenuation: y.attenuation,
+    })),
+  });
+
+  await prisma.mashStep.createMany({
+    data: src.mashSteps.map((s) => ({
+      batchId: copy.id, name: s.name, type: s.type,
+      stepTemperatureC: s.stepTemperatureC, stepTimeMin: s.stepTimeMin,
+      amountL: s.amountL, rampTimeMin: s.rampTimeMin, endTemperatureC: s.endTemperatureC,
+      description: s.description, infuseTemperatureC: s.infuseTemperatureC, sortOrder: s.sortOrder,
+    })),
+  });
+
+  redirect(`/batches/${copy.id}`);
+}
+
+async function addBatchGrain(batchId: string, data: { grainId: string; grams: number; mashAddition: string }) {
   "use server";
   const grain = await prisma.grain.findUnique({ where: { id: data.grainId } });
   if (!grain) throw new Error("Grain not found");
@@ -377,6 +504,7 @@ async function addBatchGrain(batchId: string, data: { grainId: string; grams: nu
       batchId,
       grainId: data.grainId,
       grams: data.grams,
+      mashAddition: data.mashAddition,
       name: grain.name,
       brand: grain.brand,
       colorL: grain.colorL,
@@ -472,6 +600,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const updateNotesWithId = updateNotes.bind(null, id);
   const updateTargetStatsWithId = updateTargetStats.bind(null, id);
   const deleteWithId = deleteBatch.bind(null, id);
+  const copyWithId = copyBatch.bind(null, id);
   const updateGrainWithId = updateBatchGrain;
   const deleteGrainWithId = deleteBatchGrain;
   const updateHopWithId = updateBatchHop;
@@ -528,6 +657,11 @@ export default async function BatchPage({ params }: BatchPageProps) {
         
         <div className="flex gap-2">
           <ExportBeerJsonButton batchId={id} />
+          <form action={copyWithId}>
+            <Button type="submit" variant="outline" size="sm">
+              <Copy className="h-4 w-4 mr-1.5" />Copy
+            </Button>
+          </form>
           <DeleteBatchDialog batchName={batch.name} deleteAction={deleteWithId} />
         </div>
       </div>
