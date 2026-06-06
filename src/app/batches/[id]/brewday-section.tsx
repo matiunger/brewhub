@@ -204,6 +204,7 @@ function FermentationSection({
 }) {
   const [mode, setMode] = useState<"direct" | "weight">("direct");
   const [notesModalId, setNotesModalId] = useState<string | null>(null);
+  const [curves, setCurves] = useState(new Set<"gravity" | "activity" | "temp" | "pressure">(["gravity", "activity"]));
 
   const brewDateDefault = brewDate
     ? brewDate.toISOString().slice(0, 16)
@@ -400,12 +401,13 @@ function FermentationSection({
           </div>
         </div>
 
-        {/* Density chart */}
+        {/* Fermentation chart */}
         {(() => {
-          const rawPoints = fermentation.steps
+          const allSteps = fermentation.steps;
+          const rawPoints = allSteps
             .filter(s => s.densityGL != null && s.densityGL >= 950 && s.densityGL <= 1300)
-            .map((s, idx) => ({
-              idx,
+            .map(s => ({
+              stepIdx: allSteps.indexOf(s),
               t: s.dateTime != null ? new Date(s.dateTime).getTime() : null,
               d: s.densityGL!,
               b: s.bubbleIntervalSec,
@@ -414,19 +416,34 @@ function FermentationSection({
           if (rawPoints.length < 2) return null;
 
           const hasTime = rawPoints.every(p => p.t != null);
-          const points = rawPoints.map((p, i) => ({ x: hasTime ? p.t! : i, d: p.d, b: p.b }));
+          const points = rawPoints.map(p => ({ x: hasTime ? p.t! : p.stepIdx, d: p.d, b: p.b }));
           if (hasTime) points.sort((a, b) => a.x - b.x);
+
+          // Temp and pressure points across all steps
+          const tempPts = allSteps
+            .filter(s => s.tempC != null && (!hasTime || s.dateTime != null))
+            .map(s => ({ x: hasTime ? new Date(s.dateTime!).getTime() : allSteps.indexOf(s), v: s.tempC! }))
+            .sort((a, b) => a.x - b.x);
+          const pressPts = allSteps
+            .filter(s => s.pressureBar != null && s.pressureBar >= 0 && (!hasTime || s.dateTime != null))
+            .map(s => ({ x: hasTime ? new Date(s.dateTime!).getTime() : allSteps.indexOf(s), v: s.pressureBar! }))
+            .sort((a, b) => a.x - b.x);
 
           const W = 600, padL = 48, padR = 16, padT = 40, padB = 28;
 
-          // Extend x-range to include all bubble steps (even those without density)
-          const bubbleAllXs: number[] = hasTime
-            ? fermentation.steps
-                .filter(s => s.bubbleIntervalSec != null && s.bubbleIntervalSec > 0 && s.dateTime != null)
+          // X range covers all visible curve data
+          const bubbleXs: number[] = hasTime
+            ? allSteps.filter(s => s.bubbleIntervalSec != null && s.bubbleIntervalSec > 0 && s.dateTime != null)
                 .map(s => new Date(s.dateTime!).getTime())
             : [];
-          const minX = Math.min(points[0].x, ...bubbleAllXs.length ? bubbleAllXs : [points[0].x]);
-          const maxX = Math.max(points[points.length - 1].x, ...bubbleAllXs.length ? bubbleAllXs : [points[points.length - 1].x]);
+          const allXVals = [
+            ...points.map(p => p.x),
+            ...bubbleXs,
+            ...(curves.has("temp") ? tempPts.map(p => p.x) : []),
+            ...(curves.has("pressure") ? pressPts.map(p => p.x) : []),
+          ];
+          const minX = Math.min(...allXVals);
+          const maxX = Math.max(...allXVals);
 
           // H adapts to day span: taller chart for longer fermentations
           const totalDays = hasTime ? (maxX - minX) / 86400000 : points.length - 1;
@@ -441,17 +458,18 @@ function FermentationSection({
 
           const xScale = (x: number) => minX === maxX ? innerW / 2 : ((x - minX) / (maxX - minX)) * innerW;
           const yScale = (d: number) => innerH - ((d - minD) / dRange) * innerH;
+          const screenX = (x: number) => padL + xScale(x);
 
-          const coords = points.map(p => ({ x: padL + xScale(p.x), y: padT + yScale(p.d) }));
+          const coords = points.map(p => ({ x: screenX(p.x), y: padT + yScale(p.d) }));
 
-          // Bubble speed line — all steps with bubble data, no range filter
+          // Activity (bubble) curve
           let bubbleActivityPts: { x: number; b: number }[];
           if (hasTime) {
-            bubbleActivityPts = fermentation.steps
+            bubbleActivityPts = allSteps
               .filter(s => s.bubbleIntervalSec != null && s.bubbleIntervalSec > 0 && s.dateTime != null)
               .map(s => ({ x: new Date(s.dateTime!).getTime(), b: s.bubbleIntervalSec! }))
               .sort((a, b) => a.x - b.x)
-              .map(p => ({ x: padL + xScale(p.x), b: p.b }));
+              .map(p => ({ x: screenX(p.x), b: p.b }));
           } else {
             bubbleActivityPts = points
               .map((p, i) => ({ x: coords[i].x, b: p.b }))
@@ -459,31 +477,28 @@ function FermentationSection({
           }
           let speedPathD = "";
           if (bubbleActivityPts.length >= 2) {
-            // Use raw activity values (not pre-normalized) so Lagrange evaluates in original space
             const activities = bubbleActivityPts.map(p => 1 / p.b);
-            const xs = bubbleActivityPts.map(p => p.x);
+            const bxs = bubbleActivityPts.map(p => p.x);
             const lagrange = (x: number) => {
               let result = 0;
-              for (let i = 0; i < xs.length; i++) {
+              for (let i = 0; i < bxs.length; i++) {
                 let term = activities[i];
-                for (let j = 0; j < xs.length; j++) {
-                  if (j !== i) term *= (x - xs[j]) / (xs[i] - xs[j]);
+                for (let j = 0; j < bxs.length; j++) {
+                  if (j !== i) term *= (x - bxs[j]) / (bxs[i] - bxs[j]);
                 }
                 result += term;
               }
               return result;
             };
             const samples = 80;
-            const x0 = xs[0], x1 = xs[xs.length - 1];
-            // Sample first to find actual range (including polynomial overshoots)
+            const bx0 = bxs[0], bx1 = bxs[bxs.length - 1];
             const sampled = Array.from({ length: samples }, (_, i) => ({
-              x: x0 + (i / (samples - 1)) * (x1 - x0),
-              v: lagrange(x0 + (i / (samples - 1)) * (x1 - x0)),
+              x: bx0 + (i / (samples - 1)) * (bx1 - bx0),
+              v: lagrange(bx0 + (i / (samples - 1)) * (bx1 - bx0)),
             }));
             const actMin = Math.min(0, ...sampled.map(s => s.v));
             const actMax = Math.max(...sampled.map(s => s.v));
             const actRange = actMax - actMin || 1;
-            // Normalize using actual sample range → curve always fits, no clamping
             speedPathD = sampled.map((s, i) => {
               const y = (s.v - actMin) / actRange;
               const cy = padT + innerH - y * innerH;
@@ -491,7 +506,49 @@ function FermentationSection({
             }).join(" ");
           }
 
-          // Monotone cubic spline (Fritsch-Carlson) — smooth, no oscillation
+          // Helper: normalized monotone cubic spline (each curve fills chart height)
+          const normalizedCurve = (pts: { x: number; v: number }[]): { path: string; screenPts: { x: number; y: number; v: number }[] } => {
+            if (pts.length < 2) return { path: "", screenPts: [] };
+            const minV = Math.min(...pts.map(p => p.v));
+            const maxV = Math.max(...pts.map(p => p.v));
+            const vRange = maxV - minV || 1;
+            const sxs = pts.map(p => screenX(p.x));
+            const sys = pts.map(p => padT + innerH - ((p.v - minV) / vRange) * innerH);
+            const cn = sxs.length;
+            const cdelta = Array.from({ length: cn - 1 }, (_, i) => (sys[i + 1] - sys[i]) / (sxs[i + 1] - sxs[i]));
+            const cm = new Array<number>(cn);
+            cm[0] = cdelta[0]; cm[cn - 1] = cdelta[cn - 2];
+            for (let i = 1; i < cn - 1; i++) cm[i] = (cdelta[i - 1] + cdelta[i]) / 2;
+            for (let i = 0; i < cn - 1; i++) {
+              if (Math.abs(cdelta[i]) < 1e-10) { cm[i] = 0; cm[i + 1] = 0; }
+              else {
+                const ca = cm[i] / cdelta[i], cb = cm[i + 1] / cdelta[i];
+                const ch = Math.hypot(ca, cb);
+                if (ch > 3) { cm[i] = 3 * cdelta[i] / ch * ca; cm[i + 1] = 3 * cdelta[i] / ch * cb; }
+              }
+            }
+            const cspline = (x: number) => {
+              let lo = 0, hi = cn - 1;
+              while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (sxs[mid] <= x) lo = mid; else hi = mid; }
+              if (x <= sxs[lo]) return sys[lo];
+              if (x >= sxs[hi]) return sys[hi];
+              const hx = sxs[hi] - sxs[lo], t = (x - sxs[lo]) / hx;
+              return (2*t*t*t - 3*t*t + 1)*sys[lo] + (t*t*t - 2*t*t + t)*hx*cm[lo]
+                + (-2*t*t*t + 3*t*t)*sys[hi] + (t*t*t - t*t)*hx*cm[hi];
+            };
+            const path = Array.from({ length: 80 }, (_, i) => {
+              const sx = sxs[0] + (i / 79) * (sxs[cn - 1] - sxs[0]);
+              return i === 0 ? `M ${sx.toFixed(1)} ${cspline(sx).toFixed(1)}` : `L ${sx.toFixed(1)} ${cspline(sx).toFixed(1)}`;
+            }).join(" ");
+            return { path, screenPts: pts.map((p, i) => ({ x: sxs[i], y: sys[i], v: p.v })) };
+          };
+
+          const { path: tempPathD, screenPts: tempScreenPts } = curves.has("temp") && tempPts.length >= 2
+            ? normalizedCurve(tempPts) : { path: "", screenPts: [] };
+          const { path: pressPathD, screenPts: pressScreenPts } = curves.has("pressure") && pressPts.length >= 2
+            ? normalizedCurve(pressPts) : { path: "", screenPts: [] };
+
+          // Gravity spline (Fritsch-Carlson monotone cubic)
           const dxs = coords.map(c => c.x);
           const dys = points.map(p => p.d);
           const n = dxs.length;
@@ -542,9 +599,33 @@ function FermentationSection({
               ).filter(t => t.x <= maxX)
             : points.map((p, i) => ({ x: p.x, label: `S${i + 1}` }));
 
+          const curveConfig = [
+            { key: "gravity" as const, label: "Gravity", color: "#3b82f6" },
+            { key: "activity" as const, label: "Activity", color: "#22c55e" },
+            { key: "temp" as const, label: "Temp", color: "#f97316" },
+            { key: "pressure" as const, label: "Pressure", color: "#a855f7" },
+          ];
+
           return (
             <div className="border rounded-lg p-3">
-              <p className="text-xs text-muted-foreground mb-2">Density evolution</p>
+              <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                {curveConfig.map(({ key, label, color }) => (
+                  <button
+                    key={key}
+                    onClick={() => setCurves(prev => {
+                      const next = new Set(prev);
+                      if (next.has(key)) next.delete(key); else next.add(key);
+                      return next;
+                    })}
+                    className="px-2.5 py-0.5 rounded-full text-xs font-medium border transition-colors"
+                    style={curves.has(key)
+                      ? { backgroundColor: color, borderColor: color, color: "#fff" }
+                      : { backgroundColor: "transparent", borderColor: "currentColor", opacity: 0.35 }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
               <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: H }}>
                 {/* Minor grid lines every 2 */}
                 {minorTicks.map((v, i) => (
@@ -563,47 +644,72 @@ function FermentationSection({
                     {v.toFixed(0)}
                   </text>
                 ))}
-                {/* X axis labels — every 1 day */}
+                {/* X axis labels */}
                 {xTicks.map((t, i) => (
-                  <text
-                    key={i}
-                    x={padL + xScale(t.x)} y={H - 4}
-                    textAnchor="middle" fontSize={9} fill="currentColor" opacity={0.5}
-                  >
+                  <text key={i} x={padL + xScale(t.x)} y={H - 4}
+                    textAnchor="middle" fontSize={9} fill="currentColor" opacity={0.5}>
                     {t.label}
                   </text>
                 ))}
-                {/* Fermentation speed (bubble activity) — dashed background line */}
-                {speedPathD && (
+                {/* Activity curve */}
+                {curves.has("activity") && speedPathD && (
                   <path d={speedPathD} fill="none" stroke="#22c55e" strokeWidth={1.5}
                     strokeDasharray="4 4" strokeLinecap="round" opacity={0.35} />
                 )}
-                {/* Line */}
-                <path d={pathD} fill="none" stroke="#3b82f6" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
-                {/* Dots */}
-                {coords.map((pt, i) => (
-                  <circle
-                    key={i}
-                    cx={pt.x} cy={pt.y}
-                    r={3.5} fill="#3b82f6"
-                  />
-                ))}
-                {/* Point labels: density + attenuation (skip first point) */}
-                {coords.map((pt, i) => {
-                  if (i === 0) return null;
-                  const og = points[0].d;
-                  const att = og > 1000 ? ((og - points[i].d) / (og - 1000)) * 100 : 0;
-                  return (
-                    <g key={`lbl-${i}`}>
-                      <text x={pt.x} y={pt.y - 18} textAnchor="middle" fontSize={8.5} fill="currentColor" opacity={0.75} fontWeight="500">
-                        {points[i].d.toFixed(0)}
-                      </text>
-                      <text x={pt.x} y={pt.y - 8} textAnchor="middle" fontSize={8} fill="#3b82f6" opacity={0.9}>
-                        {att.toFixed(0)}%
-                      </text>
-                    </g>
-                  );
-                })}
+                {/* Temperature curve */}
+                {curves.has("temp") && tempPathD && (
+                  <>
+                    <path d={tempPathD} fill="none" stroke="#f97316" strokeWidth={1.5}
+                      strokeDasharray="5 3" strokeLinecap="round" opacity={0.7} />
+                    {tempScreenPts.map((pt, i) => (
+                      <g key={`temp-${i}`}>
+                        <circle cx={pt.x} cy={pt.y} r={2.5} fill="#f97316" opacity={0.8} />
+                        <text x={pt.x} y={pt.y - 6} textAnchor="middle" fontSize={8} fill="#f97316" opacity={0.9}>
+                          {pt.v.toFixed(1)}°
+                        </text>
+                      </g>
+                    ))}
+                  </>
+                )}
+                {/* Pressure curve */}
+                {curves.has("pressure") && pressPathD && (
+                  <>
+                    <path d={pressPathD} fill="none" stroke="#a855f7" strokeWidth={1.5}
+                      strokeDasharray="5 3" strokeLinecap="round" opacity={0.7} />
+                    {pressScreenPts.map((pt, i) => (
+                      <g key={`press-${i}`}>
+                        <circle cx={pt.x} cy={pt.y} r={2.5} fill="#a855f7" opacity={0.8} />
+                        <text x={pt.x} y={pt.y - 6} textAnchor="middle" fontSize={8} fill="#a855f7" opacity={0.9}>
+                          {pt.v.toFixed(2)}b
+                        </text>
+                      </g>
+                    ))}
+                  </>
+                )}
+                {/* Gravity curve */}
+                {curves.has("gravity") && (
+                  <>
+                    <path d={pathD} fill="none" stroke="#3b82f6" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+                    {coords.map((pt, i) => (
+                      <circle key={i} cx={pt.x} cy={pt.y} r={3.5} fill="#3b82f6" />
+                    ))}
+                    {coords.map((pt, i) => {
+                      if (i === 0) return null;
+                      const og = points[0].d;
+                      const att = og > 1000 ? ((og - points[i].d) / (og - 1000)) * 100 : 0;
+                      return (
+                        <g key={`lbl-${i}`}>
+                          <text x={pt.x} y={pt.y - 18} textAnchor="middle" fontSize={8.5} fill="currentColor" opacity={0.75} fontWeight="500">
+                            {points[i].d.toFixed(0)}
+                          </text>
+                          <text x={pt.x} y={pt.y - 8} textAnchor="middle" fontSize={8} fill="#3b82f6" opacity={0.9}>
+                            {att.toFixed(0)}%
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </>
+                )}
               </svg>
             </div>
           );

@@ -291,6 +291,7 @@ model Tasting {
 model WikiPage {
   id        String   @id @default(uuid())
   slug      String   @unique
+  folder    String   @default("") @map("folder")
   title     String
   content   String
   createdAt DateTime @default(now()) @map("created_at")
