@@ -26,19 +26,23 @@ For root files like `wiki/index.md`:
 
 ### 2. Fetch all DB pages
 
+> **Note:** `npx tsx --tsconfig tsconfig.json` hangs silently in this project (due to `"moduleResolution": "bundler"` in tsconfig). Use `sqlite3` directly for reads instead — the table name is `wiki_pages` (snake_case).
+
 Run:
 
 ```bash
-cd /Users/Mathi/Documents/poinglabs/projects/brewhub && npx tsx --tsconfig tsconfig.json -e "
-import { PrismaClient } from '@prisma/client';
-const p = new PrismaClient();
-const pages = await p.wikiPage.findMany({ select: { slug: true, folder: true, title: true, content: true, updatedAt: true } });
-console.log(JSON.stringify(pages));
-await p.\$disconnect();
-"
+sqlite3 prisma/dev.db "SELECT slug, folder, title FROM wiki_pages;"
 ```
 
-Parse the JSON into a map of `slug → { folder, title, content, updatedAt }`.
+Parse the output (pipe-delimited) into a map of `slug → { folder, title }`.
+
+To compare content, use bash directly:
+
+```bash
+file_content=$(cat "wiki/${slug}.md")
+db_content=$(sqlite3 prisma/dev.db "SELECT content FROM wiki_pages WHERE slug='${slug}';")
+if [ "$file_content" = "$db_content" ]; then echo "SAME"; else echo "DIFF"; fi
+```
 
 ### 3. Diff and categorize
 
@@ -62,37 +66,40 @@ Apply the user's choice before moving on.
 
 ### 5. Apply creates and updates
 
-For each create or update, run:
+> **Note:** Do NOT inline file content into shell `-e` strings — markdown files contain backticks and special characters that break shell escaping. Instead, write a temp `.mjs` script that uses `readFileSync`, then delete it after.
 
-```bash
-cd /Users/Mathi/Documents/poinglabs/projects/brewhub && npx tsx --tsconfig tsconfig.json -e "
+For each create or update, write `_wiki_upsert.mjs` in the project root:
+
+```js
 import { PrismaClient } from '@prisma/client';
+import { readFileSync } from 'fs';
 const p = new PrismaClient();
+const content = readFileSync('wiki/SLUG.md', 'utf8');
 await p.wikiPage.upsert({
   where: { slug: 'SLUG' },
-  create: { slug: 'SLUG', folder: 'FOLDER', title: 'TITLE', content: \`CONTENT\` },
-  update: { folder: 'FOLDER', title: 'TITLE', content: \`CONTENT\` },
+  create: { slug: 'SLUG', folder: 'FOLDER', title: 'TITLE', content },
+  update: { folder: 'FOLDER', title: 'TITLE', content },
 });
 console.log('ok');
-await p.\$disconnect();
-"
+await p.$disconnect();
+process.exit(0);
 ```
 
-Substitute SLUG, FOLDER, TITLE, CONTENT. Escape any backticks in CONTENT as `` \` ``.
+Then run:
+
+```bash
+node _wiki_upsert.mjs 2>&1 && rm _wiki_upsert.mjs
+```
+
+If multiple pages need upserting, batch them all in one `_wiki_upsert.mjs` script.
 
 For **deletes** (user chose option 1):
 
 ```bash
-cd /Users/Mathi/Documents/poinglabs/projects/brewhub && npx tsx --tsconfig tsconfig.json -e "
-import { PrismaClient } from '@prisma/client';
-const p = new PrismaClient();
-await p.wikiPage.delete({ where: { slug: 'SLUG' } });
-console.log('deleted');
-await p.\$disconnect();
-"
+sqlite3 prisma/dev.db "DELETE FROM wiki_pages WHERE slug='SLUG';" && echo "deleted"
 ```
 
-For **exports** (user chose option 2): use the Write tool to create `wiki/{slug}.md` with the DB content.
+For **exports** (user chose option 2): use the Write tool to create `wiki/{slug}.md` with the DB content (fetch via `sqlite3 prisma/dev.db "SELECT content FROM wiki_pages WHERE slug='SLUG';"`), creating any needed subfolders first.
 
 ### 6. Print summary
 

@@ -8,7 +8,7 @@ export default async function WikiPage({
   params: Promise<{ slug: string[] }>;
 }) {
   const { slug } = await params;
-  const fullSlug = slug.join("/");
+  const fullSlug = slug.map(decodeURIComponent).join("/");
 
   const page = await prisma.wikiPage.findUnique({ where: { slug: fullSlug } });
   if (!page) notFound();

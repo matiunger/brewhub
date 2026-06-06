@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 function slugFromParams(params: { slug: string[] }) {
-  return params.slug.join("/");
+  return params.slug.map(decodeURIComponent).join("/");
 }
 
 export async function GET(

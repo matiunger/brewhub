@@ -45,7 +45,10 @@ export function Sidebar() {
   useEffect(() => {
     fetch("/api/wiki")
       .then((r) => r.ok ? r.json() : [])
-      .then(setWikiPages)
+      .then((pages: WikiPage[]) => {
+        setWikiPages(pages);
+        setCollapsedFolders(new Set(pages.map((p) => p.folder).filter(Boolean)));
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -191,7 +194,7 @@ export function Sidebar() {
                   {!collapsedFolders.has(folder) && groups.get(folder)!.map((page) => (
                     <Link
                       key={page.id}
-                      href={`/wiki/${page.slug}`}
+                      href={`/wiki/${page.slug.split("/").map(encodeURIComponent).join("/")}`}
                       className={cn(
                         "flex items-center py-1.5 text-sm rounded-md transition-colors",
                         folder ? "px-6" : "px-3",

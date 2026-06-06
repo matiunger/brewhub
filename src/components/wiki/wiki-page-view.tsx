@@ -42,8 +42,10 @@ export function WikiPageView({ page }: { page: WikiPage }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState({ title: page.title, content: page.content });
 
+  const encodedSlug = page.slug.split("/").map(encodeURIComponent).join("/");
+
   const handleSave = async () => {
-    const response = await fetch(`/api/wiki/${page.slug}`, {
+    const response = await fetch(`/api/wiki/${encodedSlug}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
@@ -55,7 +57,7 @@ export function WikiPageView({ page }: { page: WikiPage }) {
   };
 
   const handleDelete = async () => {
-    const response = await fetch(`/api/wiki/${page.slug}`, { method: "DELETE" });
+    const response = await fetch(`/api/wiki/${encodedSlug}`, { method: "DELETE" });
     if (response.ok) {
       router.push("/wiki");
       router.refresh();
