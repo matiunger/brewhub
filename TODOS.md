@@ -26,6 +26,10 @@ timers
 tastings
 Create summary or learnings with AI -> Skills y usar claude
 
+Brewing Better Beer
+Beer Brewing Guide
+
+
 DONE:
 remove and export icons
 lautering

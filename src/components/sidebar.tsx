@@ -13,6 +13,101 @@ interface WikiPage {
   title: string;
 }
 
+interface TreeNode {
+  name: string;
+  fullPath: string;
+  children: Map<string, TreeNode>;
+  pages: WikiPage[];
+}
+
+function buildWikiTree(pages: WikiPage[]): TreeNode {
+  const root: TreeNode = { name: "", fullPath: "", children: new Map(), pages: [] };
+  for (const page of pages) {
+    const parts = page.folder ? page.folder.split("/") : [];
+    let node = root;
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const fullPath = parts.slice(0, i + 1).join("/");
+      if (!node.children.has(part)) {
+        node.children.set(part, { name: part, fullPath, children: new Map(), pages: [] });
+      }
+      node = node.children.get(part)!;
+    }
+    node.pages.push(page);
+  }
+  return root;
+}
+
+function getAllFolderPaths(node: TreeNode): string[] {
+  const paths: string[] = [];
+  if (node.fullPath) paths.push(node.fullPath);
+  for (const child of node.children.values()) paths.push(...getAllFolderPaths(child));
+  return paths;
+}
+
+function WikiFolderNode({
+  node,
+  depth,
+  collapsedFolders,
+  toggleFolder,
+  pathname,
+}: {
+  node: TreeNode;
+  depth: number;
+  collapsedFolders: Set<string>;
+  toggleFolder: (f: string) => void;
+  pathname: string;
+}) {
+  const isCollapsed = collapsedFolders.has(node.fullPath);
+  const indent = depth * 12;
+
+  return (
+    <div>
+      {node.name && (
+        <button
+          onClick={() => toggleFolder(node.fullPath)}
+          style={{ paddingLeft: `${indent + 12}px` }}
+          className="w-full flex items-center gap-1 pr-3 pb-0.5 pt-1 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
+        >
+          <ChevronRight className={cn("w-3 h-3 shrink-0 transition-transform", !isCollapsed && "rotate-90")} />
+          {node.name}
+        </button>
+      )}
+      {!isCollapsed && (
+        <>
+          {node.pages.map((page) => (
+            <Link
+              key={page.id}
+              href={`/wiki/${page.slug.split("/").map(encodeURIComponent).join("/")}`}
+              style={{ paddingLeft: `${indent + 24}px` }}
+              className={cn(
+                "flex items-center pr-3 py-1.5 text-sm rounded-md transition-colors",
+                pathname === `/wiki/${page.slug}`
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              {page.title}
+            </Link>
+          ))}
+          {[...node.children.values()]
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((child) => (
+              <WikiFolderNode
+                key={child.fullPath}
+                node={child}
+                depth={depth + 1}
+                collapsedFolders={collapsedFolders}
+                toggleFolder={toggleFolder}
+                pathname={pathname}
+              />
+            ))}
+        </>
+      )}
+    </div>
+  );
+}
+
 const menuItems = [
   { href: "/", label: "Batches", icon: Home },
 ];
@@ -47,22 +142,13 @@ export function Sidebar() {
       .then((r) => r.ok ? r.json() : [])
       .then((pages: WikiPage[]) => {
         setWikiPages(pages);
-        setCollapsedFolders(new Set(pages.map((p) => p.folder).filter(Boolean)));
+        setCollapsedFolders(new Set(getAllFolderPaths(buildWikiTree(pages))));
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  // Group wiki pages by folder
-  const groups = new Map<string, WikiPage[]>();
-  for (const page of wikiPages) {
-    const f = page.folder || "";
-    if (!groups.has(f)) groups.set(f, []);
-    groups.get(f)!.push(page);
-  }
-  const sortedFolders = [...groups.keys()].sort((a, b) =>
-    !a ? -1 : !b ? 1 : a.localeCompare(b)
-  );
+  const wikiTree = buildWikiTree(wikiPages);
 
   return (
     <aside className={cn("border-r bg-card flex flex-col transition-all duration-200", collapsed ? "w-14" : "w-64")}>
@@ -179,35 +265,35 @@ export function Sidebar() {
           ) : loading ? (
             <div className="px-3 py-2 text-sm text-muted-foreground">Loading…</div>
           ) : wikiPages.length > 0 ? (
-            <div className="space-y-3">
-              {sortedFolders.map((folder) => (
-                <div key={folder || "__root__"} className="space-y-0.5">
-                  {folder && (
-                    <button
-                      onClick={() => toggleFolder(folder)}
-                      className="w-full flex items-center gap-1 px-3 pb-0.5 pt-1 text-xs font-medium text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors"
-                    >
-                      <ChevronRight className={cn("w-3 h-3 shrink-0 transition-transform", !collapsedFolders.has(folder) && "rotate-90")} />
-                      {folder.split("/").join(" / ")}
-                    </button>
+            <div className="space-y-0.5">
+              {/* Root-level pages (no folder) */}
+              {wikiTree.pages.map((page) => (
+                <Link
+                  key={page.id}
+                  href={`/wiki/${page.slug.split("/").map(encodeURIComponent).join("/")}`}
+                  className={cn(
+                    "flex items-center px-3 py-1.5 text-sm rounded-md transition-colors",
+                    pathname === `/wiki/${page.slug}`
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
-                  {!collapsedFolders.has(folder) && groups.get(folder)!.map((page) => (
-                    <Link
-                      key={page.id}
-                      href={`/wiki/${page.slug.split("/").map(encodeURIComponent).join("/")}`}
-                      className={cn(
-                        "flex items-center py-1.5 text-sm rounded-md transition-colors",
-                        folder ? "px-6" : "px-3",
-                        pathname === `/wiki/${page.slug}`
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                      )}
-                    >
-                      {page.title}
-                    </Link>
-                  ))}
-                </div>
+                >
+                  {page.title}
+                </Link>
               ))}
+              {/* Folder tree */}
+              {[...wikiTree.children.values()]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((child) => (
+                  <WikiFolderNode
+                    key={child.fullPath}
+                    node={child}
+                    depth={0}
+                    collapsedFolders={collapsedFolders}
+                    toggleFolder={toggleFolder}
+                    pathname={pathname}
+                  />
+                ))}
             </div>
           ) : (
             <div className="px-3 py-2 text-sm text-muted-foreground">No pages yet</div>

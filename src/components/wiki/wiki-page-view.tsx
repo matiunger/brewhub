@@ -17,6 +17,59 @@ import {
 } from "@/components/ui/dialog";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import type { Plugin } from "unified";
+import type { Root, Text, Parent } from "mdast";
+
+// Remark plugin that converts [[name]] wikilinks to standard markdown links.
+// Resolution order: exact slug match → same-folder → first slug whose last segment matches.
+function remarkWikilinks(slugMap: Record<string, string>, currentFolder: string): Plugin<[], Root> {
+  return () => (tree) => {
+    const WIKILINK = /\[\[([^\]]+)\]\]/g;
+
+    function resolveSlug(name: string): string {
+      if (slugMap[name]) return slugMap[name];
+      const sameFolderSlug = currentFolder ? `${currentFolder}/${name}` : name;
+      return sameFolderSlug;
+    }
+
+    function processNode(node: Parent) {
+      const newChildren: Parent["children"] = [];
+      for (const child of node.children) {
+        if (child.type === "text") {
+          const text = (child as Text).value;
+          const parts: Parent["children"] = [];
+          let last = 0;
+          let m: RegExpExecArray | null;
+          WIKILINK.lastIndex = 0;
+          while ((m = WIKILINK.exec(text)) !== null) {
+            if (m.index > last) {
+              parts.push({ type: "text", value: text.slice(last, m.index) } as Text);
+            }
+            const name = m[1].trim();
+            const slug = resolveSlug(name);
+            const encodedSlug = slug.split("/").map(encodeURIComponent).join("/");
+            parts.push({
+              type: "link",
+              url: `/wiki/${encodedSlug}`,
+              children: [{ type: "text", value: name } as Text],
+            });
+            last = m.index + m[0].length;
+          }
+          if (last < text.length) {
+            parts.push({ type: "text", value: text.slice(last) } as Text);
+          }
+          newChildren.push(...(parts.length ? parts : [child]));
+        } else {
+          if ("children" in child) processNode(child as Parent);
+          newChildren.push(child);
+        }
+      }
+      node.children = newChildren;
+    }
+
+    processNode(tree);
+  };
+}
 
 interface WikiPage {
   id: string;
@@ -36,7 +89,7 @@ function slugify(children: React.ReactNode): string {
     .replace(/\s+/g, "-");
 }
 
-export function WikiPageView({ page }: { page: WikiPage }) {
+export function WikiPageView({ page, slugMap = {} }: { page: WikiPage; slugMap?: Record<string, string> }) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -141,7 +194,7 @@ export function WikiPageView({ page }: { page: WikiPage }) {
 
       <div className="markdown-content">
         <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
+          remarkPlugins={[remarkGfm, remarkWikilinks(slugMap, page.folder) as Plugin]}
           components={{
             img({ src, alt }) {
               if (src && !src.startsWith("http") && !src.startsWith("/")) {
