@@ -1,5 +1,11 @@
 
-all salts in mash?
+agua para heladerita, poner en heladera para que este fria
+
+all salts in mash? aclarar mejor?
+
+preparar mezcla de aguas y sales el dia anterior
+
+
 
 step mash water strike temperature
 ojometro checkpoints

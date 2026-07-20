@@ -28,6 +28,7 @@ export interface BoilEntry {
 }
 
 export interface PreparationData {
+  // Previous Day
   freezeBottles: boolean;
   setupMill: boolean;
   cleanMashTun: boolean;
@@ -36,13 +37,19 @@ export interface PreparationData {
   prepareBurner: boolean;
   gasTankKg: number | null;
   filterWater: boolean;
-  calibratePhMeter: boolean;
   prepareCooler: boolean;
-  setupChillerCoils: boolean;
   prepareAlcohol: boolean;
   cleanKitchen: boolean;
   setupWorkspace: boolean;
   prepareStarter: boolean;
+  measureAndMixSalts: boolean;
+  adjustEvaporationRate: boolean;
+  // Brew Day
+  calibratePhMeter: boolean;
+  setupChillerCoils: boolean;
+  putCoolerWaterInFridge: boolean;
+  measureGrainTemp: boolean;
+  setupAirPump: boolean;
 }
 
 export interface MillingData {
@@ -67,7 +74,9 @@ export interface MashData {
     tempC: number | null;
     ph: number | null;
     notes: string | null;
+    warmUpWater: boolean;
   };
+  infusionWarmUp: Record<number, boolean>;
   general: {
     checkWaterTaste: boolean;
     heatWaterTime: string | null;
@@ -192,18 +201,24 @@ export const DEFAULT_BREWDAY_DATA: BrewdayData = {
     prepareBurner: false,
     gasTankKg: null,
     filterWater: false,
-    calibratePhMeter: false,
     prepareCooler: false,
-    setupChillerCoils: false,
     prepareAlcohol: false,
     cleanKitchen: false,
     setupWorkspace: false,
     prepareStarter: false,
+    measureAndMixSalts: false,
+    adjustEvaporationRate: false,
+    calibratePhMeter: false,
+    setupChillerCoils: false,
+    putCoolerWaterInFridge: false,
+    measureGrainTemp: false,
+    setupAirPump: false,
   },
   milling: { dateTime: null, gapMm: null },
   mash: {
     mashWater: { liters: null, heightCm: null, potDiameterCm: null, pot: null, tStrikeC: null, notes: null },
-    spargeWater: { liters: null, heightCm: null, potDiameterCm: null, pot: null, tempC: null, ph: null, notes: null },
+    spargeWater: { liters: null, heightCm: null, potDiameterCm: null, pot: null, tempC: null, ph: null, notes: null, warmUpWater: false },
+    infusionWarmUp: {},
     general: { checkWaterTaste: false, heatWaterTime: null, mashInTime: null, mashStartTime: null, targetTempC: null, mashTempC: null, mashPh: null },
     timeline: [{ id: "initial", time: null, tempC: null, ph: null, recirculated: false, stir: false }],
   },

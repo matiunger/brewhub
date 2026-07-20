@@ -51,4 +51,8 @@ Utilization increases with boil time — longer boil = more bitterness.
 
 ## Storage
 
-Hops degrade over time. Store vacuum-sealed in the freezer. Check the harvest year and alpha acid on the package — old hops may have lower actual alpha than stated.
+Hops degrade over time. Store vacuum-sealed in the freezer. Check the harvest year and alpha acid on the package — old hops may have lower actual alpha than stated. For Gordon Strong's detailed storage method, see [[storing-hops]].
+
+## Related
+
+For the deeper "Mastering Ingredients" treatment of hops, see [[hops-overview]], [[characterizing-hops]], and [[selecting-hops]]. For brewhouse technique, see [[hopping]] and [[whirlpooling]].

@@ -158,7 +158,7 @@ async function deleteBatchHop(batchHopId: string) {
 
 async function updateBatchYeast(
   batchYeastId: string,
-  data: { quantityAmount: number | null; quantityUnits: string | null; temp: number | null; attenuation: number | null }
+  data: { quantityAmount?: number | null; quantityUnits?: string | null; temp?: number | null; attenuation?: number | null; pitchRate?: number | null; starterNotes?: string | null }
 ) {
   "use server";
   await prisma.batchYeast.update({ where: { id: batchYeastId }, data });
@@ -260,6 +260,14 @@ async function updateSaltAdditions(
 async function updateAcidAddition(
   id: string,
   data: { mashAcidType: string; mashAcidDose: number | null }
+) {
+  "use server";
+  await prisma.batch.update({ where: { id }, data });
+}
+
+async function updateWaterTds(
+  id: string,
+  data: { sourceWaterTds: number | null; finalWaterTds: number | null }
 ) {
   "use server";
   await prisma.batch.update({ where: { id }, data });
@@ -614,6 +622,7 @@ export default async function BatchPage({ params }: BatchPageProps) {
   const updateBatchWaterSnapshotWithId = updateBatchWaterSnapshot.bind(null, id);
   const updateSaltAdditionsWithId = updateSaltAdditions.bind(null, id);
   const updateAcidAdditionWithId = updateAcidAddition.bind(null, id);
+  const updateWaterTdsWithId = updateWaterTds.bind(null, id);
   const updateBoilTimesWithId = updateBoilTimes.bind(null, id);
   const updateMashParamsWithId = updateMashParams.bind(null, id);
   const updateMashSettingsWithId = updateMashSettings.bind(null, id);
@@ -744,6 +753,9 @@ export default async function BatchPage({ params }: BatchPageProps) {
           }}
           acidAddition={{ mashAcidType: batch.mashAcidType ?? "lactic", mashAcidDose: batch.mashAcidDose ?? null }}
           updateAcidAdditionAction={updateAcidAdditionWithId}
+          sourceWaterTds={batch.sourceWaterTds ?? null}
+          finalWaterTds={batch.finalWaterTds ?? null}
+          updateWaterTdsAction={updateWaterTdsWithId}
         />
       ) : (
         <BatchForm batch={batch} equipment={allEquipment} updateAction={updateWithId} updateNotesAction={updateNotesWithId} />

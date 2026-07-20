@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ClipboardList, Wrench, BarChart2, Flame, Layers, Wheat, Hop as HopIcon, FlaskConical, GlassWater, Droplet } from "lucide-react";
@@ -182,6 +182,8 @@ interface BatchYeast {
   quantityAmount: number | null;
   quantityUnits: string | null;
   temp: number | null;
+  pitchRate: number | null;
+  starterNotes: string | null;
   // Snapshot fields
   name: string | null;
   brand: string | null;
@@ -308,7 +310,7 @@ interface BeerSectionsProps {
   updateHopAction: (id: string, data: { grams: number; use: string; additionTime: number | null; alphaAcid: number }) => Promise<void>;
   deleteHopAction: (id: string) => Promise<void>;
   addYeastAction: (data: { yeastId: string; quantityAmount: number; quantityUnits: string; temp: number | null }) => Promise<BatchYeast>;
-  updateYeastAction: (id: string, data: { quantityAmount: number | null; quantityUnits: string | null; temp: number | null; attenuation: number | null }) => Promise<void>;
+  updateYeastAction: (id: string, data: { quantityAmount?: number | null; quantityUnits?: string | null; temp?: number | null; attenuation?: number | null; pitchRate?: number | null; starterNotes?: string | null }) => Promise<void>;
   deleteYeastAction: (id: string) => Promise<void>;
   waterProfiles: WaterProfile[];
   sourceWaterProfile: WaterProfile | null;
@@ -321,6 +323,9 @@ interface BeerSectionsProps {
   updateSaltAdditionsAction: (data: { saltChalkGL: number | null; saltBakingSodaGL: number | null; saltGypsumGL: number | null; saltCaCl2GL: number | null; saltEpsomGL: number | null; saltNaClGL: number | null }) => Promise<void>;
   acidAddition: { mashAcidType: string; mashAcidDose: number | null };
   updateAcidAdditionAction: (data: { mashAcidType: string; mashAcidDose: number | null }) => Promise<void>;
+  sourceWaterTds: number | null;
+  finalWaterTds: number | null;
+  updateWaterTdsAction: (data: { sourceWaterTds: number | null; finalWaterTds: number | null }) => Promise<void>;
   updateBoilTimesAction: (data: { heatUpTimeMin: number | null; boilTimeMin: number | null; whirpoolTimeMin: number | null }) => Promise<void>;
   updateMashParamsAction: (data: { grainTempC: number | null; targetPh: number | null; spargeTargetPh: number | null }) => Promise<void>;
   updateMashSettingsAction: (data: { mashMode: string; mashRatioLKg: number; mashInfuseTempC: number }) => Promise<void>;
@@ -585,6 +590,9 @@ export function BeerSections({
   updateSaltAdditionsAction,
   acidAddition,
   updateAcidAdditionAction,
+  sourceWaterTds,
+  finalWaterTds,
+  updateWaterTdsAction,
   updateBoilTimesAction,
   updateMashParamsAction,
   updateMashSettingsAction,
@@ -649,7 +657,7 @@ export function BeerSections({
 
   const [yeastRows, setYeastRows] = useState(yeasts);
   const [editingYeastId, setEditingYeastId] = useState<string | null>(null);
-  const [editYeastDraft, setEditYeastDraft] = useState<{ quantityAmount: string; quantityUnits: string; temp: string; attenuation: string }>({ quantityAmount: "", quantityUnits: "packet", temp: "", attenuation: "" });
+  const [editYeastDraft, setEditYeastDraft] = useState<{ quantityAmount: string; quantityUnits: string; temp: string; attenuation: string; pitchRate: string }>({ quantityAmount: "", quantityUnits: "packet", temp: "", attenuation: "", pitchRate: "" });
   const [savingYeastId, setSavingYeastId] = useState<string | null>(null);
   const [isAddingYeast, setIsAddingYeast] = useState(false);
   const [addYeastDraft, setAddYeastDraft] = useState<{ yeastId: string; quantityAmount: string; quantityUnits: string; temp: string }>({ yeastId: "", quantityAmount: "", quantityUnits: "packet", temp: "" });
@@ -741,6 +749,26 @@ export function BeerSections({
   const acidRef = useRef({ acidType, acidAmount });
   acidRef.current = { acidType, acidAmount };
   const acidTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [sourceWaterTdsStr, setSourceWaterTdsStr] = useState(sourceWaterTds != null ? String(sourceWaterTds) : "");
+  const [finalWaterTdsStr, setFinalWaterTdsStr] = useState(finalWaterTds != null ? String(finalWaterTds) : "");
+  const tdsRef = useRef({ sourceWaterTdsStr, finalWaterTdsStr });
+  tdsRef.current = { sourceWaterTdsStr, finalWaterTdsStr };
+  const tdsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scheduleTdsSave = useCallback(() => {
+    if (tdsTimerRef.current) clearTimeout(tdsTimerRef.current);
+    tdsTimerRef.current = setTimeout(async () => {
+      try {
+        const { sourceWaterTdsStr: s, finalWaterTdsStr: f } = tdsRef.current;
+        await updateWaterTdsAction({
+          sourceWaterTds: s === "" ? null : parseFloat(s) || null,
+          finalWaterTds: f === "" ? null : parseFloat(f) || null,
+        });
+      } catch {
+        toast.error("Failed to save TDS values");
+      }
+    }, 800);
+  }, [updateWaterTdsAction]);
 
   const scheduleAcidSave = useCallback(() => {
     if (acidTimerRef.current) clearTimeout(acidTimerRef.current);
@@ -1787,6 +1815,7 @@ export function BeerSections({
                     </button>
                   </th>
                 ))}
+                <th className="text-left font-medium pb-2 pr-3 text-muted-foreground">g/L</th>
                 <th className="text-left font-medium pb-2 pr-3 text-muted-foreground">IBU</th>
                 <th className="pb-2" />
               </tr>
@@ -1837,6 +1866,14 @@ export function BeerSections({
                           className="h-7 text-sm w-24"
                         />
                       ) : `${bh.grams} g`}
+                    </td>
+                    <td className="py-2 pr-3 text-muted-foreground tabular-nums">
+                      {(() => {
+                        const vol = bh.use === "dry_hop"
+                          ? (brewday.fermentation.volumeL ?? wv.fermenterVol)
+                          : wv.endOfBoil;
+                        return vol > 0 ? (bh.grams / vol).toFixed(2) : "—";
+                      })()}
                     </td>
                     {(() => {
                       const hopIdx = hopRows.findIndex((r) => r.id === bh.id);
@@ -2004,7 +2041,8 @@ export function BeerSections({
                 <th className="text-left font-medium pb-2 pr-3">Attenuation</th>
                 <th className="text-left font-medium pb-2 pr-3">Qty</th>
                 <th className="text-left font-medium pb-2 pr-3">Units</th>
-                <th className="text-left font-medium pb-2 pr-3">Inoculation</th>
+                <th className="text-left font-medium pb-2 pr-3">Base Inoculation</th>
+                <th className="text-left font-medium pb-2 pr-3">Pitch Rate</th>
                 <th className="text-left font-medium pb-2 pr-3">Temp (°C)</th>
                 <th className="pb-2" />
               </tr>
@@ -2014,7 +2052,8 @@ export function BeerSections({
                 const isEditing = editingYeastId === by.id;
                 const isSaving = savingYeastId === by.id;
                 return (
-                  <tr key={by.id} className="border-b last:border-0">
+                  <Fragment key={by.id}>
+                  <tr className="border-b">
                     <td className="py-2 pr-3 font-medium">{by.name ?? by.yeast.name}</td>
                     <td className="py-2 pr-3 text-muted-foreground">{(by.brand ?? by.yeast.brand) ?? "—"}</td>
                     <td className="py-2 pr-3 text-muted-foreground">
@@ -2071,6 +2110,19 @@ export function BeerSections({
                       {isEditing ? (
                         <NumberInput
                           step="0.1"
+                          value={editYeastDraft.pitchRate}
+                          onChange={(e) => setEditYeastDraft((d) => ({ ...d, pitchRate: e.target.value }))}
+                          className="h-7 text-sm w-28"
+                          placeholder="M/mL/°P"
+                        />
+                      ) : (
+                        by.pitchRate != null ? `${by.pitchRate}` : "—"
+                      )}
+                    </td>
+                    <td className="py-2 pr-3">
+                      {isEditing ? (
+                        <NumberInput
+                          step="0.1"
                           value={editYeastDraft.temp}
                           onChange={(e) => setEditYeastDraft((d) => ({ ...d, temp: e.target.value }))}
                           className="h-7 text-sm w-20"
@@ -2094,10 +2146,11 @@ export function BeerSections({
                                 const newAttenuation = editYeastDraft.attenuation !== "" ? parseFloat(editYeastDraft.attenuation) : null;
                                 const newQtyAmount = editYeastDraft.quantityAmount !== "" ? parseFloat(editYeastDraft.quantityAmount) : null;
                                 const newQtyUnits = editYeastDraft.quantityUnits || null;
-                                await updateYeastAction(by.id, { quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation });
+                                const newPitchRate = editYeastDraft.pitchRate !== "" ? parseFloat(editYeastDraft.pitchRate) : null;
+                                await updateYeastAction(by.id, { quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation, pitchRate: newPitchRate });
                                 setYeastRows((rows) =>
                                   rows.map((r) =>
-                                    r.id === by.id ? { ...r, quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation } : r
+                                    r.id === by.id ? { ...r, quantityAmount: newQtyAmount, quantityUnits: newQtyUnits, temp: newTemp, attenuation: newAttenuation, pitchRate: newPitchRate } : r
                                   )
                                 );
                               } catch {
@@ -2127,7 +2180,7 @@ export function BeerSections({
                             className="h-6 w-6"
                             onClick={() => {
                               const effectiveAttenuation = by.attenuation ?? by.yeast.attenuation;
-                              setEditYeastDraft({ quantityAmount: by.quantityAmount != null ? String(by.quantityAmount) : "", quantityUnits: by.quantityUnits ?? "packet", temp: by.temp != null ? String(by.temp) : "", attenuation: effectiveAttenuation != null ? String(effectiveAttenuation) : "" });
+                              setEditYeastDraft({ quantityAmount: by.quantityAmount != null ? String(by.quantityAmount) : "", quantityUnits: by.quantityUnits ?? "packet", temp: by.temp != null ? String(by.temp) : "", attenuation: effectiveAttenuation != null ? String(effectiveAttenuation) : "", pitchRate: by.pitchRate != null ? String(by.pitchRate) : "" });
                               setEditingYeastId(by.id);
                             }}
                           >
@@ -2152,6 +2205,28 @@ export function BeerSections({
                       )}
                     </td>
                   </tr>
+                  <tr className="border-b last:border-0 bg-muted/20">
+                    <td colSpan={9} className="px-2 pb-2 pt-1">
+                      <textarea
+                        value={by.starterNotes ?? ""}
+                        onChange={(e) => {
+                          const val = e.target.value || null;
+                          setYeastRows((rows) => rows.map((r) => r.id === by.id ? { ...r, starterNotes: val } : r));
+                        }}
+                        onBlur={async (e) => {
+                          try {
+                            await updateYeastAction(by.id, { starterNotes: e.target.value || null });
+                          } catch {
+                            toast.error("Failed to save notes");
+                          }
+                        }}
+                        placeholder="Starter notes…"
+                        rows={2}
+                        className="w-full text-xs text-muted-foreground bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50"
+                      />
+                    </td>
+                  </tr>
+                  </Fragment>
                 );
               })}
             </tbody>
@@ -3362,6 +3437,39 @@ export function BeerSections({
             </div>
           );
         })()}
+
+        {/* TDS subsection */}
+        <div className="mt-4 pt-4 border-t space-y-3">
+          <p className="text-sm font-medium text-muted-foreground">Total Dissolved Solids</p>
+          <div className="flex items-center gap-3">
+            <span className="w-44 text-sm shrink-0">Source Water TDS</span>
+            <div className="flex items-center gap-1.5">
+              <NumberInput
+                min="0"
+                step="1"
+                value={sourceWaterTdsStr}
+                onChange={(e) => { setSourceWaterTdsStr(e.target.value); scheduleTdsSave(); }}
+                className="w-24 h-7 text-sm"
+                placeholder="0"
+              />
+              <span className="text-sm text-muted-foreground">ppm</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="w-44 text-sm shrink-0">Final Water TDS</span>
+            <div className="flex items-center gap-1.5">
+              <NumberInput
+                min="0"
+                step="1"
+                value={finalWaterTdsStr}
+                onChange={(e) => { setFinalWaterTdsStr(e.target.value); scheduleTdsSave(); }}
+                className="w-24 h-7 text-sm"
+                placeholder="0"
+              />
+              <span className="text-sm text-muted-foreground">ppm</span>
+            </div>
+          </div>
+        </div>
       </CollapsibleCard>
 
       </>}

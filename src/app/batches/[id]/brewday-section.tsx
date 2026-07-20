@@ -294,17 +294,6 @@ function FermentationSection({
           )}
         </div>
 
-        {/* Starter notes */}
-        <div className="space-y-1">
-          <SubTitle>Starter notes</SubTitle>
-          <Textarea
-            value={fermentation.starterNotes ?? ""}
-            onChange={(e) => setFermentation("starterNotes", e.target.value || null)}
-            placeholder="Describe how the starter was prepared…"
-            className="text-sm min-h-[72px]"
-          />
-        </div>
-
         {/* Follow-up table */}
         <div className="border rounded-lg overflow-x-auto">
           <table className="w-full text-xs border-collapse">
@@ -788,7 +777,7 @@ export function BrewdaySection({
   );
 
   const setSpargeWater = useCallback(
-    (key: keyof MashData["spargeWater"], val: string | number | null) => {
+    (key: keyof MashData["spargeWater"], val: string | number | boolean | null) => {
       updateBrewday("mash", { ...mash, spargeWater: { ...mash.spargeWater, [key]: val } });
     },
     [mash, updateBrewday]
@@ -825,6 +814,13 @@ export function BrewdaySection({
         ...mash,
         timeline: mash.timeline.map((s) => (s.id === id ? { ...s, [key]: val } : s)),
       });
+    },
+    [mash, updateBrewday]
+  );
+
+  const setInfusionWarmUp = useCallback(
+    (stepIndex: number, val: boolean) => {
+      updateBrewday("mash", { ...mash, infusionWarmUp: { ...mash.infusionWarmUp, [stepIndex]: val } });
     },
     [mash, updateBrewday]
   );
@@ -1005,27 +1001,42 @@ export function BrewdaySection({
 
       {/* ---- PREPARATION ---- */}
       <CollapsibleCard title="Preparation" icon={<ClipboardList className="h-4 w-4" />} open={openPreparation} onToggle={onTogglePreparation}>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-          <CheckRow checked={preparation.freezeBottles} onCheckedChange={(v) => setPrep("freezeBottles", v)} label="Freeze water bottles" />
-          <CheckRow checked={preparation.prepareCooler} onCheckedChange={(v) => setPrep("prepareCooler", v)} label="Prepare cooler" />
-          <CheckRow checked={preparation.setupMill} onCheckedChange={(v) => setPrep("setupMill", v)} label="Set up mill" />
-          <CheckRow checked={preparation.setupChillerCoils} onCheckedChange={(v) => setPrep("setupChillerCoils", v)} label="Set up chiller coils" />
-          <CheckRow checked={preparation.cleanMashTun} onCheckedChange={(v) => setPrep("cleanMashTun", v)} label="Clean/set up mash tun" />
-          <CheckRow checked={preparation.prepareAlcohol} onCheckedChange={(v) => setPrep("prepareAlcohol", v)} label="Prepare 70% alcohol" />
-          <CheckRow checked={preparation.cleanFermenter} onCheckedChange={(v) => setPrep("cleanFermenter", v)} label="Clean/set up fermenter" />
-          <CheckRow checked={preparation.cleanKitchen} onCheckedChange={(v) => setPrep("cleanKitchen", v)} label="Clean kitchen" />
-          <CheckRow checked={preparation.weighGrains} onCheckedChange={(v) => setPrep("weighGrains", v)} label="Weigh grains" />
-          <CheckRow checked={preparation.setupWorkspace} onCheckedChange={(v) => setPrep("setupWorkspace", v)} label="Set up workspace" />
-          <CheckRow checked={preparation.prepareBurner} onCheckedChange={(v) => setPrep("prepareBurner", v)} label="Prepare burner" />
-          <div className="flex items-center gap-2">
-            <Checkbox checked={!!preparation.gasTankKg || preparation.gasTankKg === 0} onCheckedChange={() => {}} className="shrink-0" />
-            <span className="text-sm whitespace-nowrap">Gas tank:</span>
-            <NumInput value={preparation.gasTankKg} onChange={(v) => setPrep("gasTankKg", v)} className="w-24" />
-            <span className="text-xs text-muted-foreground">kg</span>
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Previous Day</p>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+              <CheckRow checked={preparation.freezeBottles} onCheckedChange={(v) => setPrep("freezeBottles", v)} label="Freeze water bottles" />
+              <CheckRow checked={preparation.prepareCooler} onCheckedChange={(v) => setPrep("prepareCooler", v)} label="Prepare cooler" />
+              <CheckRow checked={preparation.setupMill} onCheckedChange={(v) => setPrep("setupMill", v)} label="Set up mill" />
+              <CheckRow checked={preparation.cleanMashTun} onCheckedChange={(v) => setPrep("cleanMashTun", v)} label="Clean/set up mash tun" />
+              <CheckRow checked={preparation.prepareAlcohol} onCheckedChange={(v) => setPrep("prepareAlcohol", v)} label="Prepare 70% alcohol" />
+              <CheckRow checked={preparation.cleanFermenter} onCheckedChange={(v) => setPrep("cleanFermenter", v)} label="Clean/set up fermenter" />
+              <CheckRow checked={preparation.cleanKitchen} onCheckedChange={(v) => setPrep("cleanKitchen", v)} label="Clean kitchen" />
+              <CheckRow checked={preparation.weighGrains} onCheckedChange={(v) => setPrep("weighGrains", v)} label="Weigh grains" />
+              <CheckRow checked={preparation.setupWorkspace} onCheckedChange={(v) => setPrep("setupWorkspace", v)} label="Set up workspace" />
+              <CheckRow checked={preparation.prepareBurner} onCheckedChange={(v) => setPrep("prepareBurner", v)} label="Prepare burner" />
+              <div className="flex items-center gap-2">
+                <Checkbox checked={!!preparation.gasTankKg || preparation.gasTankKg === 0} onCheckedChange={() => {}} className="shrink-0" />
+                <span className="text-sm whitespace-nowrap">Gas tank:</span>
+                <NumInput value={preparation.gasTankKg} onChange={(v) => setPrep("gasTankKg", v)} className="w-24" />
+                <span className="text-xs text-muted-foreground">kg</span>
+              </div>
+              <CheckRow checked={preparation.filterWater} onCheckedChange={(v) => setPrep("filterWater", v)} label="Filter water (in fermenter)" />
+              <CheckRow checked={preparation.prepareStarter} onCheckedChange={(v) => setPrep("prepareStarter", v)} label="Prepare starter" />
+              <CheckRow checked={preparation.measureAndMixSalts} onCheckedChange={(v) => setPrep("measureAndMixSalts", v)} label="Measure and mix salts" />
+              <CheckRow checked={preparation.adjustEvaporationRate} onCheckedChange={(v) => setPrep("adjustEvaporationRate", v)} label="Adjust evaporation rate" />
+            </div>
           </div>
-          <CheckRow checked={preparation.filterWater} onCheckedChange={(v) => setPrep("filterWater", v)} label="Filter water (in fermenter)" />
-          <CheckRow checked={preparation.calibratePhMeter} onCheckedChange={(v) => setPrep("calibratePhMeter", v)} label="Calibrate pH meter" />
-          <CheckRow checked={preparation.prepareStarter} onCheckedChange={(v) => setPrep("prepareStarter", v)} label="Prepare starter" />
+          <div className="border-t pt-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Brew Day</p>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-2">
+              <CheckRow checked={preparation.calibratePhMeter} onCheckedChange={(v) => setPrep("calibratePhMeter", v)} label="Calibrate pH meter" />
+              <CheckRow checked={preparation.setupChillerCoils} onCheckedChange={(v) => setPrep("setupChillerCoils", v)} label="Set up chiller coils" />
+              <CheckRow checked={preparation.putCoolerWaterInFridge} onCheckedChange={(v) => setPrep("putCoolerWaterInFridge", v)} label="Put cooler water in fridge" />
+              <CheckRow checked={preparation.measureGrainTemp} onCheckedChange={(v) => setPrep("measureGrainTemp", v)} label="Measure grain temp" />
+              <CheckRow checked={preparation.setupAirPump} onCheckedChange={(v) => setPrep("setupAirPump", v)} label="Set up air pump" />
+            </div>
+          </div>
         </div>
       </CollapsibleCard>
 
@@ -1187,7 +1198,7 @@ export function BrewdaySection({
                       ? ((step.waterAddedL * 1000) / (Math.PI * Math.pow(d / 2, 2))).toFixed(1)
                       : null;
                     return (
-                      <div key={i} className="bg-muted/40 rounded-md p-2 space-y-0.5">
+                      <div key={i} className="bg-muted/40 rounded-md p-2 space-y-1">
                         <div className="text-xs font-medium">{stepName}</div>
                         <div className="flex gap-x-4">
                           <RecipeRef
@@ -1199,6 +1210,11 @@ export function BrewdaySection({
                           <RecipeRef label="at" value={`${step.infuseTemperatureC.toFixed(1)} °C`} />
                         </div>
                         <div className="text-xs text-muted-foreground">Cumulative: {step.cumulativeWaterL.toFixed(1)} L</div>
+                        <CheckRow
+                          checked={!!mash.infusionWarmUp[step.stepIndex]}
+                          onCheckedChange={(v) => setInfusionWarmUp(step.stepIndex, v)}
+                          label="Warm up water"
+                        />
                       </div>
                     );
                   })}
@@ -1257,6 +1273,7 @@ export function BrewdaySection({
 
                   {/* Actuals */}
                   <div className="grid grid-cols-1 gap-2">
+                    <CheckRow checked={mash.spargeWater.warmUpWater} onCheckedChange={(v) => setSpargeWater("warmUpWater", v)} label="Warm up water" />
                     <FieldGroup label={`pH${recipeData.spargeTargetPh != null ? ` (target: ${recipeData.spargeTargetPh})` : ""}`}>
                       <NumInput value={mash.spargeWater.ph} onChange={(v) => setSpargeWater("ph", v)} />
                     </FieldGroup>

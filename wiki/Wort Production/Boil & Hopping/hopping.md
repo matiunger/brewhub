@@ -46,7 +46,8 @@ Hops provide bitterness, flavor, and aroma. Your choices are the **form**, the *
 
 - **Hot techniques** (right after the boil, before chilling): knockout / "zero-minute" addition, **whirlpool hopping**, and the **hopback**. Less aroma loss than the boil — chill fast to keep the aromatics. See [[whirlpooling]].
 - **Cold technique — dry hopping** (after primary): fresh aroma and a fuller impression, but risks grassy/vegetal notes. Tips:
-  - Rack off the yeast first; hold **60–68°F (16–20°C)**.
+  - Rack off the yeast first (if possible); hold **60–68°F (16–20°C)**.
+  - Add on last days of fermentation (1015-1018). After adding the hops, close fermenter to start getting more head pressure. Last fermentation (CO2) will stir the hops into the beer. Pressure will acumulate volatile aroma compounds.
   - **Blanket with CO₂** to prevent oxidation; crash-cool to 32°F two days before pulling.
   - Contact **3–7 days** (10–14 max); **0.5–2 oz / 5 gal**; rouse without introducing oxygen.
   - Variations: the **Randall** (dispense-time) and Sierra Nevada's **hop torpedo** (recirculating cold-side hopback).

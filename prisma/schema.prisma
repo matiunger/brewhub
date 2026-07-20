@@ -196,6 +196,9 @@ model Batch {
   equipmentBoilPotDiameter            Float?  @map("equipment_boil_pot_diameter")
   equipmentSpargeWaterPotDiameter     Float?  @map("equipment_sparge_water_pot_diameter")
 
+  sourceWaterTds    Float?  @map("source_water_tds")
+  finalWaterTds     Float?  @map("final_water_tds")
+
   grains                BatchGrain[]
   hops                  BatchHop[]
   yeasts                BatchYeast[]
@@ -249,6 +252,8 @@ model BatchYeast {
   quantityAmount Float?   @map("quantity_amount")
   quantityUnits  String?  @map("quantity_units")
   temp           Float?
+  pitchRate      Float?   @map("pitch_rate")
+  starterNotes   String?  @map("starter_notes")
   // Snapshot fields
   name           String?
   brand          String?

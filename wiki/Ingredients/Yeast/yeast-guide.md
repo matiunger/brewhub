@@ -51,3 +51,7 @@ Most ale yeasts benefit from a diacetyl rest at the end: raise temp to ~20°C fo
 
 - **High** — drops clear quickly, may leave residual sweetness
 - **Low** — stays in suspension longer, better attenuation, hazier beer
+
+## Related
+
+For Gordon Strong's "Mastering Ingredients" treatment, see [[choosing-a-yeast-strain]], [[preparing-yeast]], [[managing-fermentation]], and [[strongs-yeast-picks]].
