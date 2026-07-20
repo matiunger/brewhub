@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E13 - Lagers con Fernando de Meridiano Quinto</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a1a; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; min-width: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 1rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stat { font-size: 0.85rem; padding: 0.25rem 0.6rem; border-radius: 6px; background: #e5e7eb; font-weight: 500; }
+.stat.total { background: #1a1a1a; color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 5px; background: #f3f4f6; border: 1px solid #d1d5db; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.timestamp:hover { background: #1a1a1a; color: #fff; }
+.timestamp::before { content: '\25B6\00a0'; font-size: 0.6rem; opacity: 0; transition: opacity 0.15s; }
+.timestamp:hover::before { opacity: 1; }
+.badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 4px; color: #fff; text-transform: uppercase; font-weight: 600; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.88rem; line-height: 1.5; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; line-height: 1.45; color: #6b7280; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T2E13 - Lagers con Fernando de Meridiano Quinto.wav"></audio>
+</div>
+<div class="container">
+<h1>T2E13 - Lagers con Fernando de Meridiano Quinto</h1>
+<div class="stats">
+<span class="stat total">24 tips</span>
+<span class="stat">proceso: 6</span>
+<span class="stat">levadura: 5</span>
+<span class="stat">ratio: 3</span>
+<span class="stat">lupulo: 2</span>
+<span class="stat">tecnica: 3</span>
+<span class="stat">agua: 2</span>
+<span class="stat">receta: 2</span>
+<span class="stat">ingrediente: 1</span>
+</div>
+<div class="grid">
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="462000">7:42</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Control de temperatura es clave en lagers</div>
+<div class="card-tip">La caracteristica fundamental de las cepas lager es la temperatura de fermentacion baja. Necesitas buen control de temperatura, mayor nutricion que una ale, y aceptar tiempos de fermentacion mas largos.</div>
+<div class="card-details">Las lagers no producen esteres, son neutras y limpias. El sulfuro leve es el 'aroma lager' caracteristico. Cualquier defecto brilla mas por la limpieza del perfil.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="730000">12:10</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Requerimientos extras de las cepas lager</div>
+<div class="card-tip">Las levaduras lager necesitan mas oxigeno, zinc y magnesio que las ales. Tambien son mas sensibles al estres: evitar shocks termicos al inocular y al reutilizar levadura.</div>
+<div class="card-details">Incorporar sulfato de magnesio en las sales del agua mejora el rendimiento de las cepas lager.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="872000">14:32</button>
+<span class="badge badge-ratio">ratio</span>
+</div>
+<div class="card-title">Tasa de inoculacion: 1.5M cel/mL</div>
+<div class="card-tip">Para lagers, usar una tasa de inoculacion de 1.5 millones de celulas por mililitro por grado Plato. Es el doble de lo que se usa para una cerveza ale.</div>
+<div class="card-details">Hacer conteo de levaduras para mantener esta tasa. Es un error comun inocular lagers con la misma cantidad que ales.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="912000">15:12</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Fase lag: 1°C arriba del target</div>
+<div class="card-tip">Mantener la temperatura 1°C por encima de la temperatura objetivo durante la fase lag (primeras 12 horas). Una vez que hay actividad plena de fermentacion, bajar gradualmente hasta la temperatura deseada.</div>
+<div class="card-details">Cuidar que el mosto y la levadura esten a la misma temperatura al momento de inocular para evitar shock termico.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="948000">15:48</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Liberar temperatura en ultimos puntos</div>
+<div class="card-tip">En los ultimos puntos de densidad, subir un par de grados la temperatura para acelerar la atenuacion final y facilitar la reabsorcion de diacetilo.</div>
+<div class="card-details">Es mas una practica comercial para acortar tiempos. En homebrew no es estrictamente necesario si no hay apuro.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="981000">16:21</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Lagers atenuan en 4-5 dias</div>
+<div class="card-tip">Cervezas lager convencionales (Hells, Pils, Marzen hasta OG 1.060) terminan de atenuar en 4-5 dias cuando se usa levadura reutilizada con buena vitalidad.</div>
+<div class="card-details">El tiempo es solo un 25-30% mayor que una ale equivalente. La clave es usar levadura vital y bien nutrida.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1017000">16:57</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Rampa descendente post-fermentacion</div>
+<div class="card-tip">Despues de terminar la fermentacion y el descanso diacetilo, bajar la temperatura escalonadamente: 2-3°C por dia. No bajar de golpe.</div>
+<div class="card-details">La rampa gradual produce levadura con mejor viabilidad para reutilizacion. Bajar de golpe estresa la levadura que ya esta en medio alcoholico sin oxigeno ni nutrientes.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1033000">17:13</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Cosechar levadura a temperatura media</div>
+<div class="card-tip">Cosechar la levadura a temperatura intermedia (~8-10°C), no en frio extremo. Solapar cocciones para usar el barro de la fermentacion anterior cuando la levadura todavia esta activa.</div>
+<div class="card-details">La leva cosechada en caliente (apenas floculada) tiene maxima vitalidad. A menor temperatura, hay mas barro pero menos viabilidad porque se fue muriendo en el camino.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1078000">17:58</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Descanso diacetilo con W34/70</div>
+<div class="card-tip">Fermentar a 13°C con W34/70, liberar a 15°C en los ultimos puntos. Con levadura vital, el test de diacetilo forzado da negativo en solo 2 dias post-fermentacion.</div>
+<div class="card-details">Si el diacetilo tarda semanas en reabsorberse, es senal de que la levadura llego al final de la fermentacion sin vitalidad suficiente. El problema no es el descanso, es la salud de la leva.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1270000">21:10</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Ventana optima de cosecha de levadura</div>
+<div class="card-tip">Bajar solo un par de grados post-fermentacion para flocular lo grueso. Esa primera floculacion es la levadura mas vital: entro al tanque, fermento, se fue a dormir y la levantas fresca para el siguiente lote.</div>
+<div class="card-details">Las cepas lager son poco floculantes, por eso necesitas bajar un poco la temperatura para que precipite. No esperar a que llegue al fondo del tanque en frio: esa leva ya perdio viabilidad.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1433000">23:53</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Oxigenacion: 12-16 ppm con O2 puro</div>
+<div class="card-tip">Las lagers necesitan 12-16 ppm de oxigeno disuelto. Usar oxigeno puro (no aire) con piedra difusora a 1 L/min durante todo el enfriado del mosto (75-80 minutos).</div>
+<div class="card-details">Con aire esteril no se alcanzan esos niveles de O2. Si la fase lag se extiende mas de 24 horas, se puede reoxigenar antes de que inicie la fermentacion activa.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1495000">24:55</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Reoxigenacion en fase lag extendida</div>
+<div class="card-tip">Si al usar levadura liquida o seca nueva la fase lag se extiende demasiado, se puede hacer un ciclo cerrado en el fermentador y reoxigenar 30-40 minutos adicionales antes de las 24 horas.</div>
+<div class="card-details">Generar flujo ascendente desde el fondo del tanque con burbujas de oxigeno. Solo hacerlo antes de que inicie la fermentacion activa.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1556000">25:56</button>
+<span class="badge badge-ingrediente">ingrediente</span>
+</div>
+<div class="card-title">Nutrientes: zinc y magnesio para lagers</div>
+<div class="card-tip">Usar cloruro de zinc en cada fermentacion lager. Cada 4-5 reutilizaciones de levadura, agregar Springferm BR2 al fermentador para mantener la viabilidad a largo plazo.</div>
+<div class="card-details">Tambien incorporar sulfato de magnesio en las sales del agua. Se noto mejoria en levaduras lager con su uso. No usan nutrientes comerciales complejos (FAN), solo zinc y magnesio.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1643000">27:23</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Triangulo fermentativo: O2, inoculo, nutrientes</div>
+<div class="card-tip">Las tres patas fundamentales para fermentar una buena lager: oxigeno suficiente, inoculo vital en cantidad adecuada, y nutrientes. Se potencian entre si; fallar en una arruina las demas.</div>
+<div class="card-details">La levadura necesita oxigeno para reproducirse, pero para consumirlo necesita estar viva y vital, y para eso necesita nutrientes. Es un ciclo que debe mantenerse completo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2004000">33:24</button>
+<span class="badge badge-lupulo">lupulo</span>
+</div>
+<div class="card-title">Lupulos nobles necesitan ebullicion</div>
+<div class="card-tip">Los lupulos nobles (europeos) necesitan ebullicion para extraer sus compuestos aromaticos caracteristicos: especiados, herbales, amaderados. Adiciones a 15-30 minutos de hervor son ideales para lagers clasicas.</div>
+<div class="card-details">No tiene sentido usar lupulos nobles solo en Whirlpool frio o dry hop. A diferencia de los americanos (citricos, frutales), los nobles expresan mejor sus perfiles con algo de hervor.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2153000">35:53</button>
+<span class="badge badge-lupulo">lupulo</span>
+</div>
+<div class="card-title">No usar lupulos frutales en hervor largo</div>
+<div class="card-tip">Los lupulos americanos frutales/citricos (ej: Citra) pierden todo su caracter en adiciones de 30-40 minutos. Solo queda un toque de resina que se podria obtener con cualquier lupulo mas barato.</div>
+<div class="card-details">Para perfiles citricos y frutados usar Whirlpool, hop stand o dry hop. Para hervor prolongado, elegir lupulos con perfiles terrosos, herbales, especiados o maderosos.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2193000">36:33</button>
+<span class="badge badge-ratio">ratio</span>
+</div>
+<div class="card-title">Ratio de lupulo en lagers alemanas</div>
+<div class="card-tip">En lagers alemanas clasicas, menos de 0.5 g/L por adicion y un total de 1.2-1.5 g/L repartido en 4 adiciones ya se considera una cerveza 'fuertemente lupulada'.</div>
+<div class="card-details">Contexto: pruebas en Bayerischer Bahnhof. Son cantidades muy inferiores a las de una American Pils o IPL. La sutileza es el objetivo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2377000">39:37</button>
+<span class="badge badge-receta">receta</span>
+</div>
+<div class="card-title">Diseno de recetas lager: de simple a complejo</div>
+<div class="card-tip">Empezar con disenos de receta simples e ir sumando de a poco. En lagers, cualquier pequena adicion se nota y puede desbalancear. Chequear la calidad de cada lote de malta antes de usar.</div>
+<div class="card-details">Una Munich con mas tostado del esperado puede sacar de estilo una cerveza entera. La variabilidad de las maltas es mas critica en lagers que en ales.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2459000">40:59</button>
+<span class="badge badge-ratio">ratio</span>
+</div>
+<div class="card-title">Pils: hasta 6 g/L entre hervor y hop stand</div>
+<div class="card-tip">En una German Pils se puede llegar hasta 6 g/L totales entre adiciones en hervor y hop stand con distintas variedades de lupulo. Es el techo antes de desbalancear.</div>
+<div class="card-details">Buscando equilibrio entre amargor y aroma. Esto es para una Pils bien lupulada, no para una Hells o Marzen que llevan menos.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2482000">41:22</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Adicion unica: 1 g/L a 5 min de hervor</div>
+<div class="card-tip">Agregar lupulo noble a razon de 1 g/L en los ultimos 5 minutos de hervor, y luego bajar la temperatura para Whirlpool sin agregar mas. Una sola carga que da perfiles herbales/especiados del hervor y florales/citricos del enfriado.</div>
+<div class="card-details">El breve hervor desarma el pellet (los nobles son mas duros y no se disuelven bien en frio) y extrae compuestos que la baja temperatura del Whirlpool luego preserva de seguir volatilizandose.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2647000">44:07</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">Agua para lagers: baja mineralizacion</div>
+<div class="card-tip">Buscar la menor carga de minerales posible, pero siempre con calcio por encima de 60 ppm. TDS total de la mezcla final alrededor de 150 ppm. Sales: cloruro de calcio, sulfato de calcio y sulfato de magnesio.</div>
+<div class="card-details">Si el agua tiene muchos carbonatos, usar osmosis inversa y hacer un blend hasta 80-100 ppm de TDS base, luego agregar sales. Jugar con ratio cloruros/sulfatos segun estilo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2818000">46:58</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">Bicarbonato de sodio en Munich Hells</div>
+<div class="card-tip">En cervezas con grist mayormente Munich (o mucha malta especial), puede ser necesario agregar un poco de bicarbonato de sodio para que no se caiga demasiado el pH de macerado.</div>
+<div class="card-details">Las maltas oscuras/caramelo acidifican mas el macerado. Con agua de baja mineralizacion esto se acentua.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2855000">47:35</button>
+<span class="badge badge-receta">receta</span>
+</div>
+<div class="card-title">Receta Munich Hells: 85% Pilsen + 15% Viena</div>
+<div class="card-tip">Grist simple: 85% malta Pilsen y 15% malta Viena. Evitar Munich en la Hells porque tiene mucha variabilidad entre lotes y es muy facil desbalancear la cerveza o sacarla de estilo.</div>
+<div class="card-details">Anteriormente usaban Munich pero tuvieron problemas repetidos de variabilidad. La Viena aporta la sutil maltosidad sin riesgo de pasarse.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2994000">49:54</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Mini-mash para testear maltas nuevas</div>
+<div class="card-tip">Antes de hacer un lote completo con una malta nueva o de otro proveedor, hacer un mini-mash: 50 g de malta + 150 cc de agua. Evaluar color, aroma y sabor para detectar defectos.</div>
+<div class="card-details">Sirve para detectar maltas pasadas de tostado, con olor a ahumado, o fuera de especificacion. Es especialmente critico en lagers donde los defectos se notan mas.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

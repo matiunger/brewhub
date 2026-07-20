@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1E13 - El laboratorio sin tener un laboratorio</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a2e; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; min-width: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a1a2e; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 1rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stat-item { font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 20px; background: #e8e8e8; color: #333; font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: #1a1a2e; color: #fff; border: none; cursor: pointer; transition: background 0.15s; }
+.timestamp:hover { background: #16213e; }
+.timestamp::before { content: '\25B6 '; font-size: 0.6rem; }
+.badge { font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 4px; color: #fff; text-transform: uppercase; font-weight: 600; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 600; font-size: 0.95rem; color: #1a1a2e; margin-bottom: 0.5rem; }
+.card-tip { font-size: 0.85rem; color: #444; line-height: 1.5; margin-bottom: 0.5rem; }
+.card-details { font-size: 0.8rem; color: #666; font-style: italic; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T1E13 - El laboratorio sin tener un laboratorio.wav"></audio>
+</div>
+<div class="container">
+<h1>T1E13 - El laboratorio sin tener un laboratorio</h1>
+<div class="stats">
+<span class="stat-item"><strong>20 tips</strong></span>
+<span class="stat-item">proceso: 5</span>
+<span class="stat-item">tecnica: 9</span>
+<span class="stat-item">equipo: 3</span>
+<span class="stat-item">agua: 1</span>
+<span class="stat-item">ingrediente: 0</span>
+<span class="stat-item">receta: 0</span>
+<span class="stat-item">ratio: 0</span>
+<span class="stat-item">levadura: 0</span>
+<span class="stat-item">malta: 0</span>
+<span class="stat-item">lupulo: 0</span>
+</div>
+<div class="grid">
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="256000">4:16</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Tres etapas de cualquier analisis</div>
+<div class="card-tip">Todo analisis tiene tres etapas: preanalítica (toma de muestra representativa), analítica (la determinación en sí) y postanalítica (interpretación y decisiones). Antes de analizar, definir qué valores espero y qué hago si se desvían.</div>
+<div class="card-details">Error en etapa preanalítica (contaminar la muestra al tomarla) puede llevar a tirar un lote perfecto. Siempre saber de antemano qué hacer con cada resultado posible.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="486000">8:06</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Analisis sensorial como laboratorio</div>
+<div class="card-tip">Los sentidos son un laboratorio super sensible siempre disponible. Hay que calibrarlos mediante entrenamiento: ir reconociendo aromas y sabores en cada etapa del proceso de elaboración.</div>
+<div class="card-details">Como cualquier equipo de medición, requiere calibración constante. Probar mosto, cerveza en distintas etapas, materias primas.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="867000">14:27</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Espacio para microbiologia requiere aislamiento</div>
+<div class="card-tip">Si vas a sembrar muestras en medios de cultivo, necesitás un espacio cerrado donde no circule aire. De lo contrario, los microorganismos del ambiente contaminan las muestras y dan falsos positivos.</div>
+<div class="card-details">Para tests más simples (diacetilo forzado, envejecimiento forzado) no se necesita un espacio exclusivo dedicado.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1059000">17:39</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Test de diacetilo forzado</div>
+<div class="card-tip">Sacar dos muestras del fermentador al final de la fermentación. Una queda a temperatura ambiente, la otra va a baño María a 65-70°C durante 15-20 minutos. Luego llevar ambas a temperatura ambiente y oler buscando diacetilo (aroma a manteca).</div>
+<div class="card-details">Si no hay diacetilo en ninguna: fermentación completa, cerveza lista. Si hay diacetilo solo en la muestra calentada: el precursor aún no fue reducido, la cerveza necesita más tiempo en fermentador. Usar botellitas de vidrio de boca ancha o Erlenmeyer pequeño. Pava eléctrica a 70°C funciona perfecto como baño.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1383000">23:03</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">La fermentacion no termina en la atenuacion</div>
+<div class="card-tip">La fermentación no termina cuando la levadura consumió todo el azúcar. Necesita tiempo adicional para eliminar el diacetilo: la levadura debe reabsorber el diacetilo formado y reducirlo.</div>
+<div class="card-details">Usar el test de diacetilo forzado para determinar el tiempo exacto de fermentador para cada estilo. Hacerlo 2-3 veces con receta nueva para cubrir variaciones, luego ya queda definido el protocolo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1476000">24:36</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Test de mosto forzado para contaminacion</div>
+<div class="card-tip">Tomar muestras de mosto antes de inocular levadura en recipientes estériles. Un blanco del hervidor a 100°C y muestras en varios puntos: salida del enfriador, entrada al fermentador pre y post oxigenación. Guardar a 30-35°C y observar diariamente.</div>
+<div class="card-details">Actividad a los 2 días: contaminación importante, descartar. Entre 3-5 días: carga microbiana baja, evaluar si la levadura la puede competir. Sin actividad a la semana: cerveza perfecta, sin contaminación. Usar frascos estériles de farmacia (orina).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1577000">26:17</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Estufa casera para incubar muestras</div>
+<div class="card-tip">Para mantener muestras a 30-35°C: usar un freezer o heladera modificada con un foco incandescente (no LED) y un termostato adentro. El foco calienta el interior y el termostato lo regula.</div>
+<div class="card-details">Alternativas: incubadora de pollitos (caja con controlador de temperatura, se consigue en Mercado Libre), o dejar las muestras en la parte de arriba de la heladera contra el fondo (calor del motor).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1758000">29:18</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Toma de muestra aseptica</div>
+<div class="card-tip">Usar siempre recipientes estériles (frascos de farmacia para orina). Trabajar cerca de una llama (mechero con algodón y alcohol). Flamear la boca del tomamuestra, destapar sin apoyar la tapa en ninguna superficie, dejar correr un poco, juntar y tapar enseguida.</div>
+<div class="card-details">Si el tomamuestra está contaminado dará falsos positivos. Verificar que los tomamuestras estén limpios y sanitizados; los baratos son difíciles de desarmar. Si no se puede garantizar asepsia del tomamuestra, mejor ir directamente por evaluación organoléptica.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1980000">33:00</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Monitoreo de densidad y pH en fermentacion</div>
+<div class="card-tip">Medir densidad y pH del fermentador: al principio mínimo dos veces por día, luego una vez por día. Trazar la curva de fermentación para cada cocción (fase lag, caída exponencial, estabilización).</div>
+<div class="card-details">Permite detectar rápidamente problemas: fase lag extendida, densidad final alta, comportamiento anómalo. Fundamental para reutilización de levadura. Las primeras mediciones establecen la línea base; las desviaciones posteriores alertan problemas.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2189000">36:29</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Test de atenuacion forzada</div>
+<div class="card-tip">Tomar una muestra del mosto que va al fermentador, sobreinocularla con la misma levadura, fermentar a temperatura alta y agitar frecuentemente. Medir densidad a las 24h, 48h, 72h hasta estabilizar.</div>
+<div class="card-details">En condiciones ideales (agitación constante, temp alta, sobreinóculo), debería alcanzar 50% de atenuación en 24h. Predice la densidad final real. Útil al cambiar de malta, levadura, o con receta nueva para confirmar que la FG esperada es alcanzable.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2379000">39:39</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Test de envejecimiento forzado</div>
+<div class="card-tip">Guardar cerveza envasada a alta temperatura (38-40°C) durante 4-7 días. Comparar sensorialmente contra la misma cerveza que estuvo siempre en frío. Evaluar oxidación, off-flavors, diacetilo, acidez.</div>
+<div class="card-details">Regla: la velocidad de oxidación se duplica cada 5°C. A 40°C, 4 días equivalen a 3-5 meses de guarda (paper). A 38°C, 5 días ≈ 3-4 meses. A 32°C, 1 semana ≈ 1 mes. Sirve para definir vida útil, calibrar proceso de envasado, y evaluar si eliminar el pasteurizado.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2496000">41:36</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Incubadora de pollitos como estufa</div>
+<div class="card-tip">Una incubadora de huevos (caja de fibrofácil con controlador de temperatura y foquito) es económica y perfecta para mantener muestras a 30-40°C. Se consigue en Mercado Libre o se puede construir.</div>
+<div class="card-details">Alternativa: detrás del HLT (menos preciso, riesgo de pasarse de temperatura). Otra: estufa de cultivo si se tiene acceso. Lo importante es mantener temperatura estable sin superar 40°C para no pasteurizar.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2575000">42:55</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Velocidad de oxidacion y temperatura</div>
+<div class="card-tip">La velocidad de oxidación de la cerveza se duplica cada 5°C de aumento en la temperatura de almacenamiento. Esto permite estimar vida útil según condiciones de guarda.</div>
+<div class="card-details">Una cerveza con 5 meses de vida útil en cámara de frío (4°C) durará mucho menos en una góndola a 35°C. Ajustar fecha de vencimiento según las condiciones reales de distribución, no las ideales.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2905000">48:25</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Calibrar protocolo de enlatado con test forzado</div>
+<div class="card-tip">Llenar 10 ciclos con un protocolo fijo (ej: 6s purga, 22s llenado, alivio rápido), separar 2 latas rotuladas. Cambiar una variable, volver a régimen, separar 2 latas más. Someter todas a envejecimiento forzado y catar comparativamente.</div>
+<div class="card-details">Permite encontrar el protocolo con menor pickup de oxígeno sin necesitar medidor de O2 disuelto. Funciona igual para embotelladora a contrapresión manual. Probar variando: tiempo de purga, velocidad de llenado, tiempo de alivio.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3113000">51:53</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">Conductimetro o TDS para control de agua</div>
+<div class="card-tip">Un medidor de TDS (sólidos disueltos totales) permite verificar que el agua no tenga variaciones y que las sales agregadas se disuelvan correctamente. Medir antes y después del tratamiento; el valor post-tratamiento debería ser siempre similar.</div>
+<div class="card-details">No discrimina qué sales hay, pero detecta variaciones. Si el valor es distinto al habitual: las sales están hidratadas, se pesaron mal, o no se disolvieron. Equipo económico y de uso diario en la cervecería.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3174000">52:54</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Validar limpieza con test de mosto forzado</div>
+<div class="card-tip">Usar el test de mosto forzado para validar que el sistema de limpieza y sanitización (CIP) es efectivo. Es preferible tener un CIP bien validado que depender de análisis microbiológico de la cerveza terminada.</div>
+<div class="card-details">Cuando llega el resultado del análisis micro, puede ser tarde: el fermentador ya se vació y se llenó de nuevo, o el lote ya salió a la calle.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3275000">54:35</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Analisis sensorial de materias primas</div>
+<div class="card-tip">Probar y oler todas las materias primas: masticar los granos, hacer tecito de lúpulo (fundamental para conocer el carácter aromático), hervir y enfriar barro de levadura para reconocer el sabor de autólisis, y probar el mosto sin fermentar.</div>
+<div class="card-details">Anotar todo. El tecito de lúpulo es la prueba más importante para evaluar lúpulo. Conocer el sabor de la levadura muerta ayuda a detectar autólisis en cerveza terminada.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3377000">56:17</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Test de estabilidad de turbidez en Hazy IPA</div>
+<div class="card-tip">Dejar lata o botella en frío sin mover. Al servir: volcar suavemente 3/4 en un vaso, luego batir la lata y servir el 1/4 restante en otro vaso. Si la turbidez es estable (soluble), ambos vasos lucen similar. Si sedimenta, el primero sale más limpio.</div>
+<div class="card-details">En barril: dejar quieto 2 meses en cámara y pinchar un growler por semana para ver si la turbidez va cayendo. Indica si la turbidez es por proteínas/polisacáridos en suspensión estable o por sólidos que sedimentan con el tiempo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3555000">59:15</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Experimentar rompiendo reglas en lotes chicos</div>
+<div class="card-tip">Hacer cocciones pequeñas (20L) exagerando lo que normalmente se evita para aprender qué realmente importa. Ejemplo: burbujear oxígeno puro en el macerado para ver el efecto real de la oxidación en mash.</div>
+<div class="card-details">Es tremendamente educativo. Enseña sobre qué hay que tener cuidado y sobre qué no. Permite tomar mejores decisiones basadas en evidencia propia, no solo en lo que se lee.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3597000">59:57</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Mejorar oxigeno sin medidor de PPB</div>
+<div class="card-tip">Se puede lograr muy buenos niveles de oxígeno disuelto en producto terminado sin un medidor de O2 (PPB), usando únicamente herramientas sensoriales (test de envejecimiento forzado comparativo) y mejorando iterativamente los protocolos de envasado.</div>
+<div class="card-details">Es más lento que medir directamente, requiere más criterio y sentido común, pero se llega a resultados excelentes sin invertir en un equipo costoso.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

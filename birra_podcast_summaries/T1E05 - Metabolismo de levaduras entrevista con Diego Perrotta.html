@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1E05 - Metabolismo de levaduras entrevista con Diego Perrotta</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a1a; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; min-width: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 1rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stat { font-size: 0.85rem; padding: 0.25rem 0.65rem; border-radius: 20px; background: #e5e7eb; font-weight: 500; }
+.stat-total { background: #1a1a1a; color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.13); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; padding: 0.2rem 0.55rem; border-radius: 5px; background: #f3f4f6; border: 1px solid #d1d5db; cursor: pointer; transition: background 0.15s, color 0.15s; color: #374151; }
+.timestamp:hover { background: #1a1a1a; color: #fff; }
+.timestamp::before { content: '\25B6 '; font-size: 0.6rem; opacity: 0; transition: opacity 0.15s; }
+.timestamp:hover::before { opacity: 1; }
+.badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 20px; color: #fff; text-transform: uppercase; font-weight: 600; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.88rem; line-height: 1.5; color: #374151; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; line-height: 1.45; color: #6b7280; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T1E05 - Metabolismo de levaduras entrevista con Diego Perrotta.wav"></audio>
+</div>
+<div class="container">
+<h1>T1E05 - Metabolismo de levaduras entrevista con Diego Perrotta</h1>
+<div class="stats">
+<span class="stat stat-total">28 tips</span>
+<span class="stat" style="border-left: 3px solid #7c3aed;">tecnica: 10</span>
+<span class="stat" style="border-left: 3px solid #2563eb;">proceso: 9</span>
+<span class="stat" style="border-left: 3px solid #be185d;">levadura: 7</span>
+<span class="stat" style="border-left: 3px solid #16a34a;">ingrediente: 1</span>
+<span class="stat" style="border-left: 3px solid #dc2626;">receta: 1</span>
+</div>
+<div class="grid">
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="398000">06:38</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Acetaldehido indica fermentacion incompleta</div>
+<div class="card-tip">El acetaldehido es un intermediario en la ruta metabolica de azucar fermentable a etanol. Cuando la fermentacion sufre estres excesivo o queda incompleta, el acetaldehido se acumula como defecto.</div>
+<div class="card-details">La secuencia es: glucosa → piruvato → acetaldehido → etanol. Si la levadura no puede completar el camino, el acetaldehido queda en la cerveza con su aroma verde caracteristico.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="447000">07:27</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Cofactores minerales esenciales para levadura</div>
+<div class="card-tip">Zinc, magnesio y calcio son cofactores criticos en las rutas metabolicas de la levadura. El oxigeno tambien actua como cofactor fundamental para la reproduccion celular.</div>
+<div class="card-details">Estos minerales interactuan directamente con las enzimas de las vias metabolicas. Su deficiencia puede enlentecer reacciones y acumular subproductos indeseados.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="690000">11:30</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Como se forman los esteres</div>
+<div class="card-tip">Un ester se forma por la reaccion entre un alcohol y un acido. El acido proviene de la descarboxilacion del piruvato (acetil-CoA). Los alcoholes pueden ser etanol o alcoholes superiores de la via de aminoacidos.</div>
+<div class="card-details">Esteres de acetato (acetil-CoA + alcohol superior) estan en mucha mayor concentracion que esteres de etilo (acil-CoA de acidos grasos + etanol). Los esteres de acetato dominan el perfil aromatico.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="776000">12:56</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Ploidia y genetica determinan produccion de esteres</div>
+<div class="card-tip">La produccion de esteres depende fundamentalmente del genoma y la ploidia (numero de cromosomas) de la cepa. La enzima clave es la acetiltransferasa (ATF), cuya regulacion genetica varia entre cepas.</div>
+<div class="card-details">Mayor ploidia implica mas copias de genes para las mismas enzimas. Las mutaciones en sitios de regulacion de los genes de ATF determinan cuanto ester produce cada cepa.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="926000">15:26</button>
+<span class="badge badge-ingrediente">ingrediente</span>
+</div>
+<div class="card-title">Estereoisomeros del acetato de isoamilo</div>
+<div class="card-tip">El acetato de isoamilo comercial es una mezcla de estereoisomeros: uno da aroma a banana clasico y el otro aporta notas a pera y tutti-frutti. Comprar isomeros separados es mucho mas caro.</div>
+<div class="card-details">Tienen la misma formula quimica pero distinta estructura tridimensional, lo que les da propiedades aromaticas diferentes.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="985000">16:25</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Mas glucosa en mosto = mas banana</div>
+<div class="card-tip">Mayor concentracion de glucosa en el mosto aumenta la concentracion de piruvato, lo que genera mas acetil-CoA y consecuentemente mas acetato de isoamilo (aroma banana).</div>
+<div class="card-details">La cadena es: glucosa → piruvato (aumentado) → acetil-CoA (aumentado) → acetato de isoamilo (aumentado).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1028000">17:08</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Acetato de etilo en refermentacion en botella</div>
+<div class="card-tip">Las cervezas refermentadas en botella tienden a producir acetato de etilo (aroma solvente) por dos razones: agregar sacarosa o glucosa aumenta el piruvato y la temperatura de refermentacion suele ser mayor que la de fermentacion primaria.</div>
+<div class="card-details">Etanol hay en exceso en la cerveza; al agregar azucar se aumenta acetil-CoA, y la combinacion de ambos da acetato de etilo inevitablemente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1082000">18:02</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Cepa diferente para refermentacion en botella</div>
+<div class="card-tip">Cervecerias europeas y norteamericanas agregan levadura fresca de una cepa diferente para refermentar en botella, eligiendo especificamente una cepa que produzca poco acetato de etilo.</div>
+<div class="card-details">No necesariamente usan la misma cepa de fermentacion primaria. La eleccion de cepa para refermentacion es una herramienta clave para controlar el solvente en cervezas de botella.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1119000">18:39</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Micro-dosis de levadura contra oxigeno en lata</div>
+<div class="card-tip">Cervecerias como Sierra Nevada y Founders agregan cantidades minimas de levadura y azucar a latas/botellas ya carbonatadas, no para refermentar sino para que la levadura consuma el oxigeno captado en la linea de envasado.</div>
+<div class="card-details">La cantidad es tan baja que no genera turbidez, sedimento ni sobrecarbonatacion. Se elige una cepa adecuada y la minima cantidad de oxigeno presente se reduce rapidamente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1240000">20:40</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Subir temperatura = mas esteres</div>
+<div class="card-tip">La herramienta mas sencilla para aumentar la produccion de esteres es elevar la temperatura de fermentacion. Es el primer recurso a considerar cuando se busca caracter frutal.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1253000">20:53</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Sin cepa adecuada no hay esteres</div>
+<div class="card-tip">Si la cepa elegida no es una gran productora de esteres, por mas que subas la temperatura o modifiques otras variables, la produccion de esteres sera baja. La eleccion de cepa es siempre el primer paso.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1295000">21:35</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Presion de CO2 para reducir esteres</div>
+<div class="card-tip">Mantener presion parcial de CO2 en el fermentador (0,25 a 0,5 bar segun la cepa) inhibe la descarboxilacion oxidativa que produce acetil-CoA, reduciendo la formacion de esteres.</div>
+<div class="card-details">Al aumentar la presion de CO2, la enzima esta presente pero no puede generar mas CO2 porque el mosto no acepta mas. Esto frena la produccion de acetil-CoA y por ende de esteres.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1340000">22:20</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Temperatura controla alcoholes superiores</div>
+<div class="card-tip">Los alcoholes superiores aumentan con la temperatura. En cervezas de alta densidad la formacion es casi inevitable, pero se puede manejar controlando la temperatura estrictamente.</div>
+<div class="card-details">Cervezas de alta graduacion van a producir alcoholes superiores si o si por la alta concentracion de aminoacidos. El control de temperatura es la herramienta principal.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1385000">23:05</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Menos oxigeno genera mas esteres</div>
+<div class="card-tip">Disminuir la concentracion de oxigeno disuelto en el mosto favorece la produccion de esteres. Es una herramienta clave junto con la sub-inoculacion para estilos como NEIPA y Hefeweizen.</div>
+<div class="card-details">El estres de la levadura por falta de oxigeno, combinado con menor tasa de inoculacion, aumenta la actividad metabolica y la produccion de esteres.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1404000">23:24</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Sub-inoculacion para aumentar esteres</div>
+<div class="card-tip">Inocular menos levadura de lo habitual aumenta la produccion de esteres. La levadura detecta abundancia de nutrientes y acelera su metabolismo para duplicarse, lo que incrementa los esteres.</div>
+<div class="card-details">Tecnica usada por cerveceros alemanes para Hefeweizen y tambien para NEIPAs. Se combina con control de temperatura para evitar exceso de alcoholes superiores.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1475000">24:35</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Sub-inocular sin pasarse de temperatura</div>
+<div class="card-tip">El truco es favorecer la formacion de alcoholes superiores (sub-inoculando) pero tambien su conversion a esteres (sin exceder la temperatura). En mostos de densidad moderada (~1060 para NEIPA), si hay problema de alcoholes superiores es por mala eleccion de cepa o falta de control termico.</div>
+<div class="card-details">En mostos de 1050-1060 no deberian aparecer alcoholes superiores problematicos si la cepa y la temperatura estan bien elegidas.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1543000">25:43</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Cerrar fermentador para frenar esteres</div>
+<div class="card-tip">Una vez que se formaron los esteres deseados, cerrar el fermentador aumenta la presion de CO2, lo que inhibe la descarboxilacion y frena la formacion de esteres adicionales.</div>
+<div class="card-details">Esto ademas ayuda a que los aceites esenciales del lupulo se disuelvan mejor en el caso de dry hopping.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1599000">26:39</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Todo proceso fermentativo es estres</div>
+<div class="card-tip">La levadura prefiere crecer a 28-30 grados C, no a 12-20 grados C. No le gusta el CO2 ni el alcohol. Todo el proceso cervecero es inherentemente estresante; el cervecero debe dirigir ese estres hacia los resultados deseados.</div>
+<div class="card-details">Baja tasa de inoculacion, temperatura controlada y presion de CO2 son las herramientas para canalizar el estres hacia la produccion especifica de esteres u otros compuestos.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1932000">32:12</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">US-05: limpieza de acetaldehido a 20 grados C</div>
+<div class="card-tip">La US-05 no produce diacetilo pero si genera acetaldehido a bajas concentraciones. Elevando la temperatura a 20 grados C, la levadura consume el acetaldehido y se obtiene un perfil limpio tipo pseudo-lager.</div>
+<div class="card-details">Diego Perrotta hacia un descanso de acetaldehido (en vez del clasico diacetil rest) con US-05 fermentando a 17 grados C y luego subiendo a 20 grados C. Ideal para Golden Ale sin caracter azufrado.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1999000">33:19</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">US-05 vs US-04: viabilidad en guarda fria</div>
+<div class="card-tip">La US-05 soporta mucho mejor la guarda en frio que la US-04, cuya viabilidad cae rapidamente. Para cervecerias que necesitan reutilizar levadura, la US-05 es mas practica para cosechar y guardar.</div>
+<div class="card-details">La US-04 es muy sensible a cambios de temperatura: un pequeno cambio puede hacer que flocule prematuramente y no termine de fermentar.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2030000">33:50</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Scottish Ale con US-05 sub-inoculando</div>
+<div class="card-tip">Para hacer una Scottish Ale con US-05 (cuando no se dispone de US-04), sub-inocular un poco y fermentar a temperatura mas alta que para una American IPA. No es identico a US-04 pero permite mas esteres cuando el estilo lo requiere.</div>
+<div class="card-details">Se usa el mismo barril de levadura cosechada para multiples estilos, variando tasa de inoculacion y temperatura.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2089000">34:49</button>
+<span class="badge badge-receta">receta</span>
+</div>
+<div class="card-title">Scotch Ale con US-05 a 22-23 grados C</div>
+<div class="card-tip">Para Scotch Ale (OG ~1075) fermentar con US-05 a 22-23 grados C para producir esteres. Tambien se puede fermentar a 18 grados C con la misma cepa para un perfil mas limpio. Misma cepa, distintas cervezas.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2347000">39:07</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Alcoholes superiores por via de Ehrlich</div>
+<div class="card-tip">Los alcoholes superiores se forman por degradacion de aminoacidos a traves de la via de Ehrlich: aminoacido → cetoacido → aldehido → alcohol superior. Son necesarios para la complejidad aromatica pero en exceso dan caracter caliente y solvente.</div>
+<div class="card-details">No todos los aminoacidos entran en la via de Ehrlich. Leucina e isoleucina son algunos de los que si, y la levadura los degrada secuencialmente, no todos a la vez.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2462000">41:02</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Alta densidad implica alcoholes superiores</div>
+<div class="card-tip">En mostos de alta densidad la concentracion de aminoacidos es inherentemente alta, haciendo la formacion de alcoholes superiores casi inevitable. El foco debe estar en controlar su transformacion en esteres, no en evitar su formacion.</div>
+<div class="card-details">Los alcoholes superiores aportan complejidad pero no deben superar el umbral de deteccion. En cervezas de alta graduacion, el tiempo de maduracion generalmente ayuda a integrarlos.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2613000">43:33</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Adjuntos no malteados reducen alcoholes superiores</div>
+<div class="card-tip">Para reducir la formacion de alcoholes superiores, disminuir el amino nitrogeno libre (FAN) usando adjuntos no malteados, miel o jugo de fruta en lugar de 100% malta.</div>
+<div class="card-details">Al reemplazar parte de la malta por adjuntos sin proteinas, se reduce la concentracion de aminoacidos disponibles para la via de Ehrlich.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2680000">44:40</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Alimentacion progresiva de mosto</div>
+<div class="card-tip">Para cervezas de alta densidad, partir de un mosto de baja densidad e ir agregando mosto progresivamente. Esto permite que la levadura se adapte a concentraciones crecientes de alcohol y reduce la carga de aminoacidos por cada adicion.</div>
+<div class="card-details">La levadura se aclimata gradualmente al estres osmotico y alcoholico, y la degradacion de alcoholes superiores se maneja de a poco en cada etapa.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2837000">47:17</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Mas oxigeno estabiliza membranas en alta densidad</div>
+<div class="card-tip">En cervezas de alta densidad, mayor oxigenacion inicial favorece la produccion de ergosterol, que estabiliza la membrana celular contra el efecto solvente del alcohol elevado.</div>
+<div class="card-details">El etanol desestabiliza la membrana plasmatica porque es solvente de grasas. El oxigeno permite sintetizar compuestos que hacen la membrana mas robusta. Pero aun con mas O2 y mas levadura, sin control de temperatura se produciran alcoholes superiores en exceso.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3036000">50:36</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Descenso suave de temperatura en alta densidad</div>
+<div class="card-tip">En cervezas de alta graduacion alcoholica, una curva de descenso de temperatura con pendiente suave produce mejores resultados que una bajada brusca para controlar alcoholes superiores.</div>
+<div class="card-details">No es solo la temperatura final sino la geometria del fermentador y el sistema de enfriado lo que influye. Una bajada gradual permite que la levadura siga trabajando y transformando alcoholes superiores en esteres.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

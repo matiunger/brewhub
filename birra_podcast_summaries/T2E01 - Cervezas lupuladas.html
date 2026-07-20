@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E01 - Cervezas lupuladas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f5f5f5;color:#1a1a1a;padding-top:64px}
+.audio-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:#1a1a1a;padding:0.5rem 1rem;display:flex;align-items:center;gap:1rem}
+.back-btn{color:#fff;text-decoration:none;white-space:nowrap;font-size:0.85rem;padding:0.3rem 0.75rem;border-radius:6px;background:rgba(255,255,255,0.12);transition:background 0.15s}
+.back-btn:hover{background:rgba(255,255,255,0.25)}
+.audio-bar audio{flex:1;width:100%}
+.container{max-width:1200px;margin:0 auto;padding:1.5rem 1rem}
+h1{font-size:1.6rem;margin-bottom:1rem;color:#1a1a1a}
+.stats{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem}
+.stat{font-size:0.8rem;padding:0.25rem 0.6rem;border-radius:12px;background:#e5e5e5;color:#444;font-weight:500}
+.stat-total{background:#1a1a1a;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+.card{background:#fff;border-radius:10px;padding:1.2rem;box-shadow:0 1px 3px rgba(0,0,0,0.08);transition:box-shadow 0.2s,transform 0.2s}
+.card:hover{box-shadow:0 6px 16px rgba(0,0,0,0.12);transform:translateY(-2px)}
+.card-header{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;flex-wrap:wrap}
+.timestamp{font-family:"SF Mono",Monaco,Consolas,monospace;font-size:0.78rem;padding:0.2rem 0.5rem;border-radius:6px;background:#f0f0f0;border:1px solid #ddd;cursor:pointer;color:#1a1a1a;transition:background 0.15s,color 0.15s;display:inline-flex;align-items:center;gap:0.3rem}
+.timestamp:hover{background:#1a1a1a;color:#fff}
+.timestamp::before{content:"";display:inline-block;width:0;height:0;border-left:6px solid currentColor;border-top:4px solid transparent;border-bottom:4px solid transparent;opacity:0;transition:opacity 0.15s}
+.timestamp:hover::before{opacity:1}
+.badge{font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:10px;color:#fff;font-weight:600;text-transform:uppercase;letter-spacing:0.03em}
+.badge-proceso{background:#2563eb}.badge-ingrediente{background:#16a34a}.badge-receta{background:#dc2626}
+.badge-ratio{background:#d97706}.badge-tecnica{background:#7c3aed}.badge-equipo{background:#0891b2}
+.badge-levadura{background:#be185d}.badge-malta{background:#92400e}.badge-lupulo{background:#15803d}
+.badge-agua{background:#0369a1}
+.card-title{font-weight:700;font-size:0.95rem;margin-bottom:0.4rem}
+.card-tip{font-size:0.88rem;line-height:1.5;color:#333;margin-bottom:0.4rem}
+.card-details{font-size:0.82rem;line-height:1.45;color:#777;font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Indice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T2E01 - Cervezas lupuladas.wav"></audio>
+</div>
+
+<div class="container">
+<h1>T2E01 - Cervezas lupuladas</h1>
+
+<div class="stats">
+  <span class="stat stat-total">21 tips</span>
+  <span class="stat">ingrediente: 6</span>
+  <span class="stat">tecnica: 7</span>
+  <span class="stat">proceso: 2</span>
+  <span class="stat">receta: 3</span>
+  <span class="stat">levadura: 1</span>
+  <span class="stat">ratio: 1</span>
+</div>
+
+<!-- T2E01 cards are defined inline below, sorted by timestamp_ms -->
+
+<div class="grid">
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="674000">11:14</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">English IPA: base con maltas caramelo</div>
+  <div class="card-tip">Una English IPA lleva lupulos ingleses, maltas caramelo claras para balancear el amargor y darle color cobrizo, y una levadura inglesa cuyos esteres juegan un rol predominante. La maltosidad balancea el amargor fuerte.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="795000">13:15</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">American IPA: base simple sin caramelo</div>
+  <div class="card-tip">Una American IPA lleva base de maltas muy simple y clara, levadura neutra de alta atenuacion para que quede seca, y un lupulado muy intenso en amargor, sabor y aroma. Es pecado capital usar malta caramelo en una American IPA.</div>
+  <div class="card-details">"Lo unico peor en una American IPA que el diacetilo son las maltas caramelo" — Vinicius Urso.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1095000">18:15</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Session IPA vs APA: cuerpo y sequedad</div>
+  <div class="card-tip">Una Session IPA es mas seca, con menor densidad final, donde el amargor predomina. Una APA tiene mayor cuerpo y densidad final, se percibe mas maltosa, y los azucares residuales contrarrestan la intensidad del amargor.</div>
+  <div class="card-details">Con la misma carga de amargor, la APA se percibe menos amarga por tener mas azucares residuales y mas cuerpo.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1273000">21:13</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Maceracion: Session IPA vs APA</div>
+  <div class="card-tip">Para una Session IPA, macerar a 65-66°C para obtener bajo cuerpo y densidad final baja. Para una APA, macerar mas alto, entre 68-70°C, para generar mas dextrinas y cuerpo.</div>
+  <div class="card-details">Tambien se puede macerar bajo y agregar dextrina en el hervor como alternativa para lograr cuerpo.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1328000">22:08</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Fermentacion S-05: Session IPA vs APA</div>
+  <div class="card-tip">Con la misma cepa S-05, fermentar una Session IPA a 18-19°C maximo para perfil limpio, y una APA a 20-20.5°C para producir mas esteres. Es una preferencia personal, pero demuestra como la temperatura cambia el perfil.</div>
+  <div class="card-details">Los esteres adicionales a temperatura mas alta le dan mas complejidad a la APA.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1595000">26:35</button>
+    <span class="badge badge-receta">receta</span>
+  </div>
+  <div class="card-title">Imperial IPA: densidad y receta base</div>
+  <div class="card-tip">Para una Imperial IPA, usar OG de 1.080-1.085. La receta base es Pilsen, Munich y Dextrosa, nada mas. No agregar maltas complejas, ni melanoidinas, ni caramelos. El mosto de alta densidad ya tiene suficiente maltosidad para sostener el lupulado.</div>
+  <div class="card-details">Si se agrega maltosidad para soportar el amargor y se pasa, ya entra en la categoria American Barley Wine.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1613000">26:53</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Imperial IPA: no exceder el lupulado</div>
+  <div class="card-tip">Si se meten 40 IBUs de amargor mas 6 g/L en whirlpool caliente mas 10-20 g/L en dry hopping, lo mas probable es que el amargor quede invasivo y tape los aromas frutados, citricos y florales que se buscan.</div>
+  <div class="card-details">El amargor excesivo saca todo el perfil amigable de los esteres y lupulos.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1687000">28:07</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Varias adiciones para evitar vegetal</div>
+  <div class="card-tip">Para evitar notas a brocoli, cebolla y ajo en cervezas muy lupuladas, hacer varias adiciones mas pequenas en lugar de una sola adicion grande. La materia vegetal del lupulo en exceso genera esos off-flavors.</div>
+  <div class="card-details">Aplica a todo tipo de cerveza lupulada, no solo Imperial IPA.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1775000">29:35</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Lupulado mas efectivo en cervezas livianas</div>
+  <div class="card-tip">8 g/L totales en una Session IPA pueden dar mas aroma y sabor a lupulo que 20 g/L en una Imperial IPA. En la cerveza liviana el lupulo brilla porque no compite con alcohol, esteres ni maltosidad.</div>
+  <div class="card-details">A mayor densidad y alcohol, mas competencia para el lupulo y mas dificil lograr aroma y sabor intensos.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2168000">36:08</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Red IPA: caramelo bajo vs caramelo alto</div>
+  <div class="card-tip">Mucho caramelo bajo da notas dulces, pochoclo, flan, melaza y miel. Poco caramelo alto da notas torradas, caramelo quemado, cafe y frutos secos. El perfil sensorial es radicalmente distinto aunque el color sea similar.</div>
+  <div class="card-details">El lupulado debe adaptarse a cada perfil: se lupula de forma diferente segun que caramelo se use.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2221000">37:01</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Maltas especiales aportan dextrinas</div>
+  <div class="card-tip">El malteado de maltas especiales convierte almidones en azucares no fermentables (dextrinas). Con mucha carga de maltas especiales es dificil lograr una cerveza seca, incluso macerando a temperatura baja.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2252000">37:32</button>
+    <span class="badge badge-receta">receta</span>
+  </div>
+  <div class="card-title">Red IPA: dextrosa para compensar cuerpo</div>
+  <div class="card-tip">Macerar a temperatura baja con 15-20% de maltas caramelo bajo. Agregar dextrosa en el hervor para aumentar el porcentaje de fermentables simples, bajar densidad final y reducir el cuerpo. La Red IPA debe quedar seca.</div>
+  <div class="card-details">Red IPA de Sir Hopper: 20% maltas caramelo bajo con lupulado resinoso.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2318000">38:38</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Black IPA: color si, torrado sutil</div>
+  <div class="card-tip">En una Black IPA, el "black" debe ser principalmente el color, no el caracter tostado. El torrado es muy sutil (toque de cafe y chocolate) y no debe competir con el lupulado. No es un stout lupulado.</div>
+  <div class="card-details">Una buena Black IPA huele y sabe casi como una American IPA; si se toma sin ver el color, se puede confundir.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2430000">40:30</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Black IPA: extraer color sin torrado</div>
+  <div class="card-tip">Usar tecnicas como cold steeping, hot steeping y cold bruise para extraer color de maltas oscuras sin extraer tanto sabor torrado. El objetivo es color oscuro con minimo impacto en el perfil de sabor.</div>
+  <div class="card-details">Se necesitan muchas cocciones de prueba para lograr el balance correcto.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2631000">43:51</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Brown IPA: malta Special B o Special W</div>
+  <div class="card-tip">Para una Brown IPA, usar malta Special B o Special W para aportar notas a frutos secos. Es mas maltosa y compleja en caramelos que una Red IPA, pero menos torrada que una Black IPA.</div>
+  <div class="card-details">La Special B/W es ideal para todo tipo de Brown Ales.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2666000">44:26</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Brute IPA: enzima para cero cuerpo</div>
+  <div class="card-tip">Agregar una enzima que rompe todos los azucares complejos en simples fermentables. La densidad final queda debajo de la del agua (0.996-0.998). Tiene cero cuerpo y cero sosten de malta.</div>
+  <div class="card-details">Es muy dificil manejar el balance entre lupulado y alcohol sin maltosidad. Muchas Brute IPA quedan desbalanceadas. El estilo es basicamente un vaso de soda con alcohol y lupulo.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2733000">45:33</button>
+    <span class="badge badge-receta">receta</span>
+  </div>
+  <div class="card-title">White IPA: especias y lupulo citrico</div>
+  <div class="card-tip">Es un hibrido entre Witbeer belga y American IPA. Lleva coriandro y cascara de naranja amarga. Preferible usar levadura americana y dar el perfil belga con las especias. El lupulado tiende a ser citrico porque combina bien con trigo y fenoles de especias.</div>
+  <div class="card-details">Tambien puede usar levadura belga, pero da un perfil diferente.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3233000">53:53</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">NEIPA: cepa esterosa y baja atenuacion</div>
+  <div class="card-tip">Las NEIPA usan cepas de levadura muy esterosas que complementan los esteres de los lupulos. Tienen menor atenuacion que las West Coast, dejando mas cuerpo y azucares residuales. La percepcion de amargor es menor porque el dulzor lo contrarresta.</div>
+  <div class="card-details">No es que no tienen amargor, es que se contrarresta con los azucares residuales.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3265000">54:25</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">NEIPA: trigo y avena para untuosidad</div>
+  <div class="card-tip">La base de maltas de una NEIPA es muy proteica, con trigo y avena. Aportan untuosidad en boca, proteina que contribuye a la turbidez estable, y una sensacion en boca diferenciada. El lupulado es principalmente frutado, pero puede ser citrico, resinoso o floral.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3349000">55:49</button>
+    <span class="badge badge-ratio">ratio</span>
+  </div>
+  <div class="card-title">NEIPA vs American IPA: densidades comparadas</div>
+  <div class="card-tip">Para 6.5% ABV en American IPA: OG 1.062-1.064, FG 1.010 (seca y amarga). Para 6.5% ABV en NEIPA: OG 1.070, FG 1.018-1.020 (corpulenta, dulce, menos amarga). Mismo alcohol, experiencia completamente diferente.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3478000">57:58</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">NEIPA: test de estabilidad de turbidez</div>
+  <div class="card-tip">Para verificar que la turbidez de una NEIPA esta bien lograda, meter la cerveza en camara fria y observar si la turbidez decanta con el tiempo. Si precipita, la turbidez no es estable. Una buena NEIPA mantiene su haze por meses.</div>
+</div>
+
+</div><!-- /grid -->
+</div><!-- /container -->
+
+<script>
+const player=document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    player.currentTime=Number(btn.dataset.ms)/1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

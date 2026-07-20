@@ -1,0 +1,133 @@
+{
+  "episode": "T1E09 - Cerveceros caseros Procesos relevantes",
+  "tips": [
+    {
+      "timestamp_ms": 350000,
+      "timestamp": "5:50",
+      "category": "proceso",
+      "title": "Adaptar estilos al equipo disponible",
+      "tip": "Se puede hacer muy buena cerveza con casi cualquier equipamiento, pero hay que conocer sus limitaciones. No intentar estilos que requieren técnicas imposibles con tu equipo (ej: no hacer NEIPA con triple dry hopping si no podés purgar el fermentador).",
+      "details": "Si no podés purgar el fermentador, mejor hacer una adición grande en whirlpool en vez de dry hopping, para evitar materia vegetal mucho tiempo en el tanque."
+    },
+    {
+      "timestamp_ms": 554000,
+      "timestamp": "9:14",
+      "category": "proceso",
+      "title": "Invertir 80% de recursos en fermentación",
+      "tip": "El mayor desafío del homebrewer es lograr una fermentación limpia. Destinar el 80% de los recursos (dinero y conocimiento) a la etapa de fermentación, no al equipo de cocción.",
+      "details": "Un mosto básico bien fermentado es buena cerveza. Maltas alemanas y lúpulos americanos con fermentación defectuosa (alcoholes superiores, diacetilo) no sirven."
+    },
+    {
+      "timestamp_ms": 760000,
+      "timestamp": "12:40",
+      "category": "tecnica",
+      "title": "Control de temperatura sobre el mosto",
+      "tip": "Medir y controlar la temperatura directamente sobre el mosto fermentando, no sobre el aire ambiente ni un vasito con agua. La sonda del termómetro o controlador debe estar en contacto con el mosto.",
+      "details": "El aire es mal conductor térmico y la fermentación es exotérmica. Con 18°C en el aire, el fermentador puede estar a 22-25°C. Ni cámaras de frío ni aire acondicionado en la pieza resuelven esto adecuadamente."
+    },
+    {
+      "timestamp_ms": 862000,
+      "timestamp": "14:22",
+      "category": "equipo",
+      "title": "Control individual por fermentador",
+      "tip": "Idealmente tener control de temperatura individual para cada fermentador. Un baño de frío (puede ser un freezer) con serpentina o torpedo envuelto en el fermentador que le maneje la temperatura.",
+      "details": "Opciones: heladera con fermentador adentro, encamisado, torpedo con agua fría o glicol circulando por las paredes. En fermentadores plásticos la conductividad es menor pero funciona si está bien cerrado y aislado."
+    },
+    {
+      "timestamp_ms": 948000,
+      "timestamp": "15:48",
+      "category": "levadura",
+      "title": "Levaduras Kveik para sin control térmico",
+      "tip": "Las levaduras Kveik (noruegas) fermentan entre 18°C y 38°C, lo que las hace ideales para homebrewers sin control de temperatura. Se puede enfriar a 25-30°C e inocular sin preocuparse tanto.",
+      "details": "Aun con Kveik, el producto no será igual a 28°C que a 35°C, así que el control de temperatura sigue siendo importante. Pero si no tenés control y usás S-04 en verano en Buenos Aires, tenés diacetilo y alcoholes superiores casi garantizados; con Kveik ese riesgo se reduce mucho."
+    },
+    {
+      "timestamp_ms": 1111000,
+      "timestamp": "18:31",
+      "category": "equipo",
+      "title": "Ventajas del fermentador cilindrocónico",
+      "tip": "Un fermentador cilindrocónico plástico tiene muchas ventajas sobre uno cilíndrico: permite purgar trub, levaduras muertas y lúpulo sedimentado con facilidad desde el fondo.",
+      "details": "Si es cilíndrico, agregar una conexión de tanque lateral pegada al fondo con una válvula para ir purgando. De última, inclinar el bidón para concentrar sedimentos hacia la salida."
+    },
+    {
+      "timestamp_ms": 1156000,
+      "timestamp": "19:16",
+      "category": "equipo",
+      "title": "Fermentador plástico con presión positiva",
+      "tip": "Usar fermentadores plásticos cilindrocónicos que soporten 300-500 gramos de presión de CO2 (ej: Roto King, Infinity). Esto permite retener volátiles aromáticos en cervezas lupuladas y evitar incorporación de oxígeno al enfriar.",
+      "details": "Al enfriar el fermentador, el líquido se contrae y si no hay presión positiva, absorbe aire del ambiente. La presión positiva con CO2 evita esto."
+    },
+    {
+      "timestamp_ms": 1233000,
+      "timestamp": "20:33",
+      "category": "proceso",
+      "title": "Oxidación proporcional en volúmenes chicos",
+      "tip": "En volúmenes pequeños, cada movimiento incorpora oxígeno de manera proporcionalmente más significativa. Una manguera sin purgar que oxida un poco de cerveza impacta mucho más en 20 litros que en 2000 litros.",
+      "details": "La relación superficie/volumen en contacto con aire es desfavorable a escala homebrewer. Extremar precauciones en cada trasvase y movimiento."
+    },
+    {
+      "timestamp_ms": 1470000,
+      "timestamp": "24:30",
+      "category": "tecnica",
+      "title": "Trasvase con CO2 en fermentador casero",
+      "tip": "Modificar la tapa del fermentador con dos conexiones de tanque con O-ring: por una entra CO2 y la otra tiene una varilla hasta el fondo para chupar líquido. Con solo 0,1-0,2 bar de presión se empuja la cerveza al madurador sin incorporar oxígeno.",
+      "details": "El volumen de cerveza que sale se reemplaza con CO2 en el fermentador. Una tapa estándar de boca ancha no aguanta más de 100-150 gramos de presión, pero eso es suficiente para el trasvase. Referencia: página Homebrewing Experience en Instagram."
+    },
+    {
+      "timestamp_ms": 1621000,
+      "timestamp": "27:01",
+      "category": "levadura",
+      "title": "Evitar subinoculación de levadura",
+      "tip": "La mayoría de homebrewers tiende a subinocular. La viabilidad de la levadura seca es desconocida (10-40% de levadura muerta en el sobre) y la mayoría no incorpora oxígeno al mosto frío, lo que limita la propagación.",
+      "details": "Sin oxígeno disuelto en el mosto frío, la levadura no puede generar biomasa adecuadamente, lo que agrava la subinoculación."
+    },
+    {
+      "timestamp_ms": 1786000,
+      "timestamp": "29:46",
+      "category": "tecnica",
+      "title": "Starter: más conocimiento que equipo",
+      "tip": "Hacer un starter a escala homebrewer requiere más conocimiento que equipamiento. Se puede hacer en la cocina de casa con un Erlenmeyer y llama directa. Lo clave es trabajar de forma aséptica para no contaminar.",
+      "details": "Se puede propagar desde muy poca biomasa pasando de Erlenmeyers chicos a más grandes. Dejar sobre el motor de la heladera le da un poco de calor; agitar cada vez que se pasa por ahí. Charlie Papazian arrancaba su starter los jueves para cocinar los sábados."
+    },
+    {
+      "timestamp_ms": 1985000,
+      "timestamp": "33:05",
+      "category": "ratio",
+      "title": "Dosis de levadura seca: 1 g/L",
+      "tip": "Para cervezas con densidad menor a 1.060, inocular 1 gramo de levadura seca por litro de mosto. Es una dosis conservadora que garantiza la biomasa necesaria para una buena fermentación.",
+      "details": "Se puede usar menos, pero entonces habría que agregar oxígeno disuelto, aportar nutrientes (Servomyces, SpringFerm, zinc) y tener más consideraciones. Con 1 g/L esos nutrientes ya vienen con la levadura seca y se duerme tranquilo."
+    },
+    {
+      "timestamp_ms": 2051000,
+      "timestamp": "34:11",
+      "category": "levadura",
+      "title": "Ante la duda, sobreinocular levemente",
+      "tip": "Siempre es preferible sobreinocular levemente (sin exagerar) que quedarse corto con la cantidad de levadura. Arrancar de levadura fresca cada vez; no reutilizar como cervecero casero principiante.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2085000,
+      "timestamp": "34:45",
+      "category": "proceso",
+      "title": "Evitar fermentaciones planchadas en frío",
+      "tip": "No dejar que la temperatura caiga bruscamente al terminar la fermentación. Cuando se ve que la fermentación baja de velocidad (por airlock/blow-off), subir el setpoint del controlador 2°C para que la fermentación exotérmica eleve naturalmente la temperatura.",
+      "details": "Si fermentás S-05 a 19°C y al terminar la temperatura cae porque es invierno, se corta la maduración en caliente. Ejemplo: fermentando a 19°C, la exotermia sube a 19.5, 20, 20.5°C. Al dejar de fermentar baja despacio, manteniendo temperatura óptima para que la levadura limpie subproductos."
+    },
+    {
+      "timestamp_ms": 2152000,
+      "timestamp": "35:52",
+      "category": "tecnica",
+      "title": "Descanso de diacetilo: 2-3 días post-fermentación",
+      "tip": "Mantener la cerveza 2-3 días a temperatura igual o superior a la de fermentación después de alcanzar densidad final. La levadura en suspensión degrada el diacetilo y otros subproductos a compuestos sin aroma ni sabor.",
+      "details": "A temperatura baja la levadura sedimenta y las reacciones de limpieza ocurren más lentamente. Si el cervecero casero trabaja los fines de semana, la fermentación primaria de ~4 días más ~3 días de maduración en caliente calzan justo con el ritmo semanal."
+    },
+    {
+      "timestamp_ms": 2480000,
+      "timestamp": "41:20",
+      "category": "equipo",
+      "title": "Equipo de cocción: no es lo fundamental",
+      "tip": "Se puede hacer un buen mosto con casi cualquier olla y equipamiento, usando los materiales adecuados (acero inoxidable, cobre, aluminio). La inversión prioritaria debe ir a fermentación, no a la sala de cocción.",
+      "details": "Lo importante del equipo de cocción es tener un buen hervor y un enfriamiento medianamente adecuado en tiempo razonable. La diferencia en calidad de cerveza terminada está en la fermentación."
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E14 - Nano homebrewing</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 64px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #1a1a1a; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem; }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+.audio-bar audio { flex: 1; width: 100%; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a1a1a; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 0.75rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stat { font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 6px; font-weight: 600; }
+.stat-total { background: #1a1a1a; color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem; padding: 0.2rem 0.55rem; background: #f0f0f0; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: background 0.15s, color 0.15s; color: #333; }
+.timestamp:hover { background: #1a1a1a; color: #fff; }
+.timestamp::before { content: '\25B6\00a0'; font-size: 0.6rem; opacity: 0; transition: opacity 0.15s; }
+.timestamp:hover::before { opacity: 1; }
+.badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 4px; color: #fff; text-transform: uppercase; font-weight: 700; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.88rem; line-height: 1.5; color: #333; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; line-height: 1.45; color: #666; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Indice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T2E14 - Nano homebrewing.wav"></audio>
+</div>
+<div class="container">
+<h1>T2E14 - Nano homebrewing</h1>
+<div class="stats">
+  <span class="stat stat-total">22 tips</span>
+  <span class="stat" style="background:#0891b2;color:#fff;">equipo 5</span>
+  <span class="stat" style="background:#7c3aed;color:#fff;">tecnica 9</span>
+  <span class="stat" style="background:#2563eb;color:#fff;">proceso 2</span>
+  <span class="stat" style="background:#16a34a;color:#fff;">ingrediente 3</span>
+  <span class="stat" style="background:#be185d;color:#fff;">levadura 1</span>
+  <span class="stat" style="background:#0369a1;color:#fff;">agua 1</span>
+  <span class="stat" style="background:#15803d;color:#fff;">lupulo 0</span>
+  <span class="stat" style="background:#92400e;color:#fff;">malta 0</span>
+  <span class="stat" style="background:#dc2626;color:#fff;">receta 0</span>
+  <span class="stat" style="background:#d97706;color:#fff;">ratio 0</span>
+</div>
+<div class="grid">
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="897000">14:57</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">Equipo nano: olla 20L + olla 10L</div>
+  <div class="card-tip">Un setup nano efectivo consiste en una olla de 20 litros con falso fondo para macerar y una olla de 10 litros de acero para hervir. Con recirculado manual se obtienen entre 6 y 8 litros finales.</div>
+  <div class="card-details">Priorizar tener un buen pHimetro y termometro para controlar las variables criticas del proceso, especialmente cuando se experimenta con volumenes bajos.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="935000">15:35</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">pHimetro sobre tiritas de pH</div>
+  <div class="card-tip">Invertir en un pHimetro en lugar de tiritas de pH. Las tiritas pueden servir para las primeras cocciones, pero un pHimetro es mucho mas preciso y es una inversion prioritaria junto con el densimetro.</div>
+  <div class="card-details">Las tiritas de pH tienen baja confiabilidad comparadas con un pHimetro de laboratorio. Para homebrewers que buscan experimentar con rigor, es una de las primeras inversiones a hacer.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="950000">15:50</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Fermentar en barriles Cornelius</div>
+  <div class="card-tip">Reemplazar los botellones de plastico por barriles Cornelius de 10 litros como fermentadores. El acero permite fermentar y madurar en el mismo recipiente, hacer trasvases cerrados con CO2, y realizar dry hopping con minima incorporacion de oxigeno.</div>
+  <div class="card-details">La transicion de plastico a acero inoxidable (Cornelius) es uno de los cambios que mas impacto tiene en la calidad del producto final, especialmente para cervezas lupuladas.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="965000">16:05</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Dry hopping cerrado con CO2</div>
+  <div class="card-tip">Fermentar en un barril de 10L, luego trasvasar a otro barril (de 6L o 10L) que ya tiene el lupulo en bolsita. Purgar el barril receptor con CO2 antes de trasvasar, y hacer todo el trasvase empujando con CO2.</div>
+  <div class="card-details">Procedimiento: 1) Colocar lupulo en bolsita dentro del barril receptor, 2) Purgar con CO2, 3) Trasvasar con CO2 del barril de fermentacion al receptor. Reduce enormemente la incorporacion de oxigeno.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1073000">17:53</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Equipo chico acelera el aprendizaje</div>
+  <div class="card-tip">Un equipo de 8 litros permite cocinar con mucha mas frecuencia que uno de 50 o 100 litros. La repetitividad de cocciones acelera enormemente el ritmo de aprendizaje del cervecero.</div>
+  <div class="card-details">Hacer 8, 30, 50 o hasta 100 litros lleva practicamente el mismo tiempo y esfuerzo. La ventaja real del equipo chico es poder cocinar muchas mas veces.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1144000">19:04</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Mayor control en volumenes chicos</div>
+  <div class="card-tip">En volumenes pequenos, las mediciones de pH y temperatura son mas representativas y homogeneas. Una muestra de pH de 8 litros es mucho mas representativa que una de 100 litros. Tambien es mas facil controlar la temperatura de fermentacion y lograr la tasa de inoculacion correcta de levadura.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1201000">20:01</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Dividir mosto para experimentar variables</div>
+  <div class="card-tip">Hacer un mosto mas grande y dividirlo en distintos barriles permite comparar una sola variable con exactamente las mismas condiciones base. Por ejemplo, mismo mosto pero diferente levadura, diferente lupulo, o diferentes concentraciones de un mismo ingrediente.</div>
+  <div class="card-details">Esta tecnica es clave para sacar conclusiones validas: al cambiar una sola variable por lote, cualquier diferencia sensorial se puede atribuir a ese cambio.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1952000">32:32</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Rendimiento esperado en equipo nano</div>
+  <div class="card-tip">En equipos nano (6-8 litros) esperar un rendimiento de entre 50% y 60%, significativamente menor que en equipos mas grandes donde se apunta a 80% o mas.</div>
+  <div class="card-details">Un macerador de 10 litros puede terminar rindiendo solo 6 litros finales. Es importante considerar esto al calcular la receta.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2087000">34:47</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Verificar calidad y frescura del lupulo</div>
+  <div class="card-tip">Off-flavors tipo solvente o acetona en NEIPAs pueden originarse en lupulo viejo o mal conservado. Si detectas un sabor solventoso persistente en varios lotes, revisar si el lupulo es el ingrediente en comun. Cambiar de lote puede resolver el problema.</div>
+  <div class="card-details">En homebrewing se compran cantidades chicas (50-100g) fraccionadas, y no siempre se conoce la fecha de cosecha real. Verificar sensorialmente el lupulo antes de usarlo. Un off-flavor tipo pegamento/gotita puede venir de lupulo oxidado.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2190000">36:30</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Comprar lupulo a cervecerias amigas</div>
+  <div class="card-tip">Conseguir lupulo directamente de cervecerias artesanales amigas cuando abren una bolsa grande. La calidad es muy superior al lupulo fraccionado de proveedores, ya que viene de bolsas selladas recien abiertas.</div>
+  <div class="card-details">Pedir 50-200g cuando la cerveceria hace un dry hopping grande (ej. 50kg). La diferencia es imperceptible para la cerveceria y enorme para el homebrewer. Envasar al vacio inmediatamente al recibirlo.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2392000">39:52</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">Balanza de precision para equipos nano</div>
+  <div class="card-tip">Una balanza de precision tipo calculadora es indispensable para equipos nano. Permite pesar con exactitud adiciones de lupulo de 3-4 gramos y sales de agua de 2-3 gramos que son tipicas en lotes de 8 litros.</div>
+  <div class="card-details">No son caras y se consiguen facilmente. Imprescindible para pesar sales del agua (ej. 2.35g de una sal especifica) y pequenas adiciones de lupulo.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2516000">41:56</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">Refractometro para preservar volumen</div>
+  <div class="card-tip">Usar refractometro en lugar de densimetro durante el proceso para evitar desperdiciar muestra. Sacar 50ml de un fermentador de 6-10 litros es una perdida significativa. Reservar el densimetro solo para la medicion de entrada y salida del fermentador.</div>
+  <div class="card-details">El refractometro necesita solo unas gotas. Recordar aplicar la correccion por alcohol en mediciones post-fermentacion.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2567000">42:47</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Nutrientes de levadura en dosis nano</div>
+  <div class="card-tip">En lotes nano, la dosis de nutrientes como Servomyces o SpringFerm (2g/hL) resulta en cantidades infimas (0.15g para 8L). En la practica, se dosifica 'a la puntita del cuchillo'.</div>
+  <div class="card-details">2g/hL de SpringFerm = 0.16g para 8 litros. La balanza de precision ayuda, pero para cantidades tan pequenas a veces es inevitable una dosificacion aproximada.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2628000">43:48</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Curva de burbujas para estimar densidad</div>
+  <div class="card-tip">Correlacionar la tasa de burbujeo (burbujas por unidad de tiempo) con la densidad medida durante el primer uso de una cepa. En lotes posteriores con la misma levadura y densidad inicial similar, usar esa curva para estimar la densidad sin tomar muestra.</div>
+  <div class="card-details">Conectar manguerita del barril a un frasco con alcohol, contar burbujas y correlacionar con densidad. Permite saber cuando faltan ~5 puntos de densidad para hacer el ultimo dry hopping sin desperdiciar muestra.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2703000">45:03</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Levadurocrito: contar levadura casero</div>
+  <div class="card-tip">Metodo DIY para estimar concentracion de levadura sin microscopio: dejar sedimentar la muestra en un capilar y medir el porcentaje de celulas vs liquido, analogo al hematocrito clinico.</div>
+  <div class="card-details">Calibrar con un patron hecho con levadura seca de panaderia diluida. Hacer una curva de calibracion contando esas diluciones con microscopio o contador de celulas si se tiene acceso.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2828000">47:08</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Dry hopping de 24 horas en barril</div>
+  <div class="card-tip">Poner el lupulo en bolsita dentro del barril durante solo 24 horas, luego trasvasar a otro barril limpio. Esto evita dejar el lupulo una semana en contacto, lo cual puede generar sabores vegetales o astringencia.</div>
+  <div class="card-details">La bolsita es necesaria al fermentar en barril Cornelius para evitar que el lupulo suelto trabe la salida del pescante al trasvasar.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2920000">48:40</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Berliner Weiss: hervir o no post-acidificacion</div>
+  <div class="card-tip">Comparacion de una Berliner Weiss con y sin hervor despues de la acidificacion con lactobacillus. El sabor fue practicamente identico, pero la version sin hervir tenia un olor fuerte y desagradable (volatil) por el lacto vivo que se disipa con el tiempo.</div>
+  <div class="card-details">La version hervida pierde esos volatiles por evaporacion. En ambos casos el perfil sensorial de sabor fue muy similar.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2996000">49:56</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Pasteurizar lacto a 80 grados preserva espuma</div>
+  <div class="card-tip">En Kettle Sours, en lugar de hervir despues de la acidificacion, calentar a 80 grados C durante 5 minutos para pasteurizar el lactobacillus y mandarlo directo al fermentador. Esto preserva la espuma significativamente.</div>
+  <div class="card-details">Al superar los 85 grados C, una enzima del lactobacillus genera proteolisis lactica que rompe las proteinas responsables de la espuma. Pasteurizar a 80 grados C (5 min) mata el lacto sin activar esa proteolisis.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3061000">51:01</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Actimel como fuente de lactobacillus</div>
+  <div class="card-tip">Las botellitas de Actimel (u otras bebidas probioticas comerciales) pueden usarse como inoculo de lactobacillus para cervezas acidas. Algunas marcas indican la cantidad de unidades bacterianas en la etiqueta.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3109000">51:49</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">Intercambiar pescantes entre Cornelius</div>
+  <div class="card-tip">Al trasvasar entre barriles Cornelius de distinto tamano, intercambiar los tubos pescantes (dip tubes). Poner el tubo corto (del barril de 6L) en el de 10L para que no pesque del fondo y deje atras el sedimento.</div>
+  <div class="card-details">Otra opcion es cortar el tubo pescante. Evitar usar mangueritas de silicona con flotante por cuestiones sanitarias.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3452000">57:32</button>
+    <span class="badge badge-agua">agua</span>
+  </div>
+  <div class="card-title">Conocer el agua y filtrar con carbon</div>
+  <div class="card-tip">Conocer el perfil de sales del agua es fundamental para decidir que cervezas se pueden hacer. Usar un filtro de carbon activado para eliminar el cloro. En CABA (Buenos Aires) el agua es bastante neutra, lo que facilita los ajustes.</div>
+  <div class="card-details">Si un amigo cervecero del mismo barrio midio el agua, esos valores sirven como referencia para calcular las sales a agregar.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3562000">59:22</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Control de temperatura sin heladera dedicada</div>
+  <div class="card-tip">Sin heladera exclusiva para fermentar, opciones viables incluyen: usar el aire acondicionado apuntando al barril, meter y sacar el barril de la heladera comun segun la temperatura del termometro adhesivo, o elegir levaduras tolerantes al calor como la Kveik (fermenta bien a 35 grados C).</div>
+  <div class="card-details">Para lagers, la heladera comun (~3-5 grados C) puede funcionar. Experimentar con inoculaciones y tiempos para minimizar el estres de la levadura a temperaturas tan bajas.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

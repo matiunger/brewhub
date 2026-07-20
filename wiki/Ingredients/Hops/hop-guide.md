@@ -25,10 +25,14 @@ Utilization increases with boil time — longer boil = more bitterness.
 | Whirlpool / Hop Stand | Post-boil, 70–90°C | Aroma, soft bitterness |
 | Dry Hop | Fermentation / conditioning | Aroma only |
 
+## Dry Hop Dosage Rate of Thumb
+
+*Via the Birra Podcast, T1E01.* Under ~6 g/L, a single end-of-fermentation dry hop addition is enough. Above 6 g/L, a single addition gets inefficient — 6 g/L and 10 g/L in one shot deliver nearly the same perceived intensity, because the beer saturates with aromatic compounds. Past 6 g/L, split it: one addition at end of fermentation, a second in cold conditioning (only if you have the equipment to manage oxygen pickup on a cold-side addition — see [[cold-dry-hopping-and-oxygen-control]]).
+
 ## Hop Forms
 
 - **Pellet** — most common, compact, good shelf life, easy to use
-- **Leaf / Whole** — traditional, some brewers prefer for aroma
+- **Leaf / Whole** — traditional, some brewers prefer for aroma. *(Via the Hernán Castellani interview.)* In practice, pellet is favored almost universally today for both cost and quality reasons: whole-leaf hops are inefficient (more vegetal mass for the same effect), oxidize faster, are harder to remove from kettle or fermenter, and require sourcing close to harvest to get real freshness. Even breweries historically built around whole-leaf hopping (Sierra Nevada is the commonly cited example) have shifted toward pellet/Cryo-style products. Whole-hop oil/extract exists as an alternative but is hard to source and use correctly outside specialized supply chains.
 - **Cryo / Extract** — concentrated lupulin, high alpha/aroma
 
 ## Common Varieties

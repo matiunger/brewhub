@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1E06 - Oxigenacion y estabilidad de la cerveza entrevista con Alexis Balzan</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a1a; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; min-width: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a1a1a; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 1rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stat { font-size: 0.85rem; padding: 0.3rem 0.7rem; border-radius: 20px; background: #e5e7eb; font-weight: 500; }
+.stat-total { background: #1a1a1a; color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.15s, box-shadow 0.15s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 4px; background: #f3f4f6; border: 1px solid #e5e7eb; cursor: pointer; color: #374151; transition: background 0.15s, color 0.15s; }
+.timestamp:hover { background: #1a1a1a; color: #fff; }
+.timestamp::before { content: '\25B6\00a0'; font-size: 0.6rem; opacity: 0; transition: opacity 0.15s; }
+.timestamp:hover::before { opacity: 1; }
+.badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 20px; color: #fff; text-transform: uppercase; font-weight: 600; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.88rem; line-height: 1.5; color: #374151; }
+.card-details { font-size: 0.82rem; line-height: 1.45; color: #6b7280; font-style: italic; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #f3f4f6; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T1E06 - Oxigenacion y estabilidad de la cerveza entrevista con Alexis Balzan.wav"></audio>
+</div>
+<div class="container">
+<h1>T1E06 - Oxigenacion y estabilidad de la cerveza entrevista con Alexis Balzan</h1>
+<div class="stats">
+<span class="stat stat-total">31 tips</span>
+<span class="stat">proceso: 13</span>
+<span class="stat">equipo: 7</span>
+<span class="stat">tecnica: 7</span>
+<span class="stat">agua: 2</span>
+<span class="stat">ingrediente: 2</span>
+<span class="stat">levadura: 1</span>
+</div>
+<div class="grid">
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="803000">13:23</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">Agua de proceso tiene hasta 8 ppm O2</div>
+<div class="card-tip">Las fuentes naturales de agua suelen tener bastante oxigeno disuelto, llegando a veces a los 8 ppm. Esto es relevante porque ese oxigeno participa en reacciones oxidativas durante la coccion del mosto.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="830000">13:50</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Eliminar catalizadores metalicos de oxidacion</div>
+<div class="card-tip">Eliminar del lado caliente todos los elementos que puedan catalizar reacciones oxidativas: cobre, bronce y aluminio. Reemplazarlos por acero inoxidable.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="841000">14:01</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">No salpicar mosto antes del hervido</div>
+<div class="card-tip">Evitar salpicar el mosto caliente, especialmente antes del hervido. Entre 60 y 78°C el mosto tiene oxigeno disuelto pero la temperatura no es suficiente para liberarlo como en el hervido, acelerando las reacciones oxidativas.</div>
+<div class="card-details">Durante el hervido el oxigeno se libera y se elimina, pero en el macerado y lavado (60-78°C) el oxigeno permanece y las reacciones oxidativas ocurren rapidamente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="913000">15:13</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Recircular por debajo del nivel del mosto</div>
+<div class="card-tip">Al recircular el mosto en el macerador, devolver el liquido por debajo del nivel del mosto para evitar salpicado y pick-up de oxigeno. Muchos cerveceros recirculan por encima del nivel, lo cual es perjudicial.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="930000">15:30</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">No usar barral de lluvia para el mosto</div>
+<div class="card-tip">El barral de lluvia (spray bar) aumenta enormemente la superficie de contacto del mosto con el aire. Usarlo solo para distribuir el agua de lavado, nunca para el mosto.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="955000">15:55</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Macerador siempre con tapa cerrada</div>
+<div class="card-tip">El macerador debe tener tapa cerrada durante todo el proceso. Sin tapa, el recirculado genera espuma en toda la superficie del macerador, lo cual es consecuencia del pick-up de oxigeno del mosto caliente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1200000">20:00</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">Quimicos para reducir O2 del agua</div>
+<div class="card-tip">Se puede reducir el oxigeno disuelto del agua de coccion con metabisulfito, acido ascorbico o galotaninos. Estos compuestos se evaporan completamente durante el hervido, sin dejar residuos en la cerveza.</div>
+<div class="card-details">Las maquinas industriales de desoxigenacion (bomba de vacio sobre el tanque de agua) son muy caras y no valen la pena para cervecerias chicas. Los quimicos son una alternativa economica.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1226000">20:26</button>
+<span class="badge badge-ingrediente">ingrediente</span>
+</div>
+<div class="card-title">Metabisulfito solo en lado caliente</div>
+<div class="card-tip">No usar metabisulfito en el lado frio de la produccion. En frio, genera gases de sulfuro perceptibles en la cerveza y sus compuestos perduran. Hay personas intolerantes a los sulfitos.</div>
+<div class="card-details">Las cervecerias industriales intentan usar cada vez menos metabisulfito y buscan que la levadura genere naturalmente los gases protectores.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1322000">22:02</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Priorizar control del lado frio</div>
+<div class="card-tip">No tiene sentido invertir en minimizar oxigeno en el lado caliente si no se controla el lado frio. Primero lograr niveles bajos de oxigeno en el envase final; recien despues refinar el lado caliente.</div>
+<div class="card-details">Ejemplo: cerveceros que usan agua desoxigenada para el empaste pero luego filtran con diatomea incorporando metales pesados, generando cervezas que se oxidan rapido. La mejora del lado caliente es despreciable frente al dano del lado frio.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1451000">24:11</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Levadura consume O2 rapidamente</div>
+<div class="card-tip">La levadura necesita oxigeno para generar su membrana celular durante la fase reproductiva. Lo consume muy rapidamente, por lo que el O2 agregado al mosto como nutriente no llega a oxidar la cerveza.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1484000">24:44</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Post-fermentacion: O2 minimo (~5 ppb)</div>
+<div class="card-tip">Al terminar la fermentacion, el oxigeno disuelto esta en su punto mas bajo, cercano a los 5 ppb. A partir de ese momento, cada manipulacion de la cerveza (dry hop, clarificante, frutas, trasvase) va incorporando oxigeno.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1532000">25:32</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Cada apertura del tanque incorpora O2</div>
+<div class="card-tip">Cualquier contacto de la cerveza con la atmosfera incorpora oxigeno: abrir el tanque para dry hop, agregar clarificante, agregar frutas. Cada vez que el tanque pierde presion positiva, entra aire.</div>
+<div class="card-details">Tambien se puede incorporar oxigeno al agregar productos que contengan oxigeno disuelto, incluso sin abrir el tanque a la atmosfera.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1614000">26:54</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Objetivo de O2 en envase final</div>
+<div class="card-tip">Apuntar a menos de 20 ppb de oxigeno disuelto en el envase final. Menos de 50 ppb es bueno, menos de 30 es muy bueno, menos de 20 es excelente.</div>
+<div class="card-details">Las cervecerias industriales usan 50 ppb como valor de referencia maximo. Con 20 ppb la cerveza va a tener buena estabilidad.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1704000">28:24</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Lupuladas mas sensibles a oxidacion</div>
+<div class="card-tip">No afecta igual el oxigeno a una lager filtrada que a una IPA con dry hopping. Las cervezas con mas insumos (lupulo, adjuntos) tienen mas compuestos oxidables y son mas sensibles al deterioro.</div>
+<div class="card-details">Las cervecerias industriales les extirpan compuestos con ultrafiltraciones y usan baja cantidad de lupulo, reduciendo los elementos que se pueden oxidar.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1895000">31:35</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">BBT siempre con CO2 y presion positiva</div>
+<div class="card-tip">El BBT (bright beer tank / madurador) debe estar siempre lleno de dioxido de carbono, libre de oxigeno y con presion positiva. Si el headspace tiene aire y la cerveza permanece horas o dias, el aire se mezcla con la cerveza aumentando el oxigeno disuelto.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1936000">32:16</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">No soda caustica en limpieza diaria BBT</div>
+<div class="card-tip">La soda caustica neutraliza el CO2 del BBT y genera vacio que puede deformar el tanque. No usarla en la limpieza rutinaria. Reservarla para inspecciones periodicas profundas (cada 1-2 meses).</div>
+<div class="card-details">El CO2 es acido y reacciona con la soda caustica (basica). Al neutralizarse el CO2, se genera vacio que puede chupar el tanque, con riesgo de dano grave.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2012000">33:32</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Purga eficiente: llenar con agua, vaciar con CO2</div>
+<div class="card-tip">Purgar un tanque inyectando CO2 por una valvula y sacando por otra NO es eficiente: se mezclan los gases y el aire nunca se elimina del todo. Lo correcto es llenar el tanque con agua y vaciarla empujando con CO2. El volumen que ocupaba el agua queda 100% lleno de CO2.</div>
+<div class="card-details">El agua se recupera y se reutiliza. Es aplicable incluso a escala casera (homebrewer).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2166000">36:06</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Purga simple de barril: solo +2-3 ppb</div>
+<div class="card-tip">Con una purga simple del barril (inyectar CO2, liberar, volver a presurizar) y llenado de abajo hacia arriba sin dejar headspace, el aumento de oxigeno disuelto es de solo 2-3 ppb.</div>
+<div class="card-details">Medido con Anton Parr en Minga (2 ppb) y en Kraken (3 ppb). El CO2 se deposita abajo del barril; al llenar por abajo el aire se purga por arriba. Llenar a tope absoluto sin headspace.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2335000">38:55</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Mantener presion CO2 al vaciar BBT</div>
+<div class="card-tip">Al embarrilar desde el BBT, la cerveza que sale debe ser reemplazada con CO2. Poner el regulador a la presion de carbonatacion de la cerveza. Cuando el BBT quede vacio, estara lleno de CO2 sin aire, listo para limpieza acida.</div>
+<div class="card-details">La presion del BBT nunca puede ser menor a la presion de estabilidad de la cerveza segun su nivel de carbonatacion.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2427000">40:27</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Limpieza acida: fosforico + nitrico</div>
+<div class="card-tip">Para limpiar el BBT sin romper la atmosfera de CO2, usar acido fosforico reforzado con nitrico. El nitrico potencia significativamente la accion del fosforico, compensando la ausencia de limpieza alcalina.</div>
+<div class="card-details">Limpiar inmediatamente despues de vaciar el tanque para que las particulas no se sequen ni se peguen a las paredes.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2480000">41:20</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Precauciones para CIP bajo presion</div>
+<div class="card-tip">Para hacer CIP bajo presion de CO2 se necesita: bomba con potencia suficiente para vencer la presion del tanque, mangueras estampadas certificadas (no abrazaderas), y minimo 0,5 kg de presion de CO2.</div>
+<div class="card-details">Se manejan presion + temperatura + quimicos concentrados simultaneamente. Una manguera que se suelta o una valvula mal abierta puede provocar accidentes graves. Caso real: inyectaron 250 litros de peracetico en un BBT con 4000 litros de IPA por error.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2559000">42:39</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Limpiar BBT inmediatamente al vaciar</div>
+<div class="card-tip">Vaciar el tanque de cerveza y ponerlo a limpiar inmediatamente. Si las particulas de cerveza se secan y pegan a las paredes del tanque, la limpieza acida no las remueve.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2586000">43:06</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Diseno simple del BBT sin sombras CIP</div>
+<div class="card-tip">El BBT debe tener diseno sanitario simple: sin sombras para la bocha CIP, sin conectores ni conexiones innecesarias. Cada conector extra es un recoveco donde se junta mugre que ni la limpieza acida ni la caustica pueden lavar.</div>
+<div class="card-details">Al pedir un tanque a un proveedor, evitar agregar conexiones innecesarias. El diseno sanitario es sentido comun y simpleza.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2896000">48:16</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">NEIPA: filtro canasta antes de barril</div>
+<div class="card-tip">Para cervezas turbias (NEIPA) que no se filtran, usar un filtro tipo canasta grueso antes del barril para evitar que pasen particulas de lupulo que tapan canerias de bares o quedan en el vaso.</div>
+<div class="card-details">Se puede embarrilar directo desde el fermentador sin pasar por BBT, haciendo buena clarificacion y purgado en el unitank.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3044000">50:44</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Inspeccion caustica del BBT cada 1-2 meses</div>
+<div class="card-tip">Abrir el BBT para inspeccion visual y limpieza profunda con soda caustica cada 1-2 meses maximo. Despues, restablecer la atmosfera de CO2 llenando con agua y vaciando con CO2.</div>
+<div class="card-details">En Minga (BBT de diseno simple) cada ~30 cervezas. Con BBTs mal disenados o con sombras CIP, hay que abrir y purgar cada vez que se usa.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3176000">52:56</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Cadena de frio para cerveza artesanal</div>
+<div class="card-tip">Mantener la cerveza artesanal refrigerada para que las reacciones de oxidacion avancen mas lento. No pasteurizar cerveza artesanal: la pasteurizacion la destruye.</div>
+<div class="card-details">El oxigeno genera el envejecimiento; la temperatura, el movimiento y otros factores determinan la velocidad. A menor temperatura, mayor vida util con el mismo nivel de O2.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3258000">54:18</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Medir TPO en latas y botellas</div>
+<div class="card-tip">Para latas y botellas, medir el TPO (Total Package Oxygen): agitar el envase para que se compense el O2 del headspace con el del liquido, luego medir oxigeno disuelto y aplicar una ecuacion con temperatura, volumen de cerveza y volumen de headspace.</div>
+<div class="card-details">Medir apenas se llena el envase. Si pasan horas o dias, el O2 ya reacciono y el valor sera artificialmente bajo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3395000">56:35</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Medir O2 inmediatamente tras operacion</div>
+<div class="card-tip">El oxigeno disuelto se mide inmediatamente despues de terminar cada operacion (trasvase, filtrado, embarrilado). Cada minuto que pasa, el O2 reacciona y desaparece. Medir dias despues o enviar a un laboratorio externo no tiene sentido.</div>
+<div class="card-details">Lo que se mide es el potencial de oxidacion de la cerveza: medirlo cuando ese potencial es maximo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3594000">59:54</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Purgar lineas antes de transferir cerveza</div>
+<div class="card-tip">Antes de transferir cerveza, purgar toda la caneria y mangueras: eliminar aire y residuos de peracetico. Llenar con CO2 o con agua sanitizada con bajo O2. El tanque receptor debe estar presurizado con CO2.</div>
+<div class="card-details">Si queda agua en la caneria al empujar la cerveza, que esa agua tenga pocos ppm de O2 disuelto.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3625000">1:00:25</button>
+<span class="badge badge-ingrediente">ingrediente</span>
+</div>
+<div class="card-title">Peracetico es altamente oxidante</div>
+<div class="card-tip">El acido peracetico es super oxidante, pese a muchos textos en internet que dicen lo contrario. Cualquier residuo de peracetico en contacto con la cerveza genera oxidacion severa detectable al dia siguiente.</div>
+<div class="card-details">Purgar todo residuo de peracetico de paredes del fermentador, madurador, barril y canerias antes de que toquen la cerveza.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3715000">1:01:55</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Reemplazar volumen con CO2 al trasvasar</div>
+<div class="card-tip">Al trasvasar cerveza de un tanque (incluso sin carbonatar), nunca abrir arriba y dejar que entre aire. Inyectar CO2 u otro gas inerte para ocupar el espacio que va liberando la cerveza que sale hacia el otro tanque.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3794000">1:03:14</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Envejecimiento forzado para evaluar estabilidad</div>
+<div class="card-tip">Llenar dos barriles iguales del mismo lote. Uno en frio (heladera/camara) y otro a 30°C. Comparar a la semana o al mes para ver la evolucion oxidativa sin necesidad de un medidor de O2.</div>
+<div class="card-details">Segun Fix, 1 semana a 38°C equivale aproximadamente a 1 mes a 8-10°C. Si el O2 disuelto es alto, a la semana ya habra oxidacion severa en el barril caliente. Es gratis y muy informativo.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

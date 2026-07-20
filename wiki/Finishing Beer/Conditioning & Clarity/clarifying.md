@@ -18,6 +18,10 @@ Keg, **crash cool** (warm room → near freezing), and leave alone for weeks to 
 
 Also used for fining-in-keg, eisbock (partial freezing), and **transporting a keg to a party** without cloudy beer.
 
+## Kettle Fining — Decide by Style, Not by Default
+
+*Via the Hernán Castellani interview.* Whirlfloc or Irish Moss, added in the last ~15 minutes of the boil, coagulates proteins into flocs that settle out by weight (the same mechanism works cold, not just hot). Use it for styles where clarity is the goal — a clear West Coast IPA, for example. **Skip it entirely for NEIPA** and other deliberately hazy styles, where that same protein content is exactly what you're trying to keep in suspension. Decide whether the target beer should be clear or turbid *before* boil additions, not after — a kettle fining agent added out of habit works directly against a haze-forward recipe.
+
 ## Fining Agents (more aggressive)
 
 Choose by what you're removing (yeast, proteins, tannins):
@@ -41,4 +45,4 @@ Strong **prefers fining** — filtering is mechanically abusive, needs lots of s
 
 ## Related
 
-[[stabilizing]] · [[conditioning]] · [[lagering]] · [[adjusting-clarity]] · [[kegging]]
+[[stabilizing]] · [[conditioning]] · [[lagering]] · [[adjusting-clarity]] · [[kegging]] · [[the-science-of-foam]] · [[diy-quality-control-tests]]

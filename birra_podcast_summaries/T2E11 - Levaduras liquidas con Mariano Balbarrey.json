@@ -1,0 +1,189 @@
+{
+  "episode": "T2E11 - Levaduras liquidas con Mariano Balbarrey",
+  "tips": [
+    {
+      "timestamp_ms": 438000,
+      "timestamp": "7:18",
+      "category": "levadura",
+      "title": "Ventaja de levaduras liquidas: precision de cepa",
+      "tip": "La principal ventaja de trabajar con inoculos liquidos es poder ir a la precision en cuanto al estilo, usando las cepas domesticadas en los lugares donde se crearon los estilos cerveceros.",
+      "details": "Las levaduras secas ofrecen menos variedad. Con liquidas se puede acceder a cepas de regiones especificas (Moravia, Belgica, distintas zonas de Alemania, etc.)."
+    },
+    {
+      "timestamp_ms": 479000,
+      "timestamp": "7:59",
+      "category": "levadura",
+      "title": "Cultivo liquido no sufre estres de secado",
+      "tip": "La levadura liquida no ha sufrido el estres del proceso de secado, lo que le da mejor adaptacion al mosto que va a fermentar.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1065000,
+      "timestamp": "17:45",
+      "category": "proceso",
+      "title": "Levaduras liquidas no perdonan mala oxigenacion",
+      "tip": "Las levaduras liquidas no perdonan una oxigenacion deficiente. La mayoria de los problemas (no arranca, acetaldehido, diacetilo residual) se originan en oxigenacion insuficiente, no en la viabilidad del pitch.",
+      "details": "Los problemas tipicos: fermentacion que no arranca, picos de acetaldehido o diacetilo que no se recaptan."
+    },
+    {
+      "timestamp_ms": 1203000,
+      "timestamp": "20:03",
+      "category": "levadura",
+      "title": "Bermondsey requiere 16 ppm de oxigeno",
+      "tip": "La cepa Bermondsey (inglesa, para NEIPAs y estilos lupulados) tiene un requerimiento de 16 ppm de oxigeno, el doble del nivel de saturacion con aire (7-8 ppm). Se necesita inyeccion de oxigeno puro.",
+      "details": "Cepas americanas tienen requerimiento mucho menor. Cepas inglesas y belgas requieren mas O2 porque historicamente se trabajaban en cubas de fermentacion abierta."
+    },
+    {
+      "timestamp_ms": 1223000,
+      "timestamp": "20:23",
+      "category": "tecnica",
+      "title": "Aire vs oxigeno puro para oxigenar mosto",
+      "tip": "Inyectando aire, el punto de saturacion es 7-8 ppm de oxigeno. Para alcanzar niveles mayores (12-16 ppm) se requiere inyectar oxigeno puro (medicinal).",
+      "details": "El aire tiene baja carga de oxigeno comparado con O2 puro, por eso tiene un techo de saturacion."
+    },
+    {
+      "timestamp_ms": 1343000,
+      "timestamp": "22:23",
+      "category": "tecnica",
+      "title": "Caudal de O2 debe ser menor al caudal de mosto",
+      "tip": "Si el caudal de oxigeno es demasiado alto respecto al caudal de mosto que pasa por la piedra difusora, las burbujas chocan entre si, se hacen grandes y escapan por el blow-off sin solubilizarse. El oxigeno debe disolverse, no solo pasar.",
+      "details": "Lo importante no es cuanto oxigeno se gasta sino cuanto se solubiliza. Las burbujas pequeñas que genera la piedra deben ser arrastradas por el flujo de mosto frio post-placas."
+    },
+    {
+      "timestamp_ms": 1443000,
+      "timestamp": "24:03",
+      "category": "equipo",
+      "title": "Limpiar piedra difusora con ultrasonido",
+      "tip": "La incrustacion en la piedra difusora reduce su efectividad. Se recomienda limpiar con batea de ultrasonido. Si se usa autoclave, no usar agua con alta carga de minerales que se depositen en la piedra.",
+      "details": "Una batea ultrasonica se consigue accesible. El deposito mineral en la piedra cambia la porosidad y la difusion."
+    },
+    {
+      "timestamp_ms": 1767000,
+      "timestamp": "29:27",
+      "category": "equipo",
+      "title": "Setup de oxigenacion para homebrewer",
+      "tip": "Para homebrewers: comprar un tanque de oxigeno medicinal y una piedra tipo lanza o un filtro tipo TG. Es mas importante invertir en oxigenacion que en una olla de acero con valvulas y canerias.",
+      "details": "La oxigenacion adecuada es mas critica para la calidad que el equipamiento de coccion."
+    },
+    {
+      "timestamp_ms": 1835000,
+      "timestamp": "30:35",
+      "category": "tecnica",
+      "title": "Sin oximetro: duplicar tiempo de oxigenacion",
+      "tip": "Si no se tiene medidor de O2 disuelto, duplicar el tiempo de oxigenacion respecto a lo que se hacia con levaduras secas. Si antes se oxigenaba X minutos en el pasaje post-placa al tanque, hacer el doble.",
+      "details": "El oximetro ahorra prueba y error, pero no es imprescindible. Lo fundamental es entender la importancia y oxigenar con criterio."
+    },
+    {
+      "timestamp_ms": 1945000,
+      "timestamp": "32:25",
+      "category": "tecnica",
+      "title": "Oxigenar en linea con piedra difusora",
+      "tip": "La forma correcta de oxigenar es en linea: el mosto frio sale de placas, pasa por la piedra difusora con caudal bajo de O2, y todo lo que pasa se lo lleva disuelto. No alcanza con meter O2 por la bocha del fermentador o por la piedra carbonatadora.",
+      "details": "Algunas cervecerías creen que el mosto se oxigena solo al caer al fermentador por splash — eso es insuficiente para cepas liquidas."
+    },
+    {
+      "timestamp_ms": 2088000,
+      "timestamp": "34:48",
+      "category": "proceso",
+      "title": "Mas riesgo quedarse corto de O2 que pasarse",
+      "tip": "Es muy dificil pasarse de oxigeno al inocular. La levadura consume todo el O2 en la fase aerobica. El riesgo real es quedarse corto, no pasarse.",
+      "details": "Pasarse de O2 podria generar otros lano-esteroles en vez de ergo-esterol, afectando el perfil, pero no oxida la cerveza si se inocula inmediatamente."
+    },
+    {
+      "timestamp_ms": 2188000,
+      "timestamp": "36:28",
+      "category": "proceso",
+      "title": "Diferencia entre ppm y ppb de oxigeno",
+      "tip": "En mosto a fermentar se buscan 8-14 ppm de O2 (equivale a 8000-14000 ppb). En cerveza terminada, 50-100 ppb ya es un monton y oxida. Son escalas radicalmente distintas.",
+      "details": "No confundir el medidor de O2 disuelto en mosto (mide en mg/L = ppm) con el de O2 en cerveza envasada (mide en ppb)."
+    },
+    {
+      "timestamp_ms": 2329000,
+      "timestamp": "38:49",
+      "category": "tecnica",
+      "title": "Doble batch: reoxigenar el segundo dia",
+      "tip": "Cuando se llena un tanque en dos dias (doble batch), oxigenar e inocular en el primer batch. Al dia siguiente, al agregar el segundo batch, volver a oxigenar nuevamente.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2388000,
+      "timestamp": "39:48",
+      "category": "levadura",
+      "title": "Control de temperatura critico para liquidas",
+      "tip": "Las levaduras liquidas son sensibles a descensos bruscos de temperatura. Si el tanque baja de 18 a 16 grados por la noche, algunas cepas pueden entrar en fase de baja actividad y no recuperar vigor.",
+      "details": "Especialmente critico cuando se combinan factores: deficiencia de O2 + fase lag prolongada + caida termica nocturna. Tener en cuenta la aislacion del tanque."
+    },
+    {
+      "timestamp_ms": 2482000,
+      "timestamp": "41:22",
+      "category": "levadura",
+      "title": "Cepas inglesas y belgas requieren mas O2 por historia",
+      "tip": "Las cepas inglesas y belgas tienen alto requerimiento de oxigeno porque historicamente se trabajaban en cubas de fermentacion abierta, con mayor contacto con el aire.",
+      "details": "Ejemplo: la cerveza de abadia se fermenta en tinas cuadradas abiertas."
+    },
+    {
+      "timestamp_ms": 2652000,
+      "timestamp": "44:12",
+      "category": "proceso",
+      "title": "Variables de fermentacion deben ser coherentes",
+      "tip": "La cantidad de inoculo, oxigeno, nutrientes y temperatura deben ser coherentes entre si. Un pitch nuevo no se trata igual que una cosecha; fermentar en rango inferior requiere compensar con mas inoculo y nutrientes.",
+      "details": "No es lo mismo arrancar con un pitch fresco de laboratorio que con una cosecha con mas biomasa. Tampoco es lo mismo fermentar a 17°C (rango inferior) que a 20.5°C (rango superior)."
+    },
+    {
+      "timestamp_ms": 2731000,
+      "timestamp": "45:31",
+      "category": "ingrediente",
+      "title": "Servomyces a 2 g/hL minimo para zinc",
+      "tip": "Usar 2 gramos por hectolitro de Servomyces (o SpringFerm BR2) como dosis basica para cualquier fermentacion con levadura liquida. Con 1 g/hL (dosis del fabricante) no se alcanza el minimo de 0.3 ppm de zinc en el mosto.",
+      "details": "Medido en 4-5 fabricas distintas con 1 g/hL nunca llego a 0.3 ppm Zn. La dosis de 2-5 g/hL es segura. El zinc se vuelve toxico recien a >2 ppm Zn, que requeriria 40-50 g/hL de nutriente."
+    },
+    {
+      "timestamp_ms": 2853000,
+      "timestamp": "47:33",
+      "category": "proceso",
+      "title": "Alta densidad requiere ajustar todo el protocolo",
+      "tip": "Para mostos de alta densidad (ej: 1.080 con adjunto de dextrosa), se debe aumentar proporcionalmente: inoculo, oxigenacion y nutrientes. No usar el mismo protocolo que para un mosto de 1.045.",
+      "details": "El estres osmotico de alta densidad mas la falta de nutrientes propios de la dextrosa (azucar simple sin minerales) garantiza una fermentacion trabada."
+    },
+    {
+      "timestamp_ms": 2957000,
+      "timestamp": "49:17",
+      "category": "levadura",
+      "title": "Vermont ajusta celulas por viabilidad y densidad",
+      "tip": "El laboratorio Vermont ajusta la concentracion celular del pitch segun la viabilidad y la densidad del mosto que informan. Siempre especificar la densidad objetivo al comprar el pitch.",
+      "details": "Si se informa 1.050 pero se elabora 1.075, el pitch quedara subdimensionado."
+    },
+    {
+      "timestamp_ms": 3039000,
+      "timestamp": "50:39",
+      "category": "levadura",
+      "title": "Tasa de inoculacion para lager: 2 M cel/mL/°P",
+      "tip": "Para una lager fermentada a 6°C se puede usar una tasa de inoculacion de 2 millones de celulas por mililitro por grado Plato (o mas). A menor temperatura, mayor tasa de inoculacion.",
+      "details": "La temperatura baja reduce la actividad metabolica, entonces se compensa con mas biomasa."
+    },
+    {
+      "timestamp_ms": 3278000,
+      "timestamp": "54:38",
+      "category": "levadura",
+      "title": "Perfil de cepa Bermondsey (Vermont)",
+      "tip": "Cepa inglesa que deja densidad final alta (cuerpo). Da sedosidad en boca (mouthfeel), realza esteres frutales/citricos/tropicales, soporta alta carga de lupulos. Ideal para NEIPA y tambien versatil para Porter/Stout.",
+      "details": "Originaria de una cerveceria inglesa. Usada originalmente para Porter, luego descubierta su sinergia con lupulos en IPA. Requiere 16 ppm O2."
+    },
+    {
+      "timestamp_ms": 3445000,
+      "timestamp": "57:25",
+      "category": "levadura",
+      "title": "Perfil de cepa San Luis Obispo (Vermont)",
+      "tip": "Cepa americana equivalente a US-05/WLP001. Perfil limpio tipo West Coast, realza sutilmente malta y esteres. Flexible, facil de cosechar y reutilizar. Apta para multiples estilos.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3522000,
+      "timestamp": "58:42",
+      "category": "levadura",
+      "title": "Perfil de cepa Sonora Game - Mexican Lager",
+      "tip": "Cepa para Mexican Lager con perfil crispy y chispeante en boca. Alta atenuacion, limpia de sulfuros y esteres. Permite jugar con temperaturas y presion para distintos perfiles.",
+      "details": "Ideal para cervezas de alta tomabilidad. Requiere buena carbonatacion. Usada tambien para IPL y otros estilos lager."
+    }
+  ]
+}

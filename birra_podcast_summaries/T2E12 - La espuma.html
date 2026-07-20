@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E12 - La espuma</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a2e; padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; width: 100%; height: 36px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+h1 { font-size: 1.6rem; margin-bottom: 1rem; color: #1a1a2e; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.stat-pill { padding: 0.3rem 0.7rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 12px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.15s, box-shadow 0.15s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem; padding: 0.25rem 0.6rem; border-radius: 6px; background: #e8e8e8; border: none; cursor: pointer; color: #333; transition: background 0.15s, color 0.15s; }
+.timestamp:hover { background: #1a1a2e; color: #fff; }
+.timestamp::before { content: "\25B6 "; font-size: 0.6rem; opacity: 0; transition: opacity 0.15s; }
+.timestamp:hover::before { opacity: 1; }
+.badge { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 4px; color: #fff; letter-spacing: 0.03em; }
+.card-title { font-weight: 700; font-size: 0.95rem; color: #1a1a2e; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.87rem; color: #333; line-height: 1.5; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; color: #666; font-style: italic; line-height: 1.4; }
+.cat-proceso { background: #2563eb; }
+.cat-ingrediente { background: #16a34a; }
+.cat-receta { background: #dc2626; }
+.cat-ratio { background: #d97706; }
+.cat-tecnica { background: #7c3aed; }
+.cat-equipo { background: #0891b2; }
+.cat-levadura { background: #be185d; }
+.cat-malta { background: #92400e; }
+.cat-lupulo { background: #15803d; }
+.cat-agua { background: #0369a1; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T2E12 - La espuma.wav"></audio>
+</div>
+<div class="container">
+<h1>T2E12 - La espuma</h1>
+<div class="stats">
+<span class="stat-pill" style="background:#333;">21 tips</span>
+<span class="stat-pill cat-proceso">proceso: 6</span>
+<span class="stat-pill cat-tecnica">tecnica: 4</span>
+<span class="stat-pill cat-equipo">equipo: 4</span>
+<span class="stat-pill cat-ingrediente">ingrediente: 2</span>
+<span class="stat-pill cat-lupulo">lupulo: 2</span>
+<span class="stat-pill cat-levadura">levadura: 1</span>
+<span class="stat-pill cat-malta">malta: 1</span>
+<span class="stat-pill cat-receta">receta: 1</span>
+</div>
+<div class="grid">
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="718000">11:58</button>
+<span class="badge cat-tecnica">tecnica</span>
+</div>
+<div class="card-title">Formacion vs retencion de espuma</div>
+<div class="card-tip">La espuma tiene dos caracteristicas independientes: formacion (que se genere) y retencion (que se sostenga). No es lo mismo tener buena formacion que buena retencion; hay que trabajar ambas por separado.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="857000">14:17</button>
+<span class="badge cat-proceso">proceso</span>
+</div>
+<div class="card-title">Nucleacion y escape de CO2 al servir</div>
+<div class="card-tip">Al abrir una botella o lata, la presion de CO2 se equilibra con la atmosfera y el CO2 disuelto tiende a escapar. Encuentra puntos de nucleacion (irregularidades, suciedad del vaso) donde forma burbujas que suben.</div>
+<div class="card-details">Las burbujas necesitan alcanzar un tamano suficiente para subir. Cuanto mas sucias las superficies, mas sitios de nucleacion y mas rapido se pierde el CO2.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1051000">17:31</button>
+<span class="badge cat-ingrediente">ingrediente</span>
+</div>
+<div class="card-title">Proteinas surfactantes retienen la espuma</div>
+<div class="card-tip">Las proteinas anfipáticas (Proteina Z y LTP1) actuan como surfactantes que modifican la tension superficial. Se ubican alrededor de la burbuja de CO2 formando una pared que impide que el gas escape.</div>
+<div class="card-details">La parte hidrofobica de la proteina mira hacia el CO2 interno y la parte hidrofilica hacia el liquido exterior. Con el tiempo el liquido drena, la pared se adelgaza y la burbuja revienta.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1365000">22:45</button>
+<span class="badge cat-tecnica">tecnica</span>
+</div>
+<div class="card-title">Carbonatacion arrastra aromas lupulados</div>
+<div class="card-tip">En cervezas lupuladas, una buena carbonatacion es clave para percibir aromas. Al servir, el CO2 que escapa arrastra compuestos aromaticos volatiles del lupulo hacia la nariz.</div>
+<div class="card-details">Carbonatar bien las cervezas aromaticas para que al servir el CO2 arrastre los aromas. No subcarbonatar.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1497000">24:57</button>
+<span class="badge cat-proceso">proceso</span>
+</div>
+<div class="card-title">Buena fermentacion = buena espuma</div>
+<div class="card-tip">Gran parte de una buena formacion de espuma depende de una fermentacion correcta. Una fermentacion disparatada produce esteres, alcoholes superiores y diacetilo que son detractores de la espuma.</div>
+<div class="card-details">Los esteres frutados, los alcoholes superiores (fuseles) y trazas de diacetilo (compuesto grasoso) destruyen la espuma. Casi todos los off-flavors de fermentacion son detractores.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1577000">26:17</button>
+<span class="badge cat-proceso">proceso</span>
+</div>
+<div class="card-title">No subcarbonatar la cerveza</div>
+<div class="card-tip">Muchas cervecerias pecan en subcarbonatar para evitar problemas con bares (frio, lineas). Una cerveza subcarbonada tendra mala formacion de espuma independientemente del resto.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1692000">28:12</button>
+<span class="badge cat-equipo">equipo</span>
+</div>
+<div class="card-title">Vaso limpio es fundamental para la espuma</div>
+<div class="card-tip">Un vaso sucio o con restos de grasa/detergente destruye la espuma. La suciedad crea sitios de nucleacion que hacen que el CO2 escape rapido en burbujas grandes. Los restos de detergente modifican la tension superficial.</div>
+<div class="card-details">Misma cerveza servida en vaso limpio vs vaso con restos de uso previo muestra diferencia dramatica en formacion y retencion.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1776000">29:36</button>
+<span class="badge cat-equipo">equipo</span>
+</div>
+<div class="card-title">Esponja separada para vasos cerveceros</div>
+<div class="card-tip">Usar una esponja exclusiva para lavar vasos de cerveza, distinta a la de platos. La grasa de la comida que queda en la esponja se transfiere al vaso y destruye la espuma.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1851000">30:51</button>
+<span class="badge cat-proceso">proceso</span>
+</div>
+<div class="card-title">Eliminar turbio frio antes de fermentar</div>
+<div class="card-tip">El turbio frio (trub) contiene gran cantidad de acidos grasos que arruinan la espuma. Separar bien el cold break y purgarlo del fermentador.</div>
+<div class="card-details">No todas las proteinas son buenas para la espuma; el turbio caliente tambien contiene proteinas no deseadas. Purgar el fondo del tanque post-fermentacion.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1882000">31:22</button>
+<span class="badge cat-lupulo">lupulo</span>
+</div>
+<div class="card-title">Dry hop prolongado extrae lipidos</div>
+<div class="card-tip">El lupulo tiene ~2% de lipidos (grasas). Si se deja mas de 5-7 dias en el fondo del fermentador, aumenta mucho la solubilidad de esos lipidos en la cerveza, afectando la retencion de espuma.</div>
+<div class="card-details">Contacto de 2+ semanas cambia el perfil sensorial (sabores herbales, pastosos, maderosos) y reduce la retencion de espuma. Purgar el lupulo del fondo y no cajonear la birra con barras abajo.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1961000">32:41</button>
+<span class="badge cat-levadura">levadura</span>
+</div>
+<div class="card-title">Levadura degrada proteina LTP1</div>
+<div class="card-tip">La proteina LTP1 (Lipid Transfer Protein 1) es fundamental para la espuma. La levadura activa, incluso sedimentada, sigue degradandola con el tiempo. Separar la cerveza de la levadura lo antes posible una vez terminada la fermentacion.</div>
+<div class="card-details">Las dos proteinas mas importantes para la espuma son Proteina Z y LTP1. Separar turbio frio incluyendo levaduras para preservar LTP1.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1999000">33:19</button>
+<span class="badge cat-proceso">proceso</span>
+</div>
+<div class="card-title">Oxigenar bien y completar fermentacion</div>
+<div class="card-tip">Quienes no oxigenan bien o tienen fermentaciones en 7 dias sin descanso de diacetilo terminan con trazas de acetaldehido o diacetilo que afectan directamente la formacion y retencion de espuma.</div>
+<div class="card-details">Hacer test de diacetilo forzado. Trazas imperceptibles al paladar igual afectan la espuma. Buena fase lag, buena fase exponencial, llegar rapido a densidad final y redondear en caliente.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2067000">34:27</button>
+<span class="badge cat-receta">receta</span>
+</div>
+<div class="card-title">Ejemplo: Colipa con buena espuma pese a adjuntos</div>
+<div class="card-tip">Una cerveza con 85% Pilsen + 15% dextrosa, densidad inicial 1065, final 1006-1008 y 7% alcohol logra buena retencion de espuma cuando la fermentacion es optima con levadura Lager.</div>
+<div class="card-details">Demuestra que una buena fermentacion puede compensar factores negativos como alto alcohol, pocos azucares residuales, pocas proteinas y muchos adjuntos simples.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2149000">35:49</button>
+<span class="badge cat-ingrediente">ingrediente</span>
+</div>
+<div class="card-title">Adjuntos proteicos: trigo y avena para espuma</div>
+<div class="card-tip">Todo adjunto que aporte proteinas favorece la formacion de espuma. Trigo y avena arrollada son los mas comunes. Saber que usar y para que: sabor, fermentables o proteinas.</div>
+<div class="card-details">Muchas proteinas tambien favorecen la turbidez. Equilibrar segun el estilo: las proteinas ayudan a la espuma pero generan turbio.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2237000">37:17</button>
+<span class="badge cat-proceso">proceso</span>
+</div>
+<div class="card-title">Cuidado con el descanso de proteinas</div>
+<div class="card-tip">Un descanso de proteinas a ~45°C activa proteasas que rompen proteinas. Si se excede este paso, se eliminan las proteinas necesarias para la espuma. Solo hacerlo con maltas poco modificadas.</div>
+<div class="card-details">Si es necesario, hacer pasos cortos. Alternativas: usar adjuntos altos en proteina (trigo, avena) o maltas menos modificadas. Con maltas modernas bien modificadas generalmente no es necesario.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2338000">38:58</button>
+<span class="badge cat-equipo">equipo</span>
+</div>
+<div class="card-title">No calentar mosto recirculando con fuego directo</div>
+<div class="card-tip">En equipos mash-lauter combinados, no poner mechero a la caneria de recirculacion para hacer macerado escalonado. Se forma scorching (caramelizacion en la superficie) que genera sabores ahumados horribles.</div>
+<div class="card-details">Mejor hacer infusion simple que arriesgarse a scorching. Maceracion escalonada solo con equipos preparados (camisa de vapor + agitador).</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2511000">41:51</button>
+<span class="badge cat-malta">malta</span>
+</div>
+<div class="card-title">3-5% trigo mejora espuma sin cambiar sabor</div>
+<div class="card-tip">Agregar 3-5% de trigo a cervezas con bajo potencial de espuma (ej. Mexican Lager). El perfil sensorial del trigo es casi indistinguible del de la malta Pilsen, pero mejora notablemente la formacion y retencion.</div>
+<div class="card-details">Estudios no logran diferenciar flavor de trigo vs malta en porcentajes bajos. 96% Pilsen + 4% trigo = sensorialmente igual pero con mucho mas potencial de espuma.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2576000">42:56</button>
+<span class="badge cat-lupulo">lupulo</span>
+</div>
+<div class="card-title">Iso-alfa-acidos del hervor benefician la espuma</div>
+<div class="card-tip">Los iso-alfa-acidos generados durante el hervor son muy positivos para la espuma. El lupulo usado solo en frio (dry hop, whirlpool frio) no aporta iso-alfa-acidos y puede ser detractor por sus solidos en suspension.</div>
+<div class="card-details">En cervezas donde todo el lupulado es en frio (NEIPAs), se pierde este beneficio. Considerar al menos una pequena adicion al hervor.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2638000">43:58</button>
+<span class="badge cat-tecnica">tecnica</span>
+</div>
+<div class="card-title">NEIPAs necesitan tiempo de decantacion</div>
+<div class="card-tip">Las NEIPAs con mala retencion de espuma (detergentosa) suelen tener demasiada levadura y particulas de lupulo en suspension. Darle tiempo para que decanten antes de envasar mejora dramaticamente la espuma.</div>
+<div class="card-details">NEIPAs bien hechas tienen excelente potencial de espuma: trigo, avena, azucares residuales. El problema es servir/envasar con solidos en suspension. Turbidez por proteinas esta bien; solidos fisicos no.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2732000">45:32</button>
+<span class="badge cat-equipo">equipo</span>
+</div>
+<div class="card-title">Limpiar lineas de expendio regularmente</div>
+<div class="card-tip">Las lineas de cerveza sucias no solo aportan off-flavors (diacetilo, mercaptano/olor a trapo sucio) sino que destruyen la espuma. Lavar las canillas y lineas con frecuencia.</div>
+<div class="card-details">Bares que no lavan lineas durante meses tienen problemas graves de espuma ademas de contaminacion sensorial.</div>
+</div>
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2782000">46:22</button>
+<span class="badge cat-tecnica">tecnica</span>
+</div>
+<div class="card-title">Test de burbujas para verificar vaso limpio</div>
+<div class="card-tip">Al servir cerveza, si se forman burbujitas pegadas a las paredes del vaso, el vaso esta sucio. En un vaso limpio las burbujas solo se forman por la turbulencia de la caida, no pegadas al vidrio.</div>
+<div class="card-details">Aunque el vaso parezca limpio visualmente, el test de burbujas es definitivo. Si hay burbujas adheridas al vidrio = sucio.</div>
+</div>
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

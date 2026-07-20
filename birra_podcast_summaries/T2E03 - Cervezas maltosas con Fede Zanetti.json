@@ -1,0 +1,181 @@
+{
+  "episode": "T2E03 - Cervezas maltosas con Fede Zanetti",
+  "tips": [
+    {
+      "timestamp_ms": 528000,
+      "timestamp": "8:48",
+      "category": "receta",
+      "title": "Evolución de la receta Scotch Santina",
+      "tip": "La Scotch de Santina lleva 7 maltas: base de Pilsen + Pale, Munich (bastante), Biscuit (pequeño %), Caramelo 60 (bastante), Melanoidina y Cebada Tostada (muy poca). Originalmente era solo Pale + Caramelos 60/120 + Special B + tostada.",
+      "details": "La evolución fue: reemplazar parte de Pale por Pilsen para más tomabilidad, agregar Munich para sabor a pan, sumar Biscuit y Melanoidina. Reducir cebada tostada drásticamente y restringir Cararoma."
+    },
+    {
+      "timestamp_ms": 602000,
+      "timestamp": "10:02",
+      "category": "malta",
+      "title": "Pilsen + Munich para tomabilidad y pan",
+      "tip": "Cambiar parte de la base Pale por Pilsen da más tomabilidad. La Munich aporta ese sabor a pan característico que complementa los caramelos en una cerveza maltosa.",
+      "details": "Biscuit es como una 'baby biscuit' que lleva el sabor a bizcocho al extremo. Se usa en pequeño porcentaje."
+    },
+    {
+      "timestamp_ms": 650000,
+      "timestamp": "10:50",
+      "category": "malta",
+      "title": "Melanoidina para maltosidad simple",
+      "tip": "La melanoidina aporta un carácter de 'granito fermentado' y maltosidad directa. Fue la última incorporación a la receta de la Scotch.",
+      "details": "Es una malta bastante esterosa, lo cual hay que tener en cuenta al combinar con levaduras también esterosas como la S04."
+    },
+    {
+      "timestamp_ms": 663000,
+      "timestamp": "11:03",
+      "category": "ratio",
+      "title": "Cebada tostada mínima para color rubí",
+      "tip": "Usar muy poca cebada tostada (aprox. 1.45 kg para 200 litros) aporta color cobre profundo con destellos rubí y sequedad al final, sin dominar el sabor de las maltas caramelo.",
+      "details": "La receta pasó de 2.5 kg a ~1.45 kg en 200L. El color rubí no se logra con caramelos altos (que dan naranja/ámbar profundo), solo con el toque de tostada."
+    },
+    {
+      "timestamp_ms": 726000,
+      "timestamp": "12:06",
+      "category": "tecnica",
+      "title": "Cebada tostada vs caramelo alto para color",
+      "tip": "La cebada tostada aporta sequedad y color rubí que no se logra con caramelos altos. Los caramelos altos (120, 140, Cararoma) dan tonos naranjas/ámbar y si usás mucha cantidad para llegar al color, desbalanceás el sabor.",
+      "details": "Para corregir color en cervezas rojas sin afectar sabor, usar un toque mínimo de cebada tostada."
+    },
+    {
+      "timestamp_ms": 1047000,
+      "timestamp": "17:27",
+      "category": "levadura",
+      "title": "Densidad final 1.014 para Scotch tomable",
+      "tip": "Buscar una densidad final de 1.014 (OG 1.050-1.052) da cuerpo medio con buena tomabilidad para una Scotch de barril. Demasiado alta (1.020) empalaga, demasiado baja pierde carácter.",
+      "details": "La receta pasó por densidades finales de 1.008 a 1.020. En 1.014 encontró el mejor balance de cuerpo y tomabilidad."
+    },
+    {
+      "timestamp_ms": 1082000,
+      "timestamp": "18:02",
+      "category": "levadura",
+      "title": "S04 con macerado a 70°C para FG 1.014",
+      "tip": "Usar levadura S04 combinada con macerado alto (70°C) permite alcanzar una densidad final de 1.014 con buena formación de dextrinas. La S04 atenuaría más con un macerado normal, pero a 70°C se frena donde se necesita.",
+      "details": "OG 1.050-1.052, FG 1.014. El macerado alto forma dextrinas que la S04 no puede fermentar, logrando soporte sin empalagar."
+    },
+    {
+      "timestamp_ms": 1264000,
+      "timestamp": "21:04",
+      "category": "levadura",
+      "title": "Reducir ésteres de S04 con más inóculo",
+      "tip": "Para reducir la producción de ésteres de la S04, aumentar la tasa de inoculación progresivamente. Fede pasó de 0.75 a 1.5 millones de células/mL con buenos resultados.",
+      "details": "Aumentar 0.1 millones por cocción para evaluar el impacto. Fermentar bajo presión NO redujo los ésteres tanto como aumentar la tasa de inoculación."
+    },
+    {
+      "timestamp_ms": 1315000,
+      "timestamp": "21:55",
+      "category": "levadura",
+      "title": "Fermentar S04 a 17°C para Scotch",
+      "tip": "Fermentar la S04 a 17°C (bajo para una ale) reduce la producción de ésteres y deja que el perfil maltoso de la cerveza brille sin ser opacado por frutados.",
+      "details": "Referencia histórica: las Scotch ales tradicionales se maceraban alto y fermentaban a temperaturas bajas. No bajar a 15°C que es demasiado extremo para la S04."
+    },
+    {
+      "timestamp_ms": 1477000,
+      "timestamp": "24:37",
+      "category": "tecnica",
+      "title": "Alcoholes superiores perjudican la espuma",
+      "tip": "Los alcoholes superiores (fuseles) están comprobados como perjudiciales para la formación y retención de espuma. Más fuseles = más materia prima para ésteres, y ambos afectan negativamente la espuma.",
+      "details": "Si la cerveza tiene muchos ésteres por fermentación estresada, revisar si hay alcoholes superiores asociados. Reducir fuseles mejora tanto perfil sensorial como retención de espuma."
+    },
+    {
+      "timestamp_ms": 1708000,
+      "timestamp": "28:28",
+      "category": "agua",
+      "title": "Emular perfil de Edimburgo para Scotch",
+      "tip": "Partir del perfil de agua de Edimburgo (disponible en Brewer's Friend) como base para una Scotch. Luego ajustar sensorialmente: más carbonatos para compensar la cebada tostada, más cloruros para cuerpo.",
+      "details": "Sobre 1200L: 180g de cloruro de calcio, 90g de sulfato de calcio. El sulfato permite reducir la carga de lúpulo (de 500g a 450g) manteniendo el perfil amargo deseado."
+    },
+    {
+      "timestamp_ms": 1862000,
+      "timestamp": "31:02",
+      "category": "ratio",
+      "title": "Sales para 1200L de Scotch",
+      "tip": "Para 1200 litros de Scotch: 180g de cloruro de calcio y 90g de sulfato de calcio sobre el perfil base de Edimburgo. El sulfato ayuda a percibir más amargor con menos lúpulo.",
+      "details": "Con esa adición de sulfato, se puede reducir el lúpulo de 500g a 450g obteniendo el mismo perfil amargo percibido."
+    },
+    {
+      "timestamp_ms": 1913000,
+      "timestamp": "31:53",
+      "category": "agua",
+      "title": "pH de mash 5.4 con macerado alto",
+      "tip": "Para un macerado a 70°C, mantener el pH alrededor de 5.4. No subir a 5.5-5.6 porque a temperaturas tan altas se favorece demasiado la alfa-amilasa y la densidad final se dispara a 1.020.",
+      "details": "El equilibrio es muy fino: un grado de más en temperatura o una décima de pH te puede mover la FG de 1.014 a 1.011 o 1.020. Bajar el pH al final del hervido es posible pero el macerado debe estar en rango alto-medio."
+    },
+    {
+      "timestamp_ms": 2051000,
+      "timestamp": "34:11",
+      "category": "lupulo",
+      "title": "Solo amargor a 90 min para Scotch",
+      "tip": "En una Scotch, usar únicamente adición de amargor a los 90 minutos con lúpulos de alto alfa-ácido (Zeus, Magnum, 14-17% AA). El lúpulo de sabor (min 20-25) competía con las maltas, así que se eliminó.",
+      "details": "Target: 18-19 IBU. A 16 IBU queda dulce, a 20 queda muy amarga. Hervir 2 horas total, agregar el lúpulo después de los primeros 30 min de hervido."
+    },
+    {
+      "timestamp_ms": 2217000,
+      "timestamp": "36:57",
+      "category": "lupulo",
+      "title": "Lúpulos altos en alfa no aportan sabor notable",
+      "tip": "Entre lúpulos de alto alfa-ácido (Magnum 14%, CTZ 15%, Apollo 17%) no se nota diferencia de sabor al usarlos solo para amargor a 90 min. Pero un lúpulo de bajo alfa como Cascade sí se nota porque necesitás mucho más material vegetal.",
+      "details": "No usar Cascade u otros lúpulos de bajo alfa para amargor en birras maltosas: el doble o triple de materia vegetal aporta sabor herbáceo no deseado."
+    },
+    {
+      "timestamp_ms": 2309000,
+      "timestamp": "38:29",
+      "category": "proceso",
+      "title": "Hervido de 2 horas para carácter butterscotch",
+      "tip": "El hervido prolongado (mínimo 2 horas) es clave para el carácter butterscotch de la Scotch. Es la combinación de: crema de la S04 + caramelos + hervido prolongado lo que genera ese perfil.",
+      "details": "Fede probó con 3 horas pero el beneficio no justificaba el tiempo extra. Con 2 horas logra el mismo resultado. La melanoidina refuerza ese sabor."
+    },
+    {
+      "timestamp_ms": 2509000,
+      "timestamp": "41:49",
+      "category": "malta",
+      "title": "Cebada tostada perlada para Imperial Stout",
+      "tip": "Usar cebada tostada perlada (sin cáscara) es clave en Imperial Stout para minimizar astringencia. Le da muchísima más tomabilidad a una cerveza muy intensa manteniendo los sabores a café y chocolate.",
+      "details": "Las Carafa (Weyermann) también vienen en versión sin cáscara (Special). Alternativa: Carafa III sin cáscara para notas más cafetosas/rostizadas."
+    },
+    {
+      "timestamp_ms": 2623000,
+      "timestamp": "43:43",
+      "category": "agua",
+      "title": "Agua dura para balancear maltas tostadas",
+      "tip": "Las maltas tostadas (especialmente Carafa III) necesitan agua con buenos niveles de carbonatos para no quedar con sabor agrio/ácido. Sin carbonatos suficientes, el tostado se percibe como café recalentado, amargo y ácido.",
+      "details": "La Carafa III tiene más color que la cebada tostada y perfiles más cafetosos/rostizados, pero requiere agua más dura para equilibrar."
+    },
+    {
+      "timestamp_ms": 2732000,
+      "timestamp": "45:32",
+      "category": "receta",
+      "title": "Granos para Imperial Stout equilibrada",
+      "tip": "Para Imperial Stout: cebada tostada perlada (sin cáscara) como base tostada, caramelos altos (Special B, Cara 140) para equilibrar los tostados, y base de Pale + Munich (opcionalmente Vienna).",
+      "details": "Special B aporta nota a frutos secos espectacular en Imperial. Cara 140 nacional es muy buena. No usar tanto Cara 60 en Imperial Stout, reservarla para estilos menos intensos."
+    },
+    {
+      "timestamp_ms": 2831000,
+      "timestamp": "47:11",
+      "category": "receta",
+      "title": "Imperial Stout extrema: OG 1.121, FG 1.045",
+      "tip": "Una Imperial Stout de OG 1.121 puede terminar en FG 1.045 y estar balanceada si el lupulado es acorde (IBU altos para compensar dulzor residual). Pensada para barrica, donde la FG bajará unos puntos más con el tiempo.",
+      "details": "Levadura WLP-004 (más atenuante que otras levas de Stout). FG teórica era 1.035. Para barrica de primer uso de bourbon, ir al extremo puede funcionar."
+    },
+    {
+      "timestamp_ms": 3283000,
+      "timestamp": "54:43",
+      "category": "receta",
+      "title": "Dry Stout: receta simple y precisa",
+      "tip": "Dry Stout clásica: 10% cebada tostada perlada (sin cáscara) + 3-4% Caramelo 140 + resto Pale y Pilsen. Buscar alta atenuación, notas claras a café, segunda nota chocolate amargo, tercera a caramelo/ciruela sutil.",
+      "details": "Versión aún más minimalista: 90% Pale Ale + 10% Cebada Tostada, sin caramelos. Los caramelos reservarlos para Porter o Foreign Stout."
+    },
+    {
+      "timestamp_ms": 3487000,
+      "timestamp": "58:07",
+      "category": "agua",
+      "title": "Agua para Dry Stout: carbonatos esenciales",
+      "tip": "En una Dry Stout, el perfil de agua es crítico. Sin suficientes carbonatos, la cebada tostada queda como 'café de McDonald's recalentado'. No usar agua de ósmosis sin remineralizar ni agua muy poco mineralizada sin ajustar.",
+      "details": "La Dry Stout es tan sutil que con muy poco la desequilibrás: agua muy dura, agua muy blanda, mucho lúpulo o astringencia del lavado. Los carbonatos son esenciales para equilibrar los tostados."
+    }
+  ]
+}

@@ -26,7 +26,9 @@ Form drives **how you separate hops** (kettle/whirlpool setup) and affects **uti
 - **[[selecting-hops]]** — choosing for bittering, flavor, and aroma + Strong's picks
 - **[[hop-guide]]** — quick reference: IBU math, addition timing, varieties
 - **[[hopping]]** — using hops in the brewhouse (FWH, all-late, dry hopping)
+- **[[hop-stand-chemistry-and-technique]]** — hop oil chemistry and whirlpool/hop stand timing
+- **[[cold-dry-hopping-and-oxygen-control]]** — cold-side dry hopping protocol and oxygen management
 
 ## Related
 
-[[hop-guide]] · [[hopping]] · [[whirlpooling]] · [[water-chemistry]]
+[[hop-guide]] · [[hopping]] · [[whirlpooling]] · [[water-chemistry]] · [[hop-stand-chemistry-and-technique]] · [[cold-dry-hopping-and-oxygen-control]]

@@ -18,6 +18,7 @@ Some of this comes from **repetition**; some requires **changing how you think a
 - **[[planning-your-brew-calendar]]** — sequencing batches across a season
 - **[[planning-your-brew-day]]** — *mise en place*, critical path, prioritizing effort
 - **[[approximating-and-estimating]]** — using your senses as instruments; accuracy vs precision
+- **[[small-batch-nano-brewing]]** — brewing at 6–10 L scale: equipment, precision, and sourcing tradeoffs
 
 ## Related
 

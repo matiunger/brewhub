@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1E09 - Cerveceros caseros Procesos relevantes</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #1a1a1a; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; min-width: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.stat { background: #fff; border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.85rem; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.13); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; background: #1a1a1a; color: #fff; border: none; padding: 0.25rem 0.6rem; border-radius: 5px; cursor: pointer; transition: background 0.15s; }
+.timestamp:hover { background: #2563eb; }
+.timestamp:hover::after { content: ' \25B6'; font-size: 0.65rem; }
+.badge { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 4px; color: #fff; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; color: #555; font-style: italic; line-height: 1.45; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Índice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T1E09 - Cerveceros caseros Procesos relevantes.wav"></audio>
+</div>
+<div class="container">
+<h1>T1E09 - Cerveceros caseros Procesos relevantes</h1>
+<div class="stats">
+  <div class="stat">16 tips en total</div>
+  <div class="stat" style="border-left:3px solid #2563eb">proceso: 4</div>
+  <div class="stat" style="border-left:3px solid #7c3aed">tecnica: 4</div>
+  <div class="stat" style="border-left:3px solid #0891b2">equipo: 4</div>
+  <div class="stat" style="border-left:3px solid #be185d">levadura: 3</div>
+  <div class="stat" style="border-left:3px solid #d97706">ratio: 1</div>
+</div>
+<div class="grid">
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="350000">5:50</button>
+      <span class="badge badge-proceso">proceso</span>
+    </div>
+    <div class="card-title">Adaptar estilos al equipo disponible</div>
+    <div class="card-tip">Se puede hacer muy buena cerveza con casi cualquier equipamiento, pero hay que conocer sus limitaciones. No intentar estilos que requieren técnicas imposibles con tu equipo (ej: no hacer NEIPA con triple dry hopping si no podés purgar el fermentador).</div>
+    <div class="card-details">Si no podés purgar el fermentador, mejor hacer una adición grande en whirlpool en vez de dry hopping, para evitar materia vegetal mucho tiempo en el tanque.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="554000">9:14</button>
+      <span class="badge badge-proceso">proceso</span>
+    </div>
+    <div class="card-title">Invertir 80% de recursos en fermentación</div>
+    <div class="card-tip">El mayor desafío del homebrewer es lograr una fermentación limpia. Destinar el 80% de los recursos (dinero y conocimiento) a la etapa de fermentación, no al equipo de cocción.</div>
+    <div class="card-details">Un mosto básico bien fermentado es buena cerveza. Maltas alemanas y lúpulos americanos con fermentación defectuosa (alcoholes superiores, diacetilo) no sirven.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="760000">12:40</button>
+      <span class="badge badge-tecnica">tecnica</span>
+    </div>
+    <div class="card-title">Control de temperatura sobre el mosto</div>
+    <div class="card-tip">Medir y controlar la temperatura directamente sobre el mosto fermentando, no sobre el aire ambiente ni un vasito con agua. La sonda del termómetro o controlador debe estar en contacto con el mosto.</div>
+    <div class="card-details">El aire es mal conductor térmico y la fermentación es exotérmica. Con 18°C en el aire, el fermentador puede estar a 22-25°C. Ni cámaras de frío ni aire acondicionado en la pieza resuelven esto adecuadamente.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="862000">14:22</button>
+      <span class="badge badge-equipo">equipo</span>
+    </div>
+    <div class="card-title">Control individual por fermentador</div>
+    <div class="card-tip">Idealmente tener control de temperatura individual para cada fermentador. Un baño de frío (puede ser un freezer) con serpentina o torpedo envuelto en el fermentador que le maneje la temperatura.</div>
+    <div class="card-details">Opciones: heladera con fermentador adentro, encamisado, torpedo con agua fría o glicol circulando por las paredes. En fermentadores plásticos la conductividad es menor pero funciona si está bien cerrado y aislado.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="948000">15:48</button>
+      <span class="badge badge-levadura">levadura</span>
+    </div>
+    <div class="card-title">Levaduras Kveik para sin control térmico</div>
+    <div class="card-tip">Las levaduras Kveik (noruegas) fermentan entre 18°C y 38°C, lo que las hace ideales para homebrewers sin control de temperatura. Se puede enfriar a 25-30°C e inocular sin preocuparse tanto.</div>
+    <div class="card-details">Aun con Kveik, el producto no será igual a 28°C que a 35°C, así que el control de temperatura sigue siendo importante. Pero si no tenés control y usás S-04 en verano en Buenos Aires, tenés diacetilo y alcoholes superiores casi garantizados; con Kveik ese riesgo se reduce mucho.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="1111000">18:31</button>
+      <span class="badge badge-equipo">equipo</span>
+    </div>
+    <div class="card-title">Ventajas del fermentador cilindrocónico</div>
+    <div class="card-tip">Un fermentador cilindrocónico plástico tiene muchas ventajas sobre uno cilíndrico: permite purgar trub, levaduras muertas y lúpulo sedimentado con facilidad desde el fondo.</div>
+    <div class="card-details">Si es cilíndrico, agregar una conexión de tanque lateral pegada al fondo con una válvula para ir purgando. De última, inclinar el bidón para concentrar sedimentos hacia la salida.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="1156000">19:16</button>
+      <span class="badge badge-equipo">equipo</span>
+    </div>
+    <div class="card-title">Fermentador plástico con presión positiva</div>
+    <div class="card-tip">Usar fermentadores plásticos cilindrocónicos que soporten 300-500 gramos de presión de CO2 (ej: Roto King, Infinity). Esto permite retener volátiles aromáticos en cervezas lupuladas y evitar incorporación de oxígeno al enfriar.</div>
+    <div class="card-details">Al enfriar el fermentador, el líquido se contrae y si no hay presión positiva, absorbe aire del ambiente. La presión positiva con CO2 evita esto.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="1233000">20:33</button>
+      <span class="badge badge-proceso">proceso</span>
+    </div>
+    <div class="card-title">Oxidación proporcional en volúmenes chicos</div>
+    <div class="card-tip">En volúmenes pequeños, cada movimiento incorpora oxígeno de manera proporcionalmente más significativa. Una manguera sin purgar que oxida un poco de cerveza impacta mucho más en 20 litros que en 2000 litros.</div>
+    <div class="card-details">La relación superficie/volumen en contacto con aire es desfavorable a escala homebrewer. Extremar precauciones en cada trasvase y movimiento.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="1470000">24:30</button>
+      <span class="badge badge-tecnica">tecnica</span>
+    </div>
+    <div class="card-title">Trasvase con CO2 en fermentador casero</div>
+    <div class="card-tip">Modificar la tapa del fermentador con dos conexiones de tanque con O-ring: por una entra CO2 y la otra tiene una varilla hasta el fondo para chupar líquido. Con solo 0,1-0,2 bar de presión se empuja la cerveza al madurador sin incorporar oxígeno.</div>
+    <div class="card-details">El volumen de cerveza que sale se reemplaza con CO2 en el fermentador. Una tapa estándar de boca ancha no aguanta más de 100-150 gramos de presión, pero eso es suficiente para el trasvase. Referencia: página Homebrewing Experience en Instagram.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="1621000">27:01</button>
+      <span class="badge badge-levadura">levadura</span>
+    </div>
+    <div class="card-title">Evitar subinoculación de levadura</div>
+    <div class="card-tip">La mayoría de homebrewers tiende a subinocular. La viabilidad de la levadura seca es desconocida (10-40% de levadura muerta en el sobre) y la mayoría no incorpora oxígeno al mosto frío, lo que limita la propagación.</div>
+    <div class="card-details">Sin oxígeno disuelto en el mosto frío, la levadura no puede generar biomasa adecuadamente, lo que agrava la subinoculación.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="1786000">29:46</button>
+      <span class="badge badge-tecnica">tecnica</span>
+    </div>
+    <div class="card-title">Starter: más conocimiento que equipo</div>
+    <div class="card-tip">Hacer un starter a escala homebrewer requiere más conocimiento que equipamiento. Se puede hacer en la cocina de casa con un Erlenmeyer y llama directa. Lo clave es trabajar de forma aséptica para no contaminar.</div>
+    <div class="card-details">Se puede propagar desde muy poca biomasa pasando de Erlenmeyers chicos a más grandes. Dejar sobre el motor de la heladera le da un poco de calor; agitar cada vez que se pasa por ahí. Charlie Papazian arrancaba su starter los jueves para cocinar los sábados.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="1985000">33:05</button>
+      <span class="badge badge-ratio">ratio</span>
+    </div>
+    <div class="card-title">Dosis de levadura seca: 1 g/L</div>
+    <div class="card-tip">Para cervezas con densidad menor a 1.060, inocular 1 gramo de levadura seca por litro de mosto. Es una dosis conservadora que garantiza la biomasa necesaria para una buena fermentación.</div>
+    <div class="card-details">Se puede usar menos, pero entonces habría que agregar oxígeno disuelto, aportar nutrientes (Servomyces, SpringFerm, zinc) y tener más consideraciones. Con 1 g/L esos nutrientes ya vienen con la levadura seca y se duerme tranquilo.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="2051000">34:11</button>
+      <span class="badge badge-levadura">levadura</span>
+    </div>
+    <div class="card-title">Ante la duda, sobreinocular levemente</div>
+    <div class="card-tip">Siempre es preferible sobreinocular levemente (sin exagerar) que quedarse corto con la cantidad de levadura. Arrancar de levadura fresca cada vez; no reutilizar como cervecero casero principiante.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="2085000">34:45</button>
+      <span class="badge badge-proceso">proceso</span>
+    </div>
+    <div class="card-title">Evitar fermentaciones planchadas en frío</div>
+    <div class="card-tip">No dejar que la temperatura caiga bruscamente al terminar la fermentación. Cuando se ve que la fermentación baja de velocidad (por airlock/blow-off), subir el setpoint del controlador 2°C para que la fermentación exotérmica eleve naturalmente la temperatura.</div>
+    <div class="card-details">Si fermentás S-05 a 19°C y al terminar la temperatura cae porque es invierno, se corta la maduración en caliente. Ejemplo: fermentando a 19°C, la exotermia sube a 19.5, 20, 20.5°C. Al dejar de fermentar baja despacio, manteniendo temperatura óptima para que la levadura limpie subproductos.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="2152000">35:52</button>
+      <span class="badge badge-tecnica">tecnica</span>
+    </div>
+    <div class="card-title">Descanso de diacetilo: 2-3 días post-fermentación</div>
+    <div class="card-tip">Mantener la cerveza 2-3 días a temperatura igual o superior a la de fermentación después de alcanzar densidad final. La levadura en suspensión degrada el diacetilo y otros subproductos a compuestos sin aroma ni sabor.</div>
+    <div class="card-details">A temperatura baja la levadura sedimenta y las reacciones de limpieza ocurren más lentamente. Si el cervecero casero trabaja los fines de semana, la fermentación primaria de ~4 días más ~3 días de maduración en caliente calzan justo con el ritmo semanal.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <button class="timestamp" data-ms="2480000">41:20</button>
+      <span class="badge badge-equipo">equipo</span>
+    </div>
+    <div class="card-title">Equipo de cocción: no es lo fundamental</div>
+    <div class="card-tip">Se puede hacer un buen mosto con casi cualquier olla y equipamiento, usando los materiales adecuados (acero inoxidable, cobre, aluminio). La inversión prioritaria debe ir a fermentación, no a la sala de cocción.</div>
+    <div class="card-details">Lo importante del equipo de cocción es tener un buen hervor y un enfriamiento medianamente adecuado en tiempo razonable. La diferencia en calidad de cerveza terminada está en la fermentación.</div>
+  </div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

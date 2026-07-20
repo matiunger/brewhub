@@ -1,0 +1,181 @@
+{
+  "episode": "T1E12 - Conociendo los lupulos para poder decidir",
+  "tips": [
+    {
+      "timestamp_ms": 129000,
+      "timestamp": "2:09",
+      "category": "lupulo",
+      "title": "Lúpulo sensible a oxígeno, luz y temperatura",
+      "tip": "El lúpulo es muy sensible al oxígeno, la temperatura y la luz. Siempre buscar bolsa cerrada, que no haya estado expuesta a la luz y que haya sido refrigerada durante toda la cadena de conservación.",
+      "details": "De la flor en el valle de Yakima a lo que llega al homebrewer puede haber 18 meses y múltiples fraccionamientos. Un Citra mal conservado puede oler a pasto o fardo en lugar de a lúpulo fresco."
+    },
+    {
+      "timestamp_ms": 269000,
+      "timestamp": "4:29",
+      "category": "lupulo",
+      "title": "Fraccionamiento grupal para homebrewers",
+      "tip": "Comprar lúpulo entre varios homebrewers directamente al importador y fraccionarlo al vacío en porciones de uso único. Calcular la porción según tu batch: para 50 litros a 2 g/L, fraccionar en bolsitas de 100 g.",
+      "details": "Ejemplo: 5 homebrewers compran una bolsa de 5 kg de Equanot, 1 kg cada uno, fraccionado en 10 bolsitas de 100 g al vacío y al freezer. Cuando abrís una bolsita, la usás completa."
+    },
+    {
+      "timestamp_ms": 396000,
+      "timestamp": "6:36",
+      "category": "tecnica",
+      "title": "Purgar bolsas abiertas con CO2",
+      "tip": "Cuando tenés una bolsa de lúpulo abierta, meter una manguerita de CO2 dentro de la bolsa para barrer el oxígeno y después cerrarla. Esto permite usar el lúpulo hasta 30-40 días después de abierta en condiciones aceptables.",
+      "details": "Especialmente importante para lúpulos de amargor que se usan en menor cantidad y la bolsa dura más tiempo (ej: 5 kg de Apollo para batches de 500 L)."
+    },
+    {
+      "timestamp_ms": 451000,
+      "timestamp": "7:31",
+      "category": "tecnica",
+      "title": "Bolsa que se abre, bolsa que se termina",
+      "tip": "La mejor práctica es abrir una bolsa de lúpulo y usarla completa. Cuando los volúmenes no lo permiten, asegurarse de que el fraccionamiento haya sido hecho en las mejores condiciones posibles.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 482000,
+      "timestamp": "8:02",
+      "category": "tecnica",
+      "title": "Evaluar lúpulo con olfato y tecito",
+      "tip": "Oler cada bolsa de lúpulo al abrirla. Si huele a transpiración o pata, está oxidado (reacciones de oxidación de alfa-ácidos) y no vale la pena usarlo. Si huele bien pero con poca intensidad, hacer un test con 3 pellets en una taza de agua caliente.",
+      "details": "El tecito permite evaluar el aroma inicial y luego a los 5 minutos cuando se enfría, ya que aromáticamente cambia con los volátiles que van saliendo. Con esa evaluación se decide si se usa o no."
+    },
+    {
+      "timestamp_ms": 625000,
+      "timestamp": "10:25",
+      "category": "lupulo",
+      "title": "Clasificaciones de variedades de lúpulo",
+      "tip": "Las clasificaciones principales son: por región (alemanes, ingleses, americanos, australianos, neozelandeses, argentinos), y la vieja escuela de amargor vs. aroma (hoy obsoleta, todos son duales). La más útil es por perfil sensorial.",
+      "details": "La clasificación amargor/aroma quedó obsoleta porque hoy hay lúpulos con 13% de alfa-ácidos que son una bomba de aromas."
+    },
+    {
+      "timestamp_ms": 728000,
+      "timestamp": "12:08",
+      "category": "lupulo",
+      "title": "Tres familias sensoriales de lúpulos americanos",
+      "tip": "Los lúpulos americanos de sabor y aroma se agrupan en tres grandes familias sensoriales: cítricos, frutados y resinosos. Existen también florales y especiados, pero la mayoría entra en esas tres categorías.",
+      "details": "Dentro de cítricos hay sub-variantes: lima, pomelo, mandarina, bergamota, limón fresco (uña al limón), limón oxidado, ralladura, caramelo de limón. No es lo mismo una nota fresca que compotada."
+    },
+    {
+      "timestamp_ms": 842000,
+      "timestamp": "14:02",
+      "category": "lupulo",
+      "title": "Perfil primario y secundario del lúpulo",
+      "tip": "Ningún lúpulo es solamente cítrico, frutado o resinoso. Cada variedad tiene un perfil primario donde destaca y un perfil secundario que se manifiesta al intensificar las adiciones. Se puede manipular la expresión de cada perfil con la técnica de adición.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 934000,
+      "timestamp": "15:34",
+      "category": "lupulo",
+      "title": "Cascade nacional vs. USA",
+      "tip": "El Cascade Nacional (argentino) es más pomeloso y el Cascade USA es más a limón. Ambos tienen un perfil floral y resinoso secundario que aparece al usar más de 5-6 g/L en total.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 967000,
+      "timestamp": "16:07",
+      "category": "tecnica",
+      "title": "Cuidado con perfiles secundarios al blendear",
+      "tip": "Al combinar varios lúpulos, los perfiles secundarios se suman. Si todos los lúpulos del blend tienen resina como secundario (ej: Cascade + Equanot + Simcoe + Chinook), la cerveza puede quedar desbalanceada hacia lo resinoso.",
+      "details": "Cascade: cítrico + floral/resinoso. Equanot: tropical + resina/picante. Simcoe: fruta de carozo + resina de pino. Chinook: cítrico + resina. Al llevar al extremo las adiciones, pueden aparecer notas terciarias (cebolla, ajo) poco agradables."
+    },
+    {
+      "timestamp_ms": 1059000,
+      "timestamp": "17:39",
+      "category": "lupulo",
+      "title": "Lúpulos frutados sin resina secundaria",
+      "tip": "Citra y Mosaic tienen mucha fruta pero también cítricos y resina. Para frutado sin tirar a resina/herbal/pináceo, considerar El Dorado, Amarillo o Azacca, que tienen más fruta con toque floral.",
+      "details": "Útil para estilos como New England IPA donde la resina no es deseada."
+    },
+    {
+      "timestamp_ms": 1193000,
+      "timestamp": "19:53",
+      "category": "tecnica",
+      "title": "Pasos para probar un lúpulo nuevo",
+      "tip": "1) Leer la hoja de especificación del proveedor (buscar 'variedad Hop Profile' en Google para ver la araña de perfiles). 2) Buscar experiencias en foros en inglés. 3) Hacer una APA single hop para evaluarlo en cerveza.",
+      "details": "Brulosophy Hop Chronicles es una excelente referencia: publican APAs single hop con misma malta y régimen, evaluadas por 20-30 jueces con araña de sabores y aromas diferenciando sabor de aroma."
+    },
+    {
+      "timestamp_ms": 1308000,
+      "timestamp": "21:48",
+      "category": "receta",
+      "title": "APA single hop para evaluar lúpulo",
+      "tip": "Receta base para probar cualquier lúpulo: 90% malta Pilsen, 10% Munich, densidad inicial 1.055, levadura US-05. Agregar 3 g/L en whirlpool y 3 g/L en dry hopping, todo del mismo lúpulo.",
+      "details": "Hacer batch de homebrewer (50 L). No será un birrazo con lúpulos experimentales, pero da una muy buena idea del aporte de esa variedad."
+    },
+    {
+      "timestamp_ms": 1653000,
+      "timestamp": "27:33",
+      "category": "tecnica",
+      "title": "Infusión en frío protocolo ASBC",
+      "tip": "Protocolo estandarizado para comparar lúpulos: moler 10 g de pellet (con mortero o molinillo de café), mezclar con 900 ml de agua fría a 25°C, dejar en contacto un tiempo determinado y separar con prensa francesa.",
+      "details": "Permite comparar perfil aromático e intensidad de múltiples variedades en una tarde. Es solo una aproximación (falta la fermentación), pero sirve como filtro preliminar antes de hacer la APA single hop."
+    },
+    {
+      "timestamp_ms": 1857000,
+      "timestamp": "30:57",
+      "category": "tecnica",
+      "title": "La técnica cambia el perfil del lúpulo",
+      "tip": "El perfil que se extrae de un lúpulo depende completamente de la técnica: no es lo mismo whirlpool a 100°C que a 85°C, ni dry hopping en caliente al final de fermentación que en maduración en frío, ni DH a 12°C que a 2°C.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2100000,
+      "timestamp": "35:00",
+      "category": "tecnica",
+      "title": "Whirlpool pierde frutados, retiene resinosos",
+      "tip": "En el lado caliente (whirlpool >80°C + fermentación), los aromáticos más volátiles se pierden. Los compuestos frutados/tropicales son los más volátiles y los que menos se manifiestan. Los resinosos (más pesados, menos volátiles) y cítricos se retienen mejor.",
+      "details": "Ejemplo: el maracuyá del Galaxy se pierde en whirlpool. En dry hopping, al no haber temperatura ni evaporación ni salida de gases, se retienen los compuestos volátiles frutados frescos."
+    },
+    {
+      "timestamp_ms": 2262000,
+      "timestamp": "37:42",
+      "category": "tecnica",
+      "title": "Reservar Citra/Mosaic/Equanot para dry hop",
+      "tip": "No usar Citra, Mosaic ni Equanot en whirlpool porque su mejor atributo (fruta dulce) se pierde con el calor. Reservarlos para dry hopping donde expresan fruta fresca. El picantito que da Equanot en WP se puede lograr con lúpulos más baratos como Chinook.",
+      "details": "Equanot en DH en frío da fruta dulce tipo melón/sandía. En WP da un picantito especiado que también es bueno pero no es su mejor expresión."
+    },
+    {
+      "timestamp_ms": 2339000,
+      "timestamp": "38:59",
+      "category": "lupulo",
+      "title": "Lúpulos recomendados para whirlpool",
+      "tip": "Priorizar aporte cítrico, resinoso y floral en whirlpool. Centennial: cítrico alimonado + floral espectacular (un super Cascade). Bravo: naranja confitada + resina de pino (barato y eficiente). Idaho 7: nuevo, rindiendo muy bien. Columbus: herbal/terroso + cítrico, muy rendidor.",
+      "details": "Columbus: máximo 2 g/L en WP, fácil desbalancear. Varía mucho según proveedor (hay Columbus cebollosos y Columbus cítricos). También Equanot (picantito) y Sabro (coco rallado + herbal) como adiciones sutiles."
+    },
+    {
+      "timestamp_ms": 2534000,
+      "timestamp": "42:14",
+      "category": "lupulo",
+      "title": "Lúpulos recomendados para dry hopping",
+      "tip": "Simcoe: fruta de carozo (damasco, durazno) espectacular al final de fermentación. Centennial: más cítrico alimonado en DH (vs. más floral en WP). Citra: fruta tropical + cítrico de fondo. Equanot: frutas tropicales. Mosaic: mezcla de fruta + cítrico + resina. Sabro también funciona bien.",
+      "details": "Simcoe es uno de los lúpulos favoritos para DH: muy eficiente. Citra, Mosaic y Equanot son lúpulos que 'nunca fallan' en cualquier adición."
+    },
+    {
+      "timestamp_ms": 2647000,
+      "timestamp": "44:07",
+      "category": "lupulo",
+      "title": "Amarillo para biotransformación",
+      "tip": "Amarillo tiene altísimas dosis de geraniol, un precursor de la biotransformación. Agregarlo en dry hopping al inicio de la fermentación para que la levadura convierta el geraniol en nuevos compuestos de flavor.",
+      "details": "Es el lúpulo preferido para la adición de biotransformación (DH al inicio de la fermentación activa)."
+    },
+    {
+      "timestamp_ms": 2681000,
+      "timestamp": "44:41",
+      "category": "lupulo",
+      "title": "Galaxy y Big Secret para DH en frío",
+      "tip": "Galaxy y Big Secret (australianos) son espectaculares en dry hopping en frío (~4°C). Aportan frutas intensas y alta cantidad de tioles con notas sulfuradas agradables, compuestos extremadamente sensibles.",
+      "details": "Son lúpulos de gama alta en precio. Las notas sulfuradas lindas son difíciles de lograr y se preservan mejor en DH a temperaturas muy bajas."
+    },
+    {
+      "timestamp_ms": 2888000,
+      "timestamp": "48:08",
+      "category": "lupulo",
+      "title": "Mismo lúpulo, distinto resultado según origen",
+      "tip": "El perfil de un lúpulo varía según la zona de cosecha, el cultivador, el tipo de peletizado y el tratamiento post-cosecha. No es lo mismo un Simcoe cosechado en Idaho que en Yakima o en Oregon.",
+      "details": "Además influyen el equipamiento del cervecero, las técnicas de lupulado y el resto de las materias primas. Todas las recomendaciones son guías orientativas con un rango amplio de fluctuación."
+    }
+  ]
+}

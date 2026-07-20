@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E05 - Recetas vs procesos</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 60px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a1a; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+.audio-bar audio { flex: 1; min-width: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 1rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stat { font-size: 0.85rem; padding: 0.25rem 0.7rem; border-radius: 20px; background: #e5e7eb; font-weight: 500; }
+.stat-total { background: #1a1a1a; color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.timestamp { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.8rem; background: #1a1a1a; color: #fff; padding: 0.2rem 0.6rem; border-radius: 4px; border: none; cursor: pointer; transition: background 0.15s; }
+.timestamp:hover { background: #2563eb; }
+.timestamp:hover::after { content: " \25B6"; font-size: 0.65rem; }
+.badge { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 4px; color: #fff; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
+.card-tip { font-size: 0.9rem; line-height: 1.5; color: #374151; margin-bottom: 0.5rem; }
+.card-details { font-size: 0.85rem; line-height: 1.4; color: #6b7280; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T2E05 - Recetas vs procesos.wav"></audio>
+</div>
+<div class="container">
+<h1>T2E05 - Recetas vs procesos</h1>
+<div class="stats">
+<span class="stat stat-total">29 tips</span>
+<span class="stat" style="background:#2563eb22;color:#2563eb">proceso: 9</span>
+<span class="stat" style="background:#0369a122;color:#0369a1">agua: 6</span>
+<span class="stat" style="background:#be185d22;color:#be185d">levadura: 4</span>
+<span class="stat" style="background:#0891b222;color:#0891b2">equipo: 6</span>
+<span class="stat" style="background:#7c3aed22;color:#7c3aed">tecnica: 3</span>
+</div>
+<div class="grid">
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="292000">4:52</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Controlar el entorno de las reacciones</div>
+<div class="card-tip">Las reacciones bioquimicas (enzimas, levaduras, reacciones no enzimaticas) dan resultados en funcion del entorno: temperatura correcta, pH correcto, calidad de materias primas. Controlar ese entorno es la clave.</div>
+<div class="card-details">Cualquier proceso mal hecho puede arruinar el producto, y un proceso hecho en super detalle se desluce si el resto fue azaroso.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="415000">6:55</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Procesos importan mas que recetas</div>
+<div class="card-tip">Con buenos procesos y materia prima basica se llega a una cerveza de 8-8.5 puntos sobre 10. Con las mejores materias primas y procesos desprolijos, el resultado no va a ser bueno.</div>
+<div class="card-details">Vinny Cilurzo (Russian River) publica sus recetas y nadie logra replicar Pliny the Elder porque la diferencia esta en los procesos.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="486000">8:06</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">La receta es un proceso mas</div>
+<div class="card-tip">Considerar la seleccion de materias primas como un proceso mas. Primero sacarle el maximo a lo que se tiene antes de buscar ingredientes premium.</div>
+<div class="card-details">No tiene sentido buscar la super materia prima si no se dominan los procesos para extraerle todo su potencial. El mejor lupulo no sirve si se oxido durante el dry hopping o el embarrilado.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="762000">12:42</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Cualquier pHimetro sirve si calibra</div>
+<div class="card-tip">No importa si es barato o caro: si el electrodo se deja calibrar, mide bien. Los baratos se rompen antes pero mientras funcionen y esten calibrados, la medicion es correcta.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="784000">13:04</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">Enfriar muestra antes de medir pH</div>
+<div class="card-tip">El pH se modifica con la temperatura (la actividad de los iones proton cambia). Hay que llevar la muestra a la temperatura de calibracion del pHimetro antes de medir.</div>
+<div class="card-details">No confiar en el compensador de temperatura automatico: compensa un error y ademas puede dañar el electrodo con temperaturas altas.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="826000">13:46</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">El pH que importa es el del empaste</div>
+<div class="card-tip">No interesa el pH del agua sola ni la acidez titulable de la malta por separado. Lo que importa es el pH que se establece cuando se mezclan agua y malta en el empaste.</div>
+<div class="card-details">Ese es el pH para el cual hay que hacer tratamiento de agua y diseño de receta.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="862000">14:22</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">pH correcto en empaste = OK en todo el proceso</div>
+<div class="card-tip">Si el pH del empaste es el correcto (con minimo o ningun agregado de acido), el pH se mantendra bien hasta el final del proceso.</div>
+<div class="card-details">Excepcion: cervezas hiperlupuladas en frio. La hiperlupulacion modifica el pH y puede requerir correcciones posteriores.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="927000">15:27</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">Ajustar agua y malta para minimizar acido</div>
+<div class="card-tip">Trabajar con la alcalinidad del agua (especies de carbonato), la dureza (calcio y magnesio) y la acidez de las maltas para acercar el pH al objetivo. La correccion con acido lactico, citrico o fosforico debe ser la minima indispensable.</div>
+<div class="card-details">Maltas tostadas y caramelo son mas acidas que Pale Ale, que es mas acida que Pilsen. Jugar con esas variables para llegar al pH objetivo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="983000">16:23</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Medir pH en todas las etapas</div>
+<div class="card-tip">Medir pH en el macerado, recirculado, inicio del hervor, final del hervor, durante la fermentacion y en la cerveza terminada. Es una medicion rapida, barata y da informacion invaluable.</div>
+<div class="card-details">Con 10 cm³ de muestra alcanza. No hay excusa para no tener medicion continua de pH a lo largo del proceso.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1065000">17:45</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">pH alto arruina percepcion sensorial</div>
+<div class="card-tip">Una cerveza con pH alto queda alcalina, jabonosa, con amargor aspero y pierde tomabilidad. El pH afecta la parte enzimatica, floculacion, coagulacion de proteinas y percepcion organoleptica.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1110000">18:30</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Registrar curvas de pH y densidad</div>
+<div class="card-tip">Graficar las curvas de pH y densidad durante la fermentacion. Se acompañan mutuamente y permiten detectar patrones, diferencias entre fermentaciones y posibles problemas.</div>
+<div class="card-details">Aunque al principio cueste entender, los datos registrados generan curiosidad y permiten comparar fermentaciones.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1265000">21:05</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Fermentacion: punto N°1 de atencion</div>
+<div class="card-tip">La fermentacion es el proceso mas importante para la calidad de la cerveza y el mas menospreciado. No estandarizar: adaptar inoculo, nutrientes y oxigenacion a cada mosto especifico.</div>
+<div class="card-details">Se ve mucho en fabricas: misma cantidad de levadura para 1080 que para 1045, misma oxigenacion para Lager que para Ale, mismo gramo/hL de nutriente para todo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1331000">22:11</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Adjuntos requieren mas nutrientes</div>
+<div class="card-tip">Una NEIPA de 1065-1070 con 20-30% de adjuntos (avena) es una fermentacion extrema. Los adjuntos no aportan los nutrientes que aporta la malta. Lo mismo con cervezas belgas con candy sugar.</div>
+<div class="card-details">Aplicar criterio: no estandarizar nutrientes. Un mosto 100% malta de 1050 no necesita nutrientes complejos extra.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1372000">22:52</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Mosto 100% malta no requiere nutrientes extra</div>
+<div class="card-tip">Un mosto de 1050 de pura malta no requiere agregado de nutrientes si el inoculo es el correcto. A lo sumo un poco de zinc si la levadura es reutilizada.</div>
+<div class="card-details">Lo que mas importa en este caso es que la levadura este activa, vital y que el inoculo sea el correcto.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1448000">24:08</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Nutrientes suficientes solo con inoculo correcto</div>
+<div class="card-tip">Un mosto 100% malta tiene nutrientes suficientes, pero solo si se inocula la cantidad correcta de levadura. Con la mitad de la biomasa necesaria, ni los nutrientes de la malta alcanzaran.</div>
+<div class="card-details">Una subinoculacion es un hibrido entre propagacion y fermentacion. La propagacion requiere mucha mas carga de nutrientes y oxigeno.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1519000">25:19</button>
+<span class="badge badge-levadura">levadura</span>
+</div>
+<div class="card-title">Mosto de 1050 debe fermentar en 4 dias</div>
+<div class="card-tip">Una cerveza de 1050 con levadura regular debe llegar a densidad final en maximo 4 dias. Si tarda 6-8 dias, hubo alguna deficiencia: nutrientes, temperatura o inoculo.</div>
+<div class="card-details">Las subinoculaciones generan fermentaciones eternas que van en detrimento de la calidad.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1757000">29:17</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Priorizar equipo de fermentacion</div>
+<div class="card-tip">El primer vicio del cervecero casero es priorizar el equipo de coccion por encima de la fermentacion. Con una heladerita de camping se puede sacar un buen mosto, pero sin buenas condiciones de fermentacion no hay buena cerveza.</div>
+<div class="card-details">Invertir primero en control de fermentacion (temperatura, presion) antes que en el equipo de coccion.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1842000">30:42</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Conocer limitaciones de los materiales</div>
+<div class="card-tip">Cada material tiene limitaciones que afectan la calidad. Conocer que quimicos y temperaturas toleran los materiales del equipo es fundamental.</div>
+<div class="card-details">Aluminio: no resiste acidos ni bases (no caustica, no nitrico, no fosforico, no peracetico). Plastico: puede tolerar caustica a baja concentracion y temperatura, pero no a 70°C al 4%.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2041000">34:01</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">No transferir mosto caliente a plastico</div>
+<div class="card-tip">No mandar mosto acido a 40°C a un fermentador rotomoldeado: extrae compuestos fenolicos del plastico. Enfriar hasta 20°C aunque tarde 45 minutos.</div>
+<div class="card-details">Lo mismo con mangueras: no pasar soda caustica a 80°C ni mosto hirviendo por mangueras que no resistan alta temperatura.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2111000">35:11</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Reemplazar mangueras deterioradas</div>
+<div class="card-tip">Las mangueras cristal que pasaron de transparentes a marron oscuro tienen biofilm incrustado. Son inlimpiables e insanitizables y deben reemplazarse.</div>
+<div class="card-details">Tener en cuenta que su vida util es mas corta que mangueras de mejor calidad. Cambiarlas regularmente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2144000">35:44</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Diseñar cerveza segun equipo disponible</div>
+<div class="card-tip">Se puede hacer buena cerveza con cualquier equipo, pero no cualquier buena cerveza. Adaptar receta y procesos a las limitaciones del equipo.</div>
+<div class="card-details">Sin fermentador que mantenga presion, hay que adaptar todos los procesos y materias primas a esa limitacion.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2304000">38:24</button>
+<span class="badge badge-agua">agua</span>
+</div>
+<div class="card-title">Minimo 50 mg/L de calcio en el agua</div>
+<div class="card-tip">Se necesitan al menos 50 ppm de calcio. Es una cantidad infima: cualquier suciedad en el equipo puede aportar mas contaminantes indeseados que eso.</div>
+<div class="card-details">Refuerza la importancia de la limpieza: la mugre puede aportar sustancias desconocidas en cantidades mayores a las sales que cuidadosamente agregamos.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2367000">39:27</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Validar limpieza y sanitizacion</div>
+<div class="card-tip">Validar es corroborar que lo que pensamos que estamos haciendo bien, realmente funciona. Para limpieza: pasar agua limpia por el equipo y verificar que sale incolora, insipida e inodora.</div>
+<div class="card-details">Para validacion microbiologica: pasar algo esteril por la superficie sanitizada y verificar que no crecen microorganismos.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2563000">42:43</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">El oxigeno causa el envejecimiento</div>
+<div class="card-tip">Las cervezas envejecen porque se oxidan. El oxigeno genera precursores de oxidacion y oxida directamente otros compuestos. Todo el cuidado post-fermentacion se reduce a minimizar el contacto con oxigeno.</div>
+<div class="card-details">Frio frena la velocidad de oxidacion. Agitacion la acelera. Luz (ciertas longitudes de onda) produce oxidacion. Botella ambar protege.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2682000">44:42</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Purgar todo antes de contacto con cerveza</div>
+<div class="card-tip">Purgar mangueras, recipientes y cualquier elemento que vaya a tocar la cerveza terminada para eliminar el oxigeno. No escatimar en ideas por mas sencillas que parezcan.</div>
+<div class="card-details">Si la cerveza recorre medio metro de manguera, purgarla. Si va a entrar aire por arriba de un recipiente, buscar que ese aire no tenga oxigeno (CO2).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2701000">45:01</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Oxidacion siempre es negativa</div>
+<div class="card-tip">La oxidacion siempre va en detrimento de la calidad, en cualquier tipo de cerveza, no solo en las lupuladas. No existe 'un poquito de oxidacion que me gusta'.</div>
+<div class="card-details">El envejecimiento controlado bajo atmosfera y temperatura controlada (guarda, barrique) es diferente a oxidacion por incorporacion de oxigeno disuelto.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2808000">46:48</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Minimizar trasvasos de cerveza</div>
+<div class="card-tip">Cada movimiento de cerveza incorpora oxigeno. Ir directo de fermentador/madurador a producto final (lata, botella) es mejor que pasar por barril intermedio.</div>
+<div class="card-details">Evitar movimientos intermedios innecesarios. Hacer un analisis riesgo-beneficio de cada trasvaso.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2893000">48:13</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Estabilidad = vida util de la cerveza</div>
+<div class="card-tip">La estabilidad es cuanto tiempo la cerveza mantiene la calidad con que fue elaborada. Esta directamente relacionada con la cantidad de oxigeno disuelto incorporado durante el proceso.</div>
+<div class="card-details">Cada cerveceria debe definir su vida util segun su proceso y canales de venta.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2935000">48:55</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">La cerveza envejece desde el envasado</div>
+<div class="card-tip">Desde que la cerveza entra en la lata, botella o barril, empieza a envejecer. Se frena con precauciones previas (bajo oxigeno disuelto) y con frio despues, pero siempre tiene vida util finita.</div>
+<div class="card-details">Es mas facil controlar un barril (se rota semanalmente) que una lata entregada a un distribuidor cuyo almacenamiento no controlamos.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

@@ -40,4 +40,4 @@ Drum-roasted for dark color and sharp flavor — **no mashing needed**, treat li
 
 ## Related
 
-[[selecting-malt]] · [[handling-dark-grains]] · [[malt-modification-dp-and-protein]]
+[[selecting-malt]] · [[handling-dark-grains]] · [[malt-modification-dp-and-protein]] · [[malt-production-and-character]]

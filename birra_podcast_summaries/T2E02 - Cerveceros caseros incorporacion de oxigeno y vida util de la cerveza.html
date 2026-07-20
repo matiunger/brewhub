@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E02 - Cerveceros caseros incorporacion de oxigeno y vida util de la cerveza</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a2e; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; width: 100%; height: 36px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a1a2e; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 0.75rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.stat { font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 4px; background: #e8e8e8; color: #333; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: transform 0.15s, box-shadow 0.15s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem; background: #1a1a2e; color: #fff; padding: 0.2rem 0.55rem; border-radius: 4px; border: none; cursor: pointer; transition: background 0.15s; }
+.timestamp:hover { background: #16213e; }
+.timestamp::before { content: "\\25B6 "; font-size: 0.6rem; }
+.badge { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 4px; color: #fff; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; color: #1a1a2e; }
+.card-tip { font-size: 0.88rem; color: #444; line-height: 1.5; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; color: #666; font-style: italic; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T2E02 - Cerveceros caseros incorporacion de oxigeno y vida util de la cerveza.wav"></audio>
+</div>
+<div class="container">
+<h1>T2E02 - Cerveceros caseros incorporacion de oxigeno y vida util de la cerveza</h1>
+<div class="stats">
+<span class="stat"><strong>24 tips</strong></span>
+<span class="stat">proceso: 8</span>
+<span class="stat">tecnica: 11</span>
+<span class="stat">equipo: 3</span>
+<span class="stat">ingrediente: 0</span>
+<span class="stat">receta: 0</span>
+<span class="stat">ratio: 0</span>
+<span class="stat">levadura: 0</span>
+<span class="stat">malta: 0</span>
+<span class="stat">lupulo: 0</span>
+<span class="stat">agua: 0</span>
+</div>
+<div class="grid">
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="252000">4:12</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Priorizar fermentacion sobre equipo de coccion</div>
+<div class="card-tip">Cualquier equipo puede hacer un buen mosto. La calidad real se define en la fermentacion: control de temperatura, oxigenacion del mosto, nutrientes para la levadura.</div>
+<div class="card-details">Invertir primero en equipamiento para controlar la fermentacion (heladera con controlador, fermentador hermetico) antes que en ollas o bombas para el brew house.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="519000">8:39</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Controlar temperatura en el mosto, no ambiente</div>
+<div class="card-tip">La temperatura debe medirse y controlarse directamente en el mosto, no en el ambiente. Las reacciones de fermentacion generan calor, elevando la temperatura del liquido por encima de la ambiental.</div>
+<div class="card-details">No sirve un vasito con agua ni una botellita en la heladera como metodo de control. Se necesita control fino y directo sobre el mosto.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="559000">9:19</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Medir densidad y pH durante fermentacion</div>
+<div class="card-tip">Tomar medidas constantemente: densidades, pH y evaluacion organoleptica del mosto durante la fermentacion. Esto permite detectar desvios y ajustar las condiciones de trabajo de la levadura.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="687000">11:27</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">La cerveza envejece desde que sale del fermentador</div>
+<div class="card-tip">Desde el instante en que la cerveza sale del fermentador, el oxigeno presente comienza a envejecerla. La lucha contra la incorporacion de oxigeno es una lucha perdida; solo se puede minimizar.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="979000">16:19</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">El aire es lava para la cerveza terminada</div>
+<div class="card-tip">Pensar que el aire es lava: la cerveza terminada no debe tocar el aire en ningun momento. El aire tiene 20% de oxigeno y alcanza para arruinar una buena cerveza.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1120000">18:40</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Sin equipo isobarico, lupular en lado caliente</div>
+<div class="card-tip">Si el equipo no permite purgar ni trasvasar bajo presion, conviene dar el caracter lupulado en el lado caliente (hop stand, whirlpool) y no tocar el fermentador ni el madurador despues.</div>
+<div class="card-details">Cervezas con 30 g/L de dry hopping sin control de oxigeno se oxidaban en 2-3 semanas en corny o botella, con olor a carton, grano o manteca (diacetilo).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1402000">23:22</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Purgar recipientes correctamente con CO2</div>
+<div class="card-tip">Purgar bien no es darle un chorro de CO2 por arriba. Los gases se mezclan y un simple venteo no desplaza todo el oxigeno. La purga correcta requiere desplazar completamente el contenido.</div>
+<div class="card-details">Un soplido de CO2 por arriba del recipiente no elimina el aire; los gases ocupan todo el espacio disponible y se forma una mezcla.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1476000">24:36</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Llenar con agua y empujar con CO2</div>
+<div class="card-tip">La tecnica mas efectiva para purgar un recipiente es llenarlo completamente con agua (preferentemente caliente para sanitizar), luego vaciar empujando con CO2. Asi se asegura que todo el volumen quede lleno de CO2 puro.</div>
+<div class="card-details">Ingresar CO2 desde abajo del cornelius y liberar el agua por arriba. Guardar el recipiente cerrado y presurizado hasta usarlo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1536000">25:36</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Cornelius sella mejor con presion interna</div>
+<div class="card-tip">Mantener el cornelius presurizado mejora el sellado porque la tapa se empuja desde abajo hacia arriba por la presion interna.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1568000">26:08</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Purgar manguera antes de conectar al fermentador</div>
+<div class="card-tip">Antes de trasvasar, conectar la manguera al cornelius presurizado, desconectar levemente del fermentador para que el CO2 purgue la manguera, dejar que baje la presion y luego reconectar. Asi la linea queda libre de aire.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1661000">27:41</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">5 ciclos de presion no eliminan el oxigeno</div>
+<div class="card-tip">Despues de 5 ciclos de presurizar a 1.5 bar y despresurizar en una lata de menos de 500 ml, aun queda mas de 1% de oxigeno. Nunca se elimina por completo con solo gas; siempre queda mezcla.</div>
+<div class="card-details">Cada ciclo reduce el porcentaje de O2 pero nunca llega a cero. Por eso la tecnica de llenar con agua y empujar con CO2 es superior.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1725000">28:45</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Oxigeno en PPB destruye cerveza terminada</div>
+<div class="card-tip">El oxigeno en la cerveza terminada se mide en PPB (partes por billon). Solo 50-100 PPB de oxigeno pueden destruir una cerveza. En cambio, el mosto frio necesita 8-10 PPM (8000-10000 PPB) para la reproduccion de la levadura.</div>
+<div class="card-details">PPB = microgramos por litro. La unica etapa donde se quiere oxigeno es en el mosto frio que entra al fermentador.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2105000">35:05</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Dry hopping solo en fermentacion activa</div>
+<div class="card-tip">Si el fermentador no se puede presurizar, hacer dry hopping exclusivamente durante la fermentacion activa. El CO2 que se genera mantiene presion positiva y desplaza el oxigeno que entra al agregar el lupulo.</div>
+<div class="card-details">Nunca hacer dry hopping en la maduracion con fermentacion terminada: el oxigeno incorporado queda atrapado en el headspace y oxida la cerveza continuamente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2309000">38:29</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Dry hopping cuando faltan 5 puntos de densidad</div>
+<div class="card-tip">El momento optimo para dry hopping es cuando faltan 5 puntos de gravedad especifica para la atenuacion final (ej: si la FG es 1.010, agregar lupulo en 1.015). La fermentacion esta bajando de intensidad pero aun genera CO2.</div>
+<div class="card-details">Indicador practico: cuando el blow-off pasa de burbujeo violento a solo unos burbujeos por minuto, es el momento. Antes se pierden muchos volatiles arrastrados por el CO2 excesivo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2519000">41:59</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Trasvasar a cornelius purgado con lupulo</div>
+<div class="card-tip">Trasvasar la cerveza al final de fermentacion a un cornelius que ya tiene el lupulo adentro, purgado con CO2. La cerveza termina de fermentar ahi y el segundo recipiente permite presurizarlo y mantener atmosfera inerte.</div>
+<div class="card-details">Usar un filtro en la pescadora (huevito Kinder, frasco de rollo de foto, o similar) para evitar que los solidos del lupulo tapen la salida.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2697000">44:57</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Tapa adaptada para sparkling con pescadora</div>
+<div class="card-tip">Para un sparkling de agua: fabricar un tapon con una pescadora (tubo que llega al fondo) y una entrada de CO2 por arriba. Con solo 100-200 gramos de presion (0.1-0.2 bar) ya empieza a salir liquido por la pescadora para trasvasar.</div>
+<div class="card-details">Un sparkling no soporta 1 bar, pero con 0.2 bar ya funciona para empujar la cerveza.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2834000">47:14</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Purgar mangueras proporcionalmente al volumen</div>
+<div class="card-tip">Purgar todas las mangueras y conexiones con CO2 antes de trasvasar. Proporcionalmente, 2 metros de manguera de media pulgada para 20 litros de cerveza casera representan mas oxigeno que 4 metros de manguera de una pulgada para 5000 litros de un craft.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2865000">47:45</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Llenador contrapresion superior al beer gun</div>
+<div class="card-tip">El llenador contra presion presuriza y elimina el aire de la botella repetidamente, siendo mucho mas eficiente que el beer gun. El beer gun mete CO2 pero nunca elimina completamente la mezcla de gases.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2919000">48:39</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Embotellar lento y sin turbulencia</div>
+<div class="card-tip">Si no se tiene llenador contra presion, llenar desde abajo hacia arriba muy despacio. La espuma de la cerveza que sube va desplazando el aire. No generar turbulencia: llenar rapido incorpora aire masivamente.</div>
+<div class="card-details">Aplica tambien al enlatado: dejar que la espuma empuje el aire hacia arriba y colocar la tapa inmediatamente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2947000">49:07</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">La espuma al embotellar es mala senal</div>
+<div class="card-tip">Si se forma espuma durante el embotellado, indica que el liquido esta salpicando y en contacto con oxigeno. Ademas, esa espuma son proteinas que se pierden y no estaran disponibles para la retencion de espuma al servir.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3010000">50:10</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Acido peracetico es ultra oxidante</div>
+<div class="card-tip">El acido peracetico se descompone en oxigeno liquido, agua y acido acetico. Es un oxidante extremadamente agresivo. Si quedan trazas en el recipiente, genera una oxidacion tremenda en la cerveza.</div>
+<div class="card-details">Su accion sanitizante se basa en la formacion de radicales libres del oxigeno, que atacan todo lo que encuentran (bacterias, proteinas).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3094000">51:34</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Escurrir peracetico 2-3 horas o enjuagar</div>
+<div class="card-tip">Despues de sanitizar con peracetico, dejar escurrir el recipiente al menos 2-3 horas para que caiga toda la pelicula del sanitizante. Alternativa: enjuagar con agua caliente para diluir las trazas restantes.</div>
+<div class="card-details">El agua caliente no incorpora oxigeno disuelto (a diferencia del agua fria), no incorpora bacterias, y diluye el sanitizante residual. Aplicar tambien a mangueras, conexiones y valvulas.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3173000">52:53</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Agua caliente (80C+) como sanitizante sin oxigeno</div>
+<div class="card-tip">El agua por encima de 80°C es un excelente sanitizante y no incorpora oxigeno ni bacterias. Ideal para equipos de cobre o aluminio que no toleran acidos ni bases (enfriadores contracorriente, placas).</div>
+<div class="card-details">El agua caliente sanitiza pero NO limpia. La limpieza requiere quimicos (alcalinos o acidos). Los enfriadores de placas chicos soldados se pueden incluso hervir.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3480000">58:00</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Cerveza terminada siempre en frio</div>
+<div class="card-tip">Mantener la cerveza terminada (embotellada, enlatada o embarrilada) en frio siempre. Las reacciones de oxidacion se aceleran con la temperatura; el frio retrasa significativamente el envejecimiento.</div>
+<div class="card-details">Hay cervezas que pueden guardarse 6 meses en heladera y determinadas cervezas que se toman mejor frescas. Conocer el estilo y planificar el consumo acorde.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

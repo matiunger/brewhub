@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1E02 - Parametros del agua y lupulado en Whirlpool</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f3f4f6; color: #1f2937; line-height: 1.6; padding-bottom: 2rem; }
+  .audio-bar { position: sticky; top: 0; z-index: 100; background: #111827; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .audio-bar audio { flex: 1; min-width: 0; max-width: 600px; }
+  .back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+  .back-btn:hover { background: rgba(255,255,255,0.25); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
+  h1 { font-size: 1.5rem; margin: 1.5rem 0 1rem; color: #111827; }
+  .stats { background: #fff; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .stats .total { font-weight: 700; font-size: 1.1rem; margin-right: 0.5rem; }
+  .stat-pill { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; color: #fff; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+  .card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+  .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-2px); }
+  .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+  .timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; background: #1f2937; color: #f9fafb; padding: 0.25rem 0.6rem; border-radius: 6px; cursor: pointer; border: none; transition: background 0.15s; }
+  .timestamp:hover { background: #3b82f6; }
+  .timestamp:hover::before { content: "\25B6 "; }
+  .badge { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 9999px; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+  .card-title { font-weight: 700; font-size: 0.95rem; color: #111827; margin-bottom: 0.5rem; }
+  .card-tip { font-size: 0.9rem; color: #374151; margin-bottom: 0.5rem; }
+  .card-details { font-size: 0.85rem; color: #6b7280; font-style: italic; border-top: 1px solid #e5e7eb; padding-top: 0.5rem; margin-top: 0.25rem; }
+  .cat-proceso { background: #2563eb; } .cat-ingrediente { background: #16a34a; }
+  .cat-receta { background: #dc2626; } .cat-ratio { background: #d97706; }
+  .cat-tecnica { background: #7c3aed; } .cat-equipo { background: #0891b2; }
+  .cat-levadura { background: #be185d; } .cat-malta { background: #92400e; }
+  .cat-lupulo { background: #15803d; } .cat-agua { background: #0369a1; }
+</style>
+</head>
+<body>
+
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">← Índice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T1E02 - Parametros del agua y lupulado en Whirlpool.wav"></audio>
+</div>
+
+<div class="container">
+  <h1>T1E02 - Parametros del agua y lupulado en Whirlpool</h1>
+
+  <div class="stats">
+    <span class="total">27 tips</span>
+    <span class="stat-pill cat-agua">agua 9</span>
+    <span class="stat-pill cat-tecnica">tecnica 10</span>
+    <span class="stat-pill cat-lupulo">lupulo 5</span>
+    <span class="stat-pill cat-ratio">ratio 1</span>
+    <span class="stat-pill cat-proceso">proceso 1</span>
+    <span class="stat-pill cat-equipo">equipo 1</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="182000">3:02</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Analisis de agua como punto de partida</div>
+      <div class="card-tip">Tener un buen analisis de agua de proceso es el punto de partida para cualquier modificacion. Si queres sacarle o agregarle algo, tenes que saber desde que condiciones partis.</div>
+      <div class="card-details">El agua es el elemento mas abundante de la cerveza y no se puede importar. Emular perfiles de agua de otras regiones no es tan sencillo como parece.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="260000">4:20</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Relacion sulfato/cloruro define percepcion</div>
+      <div class="card-tip">La relacion entre sulfato y cloruro en el agua define la percepcion del amargor o la maltosidad en la cerveza terminada.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="271000">4:31</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Alcalinidad determina pH de maceracion</div>
+      <div class="card-tip">La alcalinidad es fundamental para determinar el pH de maceracion, y con el probablemente el pH de todo el proceso hasta el producto terminado. Tambien tiene alguna importancia en percepcion de sabor mas sutil.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="288000">4:48</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Calcio: clave en fermentacion y enzimas</div>
+      <div class="card-tip">El calcio es muy importante para la fermentacion, actividad enzimatica y floculacion de la levadura. El magnesio es nutriente de la levadura pero se necesita en pocas cantidades y la malta trae mucho.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="335000">5:35</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Alcalinidad maxima recomendada: 250 ppm</div>
+      <div class="card-tip">Con una alcalinidad de 250 ppm o mas, no se puede corregir solamente con acido en el macerador o maltas oscuras. Hay que hacer un pretratamiento del agua antes de usarla.</div>
+      <div class="card-details">Valores de 280-300 son exageradamente altos. Una Imperial Stout puede tolerar mas alcalinidad porque las maltas tostadas acidifican, pero para una pilsen alemana con 250 no se puede trabajar sin tratar.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="394000">6:34</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Calcio minimo 50 ppm, ideal 75 ppm</div>
+      <div class="card-tip">El agua de proceso necesita por lo menos 50 ppm de calcio. Preferiblemente 75 ppm para asegurar buena cantidad de calcio disponible durante la fermentacion.</div>
+      <div class="card-details">Una American Light Lager puede caminar con 40 ppm, pero como regla general menos de 50 no es recomendable. El calcio excesivo (>200 ppm) seria problematico pero es rarismo en aguas potables.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="442000">7:22</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">No agregar magnesio al agua</div>
+      <div class="card-tip">No se recomienda agregar magnesio al agua de proceso. La malta trae cantidades grandes de magnesio, con lo cual no deberia ser una preocupacion por lo bajo. El magnesio en exceso da un sabor amargo, metalico y horrible.</div>
+      <div class="card-details">Puede ser problematico a nivel salud si se cruza con sulfatos muy altos. Aguas con mucho magnesio generalmente tambien tienen mucha alcalinidad o mucho sodio, asi que al diluir el magnesio queda en valor normal.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="554000">9:14</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Sodio: resaltador de sabor, hasta 100 ppm</div>
+      <div class="card-tip">El sodio funciona como resaltador de sabor, igual que la sal en la comida. Muy poco queda insulso, demasiado resalta lo peor (amargor harsh, tostados). Valor general recomendado: hasta 100 ppm.</div>
+      <div class="card-details">Para cervezas maltosas se tolera mas sodio. Para cervezas negras o muy lupuladas, bajar el sodio. 150 ppm de sodio arruina el caracter lupulado. Hernan prefiere trabajar entre 50-60 ppm.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="929000">15:29</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Dilucion con agua de osmosis inversa</div>
+      <div class="card-tip">Para sacarle minerales al agua, la forma practica es diluir con agua destilada o de osmosis inversa. Identificar el parametro mas molesto, diluir para corregirlo, y luego re-agregar con sales lo que haya quedado bajo.</div>
+      <div class="card-details">Ejemplo: si tengo calcio 50 ppm y alcalinidad 300 ppm, diluyo al medio para bajar alcalinidad a 150, pero el calcio queda en 25 ppm y hay que re-agregarlo con sales.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="985000">16:25</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Sales comunes para ajuste de agua</div>
+      <div class="card-tip">Las sales mas usadas son sulfato de calcio (CaSO4) y cloruro de calcio (CaCl2) para agregar calcio, sulfatos y cloruros. Para agregar alcalinidad se usa bicarbonato de sodio (NaHCO3), pero ojo que agrega sodio.</div>
+      <div class="card-details">Tambien se pueden usar sulfatos y cloruros de magnesio cuando se necesita agregar sulfatos/cloruros sin mas calcio. El carbonato de calcio (CaCO3) es muy poco soluble: necesita hervir minimo 30 minutos y no todo se disuelve.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1066000">17:46</button>
+        <span class="badge cat-agua">agua</span>
+      </div>
+      <div class="card-title">Resumen: sales y pH de maceracion</div>
+      <div class="card-tip">El calcio y el magnesio bajan el pH de maceracion, y se agregan como cloruros y sulfatos. El bicarbonato sube el pH (agrega alcalinidad) y se agrega como bicarbonato de sodio. El carbonato de calcio sube un par de puntos el pH pero necesita hervir 30 minutos minimo.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1257000">20:57</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Toda la adicion de lupulo en Whirlpool</div>
+      <div class="card-tip">La tendencia actual es mover todas las adiciones de lupulo del lado caliente al Whirlpool (post-hervor). En vez de agregar a los 30, 20, 15, 10, 5 minutos del hervor, se hace una unica adicion fuerte al apagar el fuego.</div>
+      <div class="card-details">Esto aplica especialmente a IPAs, NEIPAs y cervezas lupuladas. Se busca maximizar sabor y aroma en lugar de amargor.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1347000">22:27</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Amargor excesivo mata sabor a lupulo</div>
+      <div class="card-tip">El amargor va totalmente en contra del sabor de los lupulos. Con lupulados cada vez mas intensos (Whirlpool + Dry Hop), el amargor asociado ya es suficiente. Agregar IBUs al inicio del hervor genera desbalance.</div>
+      <div class="card-details">Lo mas dificil de lograr en una cerveza lupulada es el sabor a lupulo en boca (flavor). El exceso de amargor lo arruina.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1476000">24:36</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Dosis de lupulo en Whirlpool</div>
+      <div class="card-tip">Como unica adicion en el lado caliente, usar no menos de 2-3 g/L en Whirlpool. Para cervezas mas agresivas como Imperial IPA se puede llegar a 10-13 g/L.</div>
+      <div class="card-details">Ejemplo real: Imperial IPA con 13 g/L en Whirlpool + 1 hora de hopstand, sin ningun agregado de amargor en hervor. Resulto con mucho sabor, mucho flavor, excelente retrogusto, y suficiente amargor solo del Whirlpool.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1628000">27:08</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Whirlpool a 80-85°C, no a temperatura de hervor</div>
+      <div class="card-tip">Bajar la temperatura del mosto a 80-85°C antes de agregar el lupulo de Whirlpool. No lupular a 90+ grados recien apagado el fuego.</div>
+      <div class="card-details">Hernan lo hace hace mas de 5-6 anos por experiencia practica y hoy tiene respaldo quimico y teorico. Se puede bajar la temperatura por dilucion con agua fria.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1683000">28:03</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Dilucion post-hervor para bajar temperatura</div>
+      <div class="card-tip">Hervir un volumen de mosto menor al deseado (mas concentrado). Al apagar el fuego, diluir con agua fria de proceso declorada para alcanzar la densidad objetivo y bajar la temperatura para el Whirlpool.</div>
+      <div class="card-details">Hervir vigoroso sin preocuparse por volumen, priorizando coagulacion de proteinas y evaporacion de compuestos indeseables. La receta se calcula para el volumen final, no el de hervor.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1747000">29:07</button>
+        <span class="badge cat-ratio">ratio</span>
+      </div>
+      <div class="card-title">Regla del 20%: agua fria y temperatura</div>
+      <div class="card-tip">Si al volumen de mosto final del hervor le agregas un X% de agua fria, la temperatura baja aproximadamente X grados centigrados. Agregar un 20% de agua baja unos 20°C la temperatura.</div>
+      <div class="card-details">Es una aproximacion practica. La temperatura del agua de red varia segun la region y la estacion. No conviene diluir mas del 20% porque se pierde extraccion de azucares en el lavado al usar menos agua de sparge.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1765000">29:25</button>
+        <span class="badge cat-proceso">proceso</span>
+      </div>
+      <div class="card-title">Ejemplo practico: batch de 1000 litros</div>
+      <div class="card-tip">Para un batch de 1000L: calcular receta para 1000L (molienda, sales, todo). Mandar a hervir 900L. Hervir vigoroso minimo 75 minutos hasta quedar en ~850L. Al apagar, agregar 150L de agua fria declorada de proceso.</div>
+      <div class="card-details">El resultado es un mosto a ~80-85°C listo para el Whirlpool. El mismo principio se aplica a cualquier escala.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1828000">30:28</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Por que 80-85°C en Whirlpool</div>
+      <div class="card-tip">A mas de 85°C hay mucha evaporacion y los compuestos aromaticos mas volatiles del lupulo se pierden. A menos de 80°C hay riesgo de formacion de precursores de DMS y baja la solubilidad de ciertos aceites esenciales que cerca de 80°C estan en el punto justo.</div>
+      <div class="card-details">A 45°C ya preocupa la contaminacion microbiologica. A 60°C no hay isomerizacion de alfa-acidos pero tampoco a 80°C es muy alta. Hay papers y estudios que respaldan el rango 80-85°C.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1963000">32:43</button>
+        <span class="badge cat-equipo">equipo</span>
+      </div>
+      <div class="card-title">No enviar solidos de lupulo al placas</div>
+      <div class="card-tip">Nunca mandar solidos de lupulo a traves del intercambiador de placas. Se tapa de forma irreversible, no hay limpieza que lo solucione. Solo recircular por el placas si no hubo ninguna incorporacion de lupulo durante el boil ni en Whirlpool.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1989000">33:09</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Protocolo Whirlpool: 10 min bomba + 40 min reposo</div>
+      <div class="card-tip">Hacer 10 minutos con bomba recirculando para que el lupulo se integre y este en total contacto con el mosto (maxima transferencia). Luego 40 minutos de reposo para que los solidos decanten y sigan transfiriendo sabores y aromas desde el fondo.</div>
+      <div class="card-details">El lupulo sigue transfiriendo sabores y aromas desde el fondo del trub, no solo cuando esta en suspension. Enfriar demasiado rapido despues de lupular reduce la eficiencia de extraccion aromatica. El tiempo de enfriado no se cuenta como contacto.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2135000">35:35</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Ajustar tiempos segun dosis de lupulo</div>
+      <div class="card-tip">Para lupulado suave (&lt;3 g/L): reducir el reposo a 30 minutos. Para lupulado intenso (10-12 g/L como en una Imperial IPA): hacer 15 minutos de bomba + 70 minutos de reposo, casi hora y media de contacto total.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2206000">36:46</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Lupulos frutados: menos eficientes en Whirlpool</div>
+      <div class="card-tip">Los perfiles aromaticos frutales son los compuestos mas volatiles y son los primeros que se pierden en el Whirlpool. Se pueden usar (Galaxy, Citra dan resultados espectaculares) pero no se aprovechan al maximo.</div>
+      <div class="card-details">Galaxy aporta maracuya espectacular en Whirlpool, Citra da fruta tropical. Son buenisimos pero la adicion es ineficiente: gran parte se pierde por evaporacion.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2271000">37:51</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Bravo: mejor relacion para Whirlpool</div>
+      <div class="card-tip">El Bravo cumple la 'regla de la triple B': bueno, bonito y barato. Tiene muchos aceites esenciales que se solubilizan bien a 80°C, es muy eficiente (con poco sacas mucho), y tiene nota citrica anaranjada con resina de pino.</div>
+      <div class="card-details">Precio: ~$30-32 USD/kg, similar o mas barato que algunos lupulos nacionales. Es el unico lupulo que cumple las tres condiciones para Whirlpool.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2357000">39:17</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Amarillo en Whirlpool: sabor complejo</div>
+      <div class="card-tip">El Amarillo es poco eficiente en Whirlpool (sutilon, muchos compuestos volatiles que se pierden) pero lo que llega a la pinta tiene una fruta amarilla de carozo con perfil medio floral que da mucha complejidad. Es mas una adicion de sabor que de aroma.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2429000">40:29</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Distintos lupulos para Whirlpool y Dry Hop</div>
+      <div class="card-tip">Usar variedades especificas para cada tipo de adicion en vez de poner el mismo lupulo en todas las adiciones. Buscar lo que cada variedad puede dar mejor en cada momento del proceso.</div>
+      <div class="card-details">El mismo lupulo usado en Whirlpool da un perfil de sabor y aroma distinto al que da en Dry Hopping. Aprovechar esa diferencia para construir complejidad.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2450000">40:50</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Balance Whirlpool vs Dry Hop segun estilo</div>
+      <div class="card-tip">American Amber Ale: Whirlpool fuerte, sin Dry Hop. Session APA: Whirlpool restringido, mucho Dry Hop. Ajustar la proporcion segun el caracter que se busca en cada estilo.</div>
+      <div class="card-details">Whirlpool y Dry Hop se complementan. No hay que casarse con uno solo; variar cantidades y combinaciones segun la cerveza.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2498000">41:38</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Doble Whirlpool con dos variedades</div>
+      <div class="card-tip">Se puede hacer un Whirlpool corto al apagar el fuego con una variedad, y a los 10-15 minutos hacer un segundo Whirlpool a 80°C con otra variedad y dejarlo otro tiempo de reposo. Esto permite extraer perfiles distintos de cada lupulo.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

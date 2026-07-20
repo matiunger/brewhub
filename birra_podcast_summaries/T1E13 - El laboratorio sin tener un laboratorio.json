@@ -1,0 +1,165 @@
+{
+  "episode": "T1E13 - El laboratorio sin tener un laboratorio",
+  "tips": [
+    {
+      "timestamp_ms": 256000,
+      "timestamp": "4:16",
+      "category": "proceso",
+      "title": "Tres etapas de cualquier analisis",
+      "tip": "Todo analisis tiene tres etapas: preanalítica (toma de muestra representativa), analítica (la determinación en sí) y postanalítica (interpretación y decisiones). Antes de analizar, definir qué valores espero y qué hago si se desvían.",
+      "details": "Error en etapa preanalítica (contaminar la muestra al tomarla) puede llevar a tirar un lote perfecto. Siempre saber de antemano qué hacer con cada resultado posible."
+    },
+    {
+      "timestamp_ms": 486000,
+      "timestamp": "8:06",
+      "category": "tecnica",
+      "title": "Analisis sensorial como laboratorio",
+      "tip": "Los sentidos son un laboratorio super sensible siempre disponible. Hay que calibrarlos mediante entrenamiento: ir reconociendo aromas y sabores en cada etapa del proceso de elaboración.",
+      "details": "Como cualquier equipo de medición, requiere calibración constante. Probar mosto, cerveza en distintas etapas, materias primas."
+    },
+    {
+      "timestamp_ms": 867000,
+      "timestamp": "14:27",
+      "category": "equipo",
+      "title": "Espacio para microbiologia requiere aislamiento",
+      "tip": "Si vas a sembrar muestras en medios de cultivo, necesitás un espacio cerrado donde no circule aire. De lo contrario, los microorganismos del ambiente contaminan las muestras y dan falsos positivos.",
+      "details": "Para tests más simples (diacetilo forzado, envejecimiento forzado) no se necesita un espacio exclusivo dedicado."
+    },
+    {
+      "timestamp_ms": 1059000,
+      "timestamp": "17:39",
+      "category": "tecnica",
+      "title": "Test de diacetilo forzado",
+      "tip": "Sacar dos muestras del fermentador al final de la fermentación. Una queda a temperatura ambiente, la otra va a baño María a 65-70°C durante 15-20 minutos. Luego llevar ambas a temperatura ambiente y oler buscando diacetilo (aroma a manteca).",
+      "details": "Si no hay diacetilo en ninguna: fermentación completa, cerveza lista. Si hay diacetilo solo en la muestra calentada: el precursor aún no fue reducido, la cerveza necesita más tiempo en fermentador. Usar botellitas de vidrio de boca ancha o Erlenmeyer pequeño. Pava eléctrica a 70°C funciona perfecto como baño."
+    },
+    {
+      "timestamp_ms": 1383000,
+      "timestamp": "23:03",
+      "category": "proceso",
+      "title": "La fermentacion no termina en la atenuacion",
+      "tip": "La fermentación no termina cuando la levadura consumió todo el azúcar. Necesita tiempo adicional para eliminar el diacetilo: la levadura debe reabsorber el diacetilo formado y reducirlo.",
+      "details": "Usar el test de diacetilo forzado para determinar el tiempo exacto de fermentador para cada estilo. Hacerlo 2-3 veces con receta nueva para cubrir variaciones, luego ya queda definido el protocolo."
+    },
+    {
+      "timestamp_ms": 1476000,
+      "timestamp": "24:36",
+      "category": "tecnica",
+      "title": "Test de mosto forzado para contaminacion",
+      "tip": "Tomar muestras de mosto antes de inocular levadura en recipientes estériles. Un blanco del hervidor a 100°C y muestras en varios puntos: salida del enfriador, entrada al fermentador pre y post oxigenación. Guardar a 30-35°C y observar diariamente.",
+      "details": "Actividad a los 2 días: contaminación importante, descartar. Entre 3-5 días: carga microbiana baja, evaluar si la levadura la puede competir. Sin actividad a la semana: cerveza perfecta, sin contaminación. Usar frascos estériles de farmacia (orina)."
+    },
+    {
+      "timestamp_ms": 1577000,
+      "timestamp": "26:17",
+      "category": "equipo",
+      "title": "Estufa casera para incubar muestras",
+      "tip": "Para mantener muestras a 30-35°C: usar un freezer o heladera modificada con un foco incandescente (no LED) y un termostato adentro. El foco calienta el interior y el termostato lo regula.",
+      "details": "Alternativas: incubadora de pollitos (caja con controlador de temperatura, se consigue en Mercado Libre), o dejar las muestras en la parte de arriba de la heladera contra el fondo (calor del motor)."
+    },
+    {
+      "timestamp_ms": 1758000,
+      "timestamp": "29:18",
+      "category": "tecnica",
+      "title": "Toma de muestra aseptica",
+      "tip": "Usar siempre recipientes estériles (frascos de farmacia para orina). Trabajar cerca de una llama (mechero con algodón y alcohol). Flamear la boca del tomamuestra, destapar sin apoyar la tapa en ninguna superficie, dejar correr un poco, juntar y tapar enseguida.",
+      "details": "Si el tomamuestra está contaminado dará falsos positivos. Verificar que los tomamuestras estén limpios y sanitizados; los baratos son difíciles de desarmar. Si no se puede garantizar asepsia del tomamuestra, mejor ir directamente por evaluación organoléptica."
+    },
+    {
+      "timestamp_ms": 1980000,
+      "timestamp": "33:00",
+      "category": "proceso",
+      "title": "Monitoreo de densidad y pH en fermentacion",
+      "tip": "Medir densidad y pH del fermentador: al principio mínimo dos veces por día, luego una vez por día. Trazar la curva de fermentación para cada cocción (fase lag, caída exponencial, estabilización).",
+      "details": "Permite detectar rápidamente problemas: fase lag extendida, densidad final alta, comportamiento anómalo. Fundamental para reutilización de levadura. Las primeras mediciones establecen la línea base; las desviaciones posteriores alertan problemas."
+    },
+    {
+      "timestamp_ms": 2189000,
+      "timestamp": "36:29",
+      "category": "tecnica",
+      "title": "Test de atenuacion forzada",
+      "tip": "Tomar una muestra del mosto que va al fermentador, sobreinocularla con la misma levadura, fermentar a temperatura alta y agitar frecuentemente. Medir densidad a las 24h, 48h, 72h hasta estabilizar.",
+      "details": "En condiciones ideales (agitación constante, temp alta, sobreinóculo), debería alcanzar 50% de atenuación en 24h. Predice la densidad final real. Útil al cambiar de malta, levadura, o con receta nueva para confirmar que la FG esperada es alcanzable."
+    },
+    {
+      "timestamp_ms": 2379000,
+      "timestamp": "39:39",
+      "category": "tecnica",
+      "title": "Test de envejecimiento forzado",
+      "tip": "Guardar cerveza envasada a alta temperatura (38-40°C) durante 4-7 días. Comparar sensorialmente contra la misma cerveza que estuvo siempre en frío. Evaluar oxidación, off-flavors, diacetilo, acidez.",
+      "details": "Regla: la velocidad de oxidación se duplica cada 5°C. A 40°C, 4 días equivalen a 3-5 meses de guarda (paper). A 38°C, 5 días ≈ 3-4 meses. A 32°C, 1 semana ≈ 1 mes. Sirve para definir vida útil, calibrar proceso de envasado, y evaluar si eliminar el pasteurizado."
+    },
+    {
+      "timestamp_ms": 2496000,
+      "timestamp": "41:36",
+      "category": "equipo",
+      "title": "Incubadora de pollitos como estufa",
+      "tip": "Una incubadora de huevos (caja de fibrofácil con controlador de temperatura y foquito) es económica y perfecta para mantener muestras a 30-40°C. Se consigue en Mercado Libre o se puede construir.",
+      "details": "Alternativa: detrás del HLT (menos preciso, riesgo de pasarse de temperatura). Otra: estufa de cultivo si se tiene acceso. Lo importante es mantener temperatura estable sin superar 40°C para no pasteurizar."
+    },
+    {
+      "timestamp_ms": 2575000,
+      "timestamp": "42:55",
+      "category": "proceso",
+      "title": "Velocidad de oxidacion y temperatura",
+      "tip": "La velocidad de oxidación de la cerveza se duplica cada 5°C de aumento en la temperatura de almacenamiento. Esto permite estimar vida útil según condiciones de guarda.",
+      "details": "Una cerveza con 5 meses de vida útil en cámara de frío (4°C) durará mucho menos en una góndola a 35°C. Ajustar fecha de vencimiento según las condiciones reales de distribución, no las ideales."
+    },
+    {
+      "timestamp_ms": 2905000,
+      "timestamp": "48:25",
+      "category": "tecnica",
+      "title": "Calibrar protocolo de enlatado con test forzado",
+      "tip": "Llenar 10 ciclos con un protocolo fijo (ej: 6s purga, 22s llenado, alivio rápido), separar 2 latas rotuladas. Cambiar una variable, volver a régimen, separar 2 latas más. Someter todas a envejecimiento forzado y catar comparativamente.",
+      "details": "Permite encontrar el protocolo con menor pickup de oxígeno sin necesitar medidor de O2 disuelto. Funciona igual para embotelladora a contrapresión manual. Probar variando: tiempo de purga, velocidad de llenado, tiempo de alivio."
+    },
+    {
+      "timestamp_ms": 3113000,
+      "timestamp": "51:53",
+      "category": "agua",
+      "title": "Conductimetro o TDS para control de agua",
+      "tip": "Un medidor de TDS (sólidos disueltos totales) permite verificar que el agua no tenga variaciones y que las sales agregadas se disuelvan correctamente. Medir antes y después del tratamiento; el valor post-tratamiento debería ser siempre similar.",
+      "details": "No discrimina qué sales hay, pero detecta variaciones. Si el valor es distinto al habitual: las sales están hidratadas, se pesaron mal, o no se disolvieron. Equipo económico y de uso diario en la cervecería."
+    },
+    {
+      "timestamp_ms": 3174000,
+      "timestamp": "52:54",
+      "category": "proceso",
+      "title": "Validar limpieza con test de mosto forzado",
+      "tip": "Usar el test de mosto forzado para validar que el sistema de limpieza y sanitización (CIP) es efectivo. Es preferible tener un CIP bien validado que depender de análisis microbiológico de la cerveza terminada.",
+      "details": "Cuando llega el resultado del análisis micro, puede ser tarde: el fermentador ya se vació y se llenó de nuevo, o el lote ya salió a la calle."
+    },
+    {
+      "timestamp_ms": 3275000,
+      "timestamp": "54:35",
+      "category": "tecnica",
+      "title": "Analisis sensorial de materias primas",
+      "tip": "Probar y oler todas las materias primas: masticar los granos, hacer tecito de lúpulo (fundamental para conocer el carácter aromático), hervir y enfriar barro de levadura para reconocer el sabor de autólisis, y probar el mosto sin fermentar.",
+      "details": "Anotar todo. El tecito de lúpulo es la prueba más importante para evaluar lúpulo. Conocer el sabor de la levadura muerta ayuda a detectar autólisis en cerveza terminada."
+    },
+    {
+      "timestamp_ms": 3377000,
+      "timestamp": "56:17",
+      "category": "tecnica",
+      "title": "Test de estabilidad de turbidez en Hazy IPA",
+      "tip": "Dejar lata o botella en frío sin mover. Al servir: volcar suavemente 3/4 en un vaso, luego batir la lata y servir el 1/4 restante en otro vaso. Si la turbidez es estable (soluble), ambos vasos lucen similar. Si sedimenta, el primero sale más limpio.",
+      "details": "En barril: dejar quieto 2 meses en cámara y pinchar un growler por semana para ver si la turbidez va cayendo. Indica si la turbidez es por proteínas/polisacáridos en suspensión estable o por sólidos que sedimentan con el tiempo."
+    },
+    {
+      "timestamp_ms": 3555000,
+      "timestamp": "59:15",
+      "category": "tecnica",
+      "title": "Experimentar rompiendo reglas en lotes chicos",
+      "tip": "Hacer cocciones pequeñas (20L) exagerando lo que normalmente se evita para aprender qué realmente importa. Ejemplo: burbujear oxígeno puro en el macerado para ver el efecto real de la oxidación en mash.",
+      "details": "Es tremendamente educativo. Enseña sobre qué hay que tener cuidado y sobre qué no. Permite tomar mejores decisiones basadas en evidencia propia, no solo en lo que se lee."
+    },
+    {
+      "timestamp_ms": 3597000,
+      "timestamp": "59:57",
+      "category": "proceso",
+      "title": "Mejorar oxigeno sin medidor de PPB",
+      "tip": "Se puede lograr muy buenos niveles de oxígeno disuelto en producto terminado sin un medidor de O2 (PPB), usando únicamente herramientas sensoriales (test de envejecimiento forzado comparativo) y mejorando iterativamente los protocolos de envasado.",
+      "details": "Es más lento que medir directamente, requiere más criterio y sentido común, pero se llega a resultados excelentes sin invertir en un equipo costoso."
+    }
+  ]
+}

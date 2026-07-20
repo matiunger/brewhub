@@ -1,0 +1,237 @@
+{
+  "episode": "T2E05 - Recetas vs procesos",
+  "tips": [
+    {
+      "timestamp_ms": 292000,
+      "timestamp": "4:52",
+      "category": "proceso",
+      "title": "Controlar el entorno de las reacciones",
+      "tip": "Las reacciones bioquímicas (enzimas, levaduras, reacciones no enzimáticas) dan resultados en función del entorno: temperatura correcta, pH correcto, calidad de materias primas. Controlar ese entorno es la clave.",
+      "details": "Cualquier proceso mal hecho puede arruinar el producto, y un proceso hecho en super detalle se desluce si el resto fue azaroso."
+    },
+    {
+      "timestamp_ms": 415000,
+      "timestamp": "6:55",
+      "category": "proceso",
+      "title": "Procesos importan más que recetas",
+      "tip": "Con buenos procesos y materia prima básica se llega a una cerveza de 8-8.5 puntos sobre 10. Con las mejores materias primas y procesos desprolijos, el resultado no va a ser bueno.",
+      "details": "Vinny Cilurzo (Russian River) publica sus recetas y nadie logra replicar Pliny the Elder porque la diferencia está en los procesos."
+    },
+    {
+      "timestamp_ms": 486000,
+      "timestamp": "8:06",
+      "category": "proceso",
+      "title": "La receta es un proceso más",
+      "tip": "Considerar la selección de materias primas como un proceso más. Primero sacarle el máximo a lo que se tiene antes de buscar ingredientes premium.",
+      "details": "No tiene sentido buscar la super materia prima si no se dominan los procesos para extraerle todo su potencial. El mejor lúpulo no sirve si se oxidó durante el dry hopping o el embarrilado."
+    },
+    {
+      "timestamp_ms": 762000,
+      "timestamp": "12:42",
+      "category": "equipo",
+      "title": "Cualquier pHímetro sirve si calibra",
+      "tip": "No importa si es barato o caro: si el electrodo se deja calibrar, mide bien. Los baratos se rompen antes pero mientras funcionen y estén calibrados, la medición es correcta.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 784000,
+      "timestamp": "13:04",
+      "category": "agua",
+      "title": "Enfriar muestra antes de medir pH",
+      "tip": "El pH se modifica con la temperatura (la actividad de los iones protón cambia). Hay que llevar la muestra a la temperatura de calibración del pHímetro antes de medir.",
+      "details": "No confiar en el compensador de temperatura automático: compensa un error y además puede dañar el electrodo con temperaturas altas."
+    },
+    {
+      "timestamp_ms": 826000,
+      "timestamp": "13:46",
+      "category": "agua",
+      "title": "El pH que importa es el del empaste",
+      "tip": "No interesa el pH del agua sola ni la acidez titulable de la malta por separado. Lo que importa es el pH que se establece cuando se mezclan agua y malta en el empaste.",
+      "details": "Ese es el pH para el cual hay que hacer tratamiento de agua y diseño de receta."
+    },
+    {
+      "timestamp_ms": 862000,
+      "timestamp": "14:22",
+      "category": "agua",
+      "title": "pH correcto en empaste = OK en todo el proceso",
+      "tip": "Si el pH del empaste es el correcto (con mínimo o ningún agregado de ácido), el pH se mantendrá bien hasta el final del proceso.",
+      "details": "Excepción: cervezas hiperlupuladas en frío. La hiperlupulación modifica el pH y puede requerir correcciones posteriores."
+    },
+    {
+      "timestamp_ms": 927000,
+      "timestamp": "15:27",
+      "category": "agua",
+      "title": "Ajustar agua y malta para minimizar ácido",
+      "tip": "Trabajar con la alcalinidad del agua (especies de carbonato), la dureza (calcio y magnesio) y la acidez de las maltas para acercar el pH al objetivo. La corrección con ácido láctico, cítrico o fosfórico debe ser la mínima indispensable.",
+      "details": "Maltas tostadas y caramelo son más ácidas que Pale Ale, que es más ácida que Pilsen. Jugar con esas variables para llegar al pH objetivo."
+    },
+    {
+      "timestamp_ms": 983000,
+      "timestamp": "16:23",
+      "category": "proceso",
+      "title": "Medir pH en todas las etapas",
+      "tip": "Medir pH en el macerado, recirculado, inicio del hervor, final del hervor, durante la fermentación y en la cerveza terminada. Es una medición rápida, barata y da información invaluable.",
+      "details": "Con 10 cm³ de muestra alcanza. No hay excusa para no tener medición continua de pH a lo largo del proceso."
+    },
+    {
+      "timestamp_ms": 1065000,
+      "timestamp": "17:45",
+      "category": "agua",
+      "title": "pH alto arruina percepción sensorial",
+      "tip": "Una cerveza con pH alto queda alcalina, jabonosa, con amargor áspero y pierde tomabilidad. El pH afecta la parte enzimática, floculación, coagulación de proteínas y percepción organoléptica.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1110000,
+      "timestamp": "18:30",
+      "category": "proceso",
+      "title": "Registrar curvas de pH y densidad",
+      "tip": "Graficar las curvas de pH y densidad durante la fermentación. Se acompañan mutuamente y permiten detectar patrones, diferencias entre fermentaciones y posibles problemas.",
+      "details": "Aunque al principio cueste entender, los datos registrados generan curiosidad y permiten comparar fermentaciones."
+    },
+    {
+      "timestamp_ms": 1265000,
+      "timestamp": "21:05",
+      "category": "proceso",
+      "title": "Fermentación: punto N°1 de atención",
+      "tip": "La fermentación es el proceso más importante para la calidad de la cerveza y el más menospreciado. No estandarizar: adaptar inóculo, nutrientes y oxigenación a cada mosto específico.",
+      "details": "Se ve mucho en fábricas: misma cantidad de levadura para 1080 que para 1045, misma oxigenación para Lager que para Ale, mismo gramo/hL de nutriente para todo."
+    },
+    {
+      "timestamp_ms": 1331000,
+      "timestamp": "22:11",
+      "category": "levadura",
+      "title": "Adjuntos requieren más nutrientes",
+      "tip": "Una NEIPA de 1065-1070 con 20-30% de adjuntos (avena) es una fermentación extrema. Los adjuntos no aportan los nutrientes que aporta la malta. Lo mismo con cervezas belgas con candy sugar: fermentables simples sin nutrientes asociados.",
+      "details": "Aplicar criterio: no estandarizar nutrientes. Un mosto 100% malta de 1050 no necesita nutrientes complejos extra."
+    },
+    {
+      "timestamp_ms": 1372000,
+      "timestamp": "22:52",
+      "category": "levadura",
+      "title": "Mosto 100% malta no requiere nutrientes extra",
+      "tip": "Un mosto de 1050 de pura malta no requiere agregado de nutrientes si el inóculo es el correcto. A lo sumo un poco de zinc si la levadura es reutilizada. Los nutrientes ya están en la malta.",
+      "details": "Lo que más importa en este caso es que la levadura esté activa, vital y que el inóculo sea el correcto."
+    },
+    {
+      "timestamp_ms": 1448000,
+      "timestamp": "24:08",
+      "category": "levadura",
+      "title": "Nutrientes suficientes solo con inóculo correcto",
+      "tip": "Un mosto 100% malta tiene nutrientes suficientes para buena fermentación, pero solo si se inocula la cantidad correcta de levadura. Con la mitad de la biomasa necesaria, ni los nutrientes de la malta alcanzarán para una fermentación limpia y rápida.",
+      "details": "Una subinoculación es un híbrido entre propagación y fermentación. La propagación requiere mucha más carga de nutrientes y oxígeno que una fermentación normal."
+    },
+    {
+      "timestamp_ms": 1519000,
+      "timestamp": "25:19",
+      "category": "levadura",
+      "title": "Mosto de 1050 debe fermentar en 4 días",
+      "tip": "Una cerveza de 1050 con levadura regular debe llegar a densidad final en máximo 4 días. Si tarda 6-8 días, hubo alguna deficiencia: nutrientes, temperatura o inóculo.",
+      "details": "Las subinoculaciones generan fermentaciones eternas que van en detrimento de la calidad."
+    },
+    {
+      "timestamp_ms": 1757000,
+      "timestamp": "29:17",
+      "category": "equipo",
+      "title": "Priorizar equipo de fermentación",
+      "tip": "El primer vicio del cervecero casero es priorizar el equipo de cocción por encima de la fermentación. Con una heladerita de camping se puede sacar un muy buen mosto, pero sin buenas condiciones de fermentación no hay buena cerveza.",
+      "details": "Invertir primero en control de fermentación (temperatura, presión) antes que en el equipo de cocción."
+    },
+    {
+      "timestamp_ms": 1842000,
+      "timestamp": "30:42",
+      "category": "equipo",
+      "title": "Conocer limitaciones de los materiales",
+      "tip": "Cada material tiene limitaciones que afectan la calidad. Conocer qué químicos y temperaturas toleran los materiales del equipo es fundamental.",
+      "details": "Aluminio: no resiste ácidos ni bases (no cáustica, no nítrico, no fosfórico, no peracético). Plástico: puede tolerar cáustica a baja concentración y baja temperatura, pero no a 70°C al 4%. Cobre: cuidado con temperaturas altas."
+    },
+    {
+      "timestamp_ms": 2041000,
+      "timestamp": "34:01",
+      "category": "equipo",
+      "title": "No transferir mosto caliente a plástico",
+      "tip": "No mandar mosto ácido a 40°C a un fermentador rotomoldeado: extrae compuestos fenólicos del plástico. Enfriar hasta 20°C aunque tarde 45 minutos, no hay problema en tardar más.",
+      "details": "Lo mismo con mangueras: no pasar soda cáustica a 80°C ni mosto hirviendo por mangueras que no sean de grado alimentario resistentes a alta temperatura."
+    },
+    {
+      "timestamp_ms": 2111000,
+      "timestamp": "35:11",
+      "category": "equipo",
+      "title": "Reemplazar mangueras deterioradas",
+      "tip": "Las mangueras cristal que pasaron de transparentes a marrón oscuro tienen biofilm incrustado. Son inlimpiables e insanitizables y deben reemplazarse.",
+      "details": "Tener en cuenta que su vida útil es más corta que mangueras de mejor calidad. Cambiarlas regularmente."
+    },
+    {
+      "timestamp_ms": 2144000,
+      "timestamp": "35:44",
+      "category": "equipo",
+      "title": "Diseñar cerveza según equipo disponible",
+      "tip": "Se puede hacer buena cerveza con cualquier equipo, pero no cualquier buena cerveza. Adaptar receta y procesos a las limitaciones del equipo.",
+      "details": "Por ejemplo, sin fermentador que mantenga presión, hay que adaptar todos los procesos y materias primas a esa limitación."
+    },
+    {
+      "timestamp_ms": 2304000,
+      "timestamp": "38:24",
+      "category": "agua",
+      "title": "Mínimo 50 mg/L de calcio en el agua",
+      "tip": "Se necesitan al menos 50 ppm de calcio. Es una cantidad ínfima: cualquier suciedad en el equipo puede aportar más contaminantes indeseados que eso.",
+      "details": "Esto refuerza la importancia de la limpieza: la mugre puede aportar sustancias desconocidas en cantidades mayores a las sales que cuidadosamente agregamos."
+    },
+    {
+      "timestamp_ms": 2367000,
+      "timestamp": "39:27",
+      "category": "proceso",
+      "title": "Validar limpieza y sanitización",
+      "tip": "Validar es corroborar que lo que pensamos que estamos haciendo bien, realmente funciona. Para limpieza: pasar agua limpia por el equipo y verificar que sale incolora, insípida e inodora.",
+      "details": "Para validación microbiológica: pasar algo estéril por la superficie sanitizada y verificar que no crecen microorganismos. Ver episodio de laboratorio sin laboratorio para técnicas."
+    },
+    {
+      "timestamp_ms": 2563000,
+      "timestamp": "42:43",
+      "category": "proceso",
+      "title": "El oxígeno causa el envejecimiento",
+      "tip": "Las cervezas envejecen porque se oxidan. El oxígeno genera precursores de oxidación y oxida directamente otros compuestos. Todo el cuidado post-fermentación se reduce a minimizar el contacto con oxígeno.",
+      "details": "El frío frena la velocidad de oxidación. La agitación la acelera. La luz (ciertas longitudes de onda) produce oxidación. Botella ámbar protege de eso."
+    },
+    {
+      "timestamp_ms": 2682000,
+      "timestamp": "44:42",
+      "category": "tecnica",
+      "title": "Purgar todo antes de contacto con cerveza",
+      "tip": "Purgar mangueras, recipientes y cualquier elemento que vaya a tocar la cerveza terminada para eliminar el oxígeno. No escatimar en ideas por más sencillas que parezcan.",
+      "details": "Si la cerveza recorre medio metro de manguera, purgarla. Si va a entrar aire por arriba de un recipiente, buscar que ese aire no tenga oxígeno (CO2)."
+    },
+    {
+      "timestamp_ms": 2701000,
+      "timestamp": "45:01",
+      "category": "tecnica",
+      "title": "Oxidación siempre es negativa",
+      "tip": "La oxidación siempre va en detrimento de la calidad, en cualquier tipo de cerveza, no solo en las lupuladas. No existe 'un poquito de oxidación que me gusta'.",
+      "details": "El envejecimiento controlado bajo atmósfera y temperatura controlada (guarda, barrique) es diferente a oxidación por incorporación de oxígeno disuelto. Lo primero puede ser atributo; lo segundo nunca."
+    },
+    {
+      "timestamp_ms": 2808000,
+      "timestamp": "46:48",
+      "category": "tecnica",
+      "title": "Minimizar trasvasos de cerveza",
+      "tip": "Cada movimiento de cerveza incorpora oxígeno. Ir directo de fermentador/madurador a producto final (lata, botella) es mejor que pasar por barril intermedio.",
+      "details": "Evitar movimientos intermedios innecesarios. Hacer un análisis riesgo-beneficio de cada trasvaso."
+    },
+    {
+      "timestamp_ms": 2893000,
+      "timestamp": "48:13",
+      "category": "proceso",
+      "title": "Estabilidad = vida útil de la cerveza",
+      "tip": "La estabilidad es cuánto tiempo la cerveza mantiene la calidad con que fue elaborada. Está directamente relacionada con la cantidad de oxígeno disuelto incorporado durante el proceso.",
+      "details": "Mantener la cerveza en frío post-envasado y minimizar movimientos para frenar el envejecimiento. Cada cervecería debe definir su vida útil según su proceso y canales de venta."
+    },
+    {
+      "timestamp_ms": 2935000,
+      "timestamp": "48:55",
+      "category": "proceso",
+      "title": "La cerveza envejece desde el envasado",
+      "tip": "Desde que la cerveza entra en la lata, botella o barril, empieza a envejecer. Se frena con precauciones previas (bajo oxígeno disuelto) y con frío después, pero siempre tiene vida útil finita.",
+      "details": "Es más fácil controlar un barril (se rota semanalmente) que una lata entregada a un distribuidor cuyo almacenamiento no controlamos."
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "episode": "T2E14 - Nano homebrewing",
+  "tips": [
+    {
+      "timestamp_ms": 897000,
+      "timestamp": "14:57",
+      "category": "equipo",
+      "title": "Equipo nano: olla 20L + olla 10L",
+      "tip": "Un setup nano efectivo consiste en una olla de 20 litros con falso fondo para macerar y una olla de 10 litros de acero para hervir. Con recirculado manual se obtienen entre 6 y 8 litros finales.",
+      "details": "Priorizar tener un buen pHímetro y termómetro para controlar las variables críticas del proceso, especialmente cuando se experimenta con volúmenes bajos."
+    },
+    {
+      "timestamp_ms": 935000,
+      "timestamp": "15:35",
+      "category": "equipo",
+      "title": "pHímetro sobre tiritas de pH",
+      "tip": "Invertir en un pHímetro en lugar de tiritas de pH. Las tiritas pueden servir para las primeras cocciones, pero un pHímetro es mucho más preciso y es una inversión prioritaria junto con el densímetro.",
+      "details": "Las tiritas de pH tienen baja confiabilidad comparadas con un pHímetro de laboratorio. Para homebrewers que buscan experimentar con rigor, es una de las primeras inversiones a hacer."
+    },
+    {
+      "timestamp_ms": 950000,
+      "timestamp": "15:50",
+      "category": "tecnica",
+      "title": "Fermentar en barriles Cornelius",
+      "tip": "Reemplazar los botellones de plástico por barriles Cornelius de 10 litros como fermentadores. El acero permite fermentar y madurar en el mismo recipiente, hacer trasvases cerrados con CO2, y realizar dry hopping con mínima incorporación de oxígeno.",
+      "details": "La transición de plástico a acero inoxidable (Cornelius) es uno de los cambios que más impacto tiene en la calidad del producto final, especialmente para cervezas lupuladas."
+    },
+    {
+      "timestamp_ms": 965000,
+      "timestamp": "16:05",
+      "category": "tecnica",
+      "title": "Dry hopping cerrado con CO2",
+      "tip": "Fermentar en un barril de 10L, luego trasvasar a otro barril (de 6L o 10L) que ya tiene el lúpulo en bolsita. Purgar el barril receptor con CO2 antes de trasvasar, y hacer todo el trasvase empujando con CO2.",
+      "details": "Procedimiento: 1) Colocar lúpulo en bolsita dentro del barril receptor, 2) Purgar con CO2, 3) Trasvasar con CO2 del barril de fermentación al receptor. Reduce enormemente la incorporación de oxígeno."
+    },
+    {
+      "timestamp_ms": 1073000,
+      "timestamp": "17:53",
+      "category": "proceso",
+      "title": "Equipo chico acelera el aprendizaje",
+      "tip": "Un equipo de 8 litros permite cocinar con mucha más frecuencia que uno de 50 o 100 litros. La repetitividad de cocciones acelera enormemente el ritmo de aprendizaje del cervecero.",
+      "details": "Hacer 8, 30, 50 o hasta 100 litros lleva prácticamente el mismo tiempo y esfuerzo. La ventaja real del equipo chico es poder cocinar muchas más veces."
+    },
+    {
+      "timestamp_ms": 1144000,
+      "timestamp": "19:04",
+      "category": "tecnica",
+      "title": "Mayor control en volúmenes chicos",
+      "tip": "En volúmenes pequeños, las mediciones de pH y temperatura son más representativas y homogéneas. Una muestra de pH de 8 litros es mucho más representativa que una de 100 litros. También es más fácil controlar la temperatura de fermentación y lograr la tasa de inoculación correcta de levadura.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1201000,
+      "timestamp": "20:01",
+      "category": "tecnica",
+      "title": "Dividir mosto para experimentar variables",
+      "tip": "Hacer un mosto más grande y dividirlo en distintos barriles permite comparar una sola variable con exactamente las mismas condiciones base. Por ejemplo, mismo mosto pero diferente levadura, diferente lúpulo, o diferentes concentraciones de un mismo ingrediente.",
+      "details": "Esta técnica es clave para sacar conclusiones válidas: al cambiar una sola variable por lote, cualquier diferencia sensorial se puede atribuir a ese cambio."
+    },
+    {
+      "timestamp_ms": 1952000,
+      "timestamp": "32:32",
+      "category": "proceso",
+      "title": "Rendimiento esperado en equipo nano",
+      "tip": "En equipos nano (6-8 litros) esperar un rendimiento de entre 50% y 60%, significativamente menor que en equipos más grandes donde se apunta a 80% o más.",
+      "details": "Un macerador de 10 litros puede terminar rindiendo solo 6 litros finales. Es importante considerar esto al calcular la receta."
+    },
+    {
+      "timestamp_ms": 2087000,
+      "timestamp": "34:47",
+      "category": "ingrediente",
+      "title": "Verificar calidad y frescura del lúpulo",
+      "tip": "Off-flavors tipo solvente o acetona en NEIPAs pueden originarse en lúpulo viejo o mal conservado. Si detectás un sabor solventoso persistente en varios lotes, revisar si el lúpulo es el ingrediente en común. Cambiar de lote puede resolver el problema.",
+      "details": "En homebrewing se compran cantidades chicas (50-100g) fraccionadas, y no siempre se conoce la fecha de cosecha real. Verificar sensorialmente el lúpulo antes de usarlo. Un off-flavor tipo pegamento/gotita puede venir de lúpulo oxidado."
+    },
+    {
+      "timestamp_ms": 2190000,
+      "timestamp": "36:30",
+      "category": "ingrediente",
+      "title": "Comprar lúpulo a cervecerías amigas",
+      "tip": "Conseguir lúpulo directamente de cervecerías artesanales amigas cuando abren una bolsa grande. La calidad es muy superior al lúpulo fraccionado de proveedores, ya que viene de bolsas selladas recién abiertas.",
+      "details": "Pedir 50-200g cuando la cervecería hace un dry hopping grande (ej. 50kg). La diferencia es imperceptible para la cervecería y enorme para el homebrewer. Envasar al vacío inmediatamente al recibirlo."
+    },
+    {
+      "timestamp_ms": 2392000,
+      "timestamp": "39:52",
+      "category": "equipo",
+      "title": "Balanza de precisión para equipos nano",
+      "tip": "Una balanza de precisión tipo calculadora es indispensable para equipos nano. Permite pesar con exactitud adiciones de lúpulo de 3-4 gramos y sales de agua de 2-3 gramos que son típicas en lotes de 8 litros.",
+      "details": "No son caras y se consiguen fácilmente. Imprescindible para pesar sales del agua (ej. 2.35g de una sal específica) y pequeñas adiciones de lúpulo."
+    },
+    {
+      "timestamp_ms": 2516000,
+      "timestamp": "41:56",
+      "category": "equipo",
+      "title": "Refractómetro para preservar volumen",
+      "tip": "Usar refractómetro en lugar de densímetro durante el proceso para evitar desperdiciar muestra. Sacar 50ml de un fermentador de 6-10 litros es una pérdida significativa. Reservar el densímetro solo para la medición de entrada y salida del fermentador.",
+      "details": "El refractómetro necesita solo unas gotas. Recordar aplicar la corrección por alcohol en mediciones post-fermentación."
+    },
+    {
+      "timestamp_ms": 2567000,
+      "timestamp": "42:47",
+      "category": "levadura",
+      "title": "Nutrientes de levadura en dosis nano",
+      "tip": "En lotes nano, la dosis de nutrientes como Servomyces o SpringFerm (2g/hL) resulta en cantidades ínfimas (0.15g para 8L). En la práctica, se dosifica 'a la puntita del cuchillo'.",
+      "details": "2g/hL de SpringFerm = 0.16g para 8 litros. La balanza de precisión ayuda, pero para cantidades tan pequeñas a veces es inevitable una dosificación aproximada."
+    },
+    {
+      "timestamp_ms": 2628000,
+      "timestamp": "43:48",
+      "category": "tecnica",
+      "title": "Curva de burbujas para estimar densidad",
+      "tip": "Correlacionar la tasa de burbujeo (burbujas por unidad de tiempo) con la densidad medida durante el primer uso de una cepa. En lotes posteriores con la misma levadura y densidad inicial similar, usar esa curva para estimar la densidad sin tomar muestra.",
+      "details": "Conectar manguerita del barril a un frasco con alcohol, contar burbujas y correlacionar con densidad. Permite saber cuándo faltan ~5 puntos de densidad para hacer el último dry hopping sin desperdiciar muestra."
+    },
+    {
+      "timestamp_ms": 2703000,
+      "timestamp": "45:03",
+      "category": "tecnica",
+      "title": "Levadurocrito: contar levadura casero",
+      "tip": "Método DIY para estimar concentración de levadura sin microscopio: dejar sedimentar la muestra en un capilar y medir el porcentaje de células vs líquido, análogo al hematocrito clínico.",
+      "details": "Calibrar con un patrón hecho con levadura seca de panadería diluida. Hacer una curva de calibración contando esas diluciones con microscopio o contador de células si se tiene acceso."
+    },
+    {
+      "timestamp_ms": 2828000,
+      "timestamp": "47:08",
+      "category": "tecnica",
+      "title": "Dry hopping de 24 horas en barril",
+      "tip": "Poner el lúpulo en bolsita dentro del barril durante solo 24 horas, luego trasvasar a otro barril limpio. Esto evita dejar el lúpulo una semana en contacto, lo cual puede generar sabores vegetales o astringencia.",
+      "details": "La bolsita es necesaria al fermentar en barril Cornelius para evitar que el lúpulo suelto trabe la salida del pescante al trasvasar."
+    },
+    {
+      "timestamp_ms": 2920000,
+      "timestamp": "48:40",
+      "category": "tecnica",
+      "title": "Berliner Weiss: hervir o no post-acidificación",
+      "tip": "Comparación de una Berliner Weiss con y sin hervor después de la acidificación con lactobacillus. El sabor fue prácticamente idéntico, pero la versión sin hervir tenía un olor fuerte y desagradable (volátil) por el lacto vivo que se disipa con el tiempo.",
+      "details": "La versión hervida pierde esos volátiles por evaporación. En ambos casos el perfil sensorial de sabor fue muy similar."
+    },
+    {
+      "timestamp_ms": 2996000,
+      "timestamp": "49:56",
+      "category": "tecnica",
+      "title": "Pasteurizar lacto a 80°C preserva espuma",
+      "tip": "En Kettle Sours, en lugar de hervir después de la acidificación, calentar a 80°C durante 5 minutos para pasteurizar el lactobacillus y mandarlo directo al fermentador. Esto preserva la espuma significativamente.",
+      "details": "Al superar los 85°C, una enzima del lactobacillus genera proteólisis láctica que rompe las proteínas responsables de la espuma. Pasteurizar a 80°C (5 min) mata el lacto sin activar esa proteólisis. Técnica usada por Luca (cervecero mencionado en el podcast)."
+    },
+    {
+      "timestamp_ms": 3061000,
+      "timestamp": "51:01",
+      "category": "ingrediente",
+      "title": "Actimel como fuente de lactobacillus",
+      "tip": "Las botellitas de Actimel (u otras bebidas probióticas comerciales) pueden usarse como inóculo de lactobacillus para cervezas ácidas. Algunas marcas indican la cantidad de unidades bacterianas en la etiqueta.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3109000,
+      "timestamp": "51:49",
+      "category": "equipo",
+      "title": "Intercambiar pescantes entre Cornelius",
+      "tip": "Al trasvasar entre barriles Cornelius de distinto tamaño, intercambiar los tubos pescantes (dip tubes). Poner el tubo corto (del barril de 6L) en el de 10L para que no pesque del fondo y deje atrás el sedimento.",
+      "details": "Otra opción es cortar el tubo pescante. Evitar usar mangueritas de silicona con flotante por cuestiones sanitarias."
+    },
+    {
+      "timestamp_ms": 3452000,
+      "timestamp": "57:32",
+      "category": "agua",
+      "title": "Conocer el agua y filtrar con carbón",
+      "tip": "Conocer el perfil de sales del agua es fundamental para decidir qué cervezas se pueden hacer. Usar un filtro de carbón activado para eliminar el cloro. En CABA (Buenos Aires) el agua es bastante neutra, lo que facilita los ajustes.",
+      "details": "Si un amigo cervecero del mismo barrio midió el agua, esos valores sirven como referencia para calcular las sales a agregar."
+    },
+    {
+      "timestamp_ms": 3562000,
+      "timestamp": "59:22",
+      "category": "tecnica",
+      "title": "Control de temperatura sin heladera dedicada",
+      "tip": "Sin heladera exclusiva para fermentar, opciones viables incluyen: usar el aire acondicionado apuntando al barril, meter y sacar el barril de la heladera común según la temperatura del termómetro adhesivo, o elegir levaduras tolerantes al calor como la Kveik (fermenta bien a 35°C).",
+      "details": "Para lagers, la heladera común (~3-5°C) puede funcionar. Experimentar con inoculaciones y tiempos para minimizar el estrés de la levadura a temperaturas tan bajas."
+    }
+  ]
+}

@@ -37,4 +37,4 @@ Develop a **workable set** of malts that covers a wide range of styles. Keep not
 
 ## Related
 
-[[characterizing-malt]] · [[preparing-malt]] · [[malt-modification-dp-and-protein]] · [[adjuncts-overview]]
+[[characterizing-malt]] · [[preparing-malt]] · [[malt-modification-dp-and-protein]] · [[adjuncts-overview]] · [[malt-production-and-character]]

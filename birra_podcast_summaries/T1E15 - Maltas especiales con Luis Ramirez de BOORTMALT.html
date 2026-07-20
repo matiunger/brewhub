@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1E15 - Maltas especiales con Luis Ramirez de BOORTMALT</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 60px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a1a; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; min-width: 0; height: 36px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a1a1a; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 1rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stat-pill { font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 20px; font-weight: 600; }
+.stat-total { background: #1a1a1a; color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.timestamp { font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace; font-size: 0.8rem; padding: 0.2rem 0.55rem; border-radius: 5px; background: #f0f0f0; border: 1px solid #ddd; cursor: pointer; color: #333; transition: background 0.15s, color 0.15s; display: inline-flex; align-items: center; gap: 0.3rem; }
+.timestamp:hover { background: #1a1a1a; color: #fff; }
+.timestamp::before { content: "\25B6"; font-size: 0.55rem; opacity: 0; transition: opacity 0.15s; }
+.timestamp:hover::before { opacity: 1; }
+.badge { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 5px; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+.card-tip { font-size: 0.92rem; line-height: 1.5; color: #333; margin-bottom: 0.5rem; }
+.card-details { font-size: 0.85rem; line-height: 1.45; color: #777; font-style: italic; }
+.stat-proceso { background: #dbeafe; color: #2563eb; }
+.stat-ingrediente { background: #dcfce7; color: #16a34a; }
+.stat-receta { background: #fee2e2; color: #dc2626; }
+.stat-ratio { background: #fef3c7; color: #d97706; }
+.stat-tecnica { background: #ede9fe; color: #7c3aed; }
+.stat-equipo { background: #cffafe; color: #0891b2; }
+.stat-levadura { background: #fce7f3; color: #be185d; }
+.stat-malta { background: #fde68a; color: #92400e; }
+.stat-lupulo { background: #dcfce7; color: #15803d; }
+.stat-agua { background: #e0f2fe; color: #0369a1; }
+</style>
+</head>
+<body>
+
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Indice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T1E15 - Maltas especiales con Luis Ramirez de BOORTMALT.wav"></audio>
+</div>
+
+<div class="container">
+  <h1>T1E15 - Maltas especiales con Luis Ramirez de BOORTMALT</h1>
+
+  <div class="stats">
+    <span class="stat-pill stat-total">20 tips</span>
+    <span class="stat-pill stat-malta">8 malta</span>
+    <span class="stat-pill stat-proceso">5 proceso</span>
+    <span class="stat-pill stat-tecnica">4 tecnica</span>
+    <span class="stat-pill stat-receta">1 receta</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="190000">03:10</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Malta base vs malta especial</div>
+      <div class="card-tip">La malta base aporta azucares fermentables (almidon + enzimas). La malta especial aporta color, aroma y sabor (funcion organoleptica). Los procesos de caramelizacion y tostado de las especiales desnaturalizan las enzimas y convierten parte del almidon, por lo que rinden menos extracto por kilo.</div>
+      <div class="card-details">La diferencia de extracto es leve pero existe. Las maltas especiales no aportan enzimas al macerado, dependiendo enteramente de las enzimas de la malta base.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="332000">05:32</button>
+        <span class="badge badge-proceso">proceso</span>
+      </div>
+      <div class="card-title">Poder diastatico y conversion del macerado</div>
+      <div class="card-tip">El poder diastatico es la capacidad del grano de degradar almidon en azucares fermentables. Las maltas base tienen suficiente poder diastatico para degradar su propio almidon mas el de adjuntos no malteados. Si usas grandes porcentajes de malta especial o adjuntos, verifica que la capacidad enzimatica total de la mezcla sea suficiente.</div>
+      <div class="card-details">Cuanto mas alto el valor de poder diastatico, mas modificada esta la malta y mas sencilla resulta la conversion del macerado.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="426000">07:06</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Modificacion y germinacion de la malta</div>
+      <div class="card-tip">El poder diastatico es consecuencia de la modificacion. Cuanto mas tiempo germina el grano de cebada, mas enzimas genera y mayor sera su poder diastatico. Una malta mas modificada facilita la conversion del macerado.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="466000">07:46</button>
+        <span class="badge badge-proceso">proceso</span>
+      </div>
+      <div class="card-title">Reacciones de Maillard en maltas especiales</div>
+      <div class="card-tip">Las reacciones de Maillard (azucar reductor + aminoacido) producen melanoidinas (color) y cientos de compuestos de aroma y sabor. No son enzimaticas, asi que la alta temperatura no las detiene. Las variables que las afectan son: pH, temperatura, humedad, tipo de proteina y tipo de azucar.</div>
+      <div class="card-details">Cambiar cualquiera de estas variables produce compuestos completamente distintos. Por eso dos maltas con procesos ligeramente diferentes dan perfiles organolepticos muy diferentes, aunque partan del mismo grano.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="980000">16:20</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Malta Munich: cebada alta en proteina</div>
+      <div class="card-tip">El aroma a galleta y corteza de pan de la Malta Munich proviene de un aldehido derivado del azufre. Para obtener ese perfil se necesita cebada con alto contenido proteico, que aporta mayor cantidad de aminoacidos con azufre. Mas proteina en la cebada = mas flavor maltoso.</div>
+      <div class="card-details">El alto contenido proteico tambien deriva en mayor contenido enzimatico, lo que ayuda a la transformacion en el macerado. Al usarse como especial en menor cantidad, la proteina extra no genera problemas de turbidez.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1156000">19:16</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Variedades de cebada para flavor</div>
+      <div class="card-tip">Hay malterias que seleccionan variedades de cebada y zonas de cultivo especificas para obtener flavors diferentes, priorizando perfil organoleptico por sobre rendimiento de extracto o kilos por hectarea.</div>
+      <div class="card-details">En Admiral Maltings (California) producen maltas Pilsen y Munich con notas inusuales como frutos rojos y cereza, derivadas de variedades de cebada seleccionadas por flavor, no por rendimiento.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1446000">24:06</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Maltas convencionales: uso al 100%</div>
+      <div class="card-tip">Las maltas convencionales (Pilsen, Pale, Munich, Vienna) conservan alto poder diastatico y pueden usarse al 100% del grist. A medida que sube el color aumenta la intensidad aromatica, pero mantienen capacidad de auto-conversion en el macerado.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1540000">25:40</button>
+        <span class="badge badge-proceso">proceso</span>
+      </div>
+      <div class="card-title">Maltas tostadas: proceso y equipos</div>
+      <div class="card-tip">Las maltas tostadas se someten a alta temperatura y pierden poder diastatico. Se producen en secador convencional (cama estatica, aire caliente por abajo, max ~100-110 C) o en roaster (cilindro giratorio, origen cafetero, alcanza 150-200 C). El roaster produce un tostado mas homogeneo.</div>
+      <div class="card-details">Las maltas Aromatic y Victory Malt se hacen en secador convencional a temperaturas elevadas. Para Chocolate, Negras o Tostadas se usa roaster partiendo de una malta base ya secada.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1790000">29:50</button>
+        <span class="badge badge-proceso">proceso</span>
+      </div>
+      <div class="card-title">Proceso de maltas caramelo: macerado interno</div>
+      <div class="card-tip">Las maltas caramelo se producen a partir de malta verde (humeda, ~40-50% de humedad). Se llevan a temperatura de macerado (67-70 C) dentro del grano para generar azucares, luego se sube la temperatura (150-200 C) para cristalizar. Ocurre caramelizacion real (azucar + agua), no Maillard.</div>
+      <div class="card-details">Es el mismo principio que hacer caramelo para flan: azucar y agua calentados. Eso produce un perfil de sabor muy diferente al de las maltas tostadas.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1960000">32:40</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Diferencia entre malta cristal y caramelo</div>
+      <div class="card-tip">Malta cristal se hace en roaster (gira) y produce un producto homogeneo: el 100% de los granos tiene perfil caramelo uniforme. Malta caramelo se hace en secador convencional (cama de ~2 metros, quieta) y la parte inferior se carameliza mas que la superior, dando un resultado heterogeneo.</div>
+      <div class="card-details">Una malta caramelo termina siendo una mezcla de perfiles: caramelo alto + aromas tipo Munich + Pale + algo de tostado leve. Una malta cristal del mismo color tendra un perfil caramelo mas puro y definido.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2158000">35:58</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Perfiles aromaticos de caramelo segun color</div>
+      <div class="card-tip">Caramelo 30: dulce de leche, toffee. Caramelo 60: mas tostadito, aroma a flan. Caramelo 80-120: pasas de uva, ciruela. No es lo mismo usar mucho Caramelo 30 que poco Caramelo 120 para lograr un color: el perfil aromatico sera completamente diferente.</div>
+      <div class="card-details">Elegir el grado de caramelo pensando en el aroma deseado, no solo en el color objetivo.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2270000">37:50</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Malta melanoidina: la favorita de Luis</div>
+      <div class="card-tip">La melanoidina es la expresion maxima de la reaccion de Maillard. Conserva atributos de malta base (poder diastatico), por lo que se puede usar en porcentajes altos. Luis la probo hasta 50-60% del grist con exito.</div>
+      <div class="card-details">Requiere cebada de alta proteina. Su proceso implica una germinacion mas prolongada que la normal para maximizar aminoacidos, azucares y enzimas antes del secado. Aporta color, aroma maltoso intenso y mantiene capacidad de conversion.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2416000">40:16</button>
+        <span class="badge badge-malta">malta</span>
+      </div>
+      <div class="card-title">Carapils: evaluacion critica</div>
+      <div class="card-tip">Carapils (nombre generico: malta dextrina; Carapils es marca de Bayermann) aporta dextrinas, viscosidad y espuma. Sin embargo, su efectividad esta cuestionada: es un proceso de malteado interrumpido, un punto intermedio entre cebada y malta.</div>
+      <div class="card-details">Su proceso interrumpido le da una leve caramelizacion entre almidon y aleurona que otorga viscosidad. Pero no es ni cebada ni malta completa. Segun Luis, deberia costar menos que una Pilsen por su proceso mas corto.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2574000">42:54</button>
+        <span class="badge badge-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Carapils: test de densidad final</div>
+      <div class="card-tip">Estudios de cerveceros reconocidos muestran que una cerveza con 50% Pilsen + 50% Carapils termina con casi la misma densidad final que una 100% Pilsen. Si la Carapils realmente aportara dextrinas no fermentables, la densidad final deberia ser significativamente mayor.</div>
+      <div class="card-details">Probar con lotes propios usando 1-2% para verificar el aporte real antes de incluirla como ingrediente fijo.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2620000">43:40</button>
+        <span class="badge badge-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Carapils en cervezas lupuladas</div>
+      <div class="card-tip">La Carapils funciona mejor en cervezas muy lupuladas donde se busca dar soporte y complejidad de malta sin competir con los lupulos. En cervezas oscuras que ya llevan maltas caramelo, la Carapils es redundante ya que los caramelos tambien aportan viscosidad y dextrinas.</div>
+      <div class="card-details">No tiene sentido usar Carapils + Caramelo 30 + Caramelo 60 juntos. Revisar si realmente es necesaria cuando ya hay caramelos en la receta.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2842000">47:22</button>
+        <span class="badge badge-receta">receta</span>
+      </div>
+      <div class="card-title">Evitar muchas maltas en porcentajes infimos</div>
+      <div class="card-tip">Poner muchas variedades de maltas especiales en porcentajes muy bajos (ej. 0.2%) no aporta sabor distinguible. Una malta dominante como Black Patent al 5% puede tapar completamente el aporte de las demas. Es mejor usar menos maltas en porcentajes significativos.</div>
+      <div class="card-details">Ejemplo problematico: Robust Porter con 3-4 maltas caramelo, 2-3 maltas torradas y 0.5% de avena. El aporte de la avena es imperceptible contra chocolate, carafa y cebada tostada.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2876000">47:56</button>
+        <span class="badge badge-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Superponer perfiles organolepticos de maltas</div>
+      <div class="card-tip">Al disenar una receta, usar los perfiles organolepticos (graficos de arana) que publican las malterias y superponerlos para detectar solapamientos. Si dos maltas tienen perfiles similares, una puede opacar a la otra.</div>
+      <div class="card-details">Verificar que cada malta de la receta aporte algo diferenciado antes de incluirla. Evitar sumar tostados sobre tostados sin proposito.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2946000">49:06</button>
+        <span class="badge badge-proceso">proceso</span>
+      </div>
+      <div class="card-title">Conversion con alto porcentaje de especiales</div>
+      <div class="card-tip">Al usar alto porcentaje de malta especial (ej. 30% caramelo), verificar que la capacidad enzimatica de la mezcla total sea suficiente para la conversion. Un deficit puede causar: extracto aparente final mas alto, menor alcohol, fermentacion mas lenta y levadura sin todos sus nutrientes disponibles.</div>
+      <div class="card-details">Las maltas caramelo no tienen poder diastatico (enzimas destruidas por alta temperatura). A mas del 20-30% de especiales, hacer test de yodo para confirmar conversion completa.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="3030000">50:30</button>
+        <span class="badge badge-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Tecito de malta para evaluar ingredientes</div>
+      <div class="card-tip">Para evaluar una malta antes de usarla: moler 25-50g con molinillo de cafe, diluir en 3-4 partes de agua caliente (50-60 C), dejar reposar y evaluar sensorialmente. Oler y probar el liquido. Complementar masticando granos de malta sin moler.</div>
+      <div class="card-details">Esta tecnica esta documentada en portales de EBC y asociaciones cerveceras. Permite comparar maltas entre si y hacerse una idea del aporte antes de disenar la receta.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="3126000">52:06</button>
+        <span class="badge badge-proceso">proceso</span>
+      </div>
+      <div class="card-title">Monitorear protocolos de calidad de malta</div>
+      <div class="card-tip">Observar las tendencias lote a lote en los protocolos de calidad de la malteria. Si la proteina cambia (ej. de 9% a 11%), aunque este en especificacion, el proceso de macerado y hervido puede necesitar ajustes. La malta varia durante el ano y el cervecero debe adaptar su proceso.</div>
+      <div class="card-details">No culpar al maltero ('Don't blame the malster' - Charlie Bamforth). La variabilidad es natural y toda la cadena debe ajustarse para que el consumidor final no note cambios.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

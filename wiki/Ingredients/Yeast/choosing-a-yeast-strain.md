@@ -26,4 +26,4 @@ That leaves **flavor** as the main focus.
 
 ## Related
 
-[[preparing-yeast]] · [[managing-fermentation]] · [[strongs-yeast-picks]] · [[yeast-guide]] · [[understanding-attenuation]]
+[[preparing-yeast]] · [[managing-fermentation]] · [[strongs-yeast-picks]] · [[yeast-guide]] · [[understanding-attenuation]] · [[liquid-yeast-strains]] · [[oxygenating-wort]]

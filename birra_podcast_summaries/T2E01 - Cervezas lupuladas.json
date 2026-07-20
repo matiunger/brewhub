@@ -1,0 +1,173 @@
+{
+  "episode": "T2E01 - Cervezas lupuladas",
+  "tips": [
+    {
+      "timestamp_ms": 674000,
+      "timestamp": "11:14",
+      "category": "ingrediente",
+      "title": "English IPA: base con maltas caramelo",
+      "tip": "Una English IPA lleva lúpulos ingleses, maltas caramelo claras para balancear el amargor y darle color cobrizo, y una levadura inglesa cuyos ésteres juegan un rol predominante. La maltosidad balancea el amargor fuerte.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 795000,
+      "timestamp": "13:15",
+      "category": "ingrediente",
+      "title": "American IPA: base simple sin caramelo",
+      "tip": "Una American IPA lleva base de maltas muy simple y clara, levadura neutra de alta atenuación para que quede seca, y un lupulado muy intenso en amargor, sabor y aroma. Es pecado capital usar malta caramelo en una American IPA.",
+      "details": "\"Lo único peor en una American IPA que el diacetilo son las maltas caramelo\" — Vinicius Urso."
+    },
+    {
+      "timestamp_ms": 1095000,
+      "timestamp": "18:15",
+      "category": "tecnica",
+      "title": "Session IPA vs APA: cuerpo y sequedad",
+      "tip": "Una Session IPA es más seca, con menor densidad final, donde el amargor predomina. Una APA tiene mayor cuerpo y densidad final, se percibe más maltosa, y los azúcares residuales contrarrestan la intensidad del amargor.",
+      "details": "Con la misma carga de amargor, la APA se percibe menos amarga por tener más azúcares residuales y más cuerpo."
+    },
+    {
+      "timestamp_ms": 1273000,
+      "timestamp": "21:13",
+      "category": "proceso",
+      "title": "Maceración: Session IPA vs APA",
+      "tip": "Para una Session IPA, macerar a 65-66°C para obtener bajo cuerpo y densidad final baja. Para una APA, macerar más alto, entre 68-70°C, para generar más dextrinas y cuerpo.",
+      "details": "También se puede macerar bajo y agregar dextrina en el hervor como alternativa para lograr cuerpo."
+    },
+    {
+      "timestamp_ms": 1328000,
+      "timestamp": "22:08",
+      "category": "proceso",
+      "title": "Fermentación S-05: Session IPA vs APA",
+      "tip": "Con la misma cepa S-05, fermentar una Session IPA a 18-19°C máximo para perfil limpio, y una APA a 20-20.5°C para producir más ésteres. Es una preferencia personal, pero demuestra cómo la temperatura cambia el perfil.",
+      "details": "Los ésteres adicionales a temperatura más alta le dan más complejidad a la APA."
+    },
+    {
+      "timestamp_ms": 1595000,
+      "timestamp": "26:35",
+      "category": "receta",
+      "title": "Imperial IPA: densidad y receta base",
+      "tip": "Para una Imperial IPA, usar OG de 1.080-1.085. La receta base es Pilsen, Munich y Dextrosa, nada más. No agregar maltas complejas, ni melanoidinas, ni caramelos. El mosto de alta densidad ya tiene suficiente maltosidad para sostener el lupulado.",
+      "details": "Si se agrega maltosidad para soportar el amargor y se pasa, ya entra en la categoría American Barley Wine."
+    },
+    {
+      "timestamp_ms": 1613000,
+      "timestamp": "26:53",
+      "category": "tecnica",
+      "title": "Imperial IPA: no exceder el lupulado",
+      "tip": "Si se meten 40 IBUs de amargor más 6 g/L en whirlpool caliente más 10-20 g/L en dry hopping, lo más probable es que el amargor quede invasivo y tape los aromas frutados, cítricos y florales que se buscan.",
+      "details": "El amargor excesivo saca todo el perfil amigable de los ésteres y lúpulos."
+    },
+    {
+      "timestamp_ms": 1687000,
+      "timestamp": "28:07",
+      "category": "tecnica",
+      "title": "Varias adiciones para evitar vegetal",
+      "tip": "Para evitar notas a brócoli, cebolla y ajo en cervezas muy lupuladas, hacer varias adiciones más pequeñas en lugar de una sola adición grande. La materia vegetal del lúpulo en exceso genera esos off-flavors.",
+      "details": "Aplica a todo tipo de cerveza lupulada, no solo Imperial IPA."
+    },
+    {
+      "timestamp_ms": 1775000,
+      "timestamp": "29:35",
+      "category": "tecnica",
+      "title": "Lupulado más efectivo en cervezas livianas",
+      "tip": "8 g/L totales en una Session IPA pueden dar más aroma y sabor a lúpulo que 20 g/L en una Imperial IPA. En la cerveza liviana el lúpulo brilla porque no compite con alcohol, ésteres ni maltosidad.",
+      "details": "A mayor densidad y alcohol, más competencia para el lúpulo y más difícil lograr aroma y sabor intensos."
+    },
+    {
+      "timestamp_ms": 2168000,
+      "timestamp": "36:08",
+      "category": "ingrediente",
+      "title": "Red IPA: caramelo bajo vs caramelo alto",
+      "tip": "Mucho caramelo bajo da notas dulces, pochoclo, flan, melaza y miel. Poco caramelo alto da notas torradas, caramelo quemado, café y frutos secos. El perfil sensorial es radicalmente distinto aunque el color sea similar.",
+      "details": "El lupulado debe adaptarse a cada perfil: se lúpula de forma diferente según qué caramelo se use."
+    },
+    {
+      "timestamp_ms": 2221000,
+      "timestamp": "37:01",
+      "category": "ingrediente",
+      "title": "Maltas especiales aportan dextrinas",
+      "tip": "El malteado de maltas especiales convierte almidones en azúcares no fermentables (dextrinas). Con mucha carga de maltas especiales es difícil lograr una cerveza seca, incluso macerando a temperatura baja.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2252000,
+      "timestamp": "37:32",
+      "category": "receta",
+      "title": "Red IPA: dextrosa para compensar cuerpo",
+      "tip": "Macerar a temperatura baja con 15-20% de maltas caramelo bajo. Agregar dextrosa en el hervor para aumentar el porcentaje de fermentables simples, bajar densidad final y reducir el cuerpo. La Red IPA debe quedar seca.",
+      "details": "Red IPA de Sir Hopper: 20% maltas caramelo bajo con lupulado resinoso."
+    },
+    {
+      "timestamp_ms": 2318000,
+      "timestamp": "38:38",
+      "category": "tecnica",
+      "title": "Black IPA: color sí, torrado sutil",
+      "tip": "En una Black IPA, el \"black\" debe ser principalmente el color, no el carácter tostado. El torrado es muy sutil (toque de café y chocolate) y no debe competir con el lupulado. No es un stout lupulado.",
+      "details": "Una buena Black IPA huele y sabe casi como una American IPA; si se toma sin ver el color, se puede confundir."
+    },
+    {
+      "timestamp_ms": 2430000,
+      "timestamp": "40:30",
+      "category": "tecnica",
+      "title": "Black IPA: extraer color sin torrado",
+      "tip": "Usar técnicas como cold steeping, hot steeping y cold bruise para extraer color de maltas oscuras sin extraer tanto sabor torrado. El objetivo es color oscuro con mínimo impacto en el perfil de sabor.",
+      "details": "Se necesitan muchas cocciones de prueba para lograr el balance correcto."
+    },
+    {
+      "timestamp_ms": 2631000,
+      "timestamp": "43:51",
+      "category": "ingrediente",
+      "title": "Brown IPA: malta Special B o Special W",
+      "tip": "Para una Brown IPA, usar malta Special B o Special W para aportar notas a frutos secos. Es más maltosa y compleja en caramelos que una Red IPA, pero menos torrada que una Black IPA.",
+      "details": "La Special B/W es ideal para todo tipo de Brown Ales."
+    },
+    {
+      "timestamp_ms": 2666000,
+      "timestamp": "44:26",
+      "category": "tecnica",
+      "title": "Brute IPA: enzima para cero cuerpo",
+      "tip": "Agregar una enzima que rompe todos los azúcares complejos en simples fermentables. La densidad final queda debajo de la del agua (0.996-0.998). Tiene cero cuerpo y cero sostén de malta.",
+      "details": "Es muy difícil manejar el balance entre lupulado y alcohol sin maltosidad. Muchas Brute IPA quedan desbalanceadas. El estilo es básicamente un vaso de soda con alcohol y lúpulo."
+    },
+    {
+      "timestamp_ms": 2733000,
+      "timestamp": "45:33",
+      "category": "receta",
+      "title": "White IPA: especias y lúpulo cítrico",
+      "tip": "Es un híbrido entre Witbeer belga y American IPA. Lleva coriandro y cáscara de naranja amarga. Preferible usar levadura americana y dar el perfil belga con las especias. El lupulado tiende a ser cítrico porque combina bien con trigo y fenoles de especias.",
+      "details": "También puede usar levadura belga, pero da un perfil diferente."
+    },
+    {
+      "timestamp_ms": 3233000,
+      "timestamp": "53:53",
+      "category": "levadura",
+      "title": "NEIPA: cepa esterosa y baja atenuación",
+      "tip": "Las NEIPA usan cepas de levadura muy esterosas que complementan los ésteres de los lúpulos. Tienen menor atenuación que las West Coast, dejando más cuerpo y azúcares residuales. La percepción de amargor es menor porque el dulzor lo contrarresta.",
+      "details": "No es que no tienen amargor, es que se contrarresta con los azúcares residuales."
+    },
+    {
+      "timestamp_ms": 3265000,
+      "timestamp": "54:25",
+      "category": "ingrediente",
+      "title": "NEIPA: trigo y avena para untuosidad",
+      "tip": "La base de maltas de una NEIPA es muy proteica, con trigo y avena. Aportan untuosidad en boca, proteína que contribuye a la turbidez estable, y una sensación en boca diferenciada. El lupulado es principalmente frutado, pero puede ser cítrico, resinoso o floral.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3349000,
+      "timestamp": "55:49",
+      "category": "ratio",
+      "title": "NEIPA vs American IPA: densidades comparadas",
+      "tip": "Para 6.5% ABV en American IPA: OG 1.062-1.064, FG 1.010 (seca y amarga). Para 6.5% ABV en NEIPA: OG 1.070, FG 1.018-1.020 (corpulenta, dulce, menos amarga). Mismo alcohol, experiencia completamente diferente.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3478000,
+      "timestamp": "57:58",
+      "category": "tecnica",
+      "title": "NEIPA: test de estabilidad de turbidez",
+      "tip": "Para verificar que la turbidez de una NEIPA está bien lograda, meter la cerveza en cámara fría y observar si la turbidez decanta con el tiempo. Si precipita, la turbidez no es estable. Una buena NEIPA mantiene su haze por meses.",
+      "details": null
+    }
+  ]
+}

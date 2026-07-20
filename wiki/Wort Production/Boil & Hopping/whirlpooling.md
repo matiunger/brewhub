@@ -113,3 +113,5 @@ Friction on the wall and bottom causes the rotation to slow down. As that happen
 ---
 
 *Source: [Braukaiser.com — Whirlpooling](http://braukaiser.com/wiki/index.php?title=Whirlpooling) · Last modified 23 June 2010 · Licensed under Attribution-NonCommercial 3.0 Unported*
+
+> This page covers the mechanical/hydrodynamic side of whirlpooling — settling trub into a cone. For "whirlpool hopping" (steeping hops post-boil for flavor/aroma) and its oil chemistry, see [[hop-stand-chemistry-and-technique]].

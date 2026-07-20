@@ -1,0 +1,181 @@
+{
+  "episode": "T2E09 - Conceptos de enlatado y embotellado",
+  "tips": [
+    {
+      "timestamp_ms": 476000,
+      "timestamp": "7:56",
+      "category": "proceso",
+      "title": "Dos puntos clave del enlatado",
+      "tip": "Los dos puntos principales a cuidar en el enlatado/embotellado son: 1) contaminacion (mas partes moviles = mas puntos a sanitizar) y 2) incorporacion de oxigeno (mucho mayor que en barril).",
+      "details": "Al pasar de un madurador a 90 latas en vez de un barril, se multiplican los puntos de contaminacion: valvulas, mangueras, reducciones, sistemas de contrapresion."
+    },
+    {
+      "timestamp_ms": 536000,
+      "timestamp": "8:56",
+      "category": "proceso",
+      "title": "Validar protocolo de sanitizacion",
+      "tip": "En enlatado/embotellado hay que extremar las validaciones del protocolo de limpieza y sanitizacion. No alcanza con sanitizar: hay que validar que el sistema este efectivamente libre de contaminacion.",
+      "details": "Una contaminacion en algunas latas puede pasar desapercibida hasta que el consumidor la abre dias despues fuera de frio, a diferencia de un fermentador contaminado que se detecta al momento."
+    },
+    {
+      "timestamp_ms": 700000,
+      "timestamp": "11:40",
+      "category": "tecnica",
+      "title": "Headspace del barril vs lata/botella",
+      "tip": "El barril tiene un headspace despreciable respecto a su volumen. En lata o botella el headspace es proporcionalmente mucho mayor, por lo que el oxigeno atrapado ahi se incorpora a la cerveza y la oxida.",
+      "details": "Siempre que se pueda, llenar el barril de CO2 antes de transferir. En lata/botella, purgar y asegurar que el headspace sea CO2 y no aire."
+    },
+    {
+      "timestamp_ms": 729000,
+      "timestamp": "12:09",
+      "category": "tecnica",
+      "title": "Equilibrio velocidad vs turbulencia",
+      "tip": "En llenado atmosferico, buscar equilibrio entre menor tiempo de contacto con el aire (llenar rapido) y evitar turbulencia que aumenta la superficie de contacto y por lo tanto la incorporacion de oxigeno.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 866000,
+      "timestamp": "14:26",
+      "category": "proceso",
+      "title": "Carbonatacion y temperatura en el llenado",
+      "tip": "La carbonatacion es fundamental para las condiciones de llenado. Va de la mano con la temperatura del sistema: a mayor temperatura, mas espumeo. La temperatura con la que se trabaja todo el sistema es clave.",
+      "details": "El sistema de purga, el headspace y la incorporacion de oxigeno estan todos interrelacionados con la temperatura y la carbonatacion."
+    },
+    {
+      "timestamp_ms": 1170000,
+      "timestamp": "19:30",
+      "category": "equipo",
+      "title": "Beer gun vs contrapresion para homebrewer",
+      "tip": "Los dos sistemas basicos para homebrewer son: beer gun (llenado atmosferico, no presuriza la botella) y contrapresion (iguala presiones entre envase y tanque). Ambos funcionan con botellas; para latas se necesita ademas una cerradora.",
+      "details": "Beer gun tiene doble gatillo: uno para CO2 (desplaza aire) y otro para cerveza. Llena de abajo hacia arriba sin turbulencia."
+    },
+    {
+      "timestamp_ms": 1305000,
+      "timestamp": "21:45",
+      "category": "tecnica",
+      "title": "Llenado de abajo hacia arriba sin turbulencia",
+      "tip": "Con beer gun o canito con valvula de retencion, la cerveza ingresa desde el fondo de la botella llenando de abajo hacia arriba, minimizando la turbulencia y la superficie de contacto con el aire.",
+      "details": "El CO2 del beer gun no purga la botella abierta sino que disminuye la cantidad de aire/oxigeno presente. No es un purgado completo pero reduce significativamente el oxigeno."
+    },
+    {
+      "timestamp_ms": 1427000,
+      "timestamp": "23:47",
+      "category": "tecnica",
+      "title": "Headspace con espuma al retirar beer gun",
+      "tip": "Al retirar el canito del beer gun, el volumen que ocupaba es el headspace. Idealmente ese espacio debe quedar lleno de espuma (no aire) al tapar. Regular velocidad de llenado para lograr formacion de espuma justa al final.",
+      "details": "Si queda espuma = mas CO2 que aire. Tapar inmediatamente con corona."
+    },
+    {
+      "timestamp_ms": 1490000,
+      "timestamp": "24:50",
+      "category": "tecnica",
+      "title": "Sistema contrapresion: igualar presiones",
+      "tip": "El contrapresion iguala la presion de la botella con la del tanque. Se libera controladamente la presion de la botella y por vasos comunicantes la cerveza fluye. Permite purgar la botella repetidamente con CO2 antes de llenar.",
+      "details": "Ciclo de purga: presurizar con CO2, liberar (expulsa mezcla CO2+aire), repetir. Cada ciclo aumenta la concentracion de CO2 y reduce el oxigeno. Nunca llega a 0% O2 pero es mucho mas efectivo que el beer gun."
+    },
+    {
+      "timestamp_ms": 1644000,
+      "timestamp": "27:24",
+      "category": "tecnica",
+      "title": "Contrapresion permite alta carbonatacion",
+      "tip": "El contrapresion permite llenar cervezas con alta gasificacion sin que espumen, porque no hay diferencia de presion entre el envase y el barril. Con beer gun, pasar de 1 bar a 0 bar hace que el CO2 se expanda y forme exceso de espuma.",
+      "details": "La espuma se forma cuando hay diferencia de presion o temperatura entre el interior de la cerveza y el exterior."
+    },
+    {
+      "timestamp_ms": 1867000,
+      "timestamp": "31:07",
+      "category": "tecnica",
+      "title": "Temperatura maxima con beer gun: 5 C",
+      "tip": "Con beer gun es imposible llenar a mas de 5 grados sin espumeo excesivo, mermas altisimas y formacion de espuma sin liquido. Se recomienda trabajar dentro de la camara de frio con todo el sistema.",
+      "details": "Si se saca el barril de la camara y se tarda 2 horas llenando, el sistema se calienta progresivamente y cada vez es mas dificil. La temperatura es clave."
+    },
+    {
+      "timestamp_ms": 1790000,
+      "timestamp": "29:50",
+      "category": "tecnica",
+      "title": "Contrapresion permite llenar a temperatura ambiente",
+      "tip": "Con contrapresion se puede llenar casi a temperatura ambiente sin espuma, porque al tener 1 bar en el barril y 0.99 bar en la botella, no hay diferencia de presion que genere espumeo. Solo hay que regular la liberacion final mas despacio.",
+      "details": "A temperatura ambiente se reduce la productividad (30-40 botellas/hora vs 100 en frio) pero se mantiene calidad. Util cuando no se tiene camara de frio."
+    },
+    {
+      "timestamp_ms": 1978000,
+      "timestamp": "32:58",
+      "category": "proceso",
+      "title": "Tapar inmediatamente cada botella",
+      "tip": "Apenas la botella esta llena tiene que ser tapada. No acumular botellas sin tapar. Ideal: una persona llena y otra tapa inmediatamente.",
+      "details": "Todo el esfuerzo de purga y llenado se pierde si la botella queda destapada expuesta al aire."
+    },
+    {
+      "timestamp_ms": 2038000,
+      "timestamp": "33:58",
+      "category": "tecnica",
+      "title": "Espacio libre DEBE ser espuma, no gas",
+      "tip": "Es fundamental que el espacio libre (headspace) quede lleno con espuma y NO con gas. La espuma proviene del CO2 interno de la cerveza que al salir barre el aire/oxigeno remanente. Esto aplica a cualquier sistema, desde precario hasta profesional.",
+      "details": "Si el headspace es gas, tendra aire con oxigeno y la oxidacion sera altisima. Si es espuma, la concentracion de oxigeno en ese espacio es muchisimo menor. Es la mayor diferencia en vida util del producto terminado."
+    },
+    {
+      "timestamp_ms": 2377000,
+      "timestamp": "39:37",
+      "category": "equipo",
+      "title": "Sistemas semi-automaticos isobaricos",
+      "tip": "Sistemas como Birra en Lata (Argentina): pistones que sellan la lata, presurizan, purgan, llenan, levantan y dejan formar el honguito de espuma. Producen ~150 latas/hora con 2 cabezales. Calidad de oxigeno disuelto muy baja.",
+      "details": "La despresuracion esta regulada para ser un poco brusca y generar espuma (honguito) sin que rebalse. Tambien existen versiones atmosfericas (abiertas) que funcionan como un beer gun automatizado."
+    },
+    {
+      "timestamp_ms": 2591000,
+      "timestamp": "43:11",
+      "category": "equipo",
+      "title": "Productividad: 150 latas/hora semi-auto",
+      "tip": "Una enlatadora isobarica de 2 cabezales produce en promedio 150 latas/hora. Es el doble de un contrapresion manual pero sigue siendo lento para grandes volumenes.",
+      "details": "Comparacion: beer gun ~50/hora, semi-auto isobarica ~150/hora, linea automatizada ~2000/hora."
+    },
+    {
+      "timestamp_ms": 2991000,
+      "timestamp": "49:51",
+      "category": "proceso",
+      "title": "Merma del 10% indica sistema insuficiente",
+      "tip": "Si al enlatar rapido con un sistema que queda chico se llega a ~10% de merma, el sistema ya no sirve. Lo que no se paga en tiempo operativo se paga en producto desechado (con lata, etiqueta, etc).",
+      "details": "Ejemplo: 3000 latas en 12 horas con 2 llenadoras semi-auto y 4 personas. Resultado: mermas altisimas por low fill y boil over al apurar el proceso."
+    },
+    {
+      "timestamp_ms": 3241000,
+      "timestamp": "54:01",
+      "category": "equipo",
+      "title": "Parametros controlables en enlatadora automatica",
+      "tip": "En una enlatadora isobarica automatizada se puede controlar: tiempos de purga, metodo de purga (ciclos o corriente continua), presion de llenado, orificio de entrada de cerveza, velocidad de despresuracion final, y soplido de CO2 post-llenado.",
+      "details": "Mayor orificio = llenado mas rapido pero mas espumeo. Se puede llenar a 0.5, 1 o 2 bar. El soplido final de CO2 barre el aire remanente y genera espuma positiva antes del sellado automatico."
+    },
+    {
+      "timestamp_ms": 3392000,
+      "timestamp": "56:32",
+      "category": "proceso",
+      "title": "Protocolo CIP para sistema de llenado",
+      "tip": "El protocolo de limpieza CIP de un sistema de llenado incluye: agua caliente, soda caustica, enjuague, acido fosforico o nitrico, y sanitizante.",
+      "details": "Un buen sistema de llenado debe estar disenado no solo para llenar bien sino tambien para poder limpiarse correctamente (como un brewhouse con sus canerias de CIP)."
+    },
+    {
+      "timestamp_ms": 3416000,
+      "timestamp": "56:56",
+      "category": "equipo",
+      "title": "Escalas de sistemas atmosfericos vs isobaricos",
+      "tip": "Atmosferico: homebrewer=beer gun, mediana=llenadora abierta semi-auto, grande=Wild Goose (latas) / Meheen (botellas). Isobarico: homebrewer=contrapresion, mediana=Birra en Lata, grande=Codi, Comac, Krones, KHS.",
+      "details": "Wild Goose y Meheen son de la misma empresa. Las marcas alemanas (Krones, KHS) son lo top en calidad y precio. Codi (americana) produce ~2000 latas/hora con 6 cabezales."
+    },
+    {
+      "timestamp_ms": 3602000,
+      "timestamp": "1:00:02",
+      "category": "proceso",
+      "title": "No sobreexplotar el sistema de llenado",
+      "tip": "Usar el sistema de llenado dentro de su capacidad comoda. Cuando se sobreexplota (queda chico), sufre el producto: mas oxidacion, mas merma, mas contaminacion. Trabajar comodo permite prestar atencion a la calidad.",
+      "details": "Aplica a cualquier fase del proceso cervecero. No comprar un fermentador de 5000L si se producen 200L de mosto (tardaria 20 dias en llenarse)."
+    },
+    {
+      "timestamp_ms": 3767000,
+      "timestamp": "1:02:47",
+      "category": "proceso",
+      "title": "Regla 3-30-300 de envejecimiento",
+      "tip": "3 dias a 37 C = 30 dias a 22 C = 300 dias a 2 C en terminos de envejecimiento/oxidacion. La temperatura de conservacion del producto terminado es fundamental para su vida util.",
+      "details": "Fuente: Firestone Walker (buscar 'shelf life Firestone Walker'). La velocidad de oxidacion depende de la temperatura: a mayor temperatura, mas rapido se deteriora. 0 incorporacion de oxigeno es imposible, pero mantener frio extiende drasticamente la vida util."
+    }
+  ]
+}

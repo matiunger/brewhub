@@ -1,0 +1,229 @@
+{
+  "episode": "T1E05 - Metabolismo de levaduras entrevista con Diego Perrotta",
+  "tips": [
+    {
+      "timestamp_ms": 398000,
+      "timestamp": "06:38",
+      "category": "proceso",
+      "title": "Acetaldehído indica fermentación incompleta",
+      "tip": "El acetaldehído es un intermediario en la ruta metabólica de azúcar fermentable a etanol. Cuando la fermentación sufre estrés excesivo o queda incompleta, el acetaldehído se acumula como defecto.",
+      "details": "La secuencia es: glucosa → piruvato → acetaldehído → etanol. Si la levadura no puede completar el camino, el acetaldehído queda en la cerveza con su aroma verde característico."
+    },
+    {
+      "timestamp_ms": 447000,
+      "timestamp": "07:27",
+      "category": "levadura",
+      "title": "Cofactores minerales esenciales para levadura",
+      "tip": "Zinc, magnesio y calcio son cofactores críticos en las rutas metabólicas de la levadura. El oxígeno también actúa como cofactor fundamental para la reproducción celular.",
+      "details": "Estos minerales interactúan directamente con las enzimas de las vías metabólicas. Su deficiencia puede enlentecer reacciones y acumular subproductos indeseados."
+    },
+    {
+      "timestamp_ms": 690000,
+      "timestamp": "11:30",
+      "category": "levadura",
+      "title": "Cómo se forman los ésteres",
+      "tip": "Un éster se forma por la reacción entre un alcohol y un ácido. El ácido proviene de la descarboxilación del piruvato (acetil-CoA). Los alcoholes pueden ser etanol o alcoholes superiores de la vía de aminoácidos.",
+      "details": "Ésteres de acetato (acetil-CoA + alcohol superior) están en mucha mayor concentración que ésteres de etilo (acil-CoA de ácidos grasos + etanol). Los ésteres de acetato dominan el perfil aromático."
+    },
+    {
+      "timestamp_ms": 776000,
+      "timestamp": "12:56",
+      "category": "levadura",
+      "title": "Ploidía y genética determinan producción de ésteres",
+      "tip": "La producción de ésteres depende fundamentalmente del genoma y la ploidía (número de cromosomas) de la cepa. La enzima clave es la acetiltransferasa (ATF), cuya regulación genética varía entre cepas.",
+      "details": "Mayor ploidía implica más copias de genes para las mismas enzimas. Las mutaciones en sitios de regulación de los genes de ATF son las que determinan cuánto éster produce cada cepa."
+    },
+    {
+      "timestamp_ms": 926000,
+      "timestamp": "15:26",
+      "category": "ingrediente",
+      "title": "Estereoisómeros del acetato de isoamilo",
+      "tip": "El acetato de isoamilo comercial es una mezcla de estereoisómeros: uno da aroma a banana clásico y el otro aporta notas a pera y tutti-frutti. Comprar isómeros separados es mucho más caro.",
+      "details": "Tienen la misma fórmula química pero distinta estructura tridimensional, lo que les da propiedades aromáticas diferentes."
+    },
+    {
+      "timestamp_ms": 985000,
+      "timestamp": "16:25",
+      "category": "proceso",
+      "title": "Más glucosa en mosto = más banana",
+      "tip": "Mayor concentración de glucosa en el mosto aumenta la concentración de piruvato, lo que genera más acetil-CoA y consecuentemente más acetato de isoamilo (aroma banana).",
+      "details": "La cadena es: glucosa → piruvato (aumentado) → acetil-CoA (aumentado) → acetato de isoamilo (aumentado)."
+    },
+    {
+      "timestamp_ms": 1028000,
+      "timestamp": "17:08",
+      "category": "proceso",
+      "title": "Acetato de etilo en refermentación en botella",
+      "tip": "Las cervezas refermentadas en botella tienden a producir acetato de etilo (aroma solvente) por dos razones: agregar sacarosa o glucosa aumenta el piruvato y la temperatura de refermentación suele ser mayor que la de fermentación primaria.",
+      "details": "Etanol hay en exceso en la cerveza; al agregar azúcar se aumenta acetil-CoA, y la combinación de ambos da acetato de etilo inevitablemente."
+    },
+    {
+      "timestamp_ms": 1082000,
+      "timestamp": "18:02",
+      "category": "tecnica",
+      "title": "Cepa diferente para refermentación en botella",
+      "tip": "Cervecerías europeas y norteamericanas agregan levadura fresca de una cepa diferente para refermentar en botella, eligiendo específicamente una cepa que produzca poco acetato de etilo.",
+      "details": "No necesariamente usan la misma cepa de fermentación primaria. La elección de cepa para refermentación es una herramienta clave para controlar el solvente en cervezas de botella."
+    },
+    {
+      "timestamp_ms": 1119000,
+      "timestamp": "18:39",
+      "category": "tecnica",
+      "title": "Micro-dosis de levadura contra oxígeno en lata",
+      "tip": "Cervecerías como Sierra Nevada y Founders agregan cantidades mínimas de levadura y azúcar a latas/botellas ya carbonatadas, no para refermentar sino para que la levadura consuma el oxígeno captado en la línea de envasado.",
+      "details": "La cantidad es tan baja que no genera turbidez, sedimento ni sobrecarbonatación. Se elige una cepa adecuada y la mínima cantidad de oxígeno presente se reduce rápidamente."
+    },
+    {
+      "timestamp_ms": 1240000,
+      "timestamp": "20:40",
+      "category": "proceso",
+      "title": "Subir temperatura = más ésteres",
+      "tip": "La herramienta más sencilla para aumentar la producción de ésteres es elevar la temperatura de fermentación. Es el primer recurso a considerar cuando se busca carácter frutal.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1253000,
+      "timestamp": "20:53",
+      "category": "levadura",
+      "title": "Sin cepa adecuada no hay ésteres",
+      "tip": "Si la cepa elegida no es una gran productora de ésteres, por más que subas la temperatura o modifiques otras variables, la producción de ésteres será baja. La elección de cepa es siempre el primer paso.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1295000,
+      "timestamp": "21:35",
+      "category": "tecnica",
+      "title": "Presión de CO2 para reducir ésteres",
+      "tip": "Mantener presión parcial de CO2 en el fermentador (0,25 a 0,5 bar según la cepa) inhibe la descarboxilación oxidativa que produce acetil-CoA, reduciendo la formación de ésteres.",
+      "details": "Al aumentar la presión de CO2, la enzima está presente pero no puede generar más CO2 porque el mosto no acepta más. Esto frena la producción de acetil-CoA y por ende de ésteres."
+    },
+    {
+      "timestamp_ms": 1340000,
+      "timestamp": "22:20",
+      "category": "proceso",
+      "title": "Temperatura controla alcoholes superiores",
+      "tip": "Los alcoholes superiores aumentan con la temperatura. En cervezas de alta densidad la formación es casi inevitable, pero se puede manejar controlando la temperatura estrictamente.",
+      "details": "Cervezas de alta graduación van a producir alcoholes superiores sí o sí por la alta concentración de aminoácidos. El control de temperatura es la herramienta principal."
+    },
+    {
+      "timestamp_ms": 1385000,
+      "timestamp": "23:05",
+      "category": "proceso",
+      "title": "Menos oxígeno genera más ésteres",
+      "tip": "Disminuir la concentración de oxígeno disuelto en el mosto favorece la producción de ésteres. Es una herramienta clave junto con la sub-inoculación para estilos como NEIPA y Hefeweizen.",
+      "details": "El estrés de la levadura por falta de oxígeno, combinado con menor tasa de inoculación, aumenta la actividad metabólica y la producción de ésteres."
+    },
+    {
+      "timestamp_ms": 1404000,
+      "timestamp": "23:24",
+      "category": "tecnica",
+      "title": "Sub-inoculación para aumentar ésteres",
+      "tip": "Inocular menos levadura de lo habitual aumenta la producción de ésteres. La levadura detecta abundancia de nutrientes y acelera su metabolismo para duplicarse, lo que incrementa los ésteres.",
+      "details": "Técnica usada por cerveceros alemanes para Hefeweizen y también para NEIPAs. Se combina con control de temperatura para evitar exceso de alcoholes superiores."
+    },
+    {
+      "timestamp_ms": 1475000,
+      "timestamp": "24:35",
+      "category": "tecnica",
+      "title": "Sub-inocular sin pasarse de temperatura",
+      "tip": "El truco es favorecer la formación de alcoholes superiores (sub-inoculando) pero también su conversión a ésteres (sin exceder la temperatura). En mostos de densidad moderada (~1060 para NEIPA), si hay problema de alcoholes superiores es por mala elección de cepa o falta de control térmico.",
+      "details": "En mostos de 1050-1060 no deberían aparecer alcoholes superiores problemáticos si la cepa y la temperatura están bien elegidas."
+    },
+    {
+      "timestamp_ms": 1543000,
+      "timestamp": "25:43",
+      "category": "tecnica",
+      "title": "Cerrar fermentador para frenar ésteres",
+      "tip": "Una vez que se formaron los ésteres deseados, cerrar el fermentador aumenta la presión de CO2, lo que inhibe la descarboxilación y frena la formación de ésteres adicionales.",
+      "details": "Esto además ayuda a que los aceites esenciales del lúpulo se disuelvan mejor en el caso de dry hopping."
+    },
+    {
+      "timestamp_ms": 1599000,
+      "timestamp": "26:39",
+      "category": "levadura",
+      "title": "Todo proceso fermentativo es estrés",
+      "tip": "La levadura prefiere crecer a 28-30°C, no a 12-20°C. No le gusta el CO2 ni el alcohol. Todo el proceso cervecero es inherentemente estresante para la levadura; el cervecero debe dirigir ese estrés hacia los resultados deseados.",
+      "details": "Baja tasa de inoculación, temperatura controlada y presión de CO2 son las herramientas para canalizar el estrés hacia la producción específica de ésteres u otros compuestos."
+    },
+    {
+      "timestamp_ms": 1932000,
+      "timestamp": "32:12",
+      "category": "levadura",
+      "title": "US-05: limpieza de acetaldehído a 20°C",
+      "tip": "La US-05 no produce diacetilo pero sí genera acetaldehído a bajas concentraciones. Elevando la temperatura a 20°C, la levadura consume el acetaldehído y se obtiene un perfil limpio tipo pseudo-lager.",
+      "details": "Diego Perrotta hacía un descanso de acetaldehído (en vez del clásico diacetil rest) con US-05 fermentando a 17°C y luego subiendo a 20°C. Ideal para Golden Ale sin carácter azufrado."
+    },
+    {
+      "timestamp_ms": 1999000,
+      "timestamp": "33:19",
+      "category": "levadura",
+      "title": "US-05 vs US-04: viabilidad en guarda fría",
+      "tip": "La US-05 soporta mucho mejor la guarda en frío que la US-04, cuya viabilidad cae rápidamente. Para cervecerías que necesitan reutilizar levadura, la US-05 es más práctica para cosechar y guardar.",
+      "details": "La US-04 es muy sensible a cambios de temperatura: un pequeño cambio puede hacer que flocule prematuramente y no termine de fermentar."
+    },
+    {
+      "timestamp_ms": 2030000,
+      "timestamp": "33:50",
+      "category": "tecnica",
+      "title": "Scottish Ale con US-05 sub-inoculando",
+      "tip": "Para hacer una Scottish Ale con US-05 (cuando no se dispone de US-04), sub-inocular un poco y fermentar a temperatura más alta que para una American IPA. No es idéntico a US-04 pero permite más ésteres cuando el estilo lo requiere.",
+      "details": "Se usa el mismo barril de levadura cosechada para múltiples estilos, variando tasa de inoculación y temperatura."
+    },
+    {
+      "timestamp_ms": 2089000,
+      "timestamp": "34:49",
+      "category": "receta",
+      "title": "Scotch Ale con US-05 a 22-23°C",
+      "tip": "Para Scotch Ale (OG ~1075) fermentar con US-05 a 22-23°C para producir ésteres. También se puede fermentar a 18°C con la misma cepa para un perfil más limpio. Misma cepa, distintas cervezas.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2347000,
+      "timestamp": "39:07",
+      "category": "proceso",
+      "title": "Alcoholes superiores por vía de Ehrlich",
+      "tip": "Los alcoholes superiores se forman por degradación de aminoácidos a través de la vía de Ehrlich: aminoácido → cetoácido → aldehído → alcohol superior. Son necesarios para la complejidad aromática pero en exceso dan carácter caliente y solvente.",
+      "details": "No todos los aminoácidos entran en la vía de Ehrlich. Leucina e isoleucina son algunos de los que sí, y la levadura los degrada secuencialmente, no todos a la vez."
+    },
+    {
+      "timestamp_ms": 2462000,
+      "timestamp": "41:02",
+      "category": "proceso",
+      "title": "Alta densidad implica alcoholes superiores",
+      "tip": "En mostos de alta densidad la concentración de aminoácidos es inherentemente alta, haciendo la formación de alcoholes superiores casi inevitable. El foco debe estar en controlar su transformación en ésteres, no en evitar su formación.",
+      "details": "Los alcoholes superiores aportan complejidad pero no deben superar el umbral de detección. En cervezas de alta graduación, el tiempo de maduración generalmente ayuda a integrarlos."
+    },
+    {
+      "timestamp_ms": 2613000,
+      "timestamp": "43:33",
+      "category": "tecnica",
+      "title": "Adjuntos no malteados reducen alcoholes superiores",
+      "tip": "Para reducir la formación de alcoholes superiores, disminuir el amino nitrógeno libre (FAN) usando adjuntos no malteados, miel o jugo de fruta en lugar de 100% malta.",
+      "details": "Al reemplazar parte de la malta por adjuntos sin proteínas, se reduce la concentración de aminoácidos disponibles para la vía de Ehrlich."
+    },
+    {
+      "timestamp_ms": 2680000,
+      "timestamp": "44:40",
+      "category": "tecnica",
+      "title": "Alimentación progresiva de mosto",
+      "tip": "Para cervezas de alta densidad, partir de un mosto de baja densidad e ir agregando mosto progresivamente. Esto permite que la levadura se adapte a concentraciones crecientes de alcohol y reduce la carga de aminoácidos por cada adición.",
+      "details": "La levadura se aclimata gradualmente al estrés osmótico y alcohólico, y la degradación de alcoholes superiores se maneja de a poco en cada etapa."
+    },
+    {
+      "timestamp_ms": 2837000,
+      "timestamp": "47:17",
+      "category": "proceso",
+      "title": "Más oxígeno estabiliza membranas en alta densidad",
+      "tip": "En cervezas de alta densidad, mayor oxigenación inicial favorece la producción de ergosterol, que estabiliza la membrana celular contra el efecto solvente del alcohol elevado.",
+      "details": "El etanol desestabiliza la membrana plasmática porque es solvente de grasas. El oxígeno permite sintetizar compuestos que hacen la membrana más robusta. Pero aún con más O2 y más levadura, sin control de temperatura se producirán alcoholes superiores en exceso."
+    },
+    {
+      "timestamp_ms": 3036000,
+      "timestamp": "50:36",
+      "category": "tecnica",
+      "title": "Descenso suave de temperatura en alta densidad",
+      "tip": "En cervezas de alta graduación alcohólica, una curva de descenso de temperatura con pendiente suave produce mejores resultados que una bajada brusca para controlar alcoholes superiores.",
+      "details": "No es solo la temperatura final sino la geometría del fermentador y el sistema de enfriado lo que influye. Una bajada gradual permite que la levadura siga trabajando y transformando alcoholes superiores en ésteres."
+    }
+  ]
+}

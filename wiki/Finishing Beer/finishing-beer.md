@@ -13,7 +13,8 @@ The cold side has different concerns than the hot side. Two rules dominate every
 3. **[[lagering]]** — cold conditioning for mellow, clean lager character.
 4. **[[clarifying]]** — natural settling, finings, the two-keg jumper trick.
 5. **[[stabilizing]]** — preventing protein/tannin chill haze.
-6. **[[carbonating-and-packaging]]** · **[[cask-conditioning]]** — getting it into the package.
+6. **[[the-science-of-foam]]** — formation vs. retention, and why foam is a sensitive indicator of fermentation and process cleanliness.
+7. **[[carbonating-and-packaging]]** · **[[oxygen-control-when-filling]]** · **[[cask-conditioning]]** — getting it into the package.
 
 ## Final Adjustments
 

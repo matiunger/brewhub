@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E15 - Diseno de recetas con Sebastian Gonzalez</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; }
+.audio-bar { position: sticky; top: 0; z-index: 100; background: #1a1a1a; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem; }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+.audio-bar audio { flex: 1; width: 100%; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.stat { background: #fff; border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.85rem; font-weight: 600; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.12); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.8rem; background: #1a1a1a; color: #fff; border: none; padding: 0.25rem 0.55rem; border-radius: 5px; cursor: pointer; transition: background 0.15s; }
+.timestamp:hover { background: #3b82f6; }
+.timestamp:hover::after { content: ' \25B6'; font-size: 0.65rem; }
+.badge { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.88rem; line-height: 1.5; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; color: #555; font-style: italic; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Indice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T2E15 - Diseno de recetas con Sebastian Gonzalez.wav"></audio>
+</div>
+
+<div class="container">
+<h1>T2E15 - Diseno de recetas con Sebastian Gonzalez</h1>
+
+<div class="stats">
+  <div class="stat">18 tips en total</div>
+  <div class="stat" style="border-left:3px solid #2563eb;">proceso: 5</div>
+  <div class="stat" style="border-left:3px solid #7c3aed;">tecnica: 3</div>
+  <div class="stat" style="border-left:3px solid #be185d;">levadura: 3</div>
+  <div class="stat" style="border-left:3px solid #15803d;">lupulo: 2</div>
+  <div class="stat" style="border-left:3px solid #0369a1;">agua: 2</div>
+  <div class="stat" style="border-left:3px solid #0891b2;">equipo: 2</div>
+  <div class="stat" style="border-left:3px solid #16a34a;">ingrediente: 1</div>
+  <div class="stat" style="border-left:3px solid #92400e;">malta: 1</div>
+</div>
+
+<div class="grid">
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="625000">10:25</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Repetitividad antes de diseñar recetas</div>
+  <div class="card-tip">Antes de diseñar recetas, tenés que tener repetitividad en tu proceso. Si un día te sale 1060 y otro 1080 de densidad inicial, todavía no llegaste al punto de poder diseñar una receta.</div>
+  <div class="card-details">El buen cervecero no es el que hace una cerveza buena, sino el que hace lo que quiere hacer: decide las características y las logra.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1010000">16:50</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Conocer ingredientes de primera mano</div>
+  <div class="card-tip">Comprá pequeñas cantidades de todas las maltas disponibles (un cuarto kilo de cada una) y ponete a masticar el grano, olerlo, probarlo. Antes de diseñar una receta tenés que entender el ingrediente.</div>
+  <div class="card-details">También aplica a lúpulos y levaduras. Llenar la 'biblioteca sensorial' charlando con otros cerveceros sobre qué perciben en cada ingrediente.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1069000">17:49</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Single hop APA para conocer lúpulos</div>
+  <div class="card-tip">Hacé siempre la misma receta de APA y cambiá solo la variedad de lúpulo para entender cada una. La APA es ideal porque al tener menos amargor, la boca recibe mejor el sabor del lúpulo.</div>
+  <div class="card-details">Receta base: 90% Pilsen, 10% Munich, 4 g/L en whirlpool, 4 g/L en dry hopping, BU:GU ~0.5.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1079000">17:59</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Batch spliteado para conocer levaduras</div>
+  <div class="card-tip">Para entender las diferencias entre cepas de levadura, hacé una cocción y dividí el mosto en varios fermentadores, cada uno con una cepa distinta. Así comparás levaduras con el mismo mosto base.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1418000">23:38</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Hacer clones para desarrollar habilidad</div>
+  <div class="card-tip">Hacer un clon (copia de una cerveza comercial) desarrolla el músculo de traducir una percepción sensorial en ajustes de receta. Te obliga a prestar atención fina al color, caramelo, maltosidad, y a iterar hasta lograrlo.</div>
+  <div class="card-details">Cuando probás tu clon contra el original y no sabés cuál es cuál ni cuál te gusta más, desarrollaste la habilidad de traducir una cerveza en receta. El paso glorioso es soñar una cerveza y traducirla en líquido.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1495000">24:55</button>
+    <span class="badge badge-malta">malta</span>
+  </div>
+  <div class="card-title">El color como marco para jugar con maltas</div>
+  <div class="card-tip">El color de la cerveza es tu marco para jugar con las maltas. A más color disponible, más complejidad de maltas caramelo, oscuras y munich podés aportar. Para el mismo color, podés usar mucho caramelo bajo o poco caramelo alto, con resultados muy distintos.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1635000">27:15</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Construir color en capas</div>
+  <div class="card-tip">Armá el color en capas para no pasarte de caramelo. Arrancá con Pale en vez de Pilsen, agregá algo de Munich, usá malta melanoidin en vez de caramelo para sabor maltoso, y si querés un toque tostado, un 0.5% de malta chocolate.</div>
+  <div class="card-details">Esto abre un abanico de posibilidades dentro del mismo color. Es una herramienta para evitar el error común de exceso de caramelo. Si el estilo pide caramelo fuerte (ej: Scottish), saltear las capas e ir directo a los caramelos que den el perfil buscado.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1683000">28:03</button>
+    <span class="badge badge-agua">agua</span>
+  </div>
+  <div class="card-title">Color en capas afecta el pH de maceración</div>
+  <div class="card-tip">Al construir el color en capas, también estás manejando el pH de maceración. Arrancar con Pale en vez de Pilsen baja el pH, lo cual es útil si trabajás con agua de alta alcalinidad.</div>
+  <div class="card-details">El diseño de receta es una sábana corta: si movés las maltas tenés que pensar en el pH, si ajustás el pH hay que fijarse el color, y después la fermentación. Todo se concatena.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2198000">36:38</button>
+    <span class="badge badge-lupulo">lupulo</span>
+  </div>
+  <div class="card-title">IBU bajo en software, amargor real del dry hop</div>
+  <div class="card-tip">Las American IPAs modernas pueden tener 20-22 IBU calculados en el software pero lograr un amargor percibido adecuado gracias al aporte de amargor del dry hopping. Reducí el amargor en boil porque el dry hop aporta amargor significativo.</div>
+  <div class="card-details">Con dos dry hoppings de 8 g/L cada uno, el aporte de amargor es muy alto aunque el software no lo calcule. El juez evalúa percepción, no el número del software.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2497000">41:37</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">S33 no es belga, ideal para Scottish</div>
+  <div class="card-tip">La Fermentis S33 se vende como cepa belga pero no tiene características belgas: baja atenuación y sin fenoles. Las cepas belgas deben atenuar bien. La S33 es excelente para una Scottish ale.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2526000">42:06</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">S33 para biotransformación y NEIPA</div>
+  <div class="card-tip">La S33 funciona muy bien para cervezas de biotransformación y NEIPA. Fermentis misma la recomienda para ese uso según un paper publicado.</div>
+  <div class="card-details">Tiene que espuntar bastante, pero con eso funciona bien.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3021000">50:21</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">La receta es ingredientes más proceso</div>
+  <div class="card-tip">Una receta de cerveza no es solo la lista de ingredientes: es la lista de ingredientes más el proceso. Son dos cosas que van de la mano. Con la misma receta, mismas maltas, mismo lúpulo y hasta la misma agua, la cerveza será distinta si el proceso es distinto.</div>
+  <div class="card-details">Tener la receta de la Pliny the Elder no alcanza para replicarla sin los procesos y equipos de Russian River.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3237000">53:57</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">Conocé tu equipo y adaptá los procesos</div>
+  <div class="card-tip">Si conocés tu equipo, sabés que para lograr determinadas cosas vas a tener que hacer determinados procesos. Sin fermentador isobárico, hacé dry hopping con más cantidad y precauciones extra, o un hop stand más cargado.</div>
+  <div class="card-details">Seba González ganó dos campeonatos de Somos Cerveceros fermentando en botellones de vidrio y clarificando con gelatina Royal. No es una carrera armamentística de equipos.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3413000">56:53</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Gran cerveza = suma de pequeños detalles</div>
+  <div class="card-tip">Una gran cerveza es la suma de todos los pequeños detalles. Oxigenar el mosto, usar buena malta, conservar lúpulo envasado al vacío. Vistos por separado las diferencias parecen pequeñas, pero en conjunto definen la calidad.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3521000">58:41</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">La cerveza no supera su peor error</div>
+  <div class="card-tip">Ninguna cerveza va a ser mejor que el peor de sus errores. Si tenés un gran error de fermentación, eso pone un techo a la calidad sin importar qué tan buenas sean tus maltas o tu agua.</div>
+  <div class="card-details">Hay que ajustar todos los detalles en paralelo. Usar Malta Weyermann con defectos de fermentación y oxidación es incoherente: primero arreglá la fermentación.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3598000">59:58</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Orden de prioridades del cervecero</div>
+  <div class="card-tip">Prioridades en orden: 1) Buena sanitización y protocolo de limpieza. 2) Control de fermentación adecuado (temperatura e inóculo). 3) Tratamiento de agua (la importancia varía según tu fuente). 4) Control de incorporación de oxígeno (más o menos crítico según el estilo).</div>
+  <div class="card-details">La fermentación es lo que más puede arruinar cualquier otra cosa que hayas hecho bien.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3622000">1:00:22</button>
+    <span class="badge badge-agua">agua</span>
+  </div>
+  <div class="card-title">Agua de Buenos Aires: ideal para cerveza</div>
+  <div class="card-tip">El agua de AMBA (río de la Plata) es excelente para hacer cerveza: basta con sacarle el cloro. Nunca es demasiado alcalina ni tiene demasiado sulfato. Es un agua blanda, muy buena para trabajar.</div>
+  <div class="card-details">El problema es la variabilidad (no siempre viene igual). Para agua de pozo con alcalinidad de 400+, el tratamiento de agua pasa a ser la primera prioridad del diseño de receta.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3742000">1:02:22</button>
+    <span class="badge badge-lupulo">lupulo</span>
+  </div>
+  <div class="card-title">Mejor técnica de lupulado: evitar oxígeno</div>
+  <div class="card-tip">La mejor técnica de lupulado es no incorporar oxígeno. Hay cervezas con 20 g/L de lúpulo que no tienen aroma ni sabor a lúpulo porque incorporaron oxígeno.</div>
+  <div class="card-details">No le metas 2 ppm de oxígeno disuelto. Antes de invertir en más lúpulo, asegurate de no estar oxidando.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3764000">1:02:44</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">Purgá barriles antes de comprar isobárico</div>
+  <div class="card-tip">Si la cerveza lupulada se te cae, antes de gastar en un fermentador isobárico, aprendé a purgar bien los barriles con CO2. Puede resolver el problema a una fracción del costo.</div>
+</div>
+
+</div>
+</div>
+
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

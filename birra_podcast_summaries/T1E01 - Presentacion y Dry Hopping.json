@@ -1,0 +1,85 @@
+{
+  "episode": "T1E01 - Presentacion y Dry Hopping",
+  "tips": [
+    {
+      "timestamp_ms": 858000,
+      "timestamp": "14:18",
+      "category": "tecnica",
+      "title": "Dry hopping al final de fermentación",
+      "tip": "Agregar el lúpulo cuando le quedan 5 puntos de densidad por atenuar. La fermentación residual genera CO2 que mantiene el lúpulo en movimiento y aumenta la transferencia. La levadura en suspensión absorbe parte del oxígeno disuelto incorporado.",
+      "details": "Si la cerveza termina en 1.010, dry hoppear cuando está en 1.015. No guiarse por el día (3ro, 5to), sino por la densidad. Requiere conocer la cinética de fermentación de cada cepa."
+    },
+    {
+      "timestamp_ms": 891000,
+      "timestamp": "14:51",
+      "category": "proceso",
+      "title": "Subir temperatura para dry hopping",
+      "tip": "Liberar el controlador de temperatura cuando faltan 5 puntos para que la cerveza termine fermentando por encima de 21 °C. La temperatura elevada aumenta la solubilidad de ciertos aceites esenciales del lúpulo.",
+      "details": "Combinar el descanso de diacetilo con el dry hopping. En invierno liberar el controlador antes porque la temperatura ambiente baja demasiado."
+    },
+    {
+      "timestamp_ms": 1024000,
+      "timestamp": "17:04",
+      "category": "tecnica",
+      "title": "Cerrar blow-off al dry hoppear",
+      "tip": "Cerrar la salida de gases después de agregar el lúpulo para acumular presión con los últimos puntos de fermentación. La presión empuja el krausen de lúpulo hacia el líquido, aumentando el área de contacto y forzando volátiles a quedarse en solución.",
+      "details": "Si se cierra antes (fermentación muy activa), quedan ésteres, sulfuros y otros compuestos indeseables. Si se cierra después, ya no se genera suficiente presión. Solo funciona en fermentador isobárico/inoxidable."
+    },
+    {
+      "timestamp_ms": 1063000,
+      "timestamp": "17:43",
+      "category": "tecnica",
+      "title": "Aclimatar lúpulo antes de agregarlo",
+      "tip": "Sacar el lúpulo del freezer, pesarlo y dejarlo que se aclimate a temperatura ambiente antes de tirarlo al tanque. Cuando está congelado cae sólido al fondo; a temperatura ambiente se pulveriza y solubiliza mejor en el líquido.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1275000,
+      "timestamp": "21:15",
+      "category": "proceso",
+      "title": "Purgar cono antes del dry hopping",
+      "tip": "Hacer una purga total del cono (trub + levadura muerta) antes de dry hoppear. La levadura muerta con el trub genera sulfuros, mercaptanos y otros compuestos indeseables. Además, que el cono sea 100% lúpulo aumenta el área de transferencia de aromas.",
+      "details": "El lúpulo precipita en menos de 24 horas tras el dry hopping. Todo el aroma se transfiere desde la torta de lúpulo del cono hacia el líquido, así que conviene que no haya trub ni levadura muerta mezclados."
+    },
+    {
+      "timestamp_ms": 1391000,
+      "timestamp": "23:11",
+      "category": "equipo",
+      "title": "Plástico requiere más lúpulo que inox",
+      "tip": "En fermentadores de plástico se necesita más lúpulo para la misma intensidad aromática porque no se puede presurizar. Testear cuánta presión soporta la tapa y mejorar el sellado (más tornillos, juntas). Incluso 200-300 g de presión ya es una mejora significativa.",
+      "details": "El peor momento es al pasar de temperatura de fermentación a frío: el líquido se contrae, genera vacío y entra aire al tanque. Eso es mortal para la cerveza lupulada."
+    },
+    {
+      "timestamp_ms": 1449000,
+      "timestamp": "24:09",
+      "category": "tecnica",
+      "title": "En plástico, priorizar whirlpool sobre dry hop",
+      "tip": "Para cerveceros con fermentadores de plástico, usar más adición de lúpulo en whirlpool que en dry hopping. El whirlpool genera compuestos de oxidación de aceites esenciales más estables, más pesados y menos volátiles, con aroma más duradero en el tiempo.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1703000,
+      "timestamp": "28:23",
+      "category": "ratio",
+      "title": "Dosificación según intensidad deseada",
+      "tip": "Con menos de 6 g/L de lúpulo alcanza un solo dry hopping al final de la fermentación. Agregar más de 6 g/L en una sola adición es ineficiente: 6 g/L y 10 g/L dan casi la misma intensidad aromática.",
+      "details": "Para más de 6 g/L, dividir en dos adiciones: una al final de fermentación y otra en frío (solo si se tiene equipamiento para slurry)."
+    },
+    {
+      "timestamp_ms": 1715000,
+      "timestamp": "28:35",
+      "category": "tecnica",
+      "title": "Dry hop de biotransformación temprano",
+      "tip": "Para NEIPAs o cervezas que buscan biotransformación, agregar 2-3 g/L de lúpulo al inicio de la fermentación activa (12-24 h después de inocular), cuando el blow-off empieza a burbujear. Esta adición aporta más sabor que aroma por la interacción lúpulo-levadura.",
+      "details": "Es un agregado complementario al dry hop principal de fin de fermentación; no lo reemplaza."
+    },
+    {
+      "timestamp_ms": 1803000,
+      "timestamp": "30:03",
+      "category": "tecnica",
+      "title": "Evitar dry hopping en frío sin equipo",
+      "tip": "El dry hopping en frío incorpora oxígeno que se arrastra hasta la cerveza terminada. La cerveza puede explotar de aroma los primeros 2-3 días, estar más o menos a la semana y perder todo el aroma a las 2 semanas. Solo hacerlo si se tiene equipamiento para slurry.",
+      "details": "Sin equipamiento adecuado, los resultados a mediano plazo son peores que si no se hubiese hecho la adición en frío."
+    }
+  ]
+}

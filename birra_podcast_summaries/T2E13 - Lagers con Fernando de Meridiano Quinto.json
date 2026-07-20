@@ -1,0 +1,197 @@
+{
+  "episode": "T2E13 - Lagers con Fernando de Meridiano Quinto",
+  "tips": [
+    {
+      "timestamp_ms": 462000,
+      "timestamp": "7:42",
+      "category": "levadura",
+      "title": "Control de temperatura es clave en lagers",
+      "tip": "La característica fundamental de las cepas lager es la temperatura de fermentación baja. Necesitás buen control de temperatura, mayor nutrición que una ale, y aceptar tiempos de fermentación más largos.",
+      "details": "Las lagers no producen ésteres, son neutras y limpias. El sulfuro leve es el 'aroma lager' característico. Cualquier defecto brilla más por la limpieza del perfil."
+    },
+    {
+      "timestamp_ms": 730000,
+      "timestamp": "12:10",
+      "category": "levadura",
+      "title": "Requerimientos extras de las cepas lager",
+      "tip": "Las levaduras lager necesitan más oxígeno, zinc y magnesio que las ales. También son más sensibles al estrés: evitar shocks térmicos al inocular y al reutilizar levadura.",
+      "details": "Incorporar sulfato de magnesio en las sales del agua mejora el rendimiento de las cepas lager."
+    },
+    {
+      "timestamp_ms": 872000,
+      "timestamp": "14:32",
+      "category": "ratio",
+      "title": "Tasa de inoculación: 1.5M cel/mL",
+      "tip": "Para lagers, usar una tasa de inoculación de 1.5 millones de células por mililitro por grado Plato. Es el doble de lo que se usa para una cerveza ale.",
+      "details": "Hacer conteo de levaduras para mantener esta tasa. Es un error común inocular lagers con la misma cantidad que ales."
+    },
+    {
+      "timestamp_ms": 912000,
+      "timestamp": "15:12",
+      "category": "proceso",
+      "title": "Fase lag: 1°C arriba del target",
+      "tip": "Mantener la temperatura 1°C por encima de la temperatura objetivo durante la fase lag (primeras 12 horas). Una vez que hay actividad plena de fermentación, bajar gradualmente hasta la temperatura deseada.",
+      "details": "Cuidar que el mosto y la levadura estén a la misma temperatura al momento de inocular para evitar shock térmico."
+    },
+    {
+      "timestamp_ms": 948000,
+      "timestamp": "15:48",
+      "category": "proceso",
+      "title": "Liberar temperatura en últimos puntos",
+      "tip": "En los últimos puntos de densidad, subir un par de grados la temperatura para acelerar la atenuación final y facilitar la reabsorción de diacetilo.",
+      "details": "Es más una práctica comercial para acortar tiempos. En homebrew no es estrictamente necesario si no hay apuro."
+    },
+    {
+      "timestamp_ms": 981000,
+      "timestamp": "16:21",
+      "category": "proceso",
+      "title": "Lagers atenúan en 4-5 días",
+      "tip": "Cervezas lager convencionales (Hells, Pils, Märzen hasta OG 1.060) terminan de atenuar en 4-5 días cuando se usa levadura reutilizada con buena vitalidad.",
+      "details": "El tiempo es solo un 25-30% mayor que una ale equivalente. La clave es usar levadura vital y bien nutrida."
+    },
+    {
+      "timestamp_ms": 1017000,
+      "timestamp": "16:57",
+      "category": "proceso",
+      "title": "Rampa descendente post-fermentación",
+      "tip": "Después de terminar la fermentación y el descanso diacetilo, bajar la temperatura escalonadamente: 2-3°C por día. No bajar de golpe.",
+      "details": "La rampa gradual produce levadura con mejor viabilidad para reutilización. Bajar de golpe estresa la levadura que ya está en medio alcohólico sin oxígeno ni nutrientes."
+    },
+    {
+      "timestamp_ms": 1033000,
+      "timestamp": "17:13",
+      "category": "levadura",
+      "title": "Cosechar levadura a temperatura media",
+      "tip": "Cosechar la levadura a temperatura intermedia (~8-10°C), no en frío extremo. Solapar cocciones para usar el barro de la fermentación anterior cuando la levadura todavía está activa.",
+      "details": "La leva cosechada en caliente (apenas flocculada) tiene máxima vitalidad. A menor temperatura, hay más barro pero menos viabilidad porque se fue muriendo en el camino."
+    },
+    {
+      "timestamp_ms": 1078000,
+      "timestamp": "17:58",
+      "category": "proceso",
+      "title": "Descanso diacetilo con W34/70",
+      "tip": "Fermentar a 13°C con W34/70, liberar a 15°C en los últimos puntos. Con levadura vital, el test de diacetilo forzado da negativo en solo 2 días post-fermentación.",
+      "details": "Si el diacetilo tarda semanas en reabsorberse, es señal de que la levadura llegó al final de la fermentación sin vitalidad suficiente. El problema no es el descanso, es la salud de la leva."
+    },
+    {
+      "timestamp_ms": 1270000,
+      "timestamp": "21:10",
+      "category": "levadura",
+      "title": "Ventana óptima de cosecha de levadura",
+      "tip": "Bajar solo un par de grados post-fermentación para flocular lo grueso. Esa primera floculación es la levadura más vital: entró al tanque, fermentó, se fue a dormir y la levantás fresca para el siguiente lote.",
+      "details": "Las cepas lager son poco floculantes, por eso necesitás bajar un poco la temperatura para que precipite. No esperar a que llegue al fondo del tanque en frío: esa leva ya perdió viabilidad."
+    },
+    {
+      "timestamp_ms": 1433000,
+      "timestamp": "23:53",
+      "category": "proceso",
+      "title": "Oxigenación: 12-16 ppm con O2 puro",
+      "tip": "Las lagers necesitan 12-16 ppm de oxígeno disuelto. Usar oxígeno puro (no aire) con piedra difusora a 1 L/min durante todo el enfriado del mosto (75-80 minutos).",
+      "details": "Con aire estéril no se alcanzan esos niveles de O2. Si la fase lag se extiende más de 24 horas, se puede reoxigenar antes de que inicie la fermentación activa."
+    },
+    {
+      "timestamp_ms": 1495000,
+      "timestamp": "24:55",
+      "category": "tecnica",
+      "title": "Reoxigenación en fase lag extendida",
+      "tip": "Si al usar levadura líquida o seca nueva la fase lag se extiende demasiado, se puede hacer un ciclo cerrado en el fermentador y reoxigenar 30-40 minutos adicionales antes de las 24 horas.",
+      "details": "Generar flujo ascendente desde el fondo del tanque con burbujas de oxígeno. Solo hacerlo antes de que inicie la fermentación activa."
+    },
+    {
+      "timestamp_ms": 1556000,
+      "timestamp": "25:56",
+      "category": "ingrediente",
+      "title": "Nutrientes: zinc y magnesio para lagers",
+      "tip": "Usar cloruro de zinc en cada fermentación lager. Cada 4-5 reutilizaciones de levadura, agregar Springferm BR2 al fermentador para mantener la viabilidad a largo plazo.",
+      "details": "También incorporar sulfato de magnesio en las sales del agua. Se notó mejoría en levaduras lager con su uso. No usan nutrientes comerciales complejos (FAN), solo zinc y magnesio."
+    },
+    {
+      "timestamp_ms": 1643000,
+      "timestamp": "27:23",
+      "category": "proceso",
+      "title": "Triángulo fermentativo: O2, inóculo, nutrientes",
+      "tip": "Las tres patas fundamentales para fermentar una buena lager: oxígeno suficiente, inóculo vital en cantidad adecuada, y nutrientes. Se potencian entre sí; fallar en una arruina las demás.",
+      "details": "La levadura necesita oxígeno para reproducirse, pero para consumirlo necesita estar viva y vital, y para eso necesita nutrientes. Es un ciclo que debe mantenerse completo."
+    },
+    {
+      "timestamp_ms": 2004000,
+      "timestamp": "33:24",
+      "category": "lupulo",
+      "title": "Lúpulos nobles necesitan ebullición",
+      "tip": "Los lúpulos nobles (europeos) necesitan ebullición para extraer sus compuestos aromáticos característicos: especiados, herbales, amaderados. Adiciones a 15-30 minutos de hervor son ideales para lagers clásicas.",
+      "details": "No tiene sentido usar lúpulos nobles solo en Whirlpool frío o dry hop. A diferencia de los americanos (cítricos, frutales), los nobles expresan mejor sus perfiles con algo de hervor."
+    },
+    {
+      "timestamp_ms": 2153000,
+      "timestamp": "35:53",
+      "category": "lupulo",
+      "title": "No usar lúpulos frutales en hervor largo",
+      "tip": "Los lúpulos americanos frutales/cítricos (ej: Citra) pierden todo su carácter en adiciones de 30-40 minutos. Solo queda un toque de resina que se podría obtener con cualquier lúpulo más barato.",
+      "details": "Para perfiles cítricos y frutados usar Whirlpool, hop stand o dry hop. Para hervor prolongado, elegir lúpulos con perfiles terrosos, herbales, especiados o maderosos."
+    },
+    {
+      "timestamp_ms": 2193000,
+      "timestamp": "36:33",
+      "category": "ratio",
+      "title": "Ratio de lúpulo en lagers alemanas",
+      "tip": "En lagers alemanas clásicas, menos de 0.5 g/L por adición y un total de 1.2-1.5 g/L repartido en 4 adiciones ya se considera una cerveza 'fuertemente lupulada'.",
+      "details": "Contexto: pruebas en Bayerischer Bahnhof. Son cantidades muy inferiores a las de una American Pils o IPL. La sutileza es el objetivo."
+    },
+    {
+      "timestamp_ms": 2377000,
+      "timestamp": "39:37",
+      "category": "receta",
+      "title": "Diseño de recetas lager: de simple a complejo",
+      "tip": "Empezar con diseños de receta simples e ir sumando de a poco. En lagers, cualquier pequeña adición se nota y puede desbalancear. Chequear la calidad de cada lote de malta antes de usar.",
+      "details": "Una Munich con más tostado del esperado puede sacar de estilo una cerveza entera. La variabilidad de las maltas es más crítica en lagers que en ales."
+    },
+    {
+      "timestamp_ms": 2459000,
+      "timestamp": "40:59",
+      "category": "ratio",
+      "title": "Pils: hasta 6 g/L entre hervor y hop stand",
+      "tip": "En una German Pils se puede llegar hasta 6 g/L totales entre adiciones en hervor y hop stand con distintas variedades de lúpulo. Es el techo antes de desbalancear.",
+      "details": "Buscando equilibrio entre amargor y aroma. Esto es para una Pils bien lupulada, no para una Hells o Märzen que llevan menos."
+    },
+    {
+      "timestamp_ms": 2482000,
+      "timestamp": "41:22",
+      "category": "tecnica",
+      "title": "Adición única: 1 g/L a 5 min de hervor",
+      "tip": "Agregar lúpulo noble a razón de 1 g/L en los últimos 5 minutos de hervor, y luego bajar la temperatura para Whirlpool sin agregar más. Una sola carga que da perfiles herbales/especiados del hervor y florales/cítricos del enfriado.",
+      "details": "El breve hervor desarma el pellet (los nobles son más duros y no se disuelven bien en frío) y extrae compuestos que la baja temperatura del Whirlpool luego preserva de seguir volatilizándose."
+    },
+    {
+      "timestamp_ms": 2647000,
+      "timestamp": "44:07",
+      "category": "agua",
+      "title": "Agua para lagers: baja mineralización",
+      "tip": "Buscar la menor carga de minerales posible, pero siempre con calcio por encima de 60 ppm. TDS total de la mezcla final alrededor de 150 ppm. Sales: cloruro de calcio, sulfato de calcio y sulfato de magnesio.",
+      "details": "Si el agua tiene muchos carbonatos, usar ósmosis inversa y hacer un blend hasta 80-100 ppm de TDS base, luego agregar sales. Jugar con ratio cloruros/sulfatos según estilo."
+    },
+    {
+      "timestamp_ms": 2818000,
+      "timestamp": "46:58",
+      "category": "agua",
+      "title": "Bicarbonato de sodio en Munich Hells",
+      "tip": "En cervezas con grist mayormente Munich (o mucha malta especial), puede ser necesario agregar un poco de bicarbonato de sodio para que no se caiga demasiado el pH de macerado.",
+      "details": "Las maltas oscuras/caramelo acidifican más el macerado. Con agua de baja mineralización esto se acentúa."
+    },
+    {
+      "timestamp_ms": 2855000,
+      "timestamp": "47:35",
+      "category": "receta",
+      "title": "Receta Munich Hells: 85% Pilsen + 15% Viena",
+      "tip": "Grist simple: 85% malta Pilsen y 15% malta Viena. Evitar Munich en la Hells porque tiene mucha variabilidad entre lotes y es muy fácil desbalancear la cerveza o sacarla de estilo.",
+      "details": "Anteriormente usaban Munich pero tuvieron problemas repetidos de variabilidad. La Viena aporta la sutil maltosidad sin riesgo de pasarse."
+    },
+    {
+      "timestamp_ms": 2994000,
+      "timestamp": "49:54",
+      "category": "tecnica",
+      "title": "Mini-mash para testear maltas nuevas",
+      "tip": "Antes de hacer un lote completo con una malta nueva o de otro proveedor, hacer un mini-mash: 50 g de malta + 150 cc de agua. Evaluar color, aroma y sabor para detectar defectos.",
+      "details": "Sirve para detectar maltas pasadas de tostado, con olor a ahumado, o fuera de especificación. Es especialmente crítico en lagers donde los defectos se notan más."
+    }
+  ]
+}

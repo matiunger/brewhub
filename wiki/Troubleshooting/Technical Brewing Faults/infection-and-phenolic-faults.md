@@ -46,4 +46,4 @@
 
 ## Related
 
-[[fermentation-faults]] · [[cleaning]] · [[adjusting-water]] · [[water-chemistry]] · [[choosing-a-yeast-strain]] · [[beer-stability]]
+[[fermentation-faults]] · [[cleaning]] · [[adjusting-water]] · [[water-chemistry]] · [[choosing-a-yeast-strain]] · [[beer-stability]] · [[diy-quality-control-tests]]

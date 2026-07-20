@@ -1,0 +1,229 @@
+{
+  "episode": "T1E02 - Parametros del agua y lupulado en Whirlpool",
+  "tips": [
+    {
+      "timestamp_ms": 182000,
+      "timestamp": "3:02",
+      "category": "agua",
+      "title": "Analisis de agua como punto de partida",
+      "tip": "Tener un buen analisis de agua de proceso es el punto de partida para cualquier modificacion. Si queres sacarle o agregarle algo, tenes que saber desde que condiciones partis.",
+      "details": "El agua es el elemento mas abundante de la cerveza y no se puede importar. Emular perfiles de agua de otras regiones no es tan sencillo como parece."
+    },
+    {
+      "timestamp_ms": 260000,
+      "timestamp": "4:20",
+      "category": "agua",
+      "title": "Relacion sulfato/cloruro define percepcion",
+      "tip": "La relacion entre sulfato y cloruro en el agua define la percepcion del amargor o la maltosidad en la cerveza terminada.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 271000,
+      "timestamp": "4:31",
+      "category": "agua",
+      "title": "Alcalinidad determina pH de maceracion",
+      "tip": "La alcalinidad es fundamental para determinar el pH de maceracion, y con el probablemente el pH de todo el proceso hasta el producto terminado. Tambien tiene alguna importancia en percepcion de sabor mas sutil.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 288000,
+      "timestamp": "4:48",
+      "category": "agua",
+      "title": "Calcio: clave en fermentacion y enzimas",
+      "tip": "El calcio es muy importante para la fermentacion, actividad enzimatica y floculacion de la levadura. El magnesio es nutriente de la levadura pero se necesita en pocas cantidades y la malta trae mucho.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 335000,
+      "timestamp": "5:35",
+      "category": "agua",
+      "title": "Alcalinidad maxima recomendada: 250 ppm",
+      "tip": "Con una alcalinidad de 250 ppm o mas, no se puede corregir solamente con acido en el macerador o maltas oscuras. Hay que hacer un pretratamiento del agua antes de usarla.",
+      "details": "Valores de 280-300 son exageradamente altos. Una Imperial Stout puede tolerar mas alcalinidad porque las maltas tostadas acidifican, pero para una pilsen alemana con 250 no se puede trabajar sin tratar."
+    },
+    {
+      "timestamp_ms": 394000,
+      "timestamp": "6:34",
+      "category": "agua",
+      "title": "Calcio minimo 50 ppm, ideal 75 ppm",
+      "tip": "El agua de proceso necesita por lo menos 50 ppm de calcio. Preferiblemente 75 ppm para asegurar buena cantidad de calcio disponible durante la fermentacion.",
+      "details": "Una American Light Lager puede caminar con 40 ppm, pero como regla general menos de 50 no es recomendable. El calcio excesivo (>200 ppm) seria problematico pero es rarismo en aguas potables."
+    },
+    {
+      "timestamp_ms": 442000,
+      "timestamp": "7:22",
+      "category": "agua",
+      "title": "No agregar magnesio al agua",
+      "tip": "No se recomienda agregar magnesio al agua de proceso. La malta trae cantidades grandes de magnesio, con lo cual no deberia ser una preocupacion por lo bajo. El magnesio en exceso da un sabor amargo, metalico y horrible.",
+      "details": "Puede ser problematico a nivel salud si se cruza con sulfatos muy altos. Aguas con mucho magnesio generalmente tambien tienen mucha alcalinidad o mucho sodio, asi que al diluir el magnesio queda en valor normal."
+    },
+    {
+      "timestamp_ms": 554000,
+      "timestamp": "9:14",
+      "category": "agua",
+      "title": "Sodio: resaltador de sabor, hasta 100 ppm",
+      "tip": "El sodio funciona como resaltador de sabor, igual que la sal en la comida. Muy poco queda insulso, demasiado resalta lo peor (amargor harsh, tostados). Valor general recomendado: hasta 100 ppm.",
+      "details": "Para cervezas maltosas se tolera mas sodio. Para cervezas negras o muy lupuladas, bajar el sodio. 150 ppm de sodio arruina el caracter lupulado. Hernán prefiere trabajar entre 50-60 ppm."
+    },
+    {
+      "timestamp_ms": 929000,
+      "timestamp": "15:29",
+      "category": "agua",
+      "title": "Dilucion con agua de osmosis inversa",
+      "tip": "Para sacarle minerales al agua, la forma practica es diluir con agua destilada o de osmosis inversa. Identificar el parametro mas molesto, diluir para corregirlo, y luego re-agregar con sales lo que haya quedado bajo.",
+      "details": "Ejemplo: si tengo calcio 50 ppm y alcalinidad 300 ppm, diluyo al medio para bajar alcalinidad a 150, pero el calcio queda en 25 ppm y hay que re-agregarlo con sales."
+    },
+    {
+      "timestamp_ms": 985000,
+      "timestamp": "16:25",
+      "category": "agua",
+      "title": "Sales comunes para ajuste de agua",
+      "tip": "Las sales mas usadas son sulfato de calcio (CaSO4) y cloruro de calcio (CaCl2) para agregar calcio, sulfatos y cloruros. Para agregar alcalinidad se usa bicarbonato de sodio (NaHCO3), pero ojo que agrega sodio.",
+      "details": "Tambien se pueden usar sulfatos y cloruros de magnesio cuando se necesita agregar sulfatos/cloruros sin mas calcio. El carbonato de calcio (CaCO3) es muy poco soluble: necesita hervir minimo 30 minutos y no todo se disuelve."
+    },
+    {
+      "timestamp_ms": 1066000,
+      "timestamp": "17:46",
+      "category": "agua",
+      "title": "Resumen: sales y pH de maceracion",
+      "tip": "El calcio y el magnesio bajan el pH de maceracion, y se agregan como cloruros y sulfatos. El bicarbonato sube el pH (agrega alcalinidad) y se agrega como bicarbonato de sodio. El carbonato de calcio sube un par de puntos el pH pero necesita hervir 30 minutos minimo.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1257000,
+      "timestamp": "20:57",
+      "category": "tecnica",
+      "title": "Toda la adicion de lupulo en Whirlpool",
+      "tip": "La tendencia actual es mover todas las adiciones de lupulo del lado caliente al Whirlpool (post-hervor). En vez de agregar a los 30, 20, 15, 10, 5 minutos del hervor, se hace una unica adicion fuerte al apagar el fuego.",
+      "details": "Esto aplica especialmente a IPAs, NEIPAs y cervezas lupuladas. Se busca maximizar sabor y aroma en lugar de amargor."
+    },
+    {
+      "timestamp_ms": 1347000,
+      "timestamp": "22:27",
+      "category": "lupulo",
+      "title": "Amargor excesivo mata sabor a lupulo",
+      "tip": "El amargor va totalmente en contra del sabor de los lupulos. Con lupulados cada vez mas intensos (Whirlpool + Dry Hop), el amargor asociado ya es suficiente. Agregar IBUs al inicio del hervor genera desbalance.",
+      "details": "Lo mas dificil de lograr en una cerveza lupulada es el sabor a lupulo en boca (flavor). El exceso de amargor lo arruina."
+    },
+    {
+      "timestamp_ms": 1476000,
+      "timestamp": "24:36",
+      "category": "lupulo",
+      "title": "Dosis de lupulo en Whirlpool",
+      "tip": "Como unica adicion en el lado caliente, usar no menos de 2-3 g/L en Whirlpool. Para cervezas mas agresivas como Imperial IPA se puede llegar a 10-13 g/L.",
+      "details": "Ejemplo real: Imperial IPA con 13 g/L en Whirlpool + 1 hora de hopstand, sin ningun agregado de amargor en hervor. Resulto con mucho sabor, mucho flavor, excelente retrogusto, y suficiente amargor solo del Whirlpool."
+    },
+    {
+      "timestamp_ms": 1628000,
+      "timestamp": "27:08",
+      "category": "tecnica",
+      "title": "Whirlpool a 80-85°C, no a temperatura de hervor",
+      "tip": "Bajar la temperatura del mosto a 80-85°C antes de agregar el lupulo de Whirlpool. No lupular a 90+ grados recien apagado el fuego.",
+      "details": "Hernan lo hace hace mas de 5-6 anos por experiencia practica y hoy tiene respaldo quimico y teorico. Se puede bajar la temperatura por dilucion con agua fria."
+    },
+    {
+      "timestamp_ms": 1683000,
+      "timestamp": "28:03",
+      "category": "tecnica",
+      "title": "Dilucion post-hervor para bajar temperatura",
+      "tip": "Hervir un volumen de mosto menor al deseado (mas concentrado). Al apagar el fuego, diluir con agua fria de proceso declorada para alcanzar la densidad objetivo y bajar la temperatura para el Whirlpool.",
+      "details": "Hervir vigoroso sin preocuparse por volumen, priorizando coagulacion de proteinas y evaporacion de compuestos indeseables. La receta se calcula para el volumen final, no el de hervor."
+    },
+    {
+      "timestamp_ms": 1747000,
+      "timestamp": "29:07",
+      "category": "ratio",
+      "title": "Regla del 20%: agua fria y temperatura",
+      "tip": "Si al volumen de mosto final del hervor le agregas un X% de agua fria, la temperatura baja aproximadamente X grados centigrados. Agregar un 20% de agua baja unos 20°C la temperatura.",
+      "details": "Es una aproximacion practica. La temperatura del agua de red varia segun la region y la estacion. No conviene diluir mas del 20% porque se pierde extraccion de azucares en el lavado al usar menos agua de sparge."
+    },
+    {
+      "timestamp_ms": 1765000,
+      "timestamp": "29:25",
+      "category": "proceso",
+      "title": "Ejemplo practico: batch de 1000 litros",
+      "tip": "Para un batch de 1000L: calcular receta para 1000L (molienda, sales, todo). Mandar a hervir 900L. Hervir vigoroso minimo 75 minutos hasta quedar en ~850L. Al apagar, agregar 150L de agua fria declorada de proceso.",
+      "details": "El resultado es un mosto a ~80-85°C listo para el Whirlpool. El mismo principio se aplica a cualquier escala."
+    },
+    {
+      "timestamp_ms": 1828000,
+      "timestamp": "30:28",
+      "category": "tecnica",
+      "title": "Por que 80-85°C en Whirlpool",
+      "tip": "A mas de 85°C hay mucha evaporacion y los compuestos aromaticos mas volatiles del lupulo se pierden. A menos de 80°C hay riesgo de formacion de precursores de DMS y baja la solubilidad de ciertos aceites esenciales que cerca de 80°C estan en el punto justo.",
+      "details": "A 45°C ya preocupa la contaminacion microbiologica. A 60°C no hay isomerizacion de alfa-acidos pero tampoco a 80°C es muy alta. Hay papers y estudios que respaldan el rango 80-85°C."
+    },
+    {
+      "timestamp_ms": 1963000,
+      "timestamp": "32:43",
+      "category": "equipo",
+      "title": "No enviar solidos de lupulo al placas",
+      "tip": "Nunca mandar solidos de lupulo a traves del intercambiador de placas. Se tapa de forma irreversible, no hay limpieza que lo solucione. Solo recircular por el placas si no hubo ninguna incorporacion de lupulo durante el boil ni en Whirlpool.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1989000,
+      "timestamp": "33:09",
+      "category": "tecnica",
+      "title": "Protocolo Whirlpool: 10 min bomba + 40 min reposo",
+      "tip": "Hacer 10 minutos con bomba recirculando para que el lupulo se integre y este en total contacto con el mosto (maxima transferencia). Luego 40 minutos de reposo para que los solidos decanten y sigan transfiriendo sabores y aromas desde el fondo.",
+      "details": "El lupulo sigue transfiriendo sabores y aromas desde el fondo del trub, no solo cuando esta en suspension. Enfriar demasiado rapido despues de lupular reduce la eficiencia de extraccion aromatica. El tiempo de enfriado no se cuenta como contacto."
+    },
+    {
+      "timestamp_ms": 2135000,
+      "timestamp": "35:35",
+      "category": "tecnica",
+      "title": "Ajustar tiempos segun dosis de lupulo",
+      "tip": "Para lupulado suave (<3 g/L): reducir el reposo a 30 minutos. Para lupulado intenso (10-12 g/L como en una Imperial IPA): hacer 15 minutos de bomba + 70 minutos de reposo, casi hora y media de contacto total.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2206000,
+      "timestamp": "36:46",
+      "category": "lupulo",
+      "title": "Lupulos frutados: menos eficientes en Whirlpool",
+      "tip": "Los perfiles aromaticos frutales son los compuestos mas volatiles y son los primeros que se pierden en el Whirlpool. Se pueden usar (Galaxy, Citra dan resultados espectaculares) pero no se aprovechan al maximo.",
+      "details": "Galaxy aporta maracuya espectacular en Whirlpool, Citra da fruta tropical. Son buenisimos pero la adicion es ineficiente: gran parte se pierde por evaporacion."
+    },
+    {
+      "timestamp_ms": 2271000,
+      "timestamp": "37:51",
+      "category": "lupulo",
+      "title": "Bravo: mejor relacion para Whirlpool",
+      "tip": "El Bravo cumple la 'regla de la triple B': bueno, bonito y barato. Tiene muchos aceites esenciales que se solubilizan bien a 80°C, es muy eficiente (con poco sacas mucho), y tiene nota citrica anaranjada con resina de pino.",
+      "details": "Precio: ~$30-32 USD/kg, similar o mas barato que algunos lupulos nacionales. Es el unico lupulo que cumple las tres condiciones para Whirlpool."
+    },
+    {
+      "timestamp_ms": 2357000,
+      "timestamp": "39:17",
+      "category": "lupulo",
+      "title": "Amarillo en Whirlpool: sabor complejo",
+      "tip": "El Amarillo es poco eficiente en Whirlpool (sutilon, muchos compuestos volatiles que se pierden) pero lo que llega a la pinta tiene una fruta amarilla de carozo con perfil medio floral que da mucha complejidad. Es mas una adicion de sabor que de aroma.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2429000,
+      "timestamp": "40:29",
+      "category": "tecnica",
+      "title": "Distintos lupulos para Whirlpool y Dry Hop",
+      "tip": "Usar variedades especificas para cada tipo de adicion en vez de poner el mismo lupulo en todas las adiciones. Buscar lo que cada variedad puede dar mejor en cada momento del proceso.",
+      "details": "El mismo lupulo usado en Whirlpool da un perfil de sabor y aroma distinto al que da en Dry Hopping. Aprovechar esa diferencia para construir complejidad."
+    },
+    {
+      "timestamp_ms": 2450000,
+      "timestamp": "40:50",
+      "category": "tecnica",
+      "title": "Balance Whirlpool vs Dry Hop segun estilo",
+      "tip": "American Amber Ale: Whirlpool fuerte, sin Dry Hop. Session APA: Whirlpool restringido, mucho Dry Hop. Ajustar la proporcion segun el caracter que se busca en cada estilo.",
+      "details": "Whirlpool y Dry Hop se complementan. No hay que casarse con uno solo; variar cantidades y combinaciones segun la cerveza."
+    },
+    {
+      "timestamp_ms": 2498000,
+      "timestamp": "41:38",
+      "category": "tecnica",
+      "title": "Doble Whirlpool con dos variedades",
+      "tip": "Se puede hacer un Whirlpool corto al apagar el fuego con una variedad, y a los 10-15 minutos hacer un segundo Whirlpool a 80°C con otra variedad y dejarlo otro tiempo de reposo. Esto permite extraer perfiles distintos de cada lupulo.",
+      "details": null
+    }
+  ]
+}

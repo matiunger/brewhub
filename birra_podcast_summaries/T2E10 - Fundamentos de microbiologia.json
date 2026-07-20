@@ -1,0 +1,149 @@
+{
+  "episode": "T2E10 - Fundamentos de microbiologia",
+  "tips": [
+    {
+      "timestamp_ms": 504000,
+      "timestamp": "08:24",
+      "category": "levadura",
+      "title": "El mosto es hostil para bacterias",
+      "tip": "Las condiciones del mosto (pH bajo, alcohol, falta de oxigeno, tipo de nutrientes) son poco amables para las bacterias pero ideales para las levaduras. Eso nos permite fermentar con cultivos puros.",
+      "details": "Las bacterias son procariotas (celulas simples, sin nucleo verdadero). Las levaduras son eucariotas (celulas compartimentalizadas, con organelas especializadas). Metabolicamente las levaduras estan mas emparentadas con los animales que con las bacterias."
+    },
+    {
+      "timestamp_ms": 640000,
+      "timestamp": "10:40",
+      "category": "levadura",
+      "title": "Bacterias producen acidos, levaduras etanol",
+      "tip": "La diferencia fundamental para cerveceros: las bacterias contaminantes consumen azucares y producen acidos + CO2, mientras que las levaduras producen etanol + CO2 + subproductos de interes cervecero.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 796000,
+      "timestamp": "13:16",
+      "category": "proceso",
+      "title": "El mosto es un medio de cultivo",
+      "tip": "Pensar el macerado y la produccion de mosto como la creacion de un medio de cultivo para las levaduras. No solo generamos azucares para alcohol, sino todos los nutrientes que la levadura necesita para crecer de la forma que queremos.",
+      "details": "Cuanto mas podamos controlar las condiciones de crecimiento, mas podemos controlar el producto terminado. Las variables que controlamos son muy pocas: composicion del mosto, temperatura e inoculo."
+    },
+    {
+      "timestamp_ms": 1149000,
+      "timestamp": "19:09",
+      "category": "ingrediente",
+      "title": "Mostos con adjuntos tienen menos nutrientes",
+      "tip": "El mosto de malta tiene naturalmente todos los nutrientes basicos para la levadura. Mostos de vino requieren agregado de nutrientes, y la hidromiel (miel + agua) carece de casi todo lo que la levadura necesita.",
+      "details": "Los adjuntos como avena, dextrosa o maltodextrina no aportan la misma carga de nutrientes que la malta, por lo que mostos con alto porcentaje de adjuntos pueden tener deficiencias."
+    },
+    {
+      "timestamp_ms": 1271000,
+      "timestamp": "21:11",
+      "category": "levadura",
+      "title": "FAN: aminoacidos esenciales para la levadura",
+      "tip": "La levadura no puede generar todos los aminoacidos que necesita. Los aminoacidos esenciales deben tomarse del medio (FAN = Free Amino Nitrogen). Provienen de las proteinas de la malta.",
+      "details": "En un mosto de cerveza normal (pilsen 1.045) con cultivo nuevo y tasa de inoculo correcta, generalmente no hay deficiencia de FAN."
+    },
+    {
+      "timestamp_ms": 1329000,
+      "timestamp": "22:09",
+      "category": "ingrediente",
+      "title": "El zinc es el mineral critico a suplementar",
+      "tip": "La malta no tiene suficiente zinc para la levadura. Es el nutriente mas importante a agregar, especialmente en reutilizaciones. Pero cuidado: exceso de zinc es toxico y mata a la levadura.",
+      "details": "No formular nutrientes caseros. Se requiere laboratorio, conocimientos y balanza de precision. Usar nutrientes comerciales formulados."
+    },
+    {
+      "timestamp_ms": 1364000,
+      "timestamp": "22:44",
+      "category": "proceso",
+      "title": "Tasa de inoculo correcta es condicion necesaria",
+      "tip": "Un mosto de 1.045 100% pilsen tiene todos los nutrientes necesarios SI Y SOLO SI se usa la tasa de inoculo correcta para esa cepa y esa temperatura. Sub-inocular invalida la suficiencia nutricional del mosto.",
+      "details": "Ejemplo negativo: poner un sobre de 11 g de levadura seca a 150 litros de mosto es insuficiente. La levadura fermentara pero con alto estres."
+    },
+    {
+      "timestamp_ms": 1591000,
+      "timestamp": "26:31",
+      "category": "levadura",
+      "title": "Consecuencias de sub-inocular",
+      "tip": "Con tasa de inoculo demasiado baja la fermentacion ocurre pero con alto costo: cerveza sub-atenuada, pico alto de alcoholes superiores, estres frutado, posibles trazas de diacetilo y acetaldehido.",
+      "details": "La vitalidad y viabilidad de las levaduras cosechadas del fondo sera pesima, comprometiendo generaciones futuras."
+    },
+    {
+      "timestamp_ms": 1867000,
+      "timestamp": "31:07",
+      "category": "ingrediente",
+      "title": "Nutrientes para mostos de alta densidad",
+      "tip": "Mostos de alta densidad requieren mas FAN (aminoacidos), zinc y posiblemente minerales adicionales. La mayor cantidad de azucar implica mayor crecimiento, lo que demanda mas nutrientes.",
+      "details": "Los micronutrientes estan en concentraciones de partes por billon. Si se aumenta mucho la densidad del mosto, la concentracion relativa de nutrientes puede quedar insuficiente."
+    },
+    {
+      "timestamp_ms": 2028000,
+      "timestamp": "33:48",
+      "category": "ingrediente",
+      "title": "Nutrientes comerciales disponibles",
+      "tip": "En Argentina hay buena disponibilidad de nutrientes de fermentacion de Fermentis, La Aleman, AEB, Query, Marfitt & Son (Inglaterra) y proximamente White Labs.",
+      "details": "Elegir nutrientes de amplio espectro o especificos segun necesidad. La mayoria indica para que tipo de mosto o situacion se recomiendan."
+    },
+    {
+      "timestamp_ms": 2123000,
+      "timestamp": "35:23",
+      "category": "proceso",
+      "title": "Que cambia al agregar nutrientes",
+      "tip": "Agregar nutrientes cuando el mosto los necesita produce: fase lag mas corta, mayor biomasa, fermentacion mas exponencial sin mesetas, descanso de diacetilo da negativo mucho antes, y mayor vitalidad/viabilidad del barro cosechado.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2148000,
+      "timestamp": "35:48",
+      "category": "receta",
+      "title": "Ejemplo: triple NEIPA con adjuntos",
+      "tip": "Mosto de 1.105 con 20% avena + dextrosa + maltodextrina. Nutricionalmente muy deficiente. Con agregado de nutrientes fermento de 1.105 a 1.030 en 4 dias.",
+      "details": "La avena no aporta la misma carga de nutrientes que la malta. Sin nutrientes la fermentacion hubiera sido mas lenta y con mayor estres."
+    },
+    {
+      "timestamp_ms": 2293000,
+      "timestamp": "38:13",
+      "category": "levadura",
+      "title": "Nutrientes cada 4 generaciones en reutilizacion",
+      "tip": "Agregar 2-3 g/hL de un nutriente con FAN cada 4 generaciones, incluso en mostos simples (ej. German Pils 1.045 100% malta). Mejora la calidad de las generaciones siguientes.",
+      "details": "Ejemplo con W-34/70: sin suplemento, en generacion 6-7 las curvas se alargaban y el sulfuro quedaba en la cerveza. Con suplemento cada 4 generaciones llego a ciclo 32 sin problemas. Se nota en menores fases lag, menor generacion de sulfuro y llegada mas rapida a densidad final."
+    },
+    {
+      "timestamp_ms": 2574000,
+      "timestamp": "42:54",
+      "category": "tecnica",
+      "title": "Medir pH como indicador de vitalidad",
+      "tip": "Medir la caida de pH en las primeras 18 horas post-inoculacion (al menos 3 mediciones) es un indicador practico de la vitalidad del cultivo inoculado.",
+      "details": "Tecnica de laboratorio: medir caida de pH en vaso de precipitado de 500 ml con buzo giratorio. En la practica cervecera se puede hacer directamente en el fermentador como ojimetro."
+    },
+    {
+      "timestamp_ms": 2674000,
+      "timestamp": "44:34",
+      "category": "levadura",
+      "title": "Curva de crecimiento: cuatro fases",
+      "tip": "Las fases son: 1) Lag: sin crecimiento visible, la levadura prepara su maquinaria biologica. 2) Exponencial: crecimiento masivo, duplicacion de individuos. 3) Estacionaria: se acaban los nutrientes, crecimiento neto cero. 4) Decaimiento: mueren mas de las que nacen, riesgo de autolisis.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3023000,
+      "timestamp": "50:23",
+      "category": "levadura",
+      "title": "Fase lag: ergosterol a partir de oxigeno",
+      "tip": "Durante la fase lag la levadura usa el oxigeno disuelto para generar ergosterol, un compuesto de membrana similar al colesterol que le da fluidez y capacidad de transporte. Sin oxigeno no puede generarlo.",
+      "details": "Todo el ergosterol generado en la fase lag se reparte entre las celulas hijas durante la fase exponencial. Al final de la fermentacion queda muy diluido, por eso la levadura cosechada necesita oxigeno al ser re-inoculada."
+    },
+    {
+      "timestamp_ms": 3094000,
+      "timestamp": "51:34",
+      "category": "levadura",
+      "title": "Fase estacionaria: almacenamiento de glucogeno",
+      "tip": "En la fase estacionaria la levadura almacena glucosa como glucogeno (equivalente al almidon en eucariotas) preparandose para la falta de nutrientes. Ya no tiene ergosterol suficiente.",
+      "details": "Esto explica por que una levadura que fermento perfecto no esta lista para fermentar otro mosto sin recibir oxigeno y potencialmente nutrientes adicionales."
+    },
+    {
+      "timestamp_ms": 2900000,
+      "timestamp": "48:20",
+      "category": "proceso",
+      "title": "Reutilizacion: riesgos y precauciones",
+      "tip": "No reutilizar levadura sin saber lo que se hace. Los riesgos no son solo contaminacion, sino tambien deterioro del estado fisiologico: el estres acumulado aumenta la probabilidad de mutaciones que pueden afectar la floculacion.",
+      "details": "Ejemplo: una levadura que antes dejaba la cerveza limpia y cristalina puede perder capacidad de flocular por mutaciones menores acumuladas en reutilizaciones mal manejadas."
+    }
+  ]
+}

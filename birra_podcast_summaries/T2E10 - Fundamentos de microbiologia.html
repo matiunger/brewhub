@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E10 - Fundamentos de microbiologia</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a1a; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+.audio-bar audio { flex: 1; width: 100%; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.6rem; margin-bottom: 1rem; color: #1a1a1a; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.stat-pill { font-size: 0.8rem; padding: 0.25rem 0.65rem; border-radius: 999px; color: #fff; font-weight: 600; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.12); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: "SF Mono", "Fira Code", monospace; font-size: 0.8rem; background: #1a1a1a; color: #fff; border: none; padding: 0.25rem 0.6rem; border-radius: 6px; cursor: pointer; transition: background 0.15s; }
+.timestamp:hover { background: #3b82f6; }
+.timestamp::before { content: ""; }
+.timestamp:hover::before { content: "\25B6 "; }
+.badge { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 999px; color: #fff; text-transform: uppercase; font-weight: 700; letter-spacing: 0.03em; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.88rem; line-height: 1.5; color: #333; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; line-height: 1.45; color: #666; font-style: italic; }
+.cat-proceso { background: #2563eb; }
+.cat-ingrediente { background: #16a34a; }
+.cat-receta { background: #dc2626; }
+.cat-ratio { background: #d97706; }
+.cat-tecnica { background: #7c3aed; }
+.cat-equipo { background: #0891b2; }
+.cat-levadura { background: #be185d; }
+.cat-malta { background: #92400e; }
+.cat-lupulo { background: #15803d; }
+.cat-agua { background: #0369a1; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Indice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T2E10 - Fundamentos de microbiologia.wav"></audio>
+</div>
+<div class="container">
+  <h1>T2E10 - Fundamentos de microbiologia</h1>
+  <div class="stats">
+    <span class="stat-pill" style="background:#555;">18 tips</span>
+    <span class="stat-pill cat-levadura">levadura 8</span>
+    <span class="stat-pill cat-proceso">proceso 4</span>
+    <span class="stat-pill cat-ingrediente">ingrediente 3</span>
+    <span class="stat-pill cat-receta">receta 1</span>
+    <span class="stat-pill cat-tecnica">tecnica 1</span>
+  </div>
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="504000">08:24</button>
+        <span class="badge cat-levadura">levadura</span>
+      </div>
+      <div class="card-title">El mosto es hostil para bacterias</div>
+      <div class="card-tip">Las condiciones del mosto (pH bajo, alcohol, falta de oxigeno, tipo de nutrientes) son poco amables para las bacterias pero ideales para las levaduras. Eso nos permite fermentar con cultivos puros.</div>
+      <div class="card-details">Las bacterias son procariotas (celulas simples, sin nucleo verdadero). Las levaduras son eucariotas (celulas compartimentalizadas, con organelas especializadas). Metabolicamente las levaduras estan mas emparentadas con los animales que con las bacterias.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="640000">10:40</button>
+        <span class="badge cat-levadura">levadura</span>
+      </div>
+      <div class="card-title">Bacterias producen acidos, levaduras etanol</div>
+      <div class="card-tip">La diferencia fundamental para cerveceros: las bacterias contaminantes consumen azucares y producen acidos + CO2, mientras que las levaduras producen etanol + CO2 + subproductos de interes cervecero.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="796000">13:16</button>
+        <span class="badge cat-proceso">proceso</span>
+      </div>
+      <div class="card-title">El mosto es un medio de cultivo</div>
+      <div class="card-tip">Pensar el macerado y la produccion de mosto como la creacion de un medio de cultivo para las levaduras. No solo generamos azucares para alcohol, sino todos los nutrientes que la levadura necesita para crecer de la forma que queremos.</div>
+      <div class="card-details">Cuanto mas podamos controlar las condiciones de crecimiento, mas podemos controlar el producto terminado. Las variables que controlamos son muy pocas: composicion del mosto, temperatura e inoculo.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1149000">19:09</button>
+        <span class="badge cat-ingrediente">ingrediente</span>
+      </div>
+      <div class="card-title">Mostos con adjuntos tienen menos nutrientes</div>
+      <div class="card-tip">El mosto de malta tiene naturalmente todos los nutrientes basicos para la levadura. Mostos de vino requieren agregado de nutrientes, y la hidromiel (miel + agua) carece de casi todo lo que la levadura necesita.</div>
+      <div class="card-details">Los adjuntos como avena, dextrosa o maltodextrina no aportan la misma carga de nutrientes que la malta, por lo que mostos con alto porcentaje de adjuntos pueden tener deficiencias.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1271000">21:11</button>
+        <span class="badge cat-levadura">levadura</span>
+      </div>
+      <div class="card-title">FAN: aminoacidos esenciales para la levadura</div>
+      <div class="card-tip">La levadura no puede generar todos los aminoacidos que necesita. Los aminoacidos esenciales deben tomarse del medio (FAN = Free Amino Nitrogen). Provienen de las proteinas de la malta.</div>
+      <div class="card-details">En un mosto de cerveza normal (pilsen 1.045) con cultivo nuevo y tasa de inoculo correcta, generalmente no hay deficiencia de FAN.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1329000">22:09</button>
+        <span class="badge cat-ingrediente">ingrediente</span>
+      </div>
+      <div class="card-title">El zinc es el mineral critico a suplementar</div>
+      <div class="card-tip">La malta no tiene suficiente zinc para la levadura. Es el nutriente mas importante a agregar, especialmente en reutilizaciones. Pero cuidado: exceso de zinc es toxico y mata a la levadura.</div>
+      <div class="card-details">No formular nutrientes caseros. Se requiere laboratorio, conocimientos y balanza de precision. Usar nutrientes comerciales formulados.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1364000">22:44</button>
+        <span class="badge cat-proceso">proceso</span>
+      </div>
+      <div class="card-title">Tasa de inoculo correcta es condicion necesaria</div>
+      <div class="card-tip">Un mosto de 1.045 100% pilsen tiene todos los nutrientes necesarios SI Y SOLO SI se usa la tasa de inoculo correcta para esa cepa y esa temperatura. Sub-inocular invalida la suficiencia nutricional del mosto.</div>
+      <div class="card-details">Ejemplo negativo: poner un sobre de 11 g de levadura seca a 150 litros de mosto es insuficiente. La levadura fermentara pero con alto estres.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1591000">26:31</button>
+        <span class="badge cat-levadura">levadura</span>
+      </div>
+      <div class="card-title">Consecuencias de sub-inocular</div>
+      <div class="card-tip">Con tasa de inoculo demasiado baja la fermentacion ocurre pero con alto costo: cerveza sub-atenuada, pico alto de alcoholes superiores, estres frutado, posibles trazas de diacetilo y acetaldehido.</div>
+      <div class="card-details">La vitalidad y viabilidad de las levaduras cosechadas del fondo sera pesima, comprometiendo generaciones futuras.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1867000">31:07</button>
+        <span class="badge cat-ingrediente">ingrediente</span>
+      </div>
+      <div class="card-title">Nutrientes para mostos de alta densidad</div>
+      <div class="card-tip">Mostos de alta densidad requieren mas FAN (aminoacidos), zinc y posiblemente minerales adicionales. La mayor cantidad de azucar implica mayor crecimiento, lo que demanda mas nutrientes.</div>
+      <div class="card-details">Los micronutrientes estan en concentraciones de partes por billon. Si se aumenta mucho la densidad del mosto, la concentracion relativa de nutrientes puede quedar insuficiente.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2028000">33:48</button>
+        <span class="badge cat-ingrediente">ingrediente</span>
+      </div>
+      <div class="card-title">Nutrientes comerciales disponibles</div>
+      <div class="card-tip">En Argentina hay buena disponibilidad de nutrientes de fermentacion de Fermentis, La Aleman, AEB, Query, Marfitt &amp; Son (Inglaterra) y proximamente White Labs.</div>
+      <div class="card-details">Elegir nutrientes de amplio espectro o especificos segun necesidad. La mayoria indica para que tipo de mosto o situacion se recomiendan.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2123000">35:23</button>
+        <span class="badge cat-proceso">proceso</span>
+      </div>
+      <div class="card-title">Que cambia al agregar nutrientes</div>
+      <div class="card-tip">Agregar nutrientes cuando el mosto los necesita produce: fase lag mas corta, mayor biomasa, fermentacion mas exponencial sin mesetas, descanso de diacetilo da negativo mucho antes, y mayor vitalidad/viabilidad del barro cosechado.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2148000">35:48</button>
+        <span class="badge cat-receta">receta</span>
+      </div>
+      <div class="card-title">Ejemplo: triple NEIPA con adjuntos</div>
+      <div class="card-tip">Mosto de 1.105 con 20% avena + dextrosa + maltodextrina. Nutricionalmente muy deficiente. Con agregado de nutrientes fermento de 1.105 a 1.030 en 4 dias.</div>
+      <div class="card-details">La avena no aporta la misma carga de nutrientes que la malta. Sin nutrientes la fermentacion hubiera sido mas lenta y con mayor estres.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2293000">38:13</button>
+        <span class="badge cat-levadura">levadura</span>
+      </div>
+      <div class="card-title">Nutrientes cada 4 generaciones en reutilizacion</div>
+      <div class="card-tip">Agregar 2-3 g/hL de un nutriente con FAN cada 4 generaciones, incluso en mostos simples (ej. German Pils 1.045 100% malta). Mejora la calidad de las generaciones siguientes.</div>
+      <div class="card-details">Ejemplo con W-34/70: sin suplemento, en generacion 6-7 las curvas se alargaban y el sulfuro quedaba en la cerveza. Con suplemento cada 4 generaciones llego a ciclo 32 sin problemas. Se nota en menores fases lag, menor generacion de sulfuro y llegada mas rapida a densidad final.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2574000">42:54</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Medir pH como indicador de vitalidad</div>
+      <div class="card-tip">Medir la caida de pH en las primeras 18 horas post-inoculacion (al menos 3 mediciones) es un indicador practico de la vitalidad del cultivo inoculado.</div>
+      <div class="card-details">Tecnica de laboratorio: medir caida de pH en vaso de precipitado de 500 ml con buzo giratorio. En la practica cervecera se puede hacer directamente en el fermentador como ojimetro.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2674000">44:34</button>
+        <span class="badge cat-levadura">levadura</span>
+      </div>
+      <div class="card-title">Curva de crecimiento: cuatro fases</div>
+      <div class="card-tip">Las fases son: 1) Lag: sin crecimiento visible, la levadura prepara su maquinaria biologica. 2) Exponencial: crecimiento masivo, duplicacion de individuos. 3) Estacionaria: se acaban los nutrientes, crecimiento neto cero. 4) Decaimiento: mueren mas de las que nacen, riesgo de autolisis.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2900000">48:20</button>
+        <span class="badge cat-proceso">proceso</span>
+      </div>
+      <div class="card-title">Reutilizacion: riesgos y precauciones</div>
+      <div class="card-tip">No reutilizar levadura sin saber lo que se hace. Los riesgos no son solo contaminacion, sino tambien deterioro del estado fisiologico: el estres acumulado aumenta la probabilidad de mutaciones que pueden afectar la floculacion.</div>
+      <div class="card-details">Ejemplo: una levadura que antes dejaba la cerveza limpia y cristalina puede perder capacidad de flocular por mutaciones menores acumuladas en reutilizaciones mal manejadas.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="3023000">50:23</button>
+        <span class="badge cat-levadura">levadura</span>
+      </div>
+      <div class="card-title">Fase lag: ergosterol a partir de oxigeno</div>
+      <div class="card-tip">Durante la fase lag la levadura usa el oxigeno disuelto para generar ergosterol, un compuesto de membrana similar al colesterol que le da fluidez y capacidad de transporte. Sin oxigeno no puede generarlo.</div>
+      <div class="card-details">Todo el ergosterol generado en la fase lag se reparte entre las celulas hijas durante la fase exponencial. Al final de la fermentacion queda muy diluido, por eso la levadura cosechada necesita oxigeno al ser re-inoculada.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="3094000">51:34</button>
+        <span class="badge cat-levadura">levadura</span>
+      </div>
+      <div class="card-title">Fase estacionaria: almacenamiento de glucogeno</div>
+      <div class="card-tip">En la fase estacionaria la levadura almacena glucosa como glucogeno (equivalente al almidon en eucariotas) preparandose para la falta de nutrientes. Ya no tiene ergosterol suficiente.</div>
+      <div class="card-details">Esto explica por que una levadura que fermento perfecto no esta lista para fermentar otro mosto sin recibir oxigeno y potencialmente nutrientes adicionales.</div>
+    </div>
+
+  </div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

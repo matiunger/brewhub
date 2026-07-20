@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1E12 - Conociendo los lupulos para poder decidir</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 64px; }
+  .audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #1a1a1a; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem; }
+  .back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+  .back-btn:hover { background: rgba(255,255,255,0.25); }
+  audio { flex: 1; min-width: 0; height: 40px; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+  h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+  .stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .stat-pill { padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; color: #fff; }
+  .stat-total { background: #374151; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+  .card { background: #fff; border-radius: 10px; padding: 1.2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+  .card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.12); transform: translateY(-2px); }
+  .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+  .timestamp { font-family: "SF Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.8rem; padding: 0.2rem 0.55rem; border-radius: 5px; background: #e5e7eb; border: none; cursor: pointer; color: #1a1a1a; transition: background 0.15s; }
+  .timestamp:hover { background: #6366f1; color: #fff; }
+  .timestamp:hover::before { content: "\25B6 "; font-size: 0.6rem; }
+  .badge { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 4px; color: #fff; text-transform: uppercase; font-weight: 700; letter-spacing: 0.03em; }
+  .card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .card-tip { font-size: 0.88rem; line-height: 1.5; margin-bottom: 0.4rem; }
+  .card-details { font-size: 0.82rem; line-height: 1.45; color: #555; font-style: italic; }
+  .cat-proceso { background: #2563eb; }
+  .cat-ingrediente { background: #16a34a; }
+  .cat-receta { background: #dc2626; }
+  .cat-ratio { background: #d97706; }
+  .cat-tecnica { background: #7c3aed; }
+  .cat-equipo { background: #0891b2; }
+  .cat-levadura { background: #be185d; }
+  .cat-malta { background: #92400e; }
+  .cat-lupulo { background: #15803d; }
+  .cat-agua { background: #0369a1; }
+</style>
+</head>
+<body>
+
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Índice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T1E12 - Conociendo los lupulos para poder decidir.wav"></audio>
+</div>
+
+<div class="container">
+  <h1>T1E12 - Conociendo los lupulos para poder decidir</h1>
+
+  <div class="stats">
+    <span class="stat-pill stat-total">22 tips</span>
+    <span class="stat-pill cat-lupulo">lupulo: 10</span>
+    <span class="stat-pill cat-tecnica">tecnica: 8</span>
+    <span class="stat-pill cat-receta">receta: 1</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="129000">2:09</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Lúpulo sensible a oxígeno, luz y temperatura</div>
+      <div class="card-tip">El lúpulo es muy sensible al oxígeno, la temperatura y la luz. Siempre buscar bolsa cerrada, que no haya estado expuesta a la luz y que haya sido refrigerada durante toda la cadena de conservación.</div>
+      <div class="card-details">De la flor en el valle de Yakima a lo que llega al homebrewer puede haber 18 meses y múltiples fraccionamientos. Un Citra mal conservado puede oler a pasto o fardo en lugar de a lúpulo fresco.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="269000">4:29</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Fraccionamiento grupal para homebrewers</div>
+      <div class="card-tip">Comprar lúpulo entre varios homebrewers directamente al importador y fraccionarlo al vacío en porciones de uso único. Calcular la porción según tu batch: para 50 litros a 2 g/L, fraccionar en bolsitas de 100 g.</div>
+      <div class="card-details">Ejemplo: 5 homebrewers compran una bolsa de 5 kg de Equanot, 1 kg cada uno, fraccionado en 10 bolsitas de 100 g al vacío y al freezer. Cuando abrís una bolsita, la usás completa.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="396000">6:36</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Purgar bolsas abiertas con CO2</div>
+      <div class="card-tip">Cuando tenés una bolsa de lúpulo abierta, meter una manguerita de CO2 dentro de la bolsa para barrer el oxígeno y después cerrarla. Esto permite usar el lúpulo hasta 30-40 días después de abierta en condiciones aceptables.</div>
+      <div class="card-details">Especialmente importante para lúpulos de amargor que se usan en menor cantidad y la bolsa dura más tiempo (ej: 5 kg de Apollo para batches de 500 L).</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="451000">7:31</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Bolsa que se abre, bolsa que se termina</div>
+      <div class="card-tip">La mejor práctica es abrir una bolsa de lúpulo y usarla completa. Cuando los volúmenes no lo permiten, asegurarse de que el fraccionamiento haya sido hecho en las mejores condiciones posibles.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="482000">8:02</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Evaluar lúpulo con olfato y tecito</div>
+      <div class="card-tip">Oler cada bolsa de lúpulo al abrirla. Si huele a transpiración o pata, está oxidado (reacciones de oxidación de alfa-ácidos) y no vale la pena usarlo. Si huele bien pero con poca intensidad, hacer un test con 3 pellets en una taza de agua caliente.</div>
+      <div class="card-details">El tecito permite evaluar el aroma inicial y luego a los 5 minutos cuando se enfría, ya que aromáticamente cambia con los volátiles que van saliendo. Con esa evaluación se decide si se usa o no.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="625000">10:25</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Clasificaciones de variedades de lúpulo</div>
+      <div class="card-tip">Las clasificaciones principales son: por región (alemanes, ingleses, americanos, australianos, neozelandeses, argentinos), y la vieja escuela de amargor vs. aroma (hoy obsoleta, todos son duales). La más útil es por perfil sensorial.</div>
+      <div class="card-details">La clasificación amargor/aroma quedó obsoleta porque hoy hay lúpulos con 13% de alfa-ácidos que son una bomba de aromas.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="728000">12:08</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Tres familias sensoriales de lúpulos americanos</div>
+      <div class="card-tip">Los lúpulos americanos de sabor y aroma se agrupan en tres grandes familias sensoriales: cítricos, frutados y resinosos. Existen también florales y especiados, pero la mayoría entra en esas tres categorías.</div>
+      <div class="card-details">Dentro de cítricos hay sub-variantes: lima, pomelo, mandarina, bergamota, limón fresco (uña al limón), limón oxidado, ralladura, caramelo de limón. No es lo mismo una nota fresca que compotada.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="842000">14:02</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Perfil primario y secundario del lúpulo</div>
+      <div class="card-tip">Ningún lúpulo es solamente cítrico, frutado o resinoso. Cada variedad tiene un perfil primario donde destaca y un perfil secundario que se manifiesta al intensificar las adiciones. Se puede manipular la expresión de cada perfil con la técnica de adición.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="934000">15:34</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Cascade nacional vs. USA</div>
+      <div class="card-tip">El Cascade Nacional (argentino) es más pomeloso y el Cascade USA es más a limón. Ambos tienen un perfil floral y resinoso secundario que aparece al usar más de 5-6 g/L en total.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="967000">16:07</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Cuidado con perfiles secundarios al blendear</div>
+      <div class="card-tip">Al combinar varios lúpulos, los perfiles secundarios se suman. Si todos los lúpulos del blend tienen resina como secundario (ej: Cascade + Equanot + Simcoe + Chinook), la cerveza puede quedar desbalanceada hacia lo resinoso.</div>
+      <div class="card-details">Cascade: cítrico + floral/resinoso. Equanot: tropical + resina/picante. Simcoe: fruta de carozo + resina de pino. Chinook: cítrico + resina. Al llevar al extremo las adiciones, pueden aparecer notas terciarias (cebolla, ajo) poco agradables.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1059000">17:39</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Lúpulos frutados sin resina secundaria</div>
+      <div class="card-tip">Citra y Mosaic tienen mucha fruta pero también cítricos y resina. Para frutado sin tirar a resina/herbal/pináceo, considerar El Dorado, Amarillo o Azacca, que tienen más fruta con toque floral.</div>
+      <div class="card-details">Útil para estilos como New England IPA donde la resina no es deseada.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1193000">19:53</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Pasos para probar un lúpulo nuevo</div>
+      <div class="card-tip">1) Leer la hoja de especificación del proveedor (buscar 'variedad Hop Profile' en Google para ver la araña de perfiles). 2) Buscar experiencias en foros en inglés. 3) Hacer una APA single hop para evaluarlo en cerveza.</div>
+      <div class="card-details">Brulosophy Hop Chronicles es una excelente referencia: publican APAs single hop con misma malta y régimen, evaluadas por 20-30 jueces con araña de sabores y aromas diferenciando sabor de aroma.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1308000">21:48</button>
+        <span class="badge cat-receta">receta</span>
+      </div>
+      <div class="card-title">APA single hop para evaluar lúpulo</div>
+      <div class="card-tip">Receta base para probar cualquier lúpulo: 90% malta Pilsen, 10% Munich, densidad inicial 1.055, levadura US-05. Agregar 3 g/L en whirlpool y 3 g/L en dry hopping, todo del mismo lúpulo.</div>
+      <div class="card-details">Hacer batch de homebrewer (50 L). No será un birrazo con lúpulos experimentales, pero da una muy buena idea del aporte de esa variedad.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1653000">27:33</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Infusión en frío protocolo ASBC</div>
+      <div class="card-tip">Protocolo estandarizado para comparar lúpulos: moler 10 g de pellet (con mortero o molinillo de café), mezclar con 900 ml de agua fría a 25°C, dejar en contacto un tiempo determinado y separar con prensa francesa.</div>
+      <div class="card-details">Permite comparar perfil aromático e intensidad de múltiples variedades en una tarde. Es solo una aproximación (falta la fermentación), pero sirve como filtro preliminar antes de hacer la APA single hop.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1857000">30:57</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">La técnica cambia el perfil del lúpulo</div>
+      <div class="card-tip">El perfil que se extrae de un lúpulo depende completamente de la técnica: no es lo mismo whirlpool a 100°C que a 85°C, ni dry hopping en caliente al final de fermentación que en maduración en frío, ni DH a 12°C que a 2°C.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2100000">35:00</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Whirlpool pierde frutados, retiene resinosos</div>
+      <div class="card-tip">En el lado caliente (whirlpool >80°C + fermentación), los aromáticos más volátiles se pierden. Los compuestos frutados/tropicales son los más volátiles y los que menos se manifiestan. Los resinosos (más pesados, menos volátiles) y cítricos se retienen mejor.</div>
+      <div class="card-details">Ejemplo: el maracuyá del Galaxy se pierde en whirlpool. En dry hopping, al no haber temperatura ni evaporación ni salida de gases, se retienen los compuestos volátiles frutados frescos.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2262000">37:42</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Reservar Citra/Mosaic/Equanot para dry hop</div>
+      <div class="card-tip">No usar Citra, Mosaic ni Equanot en whirlpool porque su mejor atributo (fruta dulce) se pierde con el calor. Reservarlos para dry hopping donde expresan fruta fresca. El picantito que da Equanot en WP se puede lograr con lúpulos más baratos como Chinook.</div>
+      <div class="card-details">Equanot en DH en frío da fruta dulce tipo melón/sandía. En WP da un picantito especiado que también es bueno pero no es su mejor expresión.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2339000">38:59</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Lúpulos recomendados para whirlpool</div>
+      <div class="card-tip">Priorizar aporte cítrico, resinoso y floral en whirlpool. Centennial: cítrico alimonado + floral espectacular (un super Cascade). Bravo: naranja confitada + resina de pino (barato y eficiente). Idaho 7: nuevo, rindiendo muy bien. Columbus: herbal/terroso + cítrico, muy rendidor.</div>
+      <div class="card-details">Columbus: máximo 2 g/L en WP, fácil desbalancear. Varía mucho según proveedor (hay Columbus cebollosos y Columbus cítricos). También Equanot (picantito) y Sabro (coco rallado + herbal) como adiciones sutiles.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2534000">42:14</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Lúpulos recomendados para dry hopping</div>
+      <div class="card-tip">Simcoe: fruta de carozo (damasco, durazno) espectacular al final de fermentación. Centennial: más cítrico alimonado en DH (vs. más floral en WP). Citra: fruta tropical + cítrico de fondo. Equanot: frutas tropicales. Mosaic: mezcla de fruta + cítrico + resina. Sabro también funciona bien.</div>
+      <div class="card-details">Simcoe es uno de los lúpulos favoritos para DH: muy eficiente. Citra, Mosaic y Equanot son lúpulos que 'nunca fallan' en cualquier adición.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2647000">44:07</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Amarillo para biotransformación</div>
+      <div class="card-tip">Amarillo tiene altísimas dosis de geraniol, un precursor de la biotransformación. Agregarlo en dry hopping al inicio de la fermentación para que la levadura convierta el geraniol en nuevos compuestos de flavor.</div>
+      <div class="card-details">Es el lúpulo preferido para la adición de biotransformación (DH al inicio de la fermentación activa).</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2681000">44:41</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Galaxy y Big Secret para DH en frío</div>
+      <div class="card-tip">Galaxy y Big Secret (australianos) son espectaculares en dry hopping en frío (~4°C). Aportan frutas intensas y alta cantidad de tioles con notas sulfuradas agradables, compuestos extremadamente sensibles.</div>
+      <div class="card-details">Son lúpulos de gama alta en precio. Las notas sulfuradas lindas son difíciles de lograr y se preservan mejor en DH a temperaturas muy bajas.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="2888000">48:08</button>
+        <span class="badge cat-lupulo">lupulo</span>
+      </div>
+      <div class="card-title">Mismo lúpulo, distinto resultado según origen</div>
+      <div class="card-tip">El perfil de un lúpulo varía según la zona de cosecha, el cultivador, el tipo de peletizado y el tratamiento post-cosecha. No es lo mismo un Simcoe cosechado en Idaho que en Yakima o en Oregon.</div>
+      <div class="card-details">Además influyen el equipamiento del cervecero, las técnicas de lupulado y el resto de las materias primas. Todas las recomendaciones son guías orientativas con un rango amplio de fluctuación.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

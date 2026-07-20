@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E09 - Conceptos de enlatado y embotellado</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a2e; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; height: 40px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a1a2e; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.stat-pill { font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: 12px; background: #e2e8f0; color: #334155; font-weight: 500; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: transform 0.15s, box-shadow 0.15s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.78rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: #f1f5f9; border: 1px solid #e2e8f0; cursor: pointer; color: #475569; transition: background 0.15s, color 0.15s; }
+.timestamp:hover { background: #1a1a2e; color: #fff; }
+.timestamp::before { content: '\25B6 '; font-size: 0.6rem; }
+.badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 10px; color: #fff; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; color: #1e293b; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.88rem; color: #475569; line-height: 1.5; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; color: #64748b; font-style: italic; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T2E09 - Conceptos de enlatado y embotellado.wav"></audio>
+</div>
+<div class="container">
+<h1>T2E09 - Conceptos de enlatado y embotellado</h1>
+<div class="stats">
+<span class="stat-pill"><strong>22</strong> tips</span>
+<span class="stat-pill">proceso: 8</span>
+<span class="stat-pill">tecnica: 8</span>
+<span class="stat-pill">equipo: 4</span>
+</div>
+<div class="grid">
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="476000">7:56</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Dos puntos clave del enlatado</div>
+<div class="card-tip">Los dos puntos principales a cuidar en el enlatado/embotellado son: 1) contaminacion (mas partes moviles = mas puntos a sanitizar) y 2) incorporacion de oxigeno (mucho mayor que en barril).</div>
+<div class="card-details">Al pasar de un madurador a 90 latas en vez de un barril, se multiplican los puntos de contaminacion: valvulas, mangueras, reducciones, sistemas de contrapresion.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="536000">8:56</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Validar protocolo de sanitizacion</div>
+<div class="card-tip">En enlatado/embotellado hay que extremar las validaciones del protocolo de limpieza y sanitizacion. No alcanza con sanitizar: hay que validar que el sistema este efectivamente libre de contaminacion.</div>
+<div class="card-details">Una contaminacion en algunas latas puede pasar desapercibida hasta que el consumidor la abre dias despues fuera de frio, a diferencia de un fermentador contaminado que se detecta al momento.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="700000">11:40</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Headspace del barril vs lata/botella</div>
+<div class="card-tip">El barril tiene un headspace despreciable respecto a su volumen. En lata o botella el headspace es proporcionalmente mucho mayor, por lo que el oxigeno atrapado ahi se incorpora a la cerveza y la oxida.</div>
+<div class="card-details">Siempre que se pueda, llenar el barril de CO2 antes de transferir. En lata/botella, purgar y asegurar que el headspace sea CO2 y no aire.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="729000">12:09</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Equilibrio velocidad vs turbulencia</div>
+<div class="card-tip">En llenado atmosferico, buscar equilibrio entre menor tiempo de contacto con el aire (llenar rapido) y evitar turbulencia que aumenta la superficie de contacto y por lo tanto la incorporacion de oxigeno.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="866000">14:26</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Carbonatacion y temperatura en el llenado</div>
+<div class="card-tip">La carbonatacion es fundamental para las condiciones de llenado. Va de la mano con la temperatura del sistema: a mayor temperatura, mas espumeo. La temperatura con la que se trabaja todo el sistema es clave.</div>
+<div class="card-details">El sistema de purga, el headspace y la incorporacion de oxigeno estan todos interrelacionados con la temperatura y la carbonatacion.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1170000">19:30</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Beer gun vs contrapresion para homebrewer</div>
+<div class="card-tip">Los dos sistemas basicos para homebrewer son: beer gun (llenado atmosferico, no presuriza la botella) y contrapresion (iguala presiones entre envase y tanque). Ambos funcionan con botellas; para latas se necesita ademas una cerradora.</div>
+<div class="card-details">Beer gun tiene doble gatillo: uno para CO2 (desplaza aire) y otro para cerveza. Llena de abajo hacia arriba sin turbulencia.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1305000">21:45</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Llenado de abajo hacia arriba sin turbulencia</div>
+<div class="card-tip">Con beer gun o canito con valvula de retencion, la cerveza ingresa desde el fondo de la botella llenando de abajo hacia arriba, minimizando la turbulencia y la superficie de contacto con el aire.</div>
+<div class="card-details">El CO2 del beer gun no purga la botella abierta sino que disminuye la cantidad de aire/oxigeno presente. No es un purgado completo pero reduce significativamente el oxigeno.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1427000">23:47</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Headspace con espuma al retirar beer gun</div>
+<div class="card-tip">Al retirar el canito del beer gun, el volumen que ocupaba es el headspace. Idealmente ese espacio debe quedar lleno de espuma (no aire) al tapar. Regular velocidad de llenado para lograr formacion de espuma justa al final.</div>
+<div class="card-details">Si queda espuma = mas CO2 que aire. Tapar inmediatamente con corona.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1490000">24:50</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Sistema contrapresion: igualar presiones</div>
+<div class="card-tip">El contrapresion iguala la presion de la botella con la del tanque. Se libera controladamente la presion de la botella y por vasos comunicantes la cerveza fluye. Permite purgar la botella repetidamente con CO2 antes de llenar.</div>
+<div class="card-details">Ciclo de purga: presurizar con CO2, liberar (expulsa mezcla CO2+aire), repetir. Cada ciclo aumenta la concentracion de CO2 y reduce el oxigeno. Nunca llega a 0% O2 pero es mucho mas efectivo que el beer gun.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1644000">27:24</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Contrapresion permite alta carbonatacion</div>
+<div class="card-tip">El contrapresion permite llenar cervezas con alta gasificacion sin que espumen, porque no hay diferencia de presion entre el envase y el barril. Con beer gun, pasar de 1 bar a 0 bar hace que el CO2 se expanda y forme exceso de espuma.</div>
+<div class="card-details">La espuma se forma cuando hay diferencia de presion o temperatura entre el interior de la cerveza y el exterior.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1790000">29:50</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Contrapresion permite llenar a temperatura ambiente</div>
+<div class="card-tip">Con contrapresion se puede llenar casi a temperatura ambiente sin espuma, porque al tener 1 bar en el barril y 0.99 bar en la botella, no hay diferencia de presion que genere espumeo. Solo hay que regular la liberacion final mas despacio.</div>
+<div class="card-details">A temperatura ambiente se reduce la productividad (30-40 botellas/hora vs 100 en frio) pero se mantiene calidad. Util cuando no se tiene camara de frio.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1867000">31:07</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Temperatura maxima con beer gun: 5 C</div>
+<div class="card-tip">Con beer gun es imposible llenar a mas de 5 grados sin espumeo excesivo, mermas altisimas y formacion de espuma sin liquido. Se recomienda trabajar dentro de la camara de frio con todo el sistema.</div>
+<div class="card-details">Si se saca el barril de la camara y se tarda 2 horas llenando, el sistema se calienta progresivamente y cada vez es mas dificil. La temperatura es clave.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1978000">32:58</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Tapar inmediatamente cada botella</div>
+<div class="card-tip">Apenas la botella esta llena tiene que ser tapada. No acumular botellas sin tapar. Ideal: una persona llena y otra tapa inmediatamente.</div>
+<div class="card-details">Todo el esfuerzo de purga y llenado se pierde si la botella queda destapada expuesta al aire.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2038000">33:58</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Espacio libre DEBE ser espuma, no gas</div>
+<div class="card-tip">Es fundamental que el espacio libre (headspace) quede lleno con espuma y NO con gas. La espuma proviene del CO2 interno de la cerveza que al salir barre el aire/oxigeno remanente. Esto aplica a cualquier sistema, desde precario hasta profesional.</div>
+<div class="card-details">Si el headspace es gas, tendra aire con oxigeno y la oxidacion sera altisima. Si es espuma, la concentracion de oxigeno en ese espacio es muchisimo menor. Es la mayor diferencia en vida util del producto terminado.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2377000">39:37</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Sistemas semi-automaticos isobaricos</div>
+<div class="card-tip">Sistemas como Birra en Lata (Argentina): pistones que sellan la lata, presurizan, purgan, llenan, levantan y dejan formar el honguito de espuma. Producen ~150 latas/hora con 2 cabezales. Calidad de oxigeno disuelto muy baja.</div>
+<div class="card-details">La despresuracion esta regulada para ser un poco brusca y generar espuma (honguito) sin que rebalse. Tambien existen versiones atmosfericas (abiertas) que funcionan como un beer gun automatizado.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2591000">43:11</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Productividad: 150 latas/hora semi-auto</div>
+<div class="card-tip">Una enlatadora isobarica de 2 cabezales produce en promedio 150 latas/hora. Es el doble de un contrapresion manual pero sigue siendo lento para grandes volumenes.</div>
+<div class="card-details">Comparacion: beer gun ~50/hora, semi-auto isobarica ~150/hora, linea automatizada ~2000/hora.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2991000">49:51</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Merma del 10% indica sistema insuficiente</div>
+<div class="card-tip">Si al enlatar rapido con un sistema que queda chico se llega a ~10% de merma, el sistema ya no sirve. Lo que no se paga en tiempo operativo se paga en producto desechado (con lata, etiqueta, etc).</div>
+<div class="card-details">Ejemplo: 3000 latas en 12 horas con 2 llenadoras semi-auto y 4 personas. Resultado: mermas altisimas por low fill y boil over al apurar el proceso.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3241000">54:01</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Parametros controlables en enlatadora automatica</div>
+<div class="card-tip">En una enlatadora isobarica automatizada se puede controlar: tiempos de purga, metodo de purga (ciclos o corriente continua), presion de llenado, orificio de entrada de cerveza, velocidad de despresuracion final, y soplido de CO2 post-llenado.</div>
+<div class="card-details">Mayor orificio = llenado mas rapido pero mas espumeo. Se puede llenar a 0.5, 1 o 2 bar. El soplido final de CO2 barre el aire remanente y genera espuma positiva antes del sellado automatico.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3392000">56:32</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Protocolo CIP para sistema de llenado</div>
+<div class="card-tip">El protocolo de limpieza CIP de un sistema de llenado incluye: agua caliente, soda caustica, enjuague, acido fosforico o nitrico, y sanitizante.</div>
+<div class="card-details">Un buen sistema de llenado debe estar disenado no solo para llenar bien sino tambien para poder limpiarse correctamente (como un brewhouse con sus canerias de CIP).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3416000">56:56</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Escalas de sistemas atmosfericos vs isobaricos</div>
+<div class="card-tip">Atmosferico: homebrewer=beer gun, mediana=llenadora abierta semi-auto, grande=Wild Goose (latas) / Meheen (botellas). Isobarico: homebrewer=contrapresion, mediana=Birra en Lata, grande=Codi, Comac, Krones, KHS.</div>
+<div class="card-details">Wild Goose y Meheen son de la misma empresa. Las marcas alemanas (Krones, KHS) son lo top en calidad y precio. Codi (americana) produce ~2000 latas/hora con 6 cabezales.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3602000">1:00:02</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">No sobreexplotar el sistema de llenado</div>
+<div class="card-tip">Usar el sistema de llenado dentro de su capacidad comoda. Cuando se sobreexplota (queda chico), sufre el producto: mas oxidacion, mas merma, mas contaminacion. Trabajar comodo permite prestar atencion a la calidad.</div>
+<div class="card-details">Aplica a cualquier fase del proceso cervecero. No comprar un fermentador de 5000L si se producen 200L de mosto (tardaria 20 dias en llenarse).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3767000">1:02:47</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Regla 3-30-300 de envejecimiento</div>
+<div class="card-tip">3 dias a 37 C = 30 dias a 22 C = 300 dias a 2 C en terminos de envejecimiento/oxidacion. La temperatura de conservacion del producto terminado es fundamental para su vida util.</div>
+<div class="card-details">Fuente: Firestone Walker (buscar 'shelf life Firestone Walker'). La velocidad de oxidacion depende de la temperatura: a mayor temperatura, mas rapido se deteriora. 0 incorporacion de oxigeno es imposible, pero mantener frio extiende drasticamente la vida util.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

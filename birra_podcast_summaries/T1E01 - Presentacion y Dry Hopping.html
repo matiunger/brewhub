@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T1E01 - Presentacion y Dry Hopping</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-bottom: 2rem; }
+  .audio-bar { position: sticky; top: 0; z-index: 100; background: #1a1a1a; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+  .audio-bar audio { flex: 1; min-width: 0; max-width: 800px; }
+  .back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+  .back-btn:hover { background: rgba(255,255,255,0.25); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+  h1 { font-size: 1.6rem; margin-bottom: 1rem; color: #1a1a1a; }
+  .stats { background: #fff; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .stats .total { font-weight: 700; font-size: 1.1rem; margin-right: 0.5rem; }
+  .stat-pill { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 999px; color: #fff; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+  .card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+  .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-2px); }
+  .card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+  .timestamp { font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.8rem; background: #f0f0f0; border: 1px solid #ddd; border-radius: 6px; padding: 0.25rem 0.6rem; cursor: pointer; color: #333; font-weight: 600; transition: background 0.15s, color 0.15s; display: inline-flex; align-items: center; gap: 0.3rem; }
+  .timestamp:hover { background: #1a1a1a; color: #fff; }
+  .timestamp::before { content: ''; display: inline-block; width: 0; height: 0; border-left: 6px solid currentColor; border-top: 4px solid transparent; border-bottom: 4px solid transparent; opacity: 0; transition: opacity 0.15s; }
+  .timestamp:hover::before { opacity: 1; }
+  .badge { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 999px; color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+  .card-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+  .card-tip { font-size: 0.92rem; line-height: 1.5; color: #333; }
+  .card-details { font-size: 0.85rem; line-height: 1.45; color: #666; font-style: italic; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #eee; }
+
+  .cat-proceso { background: #2563eb; }
+  .cat-ingrediente { background: #16a34a; }
+  .cat-receta { background: #dc2626; }
+  .cat-ratio { background: #d97706; }
+  .cat-tecnica { background: #7c3aed; }
+  .cat-equipo { background: #0891b2; }
+  .cat-levadura { background: #be185d; }
+  .cat-malta { background: #92400e; }
+  .cat-lupulo { background: #15803d; }
+  .cat-agua { background: #0369a1; }
+</style>
+</head>
+<body>
+
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">← Índice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T1E01 - Presentacion y Dry Hopping.wav"></audio>
+</div>
+
+<div class="container">
+  <h1>T1E01 - Presentacion y Dry Hopping</h1>
+
+  <div class="stats">
+    <span class="total">10 tips</span>
+    <span class="stat-pill cat-tecnica">tecnica 5</span>
+    <span class="stat-pill cat-proceso">proceso 2</span>
+    <span class="stat-pill cat-equipo">equipo 1</span>
+    <span class="stat-pill cat-ratio">ratio 1</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="858000">14:18</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Dry hopping al final de fermentacion</div>
+      <div class="card-tip">Agregar el lupulo cuando le quedan 5 puntos de densidad por atenuar. La fermentacion residual genera CO2 que mantiene el lupulo en movimiento y aumenta la transferencia. La levadura en suspension absorbe parte del oxigeno disuelto incorporado.</div>
+      <div class="card-details">Si la cerveza termina en 1.010, dry hoppear cuando esta en 1.015. No guiarse por el dia (3ro, 5to), sino por la densidad. Requiere conocer la cinetica de fermentacion de cada cepa.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="891000">14:51</button>
+        <span class="badge cat-proceso">proceso</span>
+      </div>
+      <div class="card-title">Subir temperatura para dry hopping</div>
+      <div class="card-tip">Liberar el controlador de temperatura cuando faltan 5 puntos para que la cerveza termine fermentando por encima de 21 °C. La temperatura elevada aumenta la solubilidad de ciertos aceites esenciales del lupulo.</div>
+      <div class="card-details">Combinar el descanso de diacetilo con el dry hopping. En invierno liberar el controlador antes porque la temperatura ambiente baja demasiado.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1024000">17:04</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Cerrar blow-off al dry hoppear</div>
+      <div class="card-tip">Cerrar la salida de gases despues de agregar el lupulo para acumular presion con los ultimos puntos de fermentacion. La presion empuja el krausen de lupulo hacia el liquido, aumentando el area de contacto y forzando volatiles a quedarse en solucion.</div>
+      <div class="card-details">Si se cierra antes (fermentacion muy activa), quedan esteres, sulfuros y otros compuestos indeseables. Si se cierra despues, ya no se genera suficiente presion. Solo funciona en fermentador isobarico/inoxidable.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1063000">17:43</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Aclimatar lupulo antes de agregarlo</div>
+      <div class="card-tip">Sacar el lupulo del freezer, pesarlo y dejarlo que se aclimate a temperatura ambiente antes de tirarlo al tanque. Cuando esta congelado cae solido al fondo; a temperatura ambiente se pulveriza y solubiliza mejor en el liquido.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1275000">21:15</button>
+        <span class="badge cat-proceso">proceso</span>
+      </div>
+      <div class="card-title">Purgar cono antes del dry hopping</div>
+      <div class="card-tip">Hacer una purga total del cono (trub + levadura muerta) antes de dry hoppear. La levadura muerta con el trub genera sulfuros, mercaptanos y otros compuestos indeseables. Ademas, que el cono sea 100% lupulo aumenta el area de transferencia de aromas.</div>
+      <div class="card-details">El lupulo precipita en menos de 24 horas tras el dry hopping. Todo el aroma se transfiere desde la torta de lupulo del cono hacia el liquido, asi que conviene que no haya trub ni levadura muerta mezclados.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1391000">23:11</button>
+        <span class="badge cat-equipo">equipo</span>
+      </div>
+      <div class="card-title">Plastico requiere mas lupulo que inox</div>
+      <div class="card-tip">En fermentadores de plastico se necesita mas lupulo para la misma intensidad aromatica porque no se puede presurizar. Testear cuanta presion soporta la tapa y mejorar el sellado (mas tornillos, juntas). Incluso 200-300 g de presion ya es una mejora significativa.</div>
+      <div class="card-details">El peor momento es al pasar de temperatura de fermentacion a frio: el liquido se contrae, genera vacio y entra aire al tanque. Eso es mortal para la cerveza lupulada.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1449000">24:09</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">En plastico, priorizar whirlpool sobre dry hop</div>
+      <div class="card-tip">Para cerveceros con fermentadores de plastico, usar mas adicion de lupulo en whirlpool que en dry hopping. El whirlpool genera compuestos de oxidacion de aceites esenciales mas estables, mas pesados y menos volatiles, con aroma mas duradero en el tiempo.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1703000">28:23</button>
+        <span class="badge cat-ratio">ratio</span>
+      </div>
+      <div class="card-title">Dosificacion segun intensidad deseada</div>
+      <div class="card-tip">Con menos de 6 g/L de lupulo alcanza un solo dry hopping al final de la fermentacion. Agregar mas de 6 g/L en una sola adicion es ineficiente: 6 g/L y 10 g/L dan casi la misma intensidad aromatica.</div>
+      <div class="card-details">Para mas de 6 g/L, dividir en dos adiciones: una al final de fermentacion y otra en frio (solo si se tiene equipamiento para slurry).</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1715000">28:35</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Dry hop de biotransformacion temprano</div>
+      <div class="card-tip">Para NEIPAs o cervezas que buscan biotransformacion, agregar 2-3 g/L de lupulo al inicio de la fermentacion activa (12-24 h despues de inocular), cuando el blow-off empieza a burbujear. Esta adicion aporta mas sabor que aroma por la interaccion lupulo-levadura.</div>
+      <div class="card-details">Es un agregado complementario al dry hop principal de fin de fermentacion; no lo reemplaza.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <button class="timestamp" data-ms="1803000">30:03</button>
+        <span class="badge cat-tecnica">tecnica</span>
+      </div>
+      <div class="card-title">Evitar dry hopping en frio sin equipo</div>
+      <div class="card-tip">El dry hopping en frio incorpora oxigeno que se arrastra hasta la cerveza terminada. La cerveza puede explotar de aroma los primeros 2-3 dias, estar mas o menos a la semana y perder todo el aroma a las 2 semanas. Solo hacerlo si se tiene equipamiento para slurry.</div>
+      <div class="card-details">Sin equipamiento adecuado, los resultados a mediano plazo son peores que si no se hubiese hecho la adicion en frio.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+
+</body>
+</html>

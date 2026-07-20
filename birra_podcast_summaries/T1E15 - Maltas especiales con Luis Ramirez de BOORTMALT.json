@@ -1,0 +1,165 @@
+{
+  "episode": "T1E15 - Maltas especiales con Luis Ramirez de BOORTMALT",
+  "tips": [
+    {
+      "timestamp_ms": 190000,
+      "timestamp": "03:10",
+      "category": "malta",
+      "title": "Malta base vs malta especial",
+      "tip": "La malta base aporta azúcares fermentables (almidón + enzimas). La malta especial aporta color, aroma y sabor (función organoléptica). Los procesos de caramelización y tostado de las especiales desnaturalizan las enzimas y convierten parte del almidón, por lo que rinden menos extracto por kilo.",
+      "details": "La diferencia de extracto es leve pero existe. Las maltas especiales no aportan enzimas al macerado, dependiendo enteramente de las enzimas de la malta base."
+    },
+    {
+      "timestamp_ms": 332000,
+      "timestamp": "05:32",
+      "category": "proceso",
+      "title": "Poder diastásico y conversión del macerado",
+      "tip": "El poder diastásico es la capacidad del grano de degradar almidón en azúcares fermentables. Las maltas base tienen suficiente poder diastásico para degradar su propio almidón más el de adjuntos no malteados. Si usás grandes porcentajes de malta especial o adjuntos, verificá que la capacidad enzimática total de la mezcla sea suficiente.",
+      "details": "Cuanto más alto el valor de poder diastásico, más modificada está la malta y más sencilla resulta la conversión del macerado."
+    },
+    {
+      "timestamp_ms": 426000,
+      "timestamp": "07:06",
+      "category": "malta",
+      "title": "Modificación y germinación de la malta",
+      "tip": "El poder diastásico es consecuencia de la modificación. Cuanto más tiempo germina el grano de cebada, más enzimas genera y mayor será su poder diastásico. Una malta más modificada facilita la conversión del macerado.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 466000,
+      "timestamp": "07:46",
+      "category": "proceso",
+      "title": "Reacciones de Maillard en maltas especiales",
+      "tip": "Las reacciones de Maillard (azúcar reductor + aminoácido) producen melanoidinas (color) y cientos de compuestos de aroma y sabor. No son enzimáticas, así que la alta temperatura no las detiene. Las variables que las afectan son: pH, temperatura, humedad, tipo de proteína y tipo de azúcar.",
+      "details": "Cambiar cualquiera de estas variables produce compuestos completamente distintos. Por eso dos maltas con procesos ligeramente diferentes dan perfiles organolépticos muy diferentes, aunque partan del mismo grano."
+    },
+    {
+      "timestamp_ms": 980000,
+      "timestamp": "16:20",
+      "category": "malta",
+      "title": "Malta Munich: cebada alta en proteína",
+      "tip": "El aroma a galleta y corteza de pan de la Malta Munich proviene de un aldehído derivado del azufre. Para obtener ese perfil se necesita cebada con alto contenido proteico, que aporta mayor cantidad de aminoácidos con azufre. Más proteína en la cebada = más flavor maltoso.",
+      "details": "El alto contenido proteico también deriva en mayor contenido enzimático, lo que ayuda a la transformación en el macerado. Al usarse como especial en menor cantidad, la proteína extra no genera problemas de turbidez."
+    },
+    {
+      "timestamp_ms": 1156000,
+      "timestamp": "19:16",
+      "category": "malta",
+      "title": "Variedades de cebada para flavor",
+      "tip": "Hay malterías que seleccionan variedades de cebada y zonas de cultivo específicas para obtener flavors diferentes, priorizando perfil organoléptico por sobre rendimiento de extracto o kilos por hectárea. Cebadas con perfiles de aminoácidos distintos producen maltas con aromas únicos.",
+      "details": "En Admiral Maltings (California) se producen maltas Pilsen y Munich con notas inusuales como frutos rojos y cereza, derivadas de variedades de cebada seleccionadas por flavor."
+    },
+    {
+      "timestamp_ms": 1446000,
+      "timestamp": "24:06",
+      "category": "malta",
+      "title": "Maltas convencionales: uso al 100%",
+      "tip": "Las maltas convencionales (Pilsen, Pale, Munich, Vienna) conservan alto poder diastásico y pueden usarse al 100% del grist. A medida que sube el color aumenta la intensidad aromática, pero mantienen capacidad de auto-conversión en el macerado.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1540000,
+      "timestamp": "25:40",
+      "category": "proceso",
+      "title": "Maltas tostadas: proceso y equipos",
+      "tip": "Las maltas tostadas se someten a alta temperatura y pierden poder diastásico. Se producen en dos tipos de equipos: secador convencional (cama estática, aire caliente por abajo, máx ~100-110°C) o roaster (cilindro giratorio, origen cafetero, alcanza 150-200°C). El roaster produce un tostado más homogéneo.",
+      "details": "Las maltas Aromatic y Victory Malt se hacen en secador convencional a temperaturas elevadas. Para maltas Chocolate, Negras o Tostadas se usa roaster partiendo de una malta base ya secada."
+    },
+    {
+      "timestamp_ms": 1790000,
+      "timestamp": "29:50",
+      "category": "proceso",
+      "title": "Proceso de maltas caramelo: macerado interno",
+      "tip": "Las maltas caramelo se producen a partir de malta verde (húmeda, ~40-50% de humedad). Se llevan a temperatura de macerado (67-70°C) dentro del grano para generar azúcares, luego se sube la temperatura (150-200°C) para cristalizar. Ocurre caramelización real (azúcar + agua), no reacción de Maillard.",
+      "details": "Es el mismo principio que hacer caramelo para flan: azúcar y agua calentados. Eso produce un perfil de sabor muy diferente al de las maltas tostadas."
+    },
+    {
+      "timestamp_ms": 1960000,
+      "timestamp": "32:40",
+      "category": "malta",
+      "title": "Diferencia entre malta cristal y caramelo",
+      "tip": "Malta cristal se hace en roaster (gira) y produce un producto homogéneo: el 100% de los granos tiene perfil caramelo uniforme. Malta caramelo se hace en secador convencional (cama de ~2 metros, quieta) y la parte inferior se carameliza más que la superior, dando un resultado heterogéneo.",
+      "details": "Una malta caramelo termina siendo una mezcla de perfiles: caramelo alto + aromas tipo Munich + Pale + algo de tostado leve. Una malta cristal del mismo color tendrá un perfil caramelo más puro y definido."
+    },
+    {
+      "timestamp_ms": 2158000,
+      "timestamp": "35:58",
+      "category": "malta",
+      "title": "Perfiles aromáticos de caramelo según color",
+      "tip": "Caramelo 30: dulce de leche, toffee. Caramelo 60: más tostadito, aroma a flan. Caramelo 80-120: pasas de uva, ciruela. No es lo mismo usar mucho Caramelo 30 que poco Caramelo 120 para lograr un color: el perfil aromático será completamente diferente.",
+      "details": "A medida que aumenta la temperatura los compuestos se van tostando más, aparecen notas frutales oscuras y el caramelo cambia de carácter. Elegir el grado de caramelo pensando en el aroma deseado, no solo en el color."
+    },
+    {
+      "timestamp_ms": 2270000,
+      "timestamp": "37:50",
+      "category": "malta",
+      "title": "Malta melanoidina: la favorita de Luis",
+      "tip": "La melanoidina es la expresión máxima de la reacción de Maillard. Conserva atributos de malta base (poder diastásico), por lo que se puede usar en porcentajes altos. Luis la probó hasta 50-60% del grist con éxito.",
+      "details": "Requiere cebada de alta proteína. Su proceso implica una germinación más prolongada que la normal para maximizar aminoácidos, azúcares y enzimas antes del secado. Aporta color, aroma maltoso intenso y mantiene capacidad de conversión."
+    },
+    {
+      "timestamp_ms": 2416000,
+      "timestamp": "40:16",
+      "category": "malta",
+      "title": "Carapils: evaluación crítica",
+      "tip": "Carapils (nombre genérico: malta dextrina; Carapils es marca de Bayermann) aporta dextrinas, viscosidad y espuma. Sin embargo, su efectividad está cuestionada: es un proceso de malteado interrumpido, un punto intermedio entre cebada y malta. Debería costar menos que una Pilsen.",
+      "details": "Su proceso interrumpido le da una leve caramelización entre almidón y aleurona que otorga viscosidad. Pero no es ni cebada ni malta completa."
+    },
+    {
+      "timestamp_ms": 2574000,
+      "timestamp": "42:54",
+      "category": "tecnica",
+      "title": "Carapils: test de densidad final",
+      "tip": "Estudios de cerveceros reconocidos muestran que una cerveza con 50% Pilsen + 50% Carapils termina con casi la misma densidad final que una 100% Pilsen. Si la Carapils realmente aportara dextrinas no fermentables, la densidad final debería ser significativamente mayor.",
+      "details": "Probar con lotes propios usando 1-2% para verificar el aporte real antes de incluirla como ingrediente fijo en las recetas."
+    },
+    {
+      "timestamp_ms": 2620000,
+      "timestamp": "43:40",
+      "category": "tecnica",
+      "title": "Carapils en cervezas lupuladas",
+      "tip": "La Carapils funciona mejor en cervezas muy lupuladas donde se busca dar soporte y complejidad de malta sin competir con los lúpulos. En cervezas oscuras que ya llevan maltas caramelo, la Carapils es redundante ya que los caramelos también aportan viscosidad y dextrinas.",
+      "details": "No tiene sentido usar Carapils + Caramelo 30 + Caramelo 60 juntos. Revisar si realmente es necesaria cuando ya hay caramelos en la receta."
+    },
+    {
+      "timestamp_ms": 2842000,
+      "timestamp": "47:22",
+      "category": "receta",
+      "title": "Evitar muchas maltas en porcentajes ínfimos",
+      "tip": "Poner muchas variedades de maltas especiales en porcentajes muy bajos (ej. 0.2%) no aporta sabor distinguible. Una malta dominante como Black Patent al 5% puede tapar completamente el aporte de las demás. Es mejor usar menos maltas en porcentajes significativos.",
+      "details": "Ejemplo problemático: Robust Porter con 3-4 maltas caramelo, 2-3 maltas torradas y 0.5% de avena. El aporte de la avena es imperceptible contra chocolate, carafa y cebada tostada."
+    },
+    {
+      "timestamp_ms": 2876000,
+      "timestamp": "47:56",
+      "category": "tecnica",
+      "title": "Superponer perfiles organolépticos de maltas",
+      "tip": "Al diseñar una receta, usar los perfiles organolépticos (gráficos de araña) que publican las malterías y superponerlos para detectar solapamientos. Si dos maltas tienen perfiles similares, una puede opacar a la otra.",
+      "details": "Verificar que cada malta de la receta aporte algo diferenciado antes de incluirla. Evitar sumar tostados sobre tostados sin propósito."
+    },
+    {
+      "timestamp_ms": 2946000,
+      "timestamp": "49:06",
+      "category": "proceso",
+      "title": "Conversión con alto porcentaje de especiales",
+      "tip": "Al usar alto porcentaje de malta especial (ej. 30% caramelo), verificar que la capacidad enzimática de la mezcla total sea suficiente para la conversión. Un déficit puede causar: extracto aparente final más alto, menor alcohol, fermentación más lenta y levadura sin todos sus nutrientes disponibles.",
+      "details": "Las maltas caramelo no tienen poder diastásico (enzimas destruidas por alta temperatura). A más del 20-30% de especiales, hacer test de yodo para confirmar conversión completa."
+    },
+    {
+      "timestamp_ms": 3030000,
+      "timestamp": "50:30",
+      "category": "tecnica",
+      "title": "Tecito de malta para evaluar ingredientes",
+      "tip": "Para evaluar una malta antes de usarla: moler 25-50g con molinillo de café, diluir en 3-4 partes de agua caliente (50-60°C), dejar reposar y evaluar sensorialmente. Oler y probar el líquido. Complementar masticando granos de malta sin moler.",
+      "details": "Esta técnica está documentada en portales de EBC y asociaciones cerveceras. Permite comparar maltas entre sí y hacerse una idea del aporte antes de diseñar la receta."
+    },
+    {
+      "timestamp_ms": 3126000,
+      "timestamp": "52:06",
+      "category": "proceso",
+      "title": "Monitorear protocolos de calidad de malta",
+      "tip": "Observar las tendencias lote a lote en los protocolos de calidad de la maltería. Si la proteína cambia (ej. de 9% a 11%), aunque esté en especificación, el proceso de macerado y hervido puede necesitar ajustes. La malta varía durante el año y el cervecero debe adaptar su proceso.",
+      "details": "No culpar al maltero ('Don't blame the malster' — Charlie Bamforth). La variabilidad es natural y toda la cadena debe ajustarse para que el consumidor final no note cambios."
+    }
+  ]
+}

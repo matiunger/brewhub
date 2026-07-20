@@ -41,6 +41,10 @@ Treat faults like a **doctor treats illness**: symptom → diagnosis → treatme
 - **[[style-related-faults]]** — balance/drinkability vs the reference style:
   - [[low-gravity]] · [[incorrect-attenuation]] · [[boil-related-issues]] · [[harshness]] · [[aftertaste-issues]] · [[clarity]]
 
+## Catching Problems Before They're in the Glass
+
+**[[diy-quality-control-tests]]** — forced diacetyl, forced wort (contamination), forced attenuation, and forced aging tests you can run with no lab equipment, to catch a fault while it's still fixable instead of diagnosing it after the fact.
+
 ## Related
 
-[[cleaning]] · [[managing-fermentation]] · [[beer-stability]] · [[recipe-formulation]] · [[final-adjustments]]
+[[cleaning]] · [[managing-fermentation]] · [[beer-stability]] · [[recipe-formulation]] · [[final-adjustments]] · [[diy-quality-control-tests]]

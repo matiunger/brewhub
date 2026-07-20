@@ -1,0 +1,261 @@
+{
+  "episode": "T1E06 - Oxigenacion y estabilidad de la cerveza entrevista con Alexis Balzan",
+  "tips": [
+    {
+      "timestamp_ms": 803000,
+      "timestamp": "13:23",
+      "category": "agua",
+      "title": "Agua de proceso tiene hasta 8 ppm O2",
+      "tip": "Las fuentes naturales de agua suelen tener bastante oxígeno disuelto, llegando a veces a los 8 ppm. Esto es relevante porque ese oxígeno participa en reacciones oxidativas durante la cocción del mosto.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 830000,
+      "timestamp": "13:50",
+      "category": "equipo",
+      "title": "Eliminar catalizadores metálicos de oxidación",
+      "tip": "Eliminar del lado caliente todos los elementos que puedan catalizar reacciones oxidativas: cobre, bronce y aluminio. Reemplazarlos por acero inoxidable.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 841000,
+      "timestamp": "14:01",
+      "category": "proceso",
+      "title": "No salpicar mosto antes del hervido",
+      "tip": "Evitar salpicar el mosto caliente, especialmente antes del hervido. Entre 60 y 78°C el mosto tiene oxígeno disuelto pero la temperatura no es suficiente para liberarlo como en el hervido, acelerando las reacciones oxidativas.",
+      "details": "Durante el hervido el oxígeno se libera y se elimina, pero en el macerado y lavado (60-78°C) el oxígeno permanece y las reacciones oxidativas ocurren rápidamente."
+    },
+    {
+      "timestamp_ms": 913000,
+      "timestamp": "15:13",
+      "category": "tecnica",
+      "title": "Recircular por debajo del nivel del mosto",
+      "tip": "Al recircular el mosto en el macerador, devolver el líquido por debajo del nivel del mosto para evitar salpicado y pick-up de oxígeno. Muchos cerveceros recirculan por encima del nivel, lo cual es perjudicial.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 930000,
+      "timestamp": "15:30",
+      "category": "equipo",
+      "title": "No usar barral de lluvia para el mosto",
+      "tip": "El barral de lluvia (spray bar) aumenta enormemente la superficie de contacto del mosto con el aire. Usarlo solo para distribuir el agua de lavado, nunca para el mosto.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 955000,
+      "timestamp": "15:55",
+      "category": "equipo",
+      "title": "Macerador siempre con tapa cerrada",
+      "tip": "El macerador debe tener tapa cerrada durante todo el proceso. Sin tapa, el recirculado genera espuma en toda la superficie del macerador, lo cual es consecuencia del pick-up de oxígeno del mosto caliente.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1200000,
+      "timestamp": "20:00",
+      "category": "agua",
+      "title": "Químicos para reducir O2 del agua",
+      "tip": "Se puede reducir el oxígeno disuelto del agua de cocción con metabisulfito, ácido ascórbico o galotaninos. Estos compuestos se evaporan completamente durante el hervido, sin dejar residuos en la cerveza.",
+      "details": "Las máquinas industriales de desoxigenación (bomba de vacío sobre el tanque de agua) son muy caras y no valen la pena para cervecerías chicas. Los químicos son una alternativa económica."
+    },
+    {
+      "timestamp_ms": 1226000,
+      "timestamp": "20:26",
+      "category": "ingrediente",
+      "title": "Metabisulfito solo en lado caliente",
+      "tip": "No usar metabisulfito en el lado frío de la producción. En frío, genera gases de sulfuro perceptibles en la cerveza y sus compuestos perduran. Hay personas intolerantes a los sulfitos.",
+      "details": "Las cervecerías industriales intentan usar cada vez menos metabisulfito y buscan que la levadura genere naturalmente los gases protectores."
+    },
+    {
+      "timestamp_ms": 1322000,
+      "timestamp": "22:02",
+      "category": "proceso",
+      "title": "Priorizar control del lado frío",
+      "tip": "No tiene sentido invertir en minimizar oxígeno en el lado caliente si no se controla el lado frío. Primero lograr niveles bajos de oxígeno en el envase final; recién después refinar el lado caliente.",
+      "details": "Ejemplo: cerveceros que usan agua desoxigenada para el empaste pero luego filtran con diatomea incorporando metales pesados, generando cervezas que se oxidan rápido. La mejora del lado caliente es despreciable frente al daño del lado frío."
+    },
+    {
+      "timestamp_ms": 1451000,
+      "timestamp": "24:11",
+      "category": "levadura",
+      "title": "Levadura consume O2 rápidamente",
+      "tip": "La levadura necesita oxígeno para generar su membrana celular durante la fase reproductiva. Lo consume muy rápidamente, por lo que el O2 agregado al mosto como nutriente no llega a oxidar la cerveza.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1484000,
+      "timestamp": "24:44",
+      "category": "proceso",
+      "title": "Post-fermentación: O2 mínimo (~5 ppb)",
+      "tip": "Al terminar la fermentación, el oxígeno disuelto está en su punto más bajo, cercano a los 5 ppb. A partir de ese momento, cada manipulación de la cerveza (dry hop, clarificante, frutas, trasvase) va incorporando oxígeno.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1532000,
+      "timestamp": "25:32",
+      "category": "proceso",
+      "title": "Cada apertura del tanque incorpora O2",
+      "tip": "Cualquier contacto de la cerveza con la atmósfera incorpora oxígeno: abrir el tanque para dry hop, agregar clarificante, agregar frutas. Cada vez que el tanque pierde presión positiva, entra aire.",
+      "details": "También se puede incorporar oxígeno al agregar productos que contengan oxígeno disuelto, incluso sin abrir el tanque a la atmósfera."
+    },
+    {
+      "timestamp_ms": 1614000,
+      "timestamp": "26:54",
+      "category": "proceso",
+      "title": "Objetivo de O2 en envase final",
+      "tip": "Apuntar a menos de 20 ppb de oxígeno disuelto en el envase final. Menos de 50 ppb es bueno, menos de 30 es muy bueno, menos de 20 es excelente.",
+      "details": "Las cervecerías industriales usan 50 ppb como valor de referencia máximo. Con 20 ppb la cerveza va a tener buena estabilidad."
+    },
+    {
+      "timestamp_ms": 1704000,
+      "timestamp": "28:24",
+      "category": "proceso",
+      "title": "Lupuladas más sensibles a oxidación",
+      "tip": "No afecta igual el oxígeno a una lager filtrada que a una IPA con dry hopping. Las cervezas con más insumos (lúpulo, adjuntos) tienen más compuestos oxidables y son más sensibles al deterioro.",
+      "details": "Las cervecerías industriales les extirpan compuestos con ultrafiltraciones y usan baja cantidad de lúpulo, reduciendo los elementos que se pueden oxidar."
+    },
+    {
+      "timestamp_ms": 1895000,
+      "timestamp": "31:35",
+      "category": "equipo",
+      "title": "BBT siempre con CO2 y presión positiva",
+      "tip": "El BBT (bright beer tank / madurador) debe estar siempre lleno de dióxido de carbono, libre de oxígeno y con presión positiva. Si el headspace tiene aire y la cerveza permanece horas o días, el aire se mezcla con la cerveza aumentando el oxígeno disuelto.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1936000,
+      "timestamp": "32:16",
+      "category": "proceso",
+      "title": "No soda cáustica en limpieza diaria BBT",
+      "tip": "La soda cáustica neutraliza el CO2 del BBT y genera vacío que puede deformar el tanque. No usarla en la limpieza rutinaria. Reservarla para inspecciones periódicas profundas (cada 1-2 meses).",
+      "details": "El CO2 es ácido y reacciona con la soda cáustica (básica). Al neutralizarse el CO2, se genera vacío que puede chupar el tanque, con riesgo de daño grave."
+    },
+    {
+      "timestamp_ms": 2012000,
+      "timestamp": "33:32",
+      "category": "tecnica",
+      "title": "Purga eficiente: llenar con agua, vaciar con CO2",
+      "tip": "Purgar un tanque inyectando CO2 por una válvula y sacando por otra NO es eficiente: se mezclan los gases y el aire nunca se elimina del todo. Lo correcto es llenar el tanque con agua y vaciarla empujando con CO2. El volumen que ocupaba el agua queda 100% lleno de CO2.",
+      "details": "El agua se recupera y se reutiliza. Es aplicable incluso a escala casera (homebrewer)."
+    },
+    {
+      "timestamp_ms": 2166000,
+      "timestamp": "36:06",
+      "category": "tecnica",
+      "title": "Purga simple de barril: solo +2-3 ppb",
+      "tip": "Con una purga simple del barril (inyectar CO2, liberar, volver a presurizar) y llenado de abajo hacia arriba sin dejar headspace, el aumento de oxígeno disuelto es de solo 2-3 ppb.",
+      "details": "Medido con Anton Parr en Minga (2 ppb) y en Kraken (3 ppb). El CO2 se deposita abajo del barril; al llenar por abajo el aire se purga por arriba. Llenar a tope absoluto sin headspace."
+    },
+    {
+      "timestamp_ms": 2335000,
+      "timestamp": "38:55",
+      "category": "proceso",
+      "title": "Mantener presión CO2 al vaciar BBT",
+      "tip": "Al embarrilar desde el BBT, la cerveza que sale debe ser reemplazada con CO2. Poner el regulador a la presión de carbonatación de la cerveza. Cuando el BBT quede vacío, estará lleno de CO2 sin aire, listo para limpieza ácida.",
+      "details": "La presión del BBT nunca puede ser menor a la presión de estabilidad de la cerveza según su nivel de carbonatación."
+    },
+    {
+      "timestamp_ms": 2427000,
+      "timestamp": "40:27",
+      "category": "proceso",
+      "title": "Limpieza ácida: fosfórico + nítrico",
+      "tip": "Para limpiar el BBT sin romper la atmósfera de CO2, usar ácido fosfórico reforzado con nítrico. El nítrico potencia significativamente la acción del fosfórico, compensando la ausencia de limpieza alcalina.",
+      "details": "Limpiar inmediatamente después de vaciar el tanque para que las partículas no se sequen ni se peguen a las paredes."
+    },
+    {
+      "timestamp_ms": 2480000,
+      "timestamp": "41:20",
+      "category": "equipo",
+      "title": "Precauciones para CIP bajo presión",
+      "tip": "Para hacer CIP bajo presión de CO2 se necesita: bomba con potencia suficiente para vencer la presión del tanque, mangueras estampadas certificadas (no abrazaderas), y mínimo 0,5 kg de presión de CO2.",
+      "details": "Se manejan presión + temperatura + químicos concentrados simultáneamente. Una manguera que se suelta o una válvula mal abierta puede provocar accidentes graves. Caso real: inyectaron 250 litros de peracético en un BBT con 4000 litros de IPA por error."
+    },
+    {
+      "timestamp_ms": 2559000,
+      "timestamp": "42:39",
+      "category": "proceso",
+      "title": "Limpiar BBT inmediatamente al vaciar",
+      "tip": "Vaciar el tanque de cerveza y ponerlo a limpiar inmediatamente. Si las partículas de cerveza se secan y pegan a las paredes del tanque, la limpieza ácida no las remueve.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2586000,
+      "timestamp": "43:06",
+      "category": "equipo",
+      "title": "Diseño simple del BBT sin sombras CIP",
+      "tip": "El BBT debe tener diseño sanitario simple: sin sombras para la bocha CIP, sin conectores ni conexiones innecesarias. Cada conector extra es un recoveco donde se junta mugre que ni la limpieza ácida ni la cáustica pueden lavar.",
+      "details": "Al pedir un tanque a un proveedor, evitar agregar conexiones innecesarias. El diseño sanitario es sentido común y simpleza."
+    },
+    {
+      "timestamp_ms": 2896000,
+      "timestamp": "48:16",
+      "category": "tecnica",
+      "title": "NEIPA: filtro canasta antes de barril",
+      "tip": "Para cervezas turbias (NEIPA) que no se filtran, usar un filtro tipo canasta grueso antes del barril para evitar que pasen partículas de lúpulo que tapan cañerías de bares o quedan en el vaso.",
+      "details": "Se puede embarrilar directo desde el fermentador sin pasar por BBT, haciendo buena clarificación y purgado en el unitank."
+    },
+    {
+      "timestamp_ms": 3044000,
+      "timestamp": "50:44",
+      "category": "proceso",
+      "title": "Inspección cáustica del BBT cada 1-2 meses",
+      "tip": "Abrir el BBT para inspección visual y limpieza profunda con soda cáustica cada 1-2 meses máximo. Después, restablecer la atmósfera de CO2 llenando con agua y vaciando con CO2.",
+      "details": "En Minga (BBT de diseño simple) cada ~30 cervezas. Con BBTs mal diseñados o con sombras CIP, hay que abrir y purgar cada vez que se usa."
+    },
+    {
+      "timestamp_ms": 3176000,
+      "timestamp": "52:56",
+      "category": "proceso",
+      "title": "Cadena de frío para cerveza artesanal",
+      "tip": "Mantener la cerveza artesanal refrigerada para que las reacciones de oxidación avancen más lento. No pasteurizar cerveza artesanal: la pasteurización la destruye.",
+      "details": "El oxígeno genera el envejecimiento; la temperatura, el movimiento y otros factores determinan la velocidad. A menor temperatura, mayor vida útil con el mismo nivel de O2."
+    },
+    {
+      "timestamp_ms": 3258000,
+      "timestamp": "54:18",
+      "category": "tecnica",
+      "title": "Medir TPO en latas y botellas",
+      "tip": "Para latas y botellas, medir el TPO (Total Package Oxygen): agitar el envase para que se compense el O2 del headspace con el del líquido, luego medir oxígeno disuelto y aplicar una ecuación con temperatura, volumen de cerveza y volumen de headspace.",
+      "details": "Medir apenas se llena el envase. Si pasan horas o días, el O2 ya reaccionó y el valor será artificialmente bajo."
+    },
+    {
+      "timestamp_ms": 3395000,
+      "timestamp": "56:35",
+      "category": "proceso",
+      "title": "Medir O2 inmediatamente tras operación",
+      "tip": "El oxígeno disuelto se mide inmediatamente después de terminar cada operación (trasvase, filtrado, embarrilado). Cada minuto que pasa, el O2 reacciona y desaparece. Medir días después o enviar a un laboratorio externo no tiene sentido.",
+      "details": "Lo que se mide es el potencial de oxidación de la cerveza: medirlo cuando ese potencial es máximo."
+    },
+    {
+      "timestamp_ms": 3594000,
+      "timestamp": "59:54",
+      "category": "tecnica",
+      "title": "Purgar líneas antes de transferir cerveza",
+      "tip": "Antes de transferir cerveza, purgar toda la cañería y mangueras: eliminar aire y residuos de peracético. Llenar con CO2 o con agua sanitizada con bajo O2. El tanque receptor debe estar presurizado con CO2.",
+      "details": "Si queda agua en la cañería al empujar la cerveza, que esa agua tenga pocos ppm de O2 disuelto."
+    },
+    {
+      "timestamp_ms": 3625000,
+      "timestamp": "1:00:25",
+      "category": "ingrediente",
+      "title": "Peracético es altamente oxidante",
+      "tip": "El ácido peracético es super oxidante, pese a muchos textos en internet que dicen lo contrario. Cualquier residuo de peracético en contacto con la cerveza genera oxidación severa detectable al día siguiente.",
+      "details": "Purgar todo residuo de peracético de paredes del fermentador, madurador, barril y cañerías antes de que toquen la cerveza."
+    },
+    {
+      "timestamp_ms": 3715000,
+      "timestamp": "1:01:55",
+      "category": "proceso",
+      "title": "Reemplazar volumen con CO2 al trasvasar",
+      "tip": "Al trasvasar cerveza de un tanque (incluso sin carbonatar), nunca abrir arriba y dejar que entre aire. Inyectar CO2 u otro gas inerte para ocupar el espacio que va liberando la cerveza que sale hacia el otro tanque.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3794000,
+      "timestamp": "1:03:14",
+      "category": "tecnica",
+      "title": "Envejecimiento forzado para evaluar estabilidad",
+      "tip": "Llenar dos barriles iguales del mismo lote. Uno en frío (heladera/cámara) y otro a 30°C. Comparar a la semana o al mes para ver la evolución oxidativa sin necesidad de un medidor de O2.",
+      "details": "Según Fix, 1 semana a 38°C equivale aproximadamente a 1 mes a 8-10°C. Si el O2 disuelto es alto, a la semana ya habrá oxidación severa en el barril caliente. Es gratis y muy informativo."
+    }
+  ]
+}

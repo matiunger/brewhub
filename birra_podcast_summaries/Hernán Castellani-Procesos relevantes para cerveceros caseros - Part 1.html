@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hernán Castellani-Procesos relevantes para cerveceros caseros - Part 1</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 60px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: #1a1a1a; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; height: 36px; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.stat { background: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 12px; padding: 1.2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; background: #1a1a1a; color: #fff; padding: 0.25rem 0.6rem; border-radius: 6px; border: none; cursor: pointer; transition: background 0.15s; }
+.timestamp:hover { background: #4338ca; }
+.timestamp::before { content: ''; }
+.timestamp:hover::before { content: '\25B6 '; }
+.badge { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 4px; color: #fff; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.92rem; line-height: 1.5; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.85rem; color: #666; font-style: italic; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Indice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/Hern%C3%A1n%20Castellani-Procesos%20relevantes%20para%20cerveceros%20caseros%20-%20Part%201.wav"></audio>
+</div>
+<div class="container">
+<h1>Hernán Castellani - Procesos relevantes para cerveceros caseros (Part 1)</h1>
+<div class="stats">
+  <div class="stat">30 tips</div>
+  <div class="stat" style="border-left:3px solid #2563eb">proceso: 6</div>
+  <div class="stat" style="border-left:3px solid #7c3aed">tecnica: 10</div>
+  <div class="stat" style="border-left:3px solid #be185d">levadura: 9</div>
+  <div class="stat" style="border-left:3px solid #0891b2">equipo: 2</div>
+  <div class="stat" style="border-left:3px solid #d97706">ratio: 1</div>
+  <div class="stat" style="border-left:3px solid #16a34a">ingrediente: 2</div>
+</div>
+<div class="grid">
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="735800">12:15</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Fermentación sana es la clave</div>
+  <div class="card-tip">El mejor mosto del mundo, con los mejores insumos, mal fermentado es una mala birra. Un mosto rústico bien fermentado y bien cuidado es una birra de 7 puntos para arriba. La clave está en controlar la fermentación y cuidar la cerveza terminada.</div>
+  <div class="card-details">Castellani cambió 3 equipos de cocción sin controlar temperatura de fermentación antes de entender esto.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="847520">14:07</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Priorizar lado frío sobre insumos caros</div>
+  <div class="card-tip">Antes de gastar en maltas importadas o lúpulos australianos de 100 USD/kg, tener un proceso prolijo desde que entra el mosto al fermentador en adelante. Fermentación, maduración, trasvases, carbonatación y embarrilado/embotellado afectan más al producto final que la receta perfecta.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="957160">15:57</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Lado frío más importante que lado caliente</div>
+  <div class="card-tip">Con cualquier equipito se puede hacer buen mosto respetando criterios básicos: no salpicar, no incorporar oxígeno, que no espume el macerado, no picar el mosto del lavado. Lo más significativo para la cerveza final es el lado frío.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="974360">16:14</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">No oxidar cervezas lupuladas al trasvasar</div>
+  <div class="card-tip">No tiene sentido meter 25 g/L de lúpulos americanos a una birra si después se trasvasa sin purgar, sin presión, en atmósfera de aire. Se oxida toda y se pierde la inversión en lúpulo.</div>
+  <div class="card-details">Las NEIPAs son especialmente sensibles. La inestabilidad del lúpulo y la oxidación son los principales enemigos.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1045080">17:25</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Controlar temperatura del líquido, no del aire</div>
+  <div class="card-tip">La temperatura del líquido en fermentación es lo que hay que controlar. No vale medir el aire, ni poner un baldecito con agua afuera de la heladera. Hay que lograr la mayor precisión posible en la temperatura del mosto/cerveza.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1100080">18:20</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">STC-1000 en vez de STC-200+</div>
+  <div class="card-tip">El STC-1000 tiene una histéresis de 0.3 °C mientras que el STC-200+ tiene 1 °C. Cuestan casi lo mismo pero la diferencia de precisión es enorme para fermentar entre 19.5 y 19.6 °C.</div>
+  <div class="card-details">Con histéresis de 1 °C la heladera queda prendida mucho tiempo y por inercia térmica la cerveza rebota varios grados por debajo de lo seteado (ej: seteas 19, rebota a 17).</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1175720">19:35</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Inercia térmica al final de fermentación</div>
+  <div class="card-tip">Al final de la fermentación la levadura genera menos calor. Si la heladera prende por la histéresis, la temperatura rebota varios grados abajo y no vuelve a subir. Terminar de fermentar por debajo de 17 °C genera diacetilo y acetaldehído.</div>
+  <div class="card-details">En invierno la temperatura exterior agrava el problema. El sistema frío-calor es ideal pero no indispensable.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1300240">21:40</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Guarda en caliente post-fermentación</div>
+  <div class="card-tip">Después de que terminó la actividad visible de fermentación, la levadura en suspensión sigue redondeando subproductos: compuestos intermedios se convierten en alcoholes y luego en ésteres. Es clave mantener temperatura y tiempo en caliente con levadura en suspensión.</div>
+  <div class="card-details">También llamado descanso de diacetilo, fermentación secundaria o guarda en caliente. Mandar a frío con actividad de blow-off es un pecado grave.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1321860">22:01</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Regla de guarda en caliente: mitad de días</div>
+  <div class="card-tip">Los días que tardó en fermentar, la mitad más lo dejás en guarda en caliente. Si fermentó en 4 días, dejarlo 2 días más mínimo antes de bajar temperatura.</div>
+  <div class="card-details">Si tiene mucho sulfuro, dejar más tiempo en caliente (el sulfuro no es soluble y se va en caliente). Si tiene diacetilo, también aumentar el tiempo.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1415200">23:35</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Curva de temperatura ascendente al final</div>
+  <div class="card-tip">El primer 50% de los fermentables se controla a temperatura precisa (ej: US-05 a 19.5 °C). Cuando faltan entre 10 y 25 puntos de densidad por fermentar, subir el setpoint del controlador a 23 °C. La cerveza sigue a 19 pero sin frío sube sola 2-3 grados por el calor de fermentación.</div>
+  <div class="card-details">Ejemplo para American IPA (1.060&#8594;1.010): controlar preciso de 1.060 a 1.035, luego liberar a 23 °C. Objetivo: terminar fermentación arriba de 21-22 °C con casi todas las cepas.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1583400">26:23</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Liberar por actividad, no solo por densidad</div>
+  <div class="card-tip">Si la actividad de fermentación se plancha (burbujeo se detiene), liberar el controlador sin importar la densidad. Hay que observar la actividad además de medir densidad.</div>
+  <div class="card-details">Con fermentaciones tranquilas, el frío exterior puede ganarle a la generación de calor. Conocer tu fermentador y tu cepa es clave.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1687640">28:07</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">No subinocular: el peor error casero</div>
+  <div class="card-tip">La mayoría de cerveceros caseros subinocula (pone menos levadura de la necesaria). Subinocular genera exceso de ésteres, alcoholes superiores, diacetilo y acetaldehído. Siempre preferir sobreinocular que subinocular.</div>
+  <div class="card-details">Sobreinocular tiene muy bajas consecuencias si no reutilizás (solo el costo extra). Subinocular tiene muchas consecuencias negativas en calidad.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1715640">28:35</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Viabilidad de levadura seca puede ser 40%</div>
+  <div class="card-tip">La viabilidad real de la levadura seca puede ser muy baja. Castellani hizo conteos celulares tras hidratar y encontró hasta 40% de viabilidad (60% de células muertas). Si ponés 0.5 g/L pero tiene 40% viabilidad, realmente inoculaste 0.2 g/L.</div>
+  <div class="card-details">La viabilidad depende del transporte, almacenamiento del proveedor y tiempo desde el envasado.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1786800">29:46</button>
+    <span class="badge badge-ratio">ratio</span>
+  </div>
+  <div class="card-title">Mínimo 1 g/L de levadura seca</div>
+  <div class="card-tip">No usar menos de 1 g/L de levadura seca (Nottingham, Windsor, US-04, US-05) para cualquier cerveza. Para cervezas de más de 1.070, usar 1.5 g/L o más. Preferir ser conservador y poner un poco más.</div>
+  <div class="card-details">Cervezas estándar: 1 g/L. Cervezas complejas (&gt;1.070): 1.5+ g/L.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1810240">30:10</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Oxígeno es clave para reproducción celular</div>
+  <div class="card-tip">El oxígeno disuelto en el mosto está directamente relacionado con la reproducción de células de levadura. Más oxígeno = más biomasa. La mayoría de cerveceros caseros no agregan oxígeno más que sacudiendo el bidón o dejando que pique al caer al fermentador.</div>
+  <div class="card-details">Cada vez más locales venden piedras difusoras para oxigenar en línea. Es una mejora significativa y accesible.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2003200">33:23</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Reutilizar leva: 1 kg por hectolitro de barro</div>
+  <div class="card-tip">Para reutilizar levadura sin microscopio, usar aproximadamente 1 kg de buen barro (cremoso, no seco) por hectolitro como estimación. Requiere conocer bien la cepa, ser metódico en las purgas y tener excelentes prácticas de limpieza y sanitización.</div>
+  <div class="card-details">Si hay bacterias en la cosecha, se reproducen junto con la levadura en la siguiente fermentación. Solo para cerveceros caseros avanzados.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2125160">35:25</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">Todo fermentador debe poder purgarse</div>
+  <div class="card-tip">Sea botellón, cilindro cónico, bidón plástico alimenticio o lo que sea: debe poder purgarse. Ponerle una canilla de costado con conexión de tanque y una válvula. Es más importante que la estética del fermentador.</div>
+  <div class="card-details">Hay fermentadores de vidrio estéticamente lindos que en la práctica no permiten buenas purgas y no son recomendables.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2178320">36:18</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Por qué purgar: levadura muerta genera defectos</div>
+  <div class="card-tip">La levadura muerta que cae al fondo libera compuestos indeseables. La levadura sana que cae intoxicada por alcohol y sin nutrientes también genera off-flavors. Hay que eliminar el trub y la levadura muerta lo antes posible.</div>
+  <div class="card-details">Síntomas de no purgar: olor a huevo podrido, alcantarilla, hongos, humedad (sulfuros y autólisis).</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2272720">37:52</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Primera purga a las 24-48 horas</div>
+  <div class="card-tip">La primera purga se hace entre 24 y 48 horas post-inoculación. El objetivo es sacar el trub frío (lípidos y compuestos coagulados al enfriar) y la levadura muerta que cayó al fondo al inocular.</div>
+  <div class="card-details">Al enfriar de 100 °C a 20 °C se coagulan compuestos que estaban solubles en caliente (trub frío), llenos de lípidos no deseados.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2344180">39:04</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Purgar con manguera fina, nunca directo</div>
+  <div class="card-tip">Nunca purgar con la válvula directa a una jarra: el caudal alto canaliza el barro. Conectar una manguera fina (3/8") de al menos 1 metro a la válvula. La caída de presión gradual baja la torta de lúpulo, leva y trub de forma pareja.</div>
+  <div class="card-details">Si se canaliza (sale líquido claro con barro al costado), cortar. Volver al otro día para continuar la purga sin problema.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2504280">41:44</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Floculación varía por cepa: US-04 vs US-05</div>
+  <div class="card-tip">La US-04 es muy floculante: al tercer día ya hay mucho barro para cosechar. La US-05 es poco floculante y se mantiene en suspensión hasta que termina de fermentar y se le da frío. Las purgas y cosecha dependen de conocer tu cepa.</div>
+  <div class="card-details">Para los que no cosechan: hacer micro-purgas diarias. Purgar un poquito cada día hasta que sale líquido limpio.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2537160">42:17</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Micro-purgas diarias hasta llegar a frío</div>
+  <div class="card-tip">Para los que no cosechan levadura: hacer micro-purgas diarias. Purgar un poquito cada día hasta que al purgar sale líquido limpio y ya no hay más barro. Así se mantiene el fermentador libre de sedimento muerto.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2572480">42:52</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Hidratar siempre, starter solo con equipamiento</div>
+  <div class="card-tip">Siempre hidratar la levadura seca. El starter está buenísimo pero requiere agitador magnético, erlenmeyer con agua, control de temperatura y trabajar bajo mechero para evitar contaminación. Sin ese equipamiento, es mejor no hacer starter con leva seca.</div>
+  <div class="card-details">Castellani tuvo que tirar birras por contaminaciones introducidas durante el starter a nivel homebrewer.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2685600">44:46</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Hidratar reduce mortalidad por estrés osmótico</div>
+  <div class="card-tip">Inocular levadura seca directo al mosto provoca estrés osmótico (diferencia de densidad entre afuera y adentro de la célula), matando más células. Hidratando en agua primero, el estrés osmótico es mucho menor.</div>
+  <div class="card-details">Después de hidratar, agregar mosto en cuotas pequeñas para aclimatar temperatura (de 30 °C del agua a 20 °C del mosto) y densidad.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2782960">46:23</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Protocolo de hidratación de levadura seca</div>
+  <div class="card-tip">Hervir 100 ml de agua por sobre de levadura en un erlenmeyer. Tapar con papel aluminio y dejar enfriar a 30 °C. Sanitizar sobre y tijera, abrir junto a mechero, volcar la leva, tapar y agitar suave para que todo el polvo contacte agua. Esperar exactamente 15 minutos con reloj.</div>
+  <div class="card-details">A los 15 minutos agregar un poco de mosto frío (20 °C) del fermentador. Repetir 2-3 veces, luego volcar al fermentador. Preparar la leva siempre al final, cuando la birra ya está fría en el fermentador.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2985440">49:45</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Nutrientes solo para fermentaciones complejas</div>
+  <div class="card-tip">Con levadura seca y cerveza 100% malta de densidad normal, no es necesario agregar nutrientes. Sí es necesario cuando se usa mucha miel, candy sugar, dextrosa u otro fermentable simple que no aporta nutrientes, o en cervezas de 1.090+.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3051720">50:51</button>
+    <span class="badge badge-ingrediente">ingrediente</span>
+  </div>
+  <div class="card-title">Servomyces para reutilización de levadura</div>
+  <div class="card-tip">Servomyces es una mezcla de levadura inactivada rica en vitaminas, minerales, aminoácidos y zinc. El zinc es clave para la reproducción celular. Junto con el oxígeno, el Servomyces es fundamental cuando se reutiliza levadura.</div>
+  <div class="card-details">No es necesario para fermentaciones únicas con leva seca de densidad normal, ya que la levadura seca viene con su propio paquete de nutrientes.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3149560">52:29</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Levadura líquida: mejor pero más compleja</div>
+  <div class="card-tip">Las levaduras líquidas dan un producto más pulido y acorde a un estilo en particular, pero requieren mucho más conocimiento: cepas más sensibles, menos biomasa, más necesidad de oxígeno y nutrientes, curvas de fermentación específicas por cepa.</div>
+  <div class="card-details">No funciona tratarlas como US-04/05. Cada cepa es un mundo distinto con su temperatura óptima, tasa de inoculación y comportamiento de fermentación.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3267960">54:28</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">No usar aceite de oliva en fermentación</div>
+  <div class="card-tip">Aunque la teoría dice que el aceite de oliva tiene micronutrientes que la levadura necesita para reproducirse sin oxígeno, en la práctica no funciona. Cervecerías grandes que lo probaron dejaron de hacerlo. Además, las grasas van en contra de la formación y retención de espuma.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3365120">56:05</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">No hidratar levadura con miel</div>
+  <div class="card-tip">Hidratar con miel disuelta en agua genera el mismo estrés osmótico que inocular directo al mosto, anulando el propósito de la hidratación. Si la birra no está lista y la leva ya lleva 15 minutos hidratada, agregar un poco de mosto hervido y enfriado para alimentarla.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3543000">59:03</button>
+    <span class="badge badge-levadura">levadura</span>
+  </div>
+  <div class="card-title">Fraccionar paquetes de leva líquida: máximo 2-3</div>
+  <div class="card-tip">Se puede fraccionar un paquete de levadura líquida, pero cada apertura incorpora posible contaminación y oxígeno (que aumenta mortalidad celular en el paquete). Usar máximo en 2-3 veces.</div>
+  <div class="card-details">Abrir bajo mechero, en ambiente sanitizado. Castellani fracciona en su fábrica (fermentaciones de 200-350 L) pero solo en 2 usos por paquete.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

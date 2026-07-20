@@ -211,6 +211,54 @@ Beer can also be filled directly into cold bottles at this stage — the cold te
 
 ---
 
+## Craft-Scale Practical Notes
+
+*Via the Birra Podcast, "Lagers" (T2E13), an interview with Fernando of Meridiano Quinto. These are working-brewery habits that complement the home-brew process above — useful once you're troubleshooting or optimizing rather than running your first batch.*
+
+### Lager Yeast Needs More of Everything
+
+Lager strains need more oxygen, zinc, and magnesium than ale strains, and are more sensitive to thermal shock at pitching and during reharvesting — match wort and yeast temperature closely before pitching. **Pitch rate: ~1.5 million cells/mL per °Plato**, roughly double a typical ale rate; under-pitching a lager at ale rates is a common mistake.
+
+### Lag-Phase Temperature Offset
+
+Hold the fermenter **~1°C above your final target** during the lag phase (first ~12 hours), then step down gradually once fermentation is fully active. Near the end of fermentation, some commercial brewers raise the temperature a couple of degrees to speed final attenuation and diacetyl reabsorption — mainly a time-saving move; a home brewer without a deadline can skip it.
+
+With healthy, vital reharvested yeast, conventional-gravity lagers (Helles, Pils, Märzen up to ~1.060 OG) can fully attenuate in **4–5 days** — only 25–30% longer than an equivalent ale. If attenuation is dragging much longer than that, suspect yeast vitality before blaming the style.
+
+### Harvesting at the Vitality Window, Not at the Bottom
+
+Harvest yeast at an **intermediate temperature (~8–10°C)**, not after a full cold crash. The yeast that flocculates first — shortly after fermentation finishes, as the tank drops just a couple of degrees — is the most vital: it fermented, then went dormant, and gets pitched fresh into the next batch. Waiting for everything to settle at full cold-crash temperature collects more total yeast, but a meaningful fraction of it has already been dying off in the tank, lowering average vitality of the harvest. After primary fermentation and the diacetyl rest, cool in a **stepped ramp of 2–3°C per day** rather than crashing abruptly — crashing hard stresses yeast that's already sitting in an alcoholic, oxygen- and nutrient-depleted environment, and produces a weaker harvest for the next generation.
+
+**Diacetyl rest example (W34/70)**: ferment at 13°C, release to 15°C for the last few gravity points. With vital yeast, a forced diacetyl test comes back negative in as little as 2 days post-fermentation. If diacetyl reabsorption is taking weeks, the rest schedule usually isn't the problem — yeast health at the end of fermentation is.
+
+### Oxygenation
+
+Target **12–16 ppm dissolved O₂** using pure oxygen (sterile air alone can't reach this range) through a diffusion stone at roughly 1 L/min, run continuously through the ~75–80 minute wort chilling process. If lag phase extends past 24 hours (common with fresh liquid or dry pitches), you can re-oxygenate — recirculate to create upward flow with oxygen bubbles from the tank bottom for another 30–40 minutes — but only *before* active fermentation begins. See [[oxygenating-wort]] for the general in-line technique.
+
+### Nutrients
+
+Zinc chloride on every lager fermentation; add a broader nutrient like SpringFerm BR2 every 4–5 yeast reharvests to sustain long-term viability rather than every batch. Magnesium sulfate added to the water salts has also shown a noticeable improvement for lager strains specifically (see [[managing-fermentation]] for the general, more cautious take on brewing magnesium). This is a leaner nutrient philosophy than a full commercial FAN blend — just zinc and magnesium, consistently applied.
+
+### Water
+
+Aim for low overall mineralization but keep **calcium above 60 ppm**; total TDS around **150 ppm** in the final blended water. If source water is heavy in carbonates, cut it with RO down to an 80–100 ppm TDS base before adding brewing salts (calcium chloride, calcium sulfate, magnesium sulfate) — then tune the chloride:sulfate ratio to style. For a grist that leans heavily on Munich or other specialty malt, a small addition of sodium bicarbonate may be needed to keep mash pH from dropping too far, since low-mineral water accentuates that acidification.
+
+### Noble Hop Technique Is Different From American Hop Technique
+
+Noble (European) hops need **boil time** to express their spiced/herbal/woody character — unlike fruity American varieties, which lose everything interesting in a long boil and belong in whirlpool/hop stand/dry hop instead (see [[selecting-hops]], [[hop-stand-chemistry-and-technique]]). Additions in the 15–30 minute range work well for classic lagers.
+
+- Classic German lagers run **very light on hops** by American-IPA standards: under 0.5 g/L per addition, 1.2–1.5 g/L total across ~4 additions is already considered a "strongly hopped" example.
+- A hoppier style like German Pils can run up to **~6 g/L total** between boil and hop stand before it tips out of balance — well above a Helles or Märzen, but still modest next to an American-style lager or IPL.
+- **Single-addition trick**: add noble hops at 1 g/L in the last 5 minutes of the boil, then chill straight into whirlpool without any further addition. The brief boil breaks the pellet apart (noble hops are denser and don't disperse well cold) and extracts the boil-driven herbal/spice character, while the whirlpool's lower temperature preserves the more floral/citrus-adjacent compounds from volatilizing further.
+
+### Recipe Design: Keep Lagers Simple
+
+Build lager recipes by starting simple and adding complexity cautiously — a clean, low-ester profile means small additions and small flaws both stand out far more than in an ale. Malt lot variability matters more here too: a Munich malt lot that's slightly more kilned than expected can push a whole batch out of style. **Test unfamiliar malt lots with a mini-mash** before committing a full batch: ~50 g malt in ~150 mL water, evaluated for color, aroma, and taste — enough to catch over-kilned or smoky off-spec malt before it's in a full-size batch.
+
+A concrete example grist: a **Munich Hells at 85% Pilsner malt + 15% Vienna malt**, deliberately avoiding Munich malt in this recipe — Munich showed enough lot-to-lot variability in practice to cause repeated off-style batches, while Vienna gives similar subtle maltiness with less risk.
+
+---
+
 ## Sources
 
 - [Narziss, 2005] Ludwig Narziss & Werner Back, *Abriss der Bierbrauerei*, WILEY-VCH, Weinheim, 2005

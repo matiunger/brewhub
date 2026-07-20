@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T2E07 - Hop stand y la quimica del lupulo en el lado caliente</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 64px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a1a; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+.audio-bar audio { flex: 1; width: 100%; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; color: #1a1a1a; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.stat { background: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 12px; padding: 1.2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; background: #1a1a1a; color: #fff; padding: 0.25rem 0.6rem; border-radius: 6px; border: none; cursor: pointer; transition: background 0.15s; }
+.timestamp:hover { background: #7c3aed; }
+.timestamp::before { content: '\25B6\00a0'; font-size: 0.6rem; }
+.badge { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 4px; color: #fff; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.9rem; line-height: 1.5; color: #333; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; line-height: 1.45; color: #666; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+  <a href="index.html" class="back-btn">&larr; Índice</a>
+  <audio id="player" controls preload="none" src="../wav_episodes/T2E07 - Hop stand y la quimica del lupulo en el lado caliente.wav"></audio>
+</div>
+<div class="container">
+<h1>T2E07 - Hop stand y la quimica del lupulo en el lado caliente</h1>
+<div class="stats">
+  <div class="stat">17 tips</div>
+  <div class="stat" style="border-left:3px solid #7c3aed">6 tecnica</div>
+  <div class="stat" style="border-left:3px solid #2563eb">5 proceso</div>
+  <div class="stat" style="border-left:3px solid #15803d">4 lupulo</div>
+  <div class="stat" style="border-left:3px solid #d97706">1 ratio</div>
+  <div class="stat" style="border-left:3px solid #0891b2">1 equipo</div>
+</div>
+<div class="grid">
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="330000">5:30</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Ajustar amargor por lupulado post-hervor</div>
+  <div class="card-tip">Al planificar la receta, reducir el lúpulo de amargor durante el hervor porque las adiciones en whirlpool, hop stand y dry hopping también aportan amargor significativo. Considerar incluso eliminar la adición de 60 minutos.</div>
+  <div class="card-details">Con las cantidades actuales de lúpulo que se usan en estas técnicas, el amargor sumado es relevante y debe descontarse de los IBU calculados para el hervor.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="444000">7:24</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Lupular en los extremos del hervor</div>
+  <div class="card-tip">Agregar un poco de lúpulo de alto alfa-ácido al inicio del hervor exclusivamente para amargor, y todo el resto del lúpulo después de cortar la ebullición para sabor y aroma. Es mucho más eficiente que la vieja escuela de adiciones a 30, 10 y 5 minutos.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="812000">13:32</button>
+    <span class="badge badge-lupulo">lupulo</span>
+  </div>
+  <div class="card-title">Aceites esenciales: tres familias clave</div>
+  <div class="card-tip">Los aceites del lúpulo se dividen en hidrocarburos (myrceno, farneseno, cariofileno), compuestos oxigenados (linalool, geraniol, citronelol) y compuestos azufrados (tioles). Los oxigenados son los más relevantes para whirlpool porque resisten mejor la volatilización y la oxidación.</div>
+  <div class="card-details">Hidrocarburos = 40-80% del aceite total, oxigenados ~30%, azufrados &lt;1%. El myrceno es el más abundante pero muy volátil y poco soluble; solo queda en cervezas con dry hopping en frío (&lt;8°C).</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1077000">17:57</button>
+    <span class="badge badge-lupulo">lupulo</span>
+  </div>
+  <div class="card-title">Compuestos oxigenados para selección de lúpulo</div>
+  <div class="card-tip">Al seleccionar lúpulos para whirlpool, priorizar aquellos con altas concentraciones de compuestos oxigenados: linalool, geraniol, citronelol, aldehídos y cetonas. Ejemplo: Bravo tiene alto geraniol que da carácter floral intenso.</div>
+  <div class="card-details">Los compuestos oxigenados (monoterpenos alcoholes, sesquiterpenos alcoholes) son los principales responsables del flavor en la adición de whirlpool.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1167000">19:27</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Más whirlpool si el equipo limita dry hop</div>
+  <div class="card-tip">Si tu fermentador no permite purgar con CO2 (ej: plástico sin presurizar), hacer un whirlpool más grande y reducir o eliminar el dry hopping. Al abrir un fermentador de volúmenes chicos, la incorporación de oxígeno proporcional es enorme.</div>
+  <div class="card-details">Los compuestos extraídos en whirlpool son más resistentes a la oxidación que los del dry hopping. Incluso para una NEIPA, si vas a incorporar ~2000 ppb de oxígeno en un doble dry hop, puede ser preferible maximizar el hop stand y hacer un solo dry hop pequeño al final de la fermentación activa.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1410000">23:30</button>
+    <span class="badge badge-lupulo">lupulo</span>
+  </div>
+  <div class="card-title">Tioles: aromas tropicales y cítricos</div>
+  <div class="card-tip">Los compuestos azufrados (tioles) del lúpulo son responsables de aromas a pomelo, mandarina, maracuyá, mango y papaya. Tienen un umbral de detección extremadamente bajo, por lo que se perciben en cantidades minúsculas.</div>
+  <div class="card-details">Dry hopping en frío con altas dosis puede generar ajo y cebolla (compuestos azufrados indeseables). Los tioles pueden estar 100 veces en menor concentración que el myrceno y aún así ser sensorialmente dominantes.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1769520">29:29</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Temperatura del hop stand: 80-95°C</div>
+  <div class="card-tip">Bajar el mosto a 80-95°C antes de agregar el lúpulo. Esta temperatura maximiza la solubilidad de aceites esenciales, minimiza la isomerización (menos amargor no deseado), minimiza la volatilización, y previene contaminación microbiológica.</div>
+  <div class="card-details">Por debajo de 80°C disminuye la solubilidad de la mayoría de aceites esenciales y aumenta un carácter maderoso indeseable. Por encima de 95°C se volatiliza demasiado.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="1945920">32:25</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Temperatura según perfil sensorial buscado</div>
+  <div class="card-tip">Para perfiles resinosos y florales, usar 90-95°C. Para perfiles cítricos y frutados, usar 80-90°C. Como compromiso al blendear variedades, 85-90°C da buenos resultados cubriendo todos los perfiles.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2024240">33:44</button>
+    <span class="badge badge-equipo">equipo</span>
+  </div>
+  <div class="card-title">Enfriar mosto con botella congelada</div>
+  <div class="card-tip">Congelar una botella de 1L de agua tratada (declorada, misma agua del proceso) el día anterior. Calcular el mosto más concentrado para que al agregar el agua congelada se baje la temperatura a 85-90°C y se llegue a la densidad original de la receta.</div>
+  <div class="card-details">Es la técnica más práctica para homebrewers. Usar el agua lo más fría posible para minimizar el volumen de dilución necesario.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2115840">35:15</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Dilución con agua fría para bajar temperatura</div>
+  <div class="card-tip">Agregar agua fría (sin necesidad de hervir) al mosto caliente para bajar la temperatura. La temperatura del mosto sanitiza el agua. El agua debe estar tratada y declorada. Funciona bien desde hace más de 7 años en la práctica.</div>
+  <div class="card-details">Introduce algo de oxígeno disuelto, pero es el mal menor. Enfriador contraflow (cañería gruesa) también sirve. NO usar enfriador de placas con mosto turbio post-whirlpool: se tapa, no se limpia y contamina cocciones siguientes.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2346020">39:06</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Mínimo 40 minutos de contacto en hop stand</div>
+  <div class="card-tip">A partir de 40 minutos de contacto aumenta significativamente la solubilidad de los aceites esenciales. Con solo 15-20 minutos se desperdicia gran parte del lúpulo porque los aceites no alcanzan a solubilizarse en el mosto.</div>
+  <div class="card-details">Fuente: estudios citados por Scott Janisch con pruebas experimentales de laboratorio. Enviar a enfriar antes de 30 minutos es como tirar el lúpulo a la basura.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2502360">41:42</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">DMS no es problema con hervor adecuado</div>
+  <div class="card-tip">Con un hervor vigoroso de 25-40 minutos se eliminan los precursores de DMS. Un hop stand prolongado después no genera DMS problemático porque ya no quedan precursores por convertir.</div>
+  <div class="card-details">Fuente: revista Brauwelt. Si el hervor fue deficiente y quedaron precursores, la temperatura del hop stand (80-90°C) sí puede formar DMS sin la ebullición para evaporarlo.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2553200">42:33</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Protocolo real de hop stand de 2 horas</div>
+  <div class="card-tip">Protocolo de Hernán en microcervecería: 15 minutos de whirlpool con bomba recirculando, 60 minutos de reposo/sedimentación, 40 minutos de enfriamiento. Total ~2 horas desde apagado hasta fermentador. Sin DMS detectable.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2799560">46:39</button>
+    <span class="badge badge-ratio">ratio</span>
+  </div>
+  <div class="card-title">Tiempo de hop stand según gramos por litro</div>
+  <div class="card-tip">Regla práctica: 2 g/L → 30 min, 4 g/L → 45 min, 6 g/L → 60 min, 8+ g/L → 75-90 min de contacto del lúpulo con el mosto antes de empezar a enfriar.</div>
+  <div class="card-details">A mayor cantidad de lúpulo, más ineficiente es la extracción, por eso se necesita más tiempo de contacto para las dosis altas.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2842600">47:22</button>
+    <span class="badge badge-proceso">proceso</span>
+  </div>
+  <div class="card-title">Cronología completa del hop stand</div>
+  <div class="card-tip">Secuencia: terminar hervor → apagar fuego → bajar temperatura del mosto → agregar lúpulo (empieza el reloj) → whirlpool con bomba → reposo/sedimentación → empezar enfriamiento (termina el reloj).</div>
+  <div class="card-details">El tiempo de enfriamiento NO se cuenta como parte del hop stand. El whirlpool SÍ se cuenta dentro del tiempo total.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="2958080">49:18</button>
+    <span class="badge badge-tecnica">tecnica</span>
+  </div>
+  <div class="card-title">Whirlpool como base para biotransformación</div>
+  <div class="card-tip">El lupulado en whirlpool provee gran cantidad de compuestos que la levadura biotransforma durante la fermentación activa, generando sabores y aromas nuevos. Es la materia prima fundamental para la biotransformación.</div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <button class="timestamp" data-ms="3030960">50:30</button>
+    <span class="badge badge-lupulo">lupulo</span>
+  </div>
+  <div class="card-title">Survivals: lúpulos eficientes para whirlpool</div>
+  <div class="card-tip">Usar el concepto de 'survivals' para elegir lúpulos de whirlpool: son los compuestos que sobreviven al whirlpool, la generación de CO2 durante la fermentación y todo el proceso posterior. Lúpulos con altos survivals rinden más en esta técnica.</div>
+  <div class="card-details">Bravo e Idaho7 tienen ~3x más survivals que Cascade. Usar lúpulos de altos survivals (Bravo, Columbus, Idaho7) para whirlpool y guardar los de bajos survivals (Cascade) para dry hopping. Referencia: Scott Janisch, 'Survivals: Unpacking Hot Side Hop Flavor'.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

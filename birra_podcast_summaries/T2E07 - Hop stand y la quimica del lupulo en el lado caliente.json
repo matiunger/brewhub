@@ -1,0 +1,141 @@
+{
+  "episode": "T2E07 - Hop stand y la quimica del lupulo en el lado caliente",
+  "tips": [
+    {
+      "timestamp_ms": 330000,
+      "timestamp": "5:30",
+      "category": "tecnica",
+      "title": "Ajustar amargor por lupulado post-hervor",
+      "tip": "Al planificar la receta, reducir el lúpulo de amargor durante el hervor porque las adiciones en whirlpool, hop stand y dry hopping también aportan amargor significativo. Considerar incluso eliminar la adición de 60 minutos.",
+      "details": "Con las cantidades actuales de lúpulo que se usan en estas técnicas, el amargor sumado es relevante y debe descontarse de los IBU calculados para el hervor."
+    },
+    {
+      "timestamp_ms": 444000,
+      "timestamp": "7:24",
+      "category": "tecnica",
+      "title": "Lupular en los extremos del hervor",
+      "tip": "Agregar un poco de lúpulo de alto alfa-ácido al inicio del hervor exclusivamente para amargor, y todo el resto del lúpulo después de cortar la ebullición para sabor y aroma. Es mucho más eficiente que la vieja escuela de adiciones a 30, 10 y 5 minutos.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 812000,
+      "timestamp": "13:32",
+      "category": "lupulo",
+      "title": "Aceites esenciales: tres familias clave",
+      "tip": "Los aceites del lúpulo se dividen en hidrocarburos (myrceno, farneseno, cariofileno), compuestos oxigenados (linalool, geraniol, citronelol) y compuestos azufrados (tioles). Los oxigenados son los más relevantes para whirlpool porque resisten mejor la volatilización y la oxidación.",
+      "details": "Hidrocarburos = 40-80% del aceite total, oxigenados ~30%, azufrados <1%. El myrceno es el más abundante pero muy volátil y poco soluble; solo queda en cervezas con dry hopping en frío (<8°C)."
+    },
+    {
+      "timestamp_ms": 1077000,
+      "timestamp": "17:57",
+      "category": "lupulo",
+      "title": "Compuestos oxigenados para selección de lúpulo",
+      "tip": "Al seleccionar lúpulos para whirlpool, priorizar aquellos con altas concentraciones de compuestos oxigenados: linalool, geraniol, citronelol, aldehídos y cetonas. Ejemplo: Bravo tiene alto geraniol que da carácter floral intenso.",
+      "details": "Los compuestos oxigenados (monoterpenos alcoholes, sesquiterpenos alcoholes) son los principales responsables del flavor en la adición de whirlpool."
+    },
+    {
+      "timestamp_ms": 1167000,
+      "timestamp": "19:27",
+      "category": "tecnica",
+      "title": "Más whirlpool si el equipo limita dry hop",
+      "tip": "Si tu fermentador no permite purgar con CO2 (ej: plástico sin presurizar), hacer un whirlpool más grande y reducir o eliminar el dry hopping. Al abrir un fermentador de volúmenes chicos, la incorporación de oxígeno proporcional es enorme.",
+      "details": "Los compuestos extraídos en whirlpool son más resistentes a la oxidación que los del dry hopping. Incluso para una NEIPA, si vas a incorporar ~2000 ppb de oxígeno en un doble dry hop, puede ser preferible maximizar el hop stand y hacer un solo dry hop pequeño al final de la fermentación activa."
+    },
+    {
+      "timestamp_ms": 1410000,
+      "timestamp": "23:30",
+      "category": "lupulo",
+      "title": "Tioles: aromas tropicales y cítricos",
+      "tip": "Los compuestos azufrados (tioles) del lúpulo son responsables de aromas a pomelo, mandarina, maracuyá, mango y papaya. Tienen un umbral de detección extremadamente bajo, por lo que se perciben en cantidades minúsculas.",
+      "details": "Dry hopping en frío con altas dosis puede generar ajo y cebolla (compuestos azufrados indeseables). Los tioles pueden estar 100 veces en menor concentración que el myrceno y aún así ser sensorialmente dominantes."
+    },
+    {
+      "timestamp_ms": 1769520,
+      "timestamp": "29:29",
+      "category": "proceso",
+      "title": "Temperatura del hop stand: 80-95°C",
+      "tip": "Bajar el mosto a 80-95°C antes de agregar el lúpulo. Esta temperatura maximiza la solubilidad de aceites esenciales, minimiza la isomerización (menos amargor no deseado), minimiza la volatilización, y previene contaminación microbiológica.",
+      "details": "Por debajo de 80°C disminuye la solubilidad de la mayoría de aceites esenciales y aumenta un carácter maderoso indeseable. Por encima de 95°C se volatiliza demasiado."
+    },
+    {
+      "timestamp_ms": 1945920,
+      "timestamp": "32:25",
+      "category": "tecnica",
+      "title": "Temperatura según perfil sensorial buscado",
+      "tip": "Para perfiles resinosos y florales, usar 90-95°C. Para perfiles cítricos y frutados, usar 80-90°C. Como compromiso al blendear variedades, 85-90°C da buenos resultados cubriendo todos los perfiles.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2024240,
+      "timestamp": "33:44",
+      "category": "equipo",
+      "title": "Enfriar mosto con botella congelada",
+      "tip": "Congelar una botella de 1L de agua tratada (declorada, misma agua del proceso) el día anterior. Calcular el mosto más concentrado para que al agregar el agua congelada se baje la temperatura a 85-90°C y se llegue a la densidad original de la receta.",
+      "details": "Es la técnica más práctica para homebrewers. Usar el agua lo más fría posible para minimizar el volumen de dilución necesario."
+    },
+    {
+      "timestamp_ms": 2115840,
+      "timestamp": "35:15",
+      "category": "tecnica",
+      "title": "Dilución con agua fría para bajar temperatura",
+      "tip": "Agregar agua fría (sin necesidad de hervir) al mosto caliente para bajar la temperatura. La temperatura del mosto sanitiza el agua. El agua debe estar tratada y declorada. Funciona bien desde hace más de 7 años en la práctica.",
+      "details": "Introduce algo de oxígeno disuelto, pero es el mal menor. Enfriador contraflow (cañería gruesa) también sirve. NO usar enfriador de placas con mosto turbio post-whirlpool: se tapa, no se limpia y contamina cocciones siguientes."
+    },
+    {
+      "timestamp_ms": 2346020,
+      "timestamp": "39:06",
+      "category": "proceso",
+      "title": "Mínimo 40 minutos de contacto en hop stand",
+      "tip": "A partir de 40 minutos de contacto aumenta significativamente la solubilidad de los aceites esenciales. Con solo 15-20 minutos se desperdicia gran parte del lúpulo porque los aceites no alcanzan a solubilizarse en el mosto.",
+      "details": "Fuente: estudios citados por Scott Janisch con pruebas experimentales de laboratorio. Enviar a enfriar antes de 30 minutos es como tirar el lúpulo a la basura."
+    },
+    {
+      "timestamp_ms": 2502360,
+      "timestamp": "41:42",
+      "category": "proceso",
+      "title": "DMS no es problema con hervor adecuado",
+      "tip": "Con un hervor vigoroso de 25-40 minutos se eliminan los precursores de DMS. Un hop stand prolongado después no genera DMS problemático porque ya no quedan precursores por convertir.",
+      "details": "Fuente: revista Brauwelt. Si el hervor fue deficiente y quedaron precursores, la temperatura del hop stand (80-90°C) sí puede formar DMS sin la ebullición para evaporarlo."
+    },
+    {
+      "timestamp_ms": 2553200,
+      "timestamp": "42:33",
+      "category": "proceso",
+      "title": "Protocolo real de hop stand de 2 horas",
+      "tip": "Protocolo de Hernán en microcervecería: 15 minutos de whirlpool con bomba recirculando, 60 minutos de reposo/sedimentación, 40 minutos de enfriamiento. Total ~2 horas desde apagado hasta fermentador. Sin DMS detectable.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2799560,
+      "timestamp": "46:39",
+      "category": "ratio",
+      "title": "Tiempo de hop stand según gramos por litro",
+      "tip": "Regla práctica: 2 g/L → 30 min, 4 g/L → 45 min, 6 g/L → 60 min, 8+ g/L → 75-90 min de contacto del lúpulo con el mosto antes de empezar a enfriar.",
+      "details": "A mayor cantidad de lúpulo, más ineficiente es la extracción, por eso se necesita más tiempo de contacto para las dosis altas."
+    },
+    {
+      "timestamp_ms": 2842600,
+      "timestamp": "47:22",
+      "category": "proceso",
+      "title": "Cronología completa del hop stand",
+      "tip": "Secuencia: terminar hervor → apagar fuego → bajar temperatura del mosto → agregar lúpulo (empieza el reloj) → whirlpool con bomba → reposo/sedimentación → empezar enfriamiento (termina el reloj).",
+      "details": "El tiempo de enfriamiento NO se cuenta como parte del hop stand. El whirlpool SÍ se cuenta dentro del tiempo total."
+    },
+    {
+      "timestamp_ms": 2958080,
+      "timestamp": "49:18",
+      "category": "tecnica",
+      "title": "Whirlpool como base para biotransformación",
+      "tip": "El lupulado en whirlpool provee gran cantidad de compuestos que la levadura biotransforma durante la fermentación activa, generando sabores y aromas nuevos. Es la materia prima fundamental para la biotransformación.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3030960,
+      "timestamp": "50:30",
+      "category": "lupulo",
+      "title": "Survivals: lúpulos eficientes para whirlpool",
+      "tip": "Usar el concepto de 'survivals' para elegir lúpulos de whirlpool: son los compuestos que sobreviven al whirlpool, la generación de CO2 durante la fermentación y todo el proceso posterior. Lúpulos con altos survivals rinden más en esta técnica.",
+      "details": "Bravo e Idaho7 tienen ~3x más survivals que Cascade. Usar lúpulos de altos survivals (Bravo, Columbus, Idaho7) para whirlpool y guardar los de bajos survivals (Cascade) para dry hopping. Referencia: Scott Janisch, 'Survivals: Unpacking Hot Side Hop Flavor'."
+    }
+  ]
+}

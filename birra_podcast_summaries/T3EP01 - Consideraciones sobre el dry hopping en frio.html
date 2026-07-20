@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T3EP01 - Consideraciones sobre el dry hopping en frio</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a1a; padding-top: 70px; }
+.audio-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: #1a1a1a; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.back-btn { color: #fff; text-decoration: none; white-space: nowrap; font-size: 0.85rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.12); transition: background 0.15s; }
+.back-btn:hover { background: rgba(255,255,255,0.25); }
+audio { flex: 1; min-width: 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 1.5rem 1rem; }
+h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+.stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; padding: 1rem; background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stat { font-size: 0.85rem; padding: 0.25rem 0.6rem; border-radius: 6px; background: #e5e7eb; font-weight: 500; }
+.stat.total { background: #1a1a1a; color: #fff; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; }
+.card { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s, transform 0.2s; }
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); transform: translateY(-2px); }
+.card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+.timestamp { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 5px; background: #f3f4f6; border: 1px solid #d1d5db; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.timestamp:hover { background: #1a1a1a; color: #fff; }
+.timestamp::before { content: '\25B6\00a0'; font-size: 0.6rem; opacity: 0; transition: opacity 0.15s; }
+.timestamp:hover::before { opacity: 1; }
+.badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 4px; color: #fff; text-transform: uppercase; font-weight: 600; letter-spacing: 0.03em; }
+.badge-proceso { background: #2563eb; }
+.badge-ingrediente { background: #16a34a; }
+.badge-receta { background: #dc2626; }
+.badge-ratio { background: #d97706; }
+.badge-tecnica { background: #7c3aed; }
+.badge-equipo { background: #0891b2; }
+.badge-levadura { background: #be185d; }
+.badge-malta { background: #92400e; }
+.badge-lupulo { background: #15803d; }
+.badge-agua { background: #0369a1; }
+.card-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; }
+.card-tip { font-size: 0.88rem; line-height: 1.5; margin-bottom: 0.4rem; }
+.card-details { font-size: 0.82rem; line-height: 1.45; color: #6b7280; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="audio-bar">
+<a href="index.html" class="back-btn">&larr; Indice</a>
+<audio id="player" controls preload="none" src="../wav_episodes/T3EP01 - Consideraciones sobre el dry hopping en frio.wav"></audio>
+</div>
+<div class="container">
+<h1>T3EP01 - Consideraciones sobre el dry hopping en frio</h1>
+<div class="stats">
+<span class="stat total">24 tips</span>
+<span class="stat">proceso: 7</span>
+<span class="stat">tecnica: 8</span>
+<span class="stat">lupulo: 4</span>
+<span class="stat">equipo: 3</span>
+<span class="stat">ingrediente: 0</span>
+<span class="stat">receta: 0</span>
+<span class="stat">ratio: 0</span>
+<span class="stat">levadura: 0</span>
+<span class="stat">malta: 0</span>
+<span class="stat">agua: 0</span>
+</div>
+<div class="grid">
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="809760">13:29</button>
+<span class="badge badge-lupulo">lupulo</span>
+</div>
+<div class="card-title">Calidad y frescura del lupulo importan mas</div>
+<div class="card-tip">Hay mucha diferencia de calidad entre proveedores y entre lotes de una misma variedad. En 2023, gran parte del lupulo disponible en Sudamerica es cosecha 2021, cuando deberia ser 2022. El lupulo viejo se nota enormemente en la cerveza terminada.</div>
+<div class="card-details">Hay sobrestock mundial de lupulo por caida de consumo post-pandemia. Se cultiva mas de lo que se vende hace al menos 4 anos. Esto genera lupulo viejo en el mercado.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="941760">15:41</button>
+<span class="badge badge-lupulo">lupulo</span>
+</div>
+<div class="card-title">Lupulo viejo arruina cervezas caras</div>
+<div class="card-tip">Una cerveza con 25 g/L (incluyendo cryo) hecha con lupulos viejos queda apagada y no cumple expectativas. Con lupulos frescos y menor cantidad (sin cryo, solo T90) habria sido mas potente y mas barata.</div>
+<div class="card-details">En Argentina el cryo vale exactamente el doble por kilo que el T90. No tiene sentido pagar cryo si no esta fresco.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1121760">18:41</button>
+<span class="badge badge-lupulo">lupulo</span>
+</div>
+<div class="card-title">No casarse con el nombre del lupulo</div>
+<div class="card-tip">Si el Citra o Mosaic disponible esta viejo y oxidado, es mejor usar Chinook o Cascade frescos. Un lupulo con calidad 9/10 siempre le gana a uno famoso con calidad 6/10. Readaptar recetas al lupulo bueno que haya disponible.</div>
+<div class="card-details">Si tenes un Chinook y Cascade de 9 y un Citra y Mosaic de 6, hace birras con Chinook y Cascade.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1243760">20:43</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Seleccion de lupulo por proveedor</div>
+<div class="card-tip">Comprar una sola bolsa a un proveedor, usarla y evaluar. Si rinde, comprar mas. Si no rinde, probar la misma variedad de otro proveedor u otro lote. Es la seleccion mas barata y funciona muy bien.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="1329760">22:09</button>
+<span class="badge badge-lupulo">lupulo</span>
+</div>
+<div class="card-title">Variedades en auge: Idaho 7 y Strata</div>
+<div class="card-tip">Idaho 7 viene levantando mucho, muy bueno tanto en Whirlpool como en dry hop. Strata es mas nuevo (Oregon), dio excelentes resultados en single hop. Ambos salen del estado de Washington y tienen otro terroir.</div>
+<div class="card-details">Galaxy y lupulos australianos/neozelandeses estan con problemas de calidad: muchos lotes con olor a tierra humeda. El Nectaron de Nueva Zelanda 2022 fue espectacular pero la cosecha 2023 fue malisima.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2065760">34:25</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Protocolo de dry hopping en frio</div>
+<div class="card-tip">Fermentacion completa + descanso diacetilo. Bajar a 12-14°C por 48 horas para flocular la levadura. Purga total del cono (levadura y sedimentos). Recien ahi se agrega el lupulo.</div>
+<div class="card-details">El rango de temperatura para el cold crash previo al DH es 10-14°C, generalmente 12-14°C. Las 48 horas son para que flocule la mayor parte de la levadura en suspension.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2182760">36:22</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">DH frio: mas eficiente en aroma</div>
+<div class="card-tip">El dry hop en frio retiene mas aroma porque no hay levadura en suspension que arrastre compuestos aromaticos al sedimentar. Al clarificar la cerveza post-DH caliente, la levadura se lleva una parte significativa de los aromas.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2254760">37:34</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">DH frio = frutas tropicales dulces</div>
+<div class="card-tip">El dry hop en frio esta relacionado con frutas tropicales dulces: mango, papaya, guayaba, anana, sandia, melon. El DH en caliente (fermentacion activa) da un perfil mas citrico: lima, maracuya, pomelo, mandarina.</div>
+<div class="card-details">Aplica a lupulos con potencial frutal (Citra, Mosaic, etc.). Un Columbus no va a dar fruta tropical sin importar la tecnica. Hoy tanto NEIPA como West Coast IPA buscan ese caracter frutal.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2436760">40:36</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">DH frio: cero tolerancia al oxigeno</div>
+<div class="card-tip">El dry hop en frio no perdona incorporacion de oxigeno. Sin levadura activa ni CO2 de fermentacion, cada ppb de oxigeno que entre va directamente a oxidar la cerveza. La fruta fresca se vuelve compota oxidada.</div>
+<div class="card-details">50 ppb (0.05 ppm) de oxigeno ya afectan negativamente la cerveza. Una cerveza bien procesada en lata tiene ~30 ppb total. Los sintomas de oxidacion: fruta acompotada, amargor pulsante, aumento de astringencia.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2650760">44:10</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Presion positiva de CO2 antes de abrir</div>
+<div class="card-tip">Antes de abrir el fermentador para agregar lupulo, generar presion positiva de CO2 por la conexion de cerveza del cono. El CO2 debe estar saliendo por el blow-off cuando se abre la tapa. Cuanto menos tiempo abierto, mejor.</div>
+<div class="card-details">Si el tanque tiene conexion clampeada de 4 pulgadas es mucho mejor que abrir la tapa completa. Los fermentadores plasticos son mas dificiles de manejar que los isobaricos.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2733760">45:33</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Purgar mangueras y manguitos clamp</div>
+<div class="card-tip">Antes de conectar CO2 al fermentador, purgar el aire de las mangueras Y de los manguitos clamp. El aire atrapado en esos tramos entra al tanque cuando se abre el CO2.</div>
+<div class="card-details">Cada 15 cm de manguera con aire puede sumar ppb de oxigeno. Muchos purgan la manguera pero olvidan el manguito donde se conecta al tanque.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2795760">46:35</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Medir en ppb, no en ppm</div>
+<div class="card-tip">En dry hop en frio se trabaja en partes por billon (ppb), no en ppm. Una ppm son 1000 ppb. 50 ppb de oxigeno ya impactan negativamente en la cerveza. El objetivo es mantener la cerveza terminada por debajo de 30 ppb.</div>
+<div class="card-details">Post-fermentacion, una cerveza bien manejada tiene menos de 10 ppb de oxigeno disuelto. Cada movimiento posterior (DH, trasvase, envasado) suma ppb inevitablemente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="2893760">48:13</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Presurizar y despresurizar post DH</div>
+<div class="card-tip">Despues de agregar el lupulo: cerrar blow-off, presurizar con CO2, despresurizar bruscamente. Repetir 2-3 veces. Esto genera espuma que desplaza el oxigeno del headspace y a la vez agita y disgrega los pellets.</div>
+<div class="card-details">El CO2 entrando por el cono borbotea el tanque, desgrana los pellets, genera turbulencia y aumenta la transferencia aromatica. Se matan dos pajaros de un tiro: purgar O2 y mezclar lupulo.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3122760">52:02</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Fraccionar lupulo con purga de CO2</div>
+<div class="card-tip">Al abrir una bolsa de 5 kg, fraccionar de una sola vez en las porciones que se van a usar (ej: 10 bolsas de 500 g). Meter una manguerita de CO2 dentro de cada bolsa, purgar el aire y cerrar. Guardar en freezer.</div>
+<div class="card-details">Menor temperatura = menor oxidacion. No abrir y cerrar la bolsa grande cada vez que se necesita lupulo. Si se tiene envasadora al vacio, usarla; si no, la purga con CO2 es suficiente.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3418760">56:58</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Menos lupulo + menos O2 = mas aroma</div>
+<div class="card-tip">La potencia aromatica mejora mas reduciendo la incorporacion de oxigeno que aumentando los gramos por litro. Cada vez se usan menos gramos de lupulo y se obtiene mas aroma en la cerveza terminada.</div>
+<div class="card-details">No tiene sentido ir a 30-40-50 g/L si el proceso incorpora oxigeno. Es mas barato gastar CO2 en purgas que malgastar lupulo caro con pick up de oxigeno alto.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3486760">58:06</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">DH frio en homebrewing: usar Cornelius</div>
+<div class="card-tip">Trasvasar la cerveza fermentada a un Cornelius previamente purgado con CO2 (llenado con agua, vaciado con CO2). Esto equivale a la purga del cono en escala grande. Luego DH en el Cornelius como un isobarico miniatura.</div>
+<div class="card-details">Preferible usar un fermentador con cono (Roto King de 30-60L) para poder purgar. Si se usa Cornelius: purgar mangueras, conectar fermentador al Corny purgado, trasvasar. Meter CO2 por la lanza para presion positiva.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3637760">1:00:37</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">DH frio: maximo 4-5 dias de contacto</div>
+<div class="card-tip">Idealmente a los 4-5 dias post dry hop, sacar la cerveza del contacto con el lupulo. Despues de ese tiempo caen los aromas frutales/citricos y aumentan los herbales, maderosos y especiados.</div>
+<div class="card-details">Si se usa Cornelius, trasvasar a envase final a los 4-5 dias. No dejar la torta de lupulo en contacto indefinido.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3786760">1:03:06</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Bolsitas de DH son muy ineficientes</div>
+<div class="card-tip">Las bolsitas de malla, medias y tubos mallados de acero tienen una eficiencia muy baja. Un DH de 3 g/L tirado directo al fermentador es mucho mas potente que 6 g/L dentro de una bolsita, porque el lupulo se compacta en una pasta sin superficie de contacto.</div>
+<div class="card-details">Son comodas para remover el lupulo pero la perdida de eficiencia no justifica su uso.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3892760">1:04:52</button>
+<span class="badge badge-tecnica">tecnica</span>
+</div>
+<div class="card-title">Resuspender lupulo a las 24 horas</div>
+<div class="card-tip">A las 24 horas del dry hop, meter pulsos de CO2 por abajo del cono a 3 bar: abrir y cerrar la valvula unas 10 veces. Esto resuspende los pellets sedimentados y aumenta la transferencia aromatica.</div>
+<div class="card-details">Funciona tanto a escala homebrewer como micro. Cuando el lupulo sedimenta al fondo, la transferencia es casi nula. La resuspension marca una diferencia notable en potencia aromatica.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="3964760">1:06:04</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Frio maximo y purgas post DH</div>
+<div class="card-tip">Al 3er o 4to dia post dry hop, mandar a frio maximo (idealmente 0°C). Empezar a purgar todos los dias para remover solidos de lupulo que van sedimentando. Sacar el lupulo cuanto antes.</div>
+<div class="card-details">Post purga del cono previo al DH, lo que sedimenta deberia ser casi exclusivamente lupulo. Eliminar rapido para evitar el cambio de perfil hacia notas herbales/maderosas.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="4093760">1:08:13</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Hop rocket para DH controlado</div>
+<div class="card-tip">Un hop rocket es un mini tanque cilindroconico que se clampea al fermentador (requiere conexion de 4-6 pulgadas). Permite purgar su interior con CO2 antes de agregar lupulo, reduciendo drasticamente la incorporacion de oxigeno.</div>
+<div class="card-details">Se presuriza a 1.5 bar y se despresuriza 5 veces con el rocket vacio. En la quinta purga el O2 baja de 21% a menos de 0.1%. Luego se agrega lupulo y se hacen 3 purgas mas (no 5 para no ventear aromas del lupulo).</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="4396760">1:13:16</button>
+<span class="badge badge-equipo">equipo</span>
+</div>
+<div class="card-title">Slurry: solo para mas de 2000 litros</div>
+<div class="card-tip">El slurry (pasta de lupulo inyectada en linea cerrada) solo vale la pena en fermentadores de mas de 2000 litros con DH de mas de 6 g/L por adicion. A menor escala, el riesgo de pick up de oxigeno supera ampliamente el beneficio.</div>
+<div class="card-details">No hacer slurry en homebrewing. Tampoco usar cosechadores de levadura como slurry si hay que cargarlos 3-4 veces (triple pick up de O2). En esos casos es mejor tirar pellets por arriba con presion positiva.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="4566760">1:16:06</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Slurry: inundar con cerveza, no agua</div>
+<div class="card-tip">El slurry se llena con cerveza del fermentador (no agua) porque la cerveza post-fermentacion tiene menos de 10 ppb de oxigeno, mientras que el agua caliente sanitizada tiene una carga de O2 baja pero mensurable.</div>
+<div class="card-details">Protocolo: conectar slurry al tanque con T y valvulas, sanitizar con agua a 80°C por 15 min, empujar agua con CO2, purgar, llenar con cerveza. Agregar lupulo con cerveza entrando por tangencial para mantener presion positiva. Hacer 'chacachaca' (llenar-inyectar-llenar-inyectar) 3-4 veces.</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<button class="timestamp" data-ms="5073760">1:24:33</button>
+<span class="badge badge-proceso">proceso</span>
+</div>
+<div class="card-title">Prioridad absoluta: no oxidar la cerveza</div>
+<div class="card-tip">El orden de prioridades al hacer dry hop es: 1) No incorporar oxigeno, 2) Elegir la variedad correcta, 3) Elegir la tecnica correcta, 4) Tener el equipamiento adecuado. No oxidar es mas importante que todo lo demas.</div>
+<div class="card-details">No se necesita medidor de oxigeno para mejorar: analizar la estabilidad de la cerveza terminada, cuanto dura el aroma fresco, y ajustar procesos en base a eso.</div>
+</div>
+
+</div>
+</div>
+<script>
+const player = document.getElementById('player');
+document.querySelectorAll('[data-ms]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    player.currentTime = Number(btn.dataset.ms) / 1000;
+    player.play();
+  });
+});
+</script>
+</body>
+</html>

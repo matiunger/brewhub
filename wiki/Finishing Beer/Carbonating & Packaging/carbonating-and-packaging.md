@@ -15,6 +15,8 @@ Strong mostly **kegs** (convenient, ~10 min vs ~2 hours to bottle 5 gal), but bo
 
 **Method:** rack to a bottling bucket, add **priming sugar**, siphon to bottles, cap, naturally carbonate at room temp **1–2 weeks**, then chill.
 
+**Avoid bottle-conditioning heavily hopped beers.** *(Via the Hernán Castellani interview.)* Bottle refermentation needs roughly 2 weeks at ~20°C, and that's long enough at warm temperature for a hop-forward beer to oxidize significantly — the oxygen picked up at bottling generally exceeds what the small amount of yeast activity in that micro-fermentation can scavenge. At homebrew scale, no hoppy beer reliably survives 2 weeks at room temperature without meaningful oxidation — keg and force-carbonate hoppy styles instead, or serve them fresh.
+
 **Priming sugar:** usually **corn sugar** (ferments fast, little residual character — top choice). Any sugary fermentable works (brown sugar, DME, honey, Lyle's Golden Syrup) and can add flavor (De Dolle Stille Nacht is primed with honey). Calculate amounts with [[calculating-sugar-additions]].
 
 ## Force Carbonation in a Keg
@@ -42,4 +44,4 @@ Beer is **already carbonated and bright** (unlike bottle conditioning — how mo
 
 ## Related
 
-[[cask-conditioning]] · [[kegging]] · [[calculating-sugar-additions]] · [[kraeusening]] · [[adjusting-carbonation]] · [[packaging-equipment]]
+[[cask-conditioning]] · [[kegging]] · [[calculating-sugar-additions]] · [[kraeusening]] · [[adjusting-carbonation]] · [[packaging-equipment]] · [[oxygen-control-when-filling]] · [[dissolved-oxygen-management]]

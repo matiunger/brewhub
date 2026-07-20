@@ -52,6 +52,12 @@ Most ale yeasts benefit from a diacetyl rest at the end: raise temp to ~20°C fo
 - **High** — drops clear quickly, may leave residual sweetness
 - **Low** — stays in suspension longer, better attenuation, hazier beer
 
+## Strain Notes: Don't Trust the Label Alone
+
+*Via the Birra Podcast, T2E15.* Marketing categories on a yeast packet aren't always an accurate guide to actual behavior — taste and attenuation data matter more than the label. **Fermentis S-33** is sold as a "Belgian" strain, but doesn't show typical Belgian character: it's low-attenuating and produces no notable phenols, unlike genuine Belgian strains (which are expected to attenuate well and often carry phenolic character). In practice it performs better as:
+- A strong pick for **Scottish Ale**, where its low attenuation supports the style's fuller body (see [[designing-malty-beers]]).
+- A solid choice for **biotransformation-driven beers and NEIPA** — Fermentis itself has published research recommending it for this use. It needs a fairly vigorous fermentation ("needs to really krausen up") to perform well in that role.
+
 ## Related
 
-For Gordon Strong's "Mastering Ingredients" treatment, see [[choosing-a-yeast-strain]], [[preparing-yeast]], [[managing-fermentation]], and [[strongs-yeast-picks]].
+For Gordon Strong's "Mastering Ingredients" treatment, see [[choosing-a-yeast-strain]], [[preparing-yeast]], [[managing-fermentation]], and [[strongs-yeast-picks]]. For liquid strain profiles, see [[liquid-yeast-strains]].

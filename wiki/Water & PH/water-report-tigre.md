@@ -100,4 +100,10 @@ Cargá el perfil base en el software y dejá que la calculadora te diga los gram
 5. Perfil naturalmente equilibrado (SO₄:Cl 0,66), fácil de empujar hacia maltoso o seco según el estilo.
 
 ---
+
+## 7. Contexto regional
+
+*Vía el Birra Podcast, T2E15.* Esta caracterización coincide con lo que se comenta en el ambiente cervecero local: el agua de red del AMBA (cuenca del Río de la Plata) es en general un buen punto de partida para cervecería — nunca demasiado alcalina ni con sulfato excesivo, agua blanda fácil de moldear con sales (consistente con la Sección 2 de este reporte). Alcanza con sacarle el cloro. La salvedad mencionada es la **variabilidad**: no siempre llega igual, así que no asumir que el perfil de un período se mantiene constante todo el año — de ahí el valor de repetir este tipo de reporte periódicamente en vez de tratarlo como un dato fijo. Para pozo propio con alcalinidad alta (400+ ppm), el tratamiento de agua pasaría a ser la prioridad número uno del diseño de receta, a diferencia de la red de AMBA donde es una prioridad más baja. Ver [[salts]] y [[water-chemistry]] para el marco general de tratamiento.
+
+---
 *Valores promedio anuales 2025. Pueden variar estacionalmente; para mayor precisión, cotejar con análisis puntual si elaborás cantidades grandes.*

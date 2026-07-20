@@ -1,0 +1,229 @@
+{
+  "episode": "Hernán Castellani-Procesos relevantes para cerveceros caseros - Part 2",
+  "tips": [
+    {
+      "timestamp_ms": 63280,
+      "timestamp": "1:03",
+      "category": "equipo",
+      "title": "Fermentadores plásticos y oxidación en frío",
+      "tip": "Los fermentadores plásticos no soportan presión. Al enfriar la cerveza de ~21°C a ~4°C, el líquido se contrae y ese volumen se reemplaza con aire, oxidando la cerveza durante la maduración en frío.",
+      "details": "Es el principal problema de los fermentadores plásticos: la contracción del líquido al enfriar succiona aire hacia adentro del tanque automáticamente."
+    },
+    {
+      "timestamp_ms": 255680,
+      "timestamp": "4:15",
+      "category": "equipo",
+      "title": "Ventajas del fermentador de inox con presión",
+      "tip": "En fermentadores de inox que soportan presión se pueden cerrar los gases al final de la fermentación, acumular presión, precarbonatar y generar más turbulencia para extraer más del lúpulo en dry hopping.",
+      "details": "En plástico la presión no es un factor controlable, lo que limita las herramientas disponibles para cervezas lupuladas."
+    },
+    {
+      "timestamp_ms": 306640,
+      "timestamp": "5:06",
+      "category": "tecnica",
+      "title": "Inyectar CO2 al enfriar fermentador plástico",
+      "tip": "Mientras el fermentador baja de temperatura, inyectar un soplito fino de CO2 por arriba del tanque para que la contracción del líquido se reemplace con CO2 y no con aire. Técnica de Balzán.",
+      "details": "No hace falta generar presión positiva, solo evitar que entre aire. El costo de CO2 es muy bajo."
+    },
+    {
+      "timestamp_ms": 375120,
+      "timestamp": "6:15",
+      "category": "equipo",
+      "title": "Fermentar en Cornelius como isobárico",
+      "tip": "Fermentar directamente en un Cornelius, cerrando la tapa y usando un conector con manguerita o blow-off en la salida de gases. Funciona como un fermentador isobárico económico.",
+      "details": "Permite trabajar bajo atmósfera cerrada, presurizar y hacer trasvases en línea cerrada."
+    },
+    {
+      "timestamp_ms": 425680,
+      "timestamp": "7:05",
+      "category": "tecnica",
+      "title": "Huevito Kinder en la pescadora del Cornelius",
+      "tip": "Colocar un huevito Kinder en el fondo de la pescadora del Cornelius para que al trasvasar, el líquido se succione desde arriba del trub, dejando el barro de levadura y lúpulo por debajo.",
+      "details": "El huevito Kinder es alimenticio (seguro para contacto), no transmite sabores. Evita que se tape el cañito del Cornelius con lúpulo y levadura."
+    },
+    {
+      "timestamp_ms": 525920,
+      "timestamp": "8:45",
+      "category": "tecnica",
+      "title": "Trasvase cerrado con Cornelius purgado",
+      "tip": "Llenar un Cornelius limpio y sanitizado con agua, empujar el agua con CO2 para garantizar atmósfera 100% CO2 adentro. Luego trasvasar la cerveza en línea cerrada desde el fermentador al Cornelius purgado con conectores, mangueritas y presión.",
+      "details": "Es la técnica con menor incorporación de oxígeno. Mucho mejor que trasvasar entre botellones abiertos donde entra aire, la birra pica, hace espuma e incorpora oxígeno."
+    },
+    {
+      "timestamp_ms": 615840,
+      "timestamp": "10:15",
+      "category": "equipo",
+      "title": "Presión mínima del fermentador inox",
+      "tip": "Con que el fermentador aguante 1 bar (1 kg/cm² o 14.7 PSI) alcanza para cualquier proceso cervecero. Para fines de anti-oxidación, con 0.5 bar ya es suficiente.",
+      "details": "Si aguanta más presión es más cómodo, pero no es necesario."
+    },
+    {
+      "timestamp_ms": 720000,
+      "timestamp": "12:00",
+      "category": "proceso",
+      "title": "No refermentar IPAs en botella",
+      "tip": "La refermentación en botella requiere ~2 semanas a ~20°C. En ese tiempo la cerveza lupulada se oxida severamente. La incorporación de oxígeno al embotellar es mayor de lo que la levadura puede asimilar en esa microfermentación.",
+      "details": "Ninguna birra lupulada a nivel homebrewer soporta 2 semanas a temperatura ambiente sin oxidarse significativamente."
+    },
+    {
+      "timestamp_ms": 780000,
+      "timestamp": "13:00",
+      "category": "proceso",
+      "title": "Efectos de oxidación en cervezas lupuladas",
+      "tip": "La oxidación en IPAs produce: amargor más áspero y persistente, lúpulo astringente que seca el paladar, y aromas frutales que pasan de frescos a acompotados (durazno fresco → durazno en almíbar/compota).",
+      "details": "En una IPA se buscan sabores frescos de lúpulo. La oxidación convierte todo en notas procesadas, como la diferencia entre fruta fresca y fruta enlatada."
+    },
+    {
+      "timestamp_ms": 1023680,
+      "timestamp": "17:03",
+      "category": "proceso",
+      "title": "Oxígeno solo en mosto frío pre-fermentación",
+      "tip": "El único momento donde se quiere oxígeno en todo el proceso cervecero es en el mosto frío antes de inocular la levadura. Ahí ayuda a la reproducción celular y a la formación de ácidos grasos en la pared celular.",
+      "details": "En todo el resto del proceso (molienda, macerado, recirculado, cocción, enfriamiento, post-fermentación, trasvases, envasado) la incorporación de oxígeno es un enemigo."
+    },
+    {
+      "timestamp_ms": 1220800,
+      "timestamp": "20:20",
+      "category": "proceso",
+      "title": "Descriptores de oxidación según el estilo",
+      "tip": "La oxidación resalta el carácter principal de la cerveza, pero para peor. En negra: torrado desbalanceado. En lupulada: amargor que tapa todo. En rubia: acartonado, papel mojado, astringencia. En roja: dulzor caramelo excesivo (se confunde con diacetilo).",
+      "details": "Los compuestos de oxidación son cientos de miles y cambian según la cerveza base y sus componentes de sabor y aroma."
+    },
+    {
+      "timestamp_ms": 1348880,
+      "timestamp": "22:28",
+      "category": "lupulo",
+      "title": "Pellet siempre, nunca flor de lúpulo",
+      "tip": "No usar lúpulo en flor: es ineficiente, tiene mucha materia vegetal, se oxida rápido, es difícil de sacar de olla/fermentador y requiere estar cerca de la cosecha. Incluso Sierra Nevada pasó del 100% flor al 60% Cryo Hops. Siempre usar pellet.",
+      "details": "Extracto/aceite de lúpulo es difícil de conseguir en Argentina y de usar correctamente."
+    },
+    {
+      "timestamp_ms": 1454080,
+      "timestamp": "24:14",
+      "category": "lupulo",
+      "title": "Pellet directo al fermentador, sin bolsita",
+      "tip": "El dry hopping con pellet directo es hasta 10 veces más eficiente que en bolsita o tubo inox. Dentro de la bolsa los pellets se hinchan, ocupan todo el espacio y el área de contacto con la cerveza es mínima.",
+      "details": "Si queda turbia, dejar 2 días más de frío. Mejor gastar menos lúpulo con mejor contacto que desperdiciar lúpulo caro (ej: Citra a precio prohibitivo en paquetitos de 50g) dentro de una bolsa."
+    },
+    {
+      "timestamp_ms": 1566960,
+      "timestamp": "26:06",
+      "category": "tecnica",
+      "title": "Dry hopping a 5 puntos del final",
+      "tip": "Hacer dry hopping cuando faltan 5 puntos de densidad para terminar de fermentar. El headspace tiene CO2 con presión positiva, la levadura activa puede asimilar el oxígeno incorporado, y la turbulencia de la fermentación mezcla mejor el lúpulo.",
+      "details": "Ideal para homebrewers con fermentador plástico: al destapar para agregar lúpulo, el CO2 que sigue generándose desplaza el aire que entra. Tapar rápido después de agregar."
+    },
+    {
+      "timestamp_ms": 1724480,
+      "timestamp": "28:44",
+      "category": "lupulo",
+      "title": "Conservación de lúpulo en casa",
+      "tip": "Corto plazo (<2 semanas): sacar aire de la bolsa, enrollar, encintar bien, freezer. Largo plazo: abrir por una esquina, sacar lúpulo, inyectar CO2 por la otra punta, cerrar la bolsa 'fofa' (no apretada, que quede CO2 adentro), encintar.",
+      "details": "Ideal: fraccionar al vacío en bolsas de aluminio laminado. Ej: bolsa de 5 kg → bolsitas de 100 g al vacío (2 g/L × 50 L = 100 g por uso). Conseguir un amigo con máquina de vacío o comprarse una."
+    },
+    {
+      "timestamp_ms": 1881480,
+      "timestamp": "31:21",
+      "category": "levadura",
+      "title": "No cosechar levadura de barros con dry hop",
+      "tip": "No reutilizar barros que contienen lúpulo de dry hopping: no se sabe cuánta biomasa hay, cuántas células de levadura existen ni cuántas están vivas. Siempre hacer conteo de levadura si se reutiliza.",
+      "details": "Arrancar levadura seca en una cerveza sin dry hop. Organizar cocciones para que el ciclo de cosecha 'muera' en la cerveza lupulada. Si de un fermentador salen dos barros, uno va a lupulada (fin del ciclo) y el otro a cerveza sin dry hop (para seguir cosechando)."
+    },
+    {
+      "timestamp_ms": 2141480,
+      "timestamp": "35:41",
+      "category": "tecnica",
+      "title": "Biotransformación requiere dry hop temprano",
+      "tip": "Para biotransformación real (la levadura transforma aceites del lúpulo en compuestos nuevos), hay que dry hopear al inicio de la fermentación, cuando arranca la actividad (12-24h post-inoculación). El dry hopping tardío (últimos 5 puntos) solo solubiliza aceites esenciales.",
+      "details": "Dry hop tardío aporta aroma y sabor directo del lúpulo. Biotransformación genera compuestos distintos, más relacionados con el perfil jugoso y frutado de las NEIPAs."
+    },
+    {
+      "timestamp_ms": 2226480,
+      "timestamp": "37:06",
+      "category": "tecnica",
+      "title": "Biotransformación: más sabor que aroma",
+      "tip": "El dry hopping de biotransformación (al inicio de fermentación) es ineficiente en aroma porque mucho se pierde por el blow-off, pero genera compuestos nuevos: sabor más frutado, jugoso, más flavor que aroma.",
+      "details": "Se sabe muy poco aún sobre biotransformación. Scarab Labs (laboratorio canadiense de levaduras) tiene charlas técnicas en YouTube al respecto."
+    },
+    {
+      "timestamp_ms": 2414480,
+      "timestamp": "40:14",
+      "category": "proceso",
+      "title": "Hop creep: refermentación post dry hop",
+      "tip": "El hop creep es una microfermentación causada por enzimas del lúpulo que convierten azúcares no fermentables en fermentables. Resultado: cerveza más seca, más alcohólica, y potencial diacetilo si se enfría rápido.",
+      "details": "Hay una teoría nueva que sugiere que la carga microbiana del lúpulo también contribuye al hop creep y al diacetilo, no solo las enzimas. Es un tema aún en investigación."
+    },
+    {
+      "timestamp_ms": 2534480,
+      "timestamp": "42:14",
+      "category": "tecnica",
+      "title": "El lúpulo nunca se sanitiza",
+      "tip": "El lúpulo para dry hopping no se sanitiza de ninguna manera. Se agrega directamente al tanque en pellet, tal cual viene de la bolsa. No hay forma de sanitizarlo sin destruir sus propiedades.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2575480,
+      "timestamp": "42:55",
+      "category": "proceso",
+      "title": "Días en caliente post dry hop contra diacetilo",
+      "tip": "Después del dry hopping en caliente, dejar unos días más a temperatura de fermentación para que si ocurre hop creep, la levadura complete la microfermentación y no queden compuestos intermedios como el diacetilo.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2622480,
+      "timestamp": "43:42",
+      "category": "tecnica",
+      "title": "Clarificante de hervor según estilo",
+      "tip": "Para West Coast IPA clara: usar Whirlfloc o Irish Moss en los últimos 15 minutos del hervor para coagular proteínas. Para NEIPA: no agregar clarificante, ya que se quiere turbidez de proteínas.",
+      "details": "El clarificante de hervor coagula proteínas formando flóculos que decantan por peso. En frío funciona igual. Evaluar si se quiere una cerveza clara o turbia antes de decidir."
+    },
+    {
+      "timestamp_ms": 2726480,
+      "timestamp": "45:26",
+      "category": "lupulo",
+      "title": "Lupulado de hervor nulo en NEIPAs modernas",
+      "tip": "En la nueva escuela de cervezas lupuladas, el lúpulo de cocción/hervor es muy bajo o nulo. En NEIPAs y session NEIPAs frecuentemente es cero IBU de hervor, y todo el lupulado va en whirlpool y dry hop.",
+      "details": "Ya no se hacen birras con 30-40 IBUs de amargor de hervor. Es más parte de la vieja escuela."
+    },
+    {
+      "timestamp_ms": 2879480,
+      "timestamp": "47:59",
+      "category": "tecnica",
+      "title": "Purgar con CO2 no elimina todo el aire",
+      "tip": "Ventear un recipiente lleno de aire con CO2 no reemplaza todo el aire: se forma una mezcla de gases. Por más que se ventee, siempre queda algo de aire (nitrógeno + oxígeno). La técnica más efectiva es llenar con agua y desplazar el agua con CO2.",
+      "details": "Cuanto más se ventee, menos aire queda, pero nunca llega a cero. Por eso se recomienda la técnica de agua + CO2 para garantizar eliminación total del aire."
+    },
+    {
+      "timestamp_ms": 3004480,
+      "timestamp": "50:04",
+      "category": "equipo",
+      "title": "Peracético: sanitizante que oxida",
+      "tip": "El ácido peracético se descompone en ácido acético + agua oxigenada, y esta en oxígeno líquido + agua. Es extremadamente oxidante: incluso trazas mojadas en la pared del barril oxidan la cerveza al trasvasar.",
+      "details": "Usar al 0.25%. Si se deja una abrazadera no inox en peracético media hora, sale un gotón marrón de oxidación. Es el mejor sanitizante pero el peor enemigo si no se elimina bien."
+    },
+    {
+      "timestamp_ms": 3128480,
+      "timestamp": "52:08",
+      "category": "proceso",
+      "title": "Protocolo de purgado post peracético en barriles",
+      "tip": "Después de sanitizar un barril con peracético: escurrir, purgar con CO2, llenar con CO2. Al día siguiente volver a purgar (la pared mojada habrá goteado al fondo) y por la salida de birra, purgar esa gotita residual.",
+      "details": "Nunca llenar el barril el mismo día que se sanitizó con peracético. Esperar a que la pared se seque y el residuo caiga al fondo para purgarlo."
+    },
+    {
+      "timestamp_ms": 3210480,
+      "timestamp": "53:30",
+      "category": "equipo",
+      "title": "Star San: alternativa sin oxígeno residual",
+      "tip": "Star San (ácido fosfórico) no genera oxígeno líquido como el peracético, es cero nocivo. No sirve para CIP/sipeado (genera mucha espuma), pero funciona perfecto para sanitización por inundación (inmersión).",
+      "details": "El dueño de Star San tiene un video donde se toma una pinta después de limpiar un barril. Es una 'agüita ácida' completamente segura."
+    },
+    {
+      "timestamp_ms": 3575480,
+      "timestamp": "59:35",
+      "category": "proceso",
+      "title": "Prioridades del cervecero casero",
+      "tip": "Orden de mejora: 1) controlar temperatura de fermentación, 2) minimizar oxígeno disuelto, 3) recién después invertir en lupulado fuerte. No tiene sentido lupular mucho si no se fermenta bien o si después se oxida la cerveza.",
+      "details": "IPAs con 25 g/L de dry hop pero con diacetilo por mala fermentación son un ejemplo de prioridades mal aplicadas."
+    }
+  ]
+}

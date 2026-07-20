@@ -1,0 +1,221 @@
+{
+  "episode": "T1E11 - Fermentaciones saludables con Clara Bruzone y Julieta Burini",
+  "tips": [
+    {
+      "timestamp_ms": 276000,
+      "timestamp": "4:36",
+      "category": "proceso",
+      "title": "Seguimiento diario de densidad",
+      "tip": "Medir densidad mínimo una vez por día, idealmente dos veces, para construir una curva de fermentación. No alcanza con medir solo al inicio y al final.",
+      "details": "Registrar en planilla: horas desde inóculo, temperatura, densidad y pH. La curva permite detectar desvíos comparando con fermentaciones anteriores."
+    },
+    {
+      "timestamp_ms": 361000,
+      "timestamp": "6:01",
+      "category": "proceso",
+      "title": "Medir pH durante la fermentación",
+      "tip": "El pH a lo largo de toda la fermentación da información clave sobre el estado de la fermentación y la calidad de la levadura. Complementar con temperatura y densidad en la planilla de seguimiento.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 648000,
+      "timestamp": "10:48",
+      "category": "levadura",
+      "title": "Tiempo normal de arranque: 12-18h",
+      "tip": "El lag time normal de la levadura es de 12 a 18 horas (depende de la cepa). Si tarda más de 24 horas en arrancar, hay riesgo de contaminación porque las bacterias se desarrollan más rápido en mosto sin fermentar.",
+      "details": "El mosto sin levadura activa es un medio de cultivo ideal para contaminantes."
+    },
+    {
+      "timestamp_ms": 724000,
+      "timestamp": "12:04",
+      "category": "levadura",
+      "title": "Medir viabilidad de levadura seca",
+      "tip": "No confiar 100% en el paquete de levadura seca. Las condiciones de transporte y almacenamiento pueden afectar la viabilidad. Subinocular (por desconocimiento o ahorro) incide en la calidad de la fermentación y del barro para generaciones futuras.",
+      "details": "La calidad del producto es excelente al salir de fábrica, pero pasa por muchas manos antes de llegar. Puede variar de lote en lote."
+    },
+    {
+      "timestamp_ms": 875000,
+      "timestamp": "14:35",
+      "category": "tecnica",
+      "title": "Test de mosto forzado",
+      "tip": "Técnica sencilla y potente para validar la limpieza y sanitización del equipamiento. Agregar mosto estéril en recipiente estéril e incubar a temperatura que permita crecimiento. Si se desarrolla actividad fermentativa sin inocular, el equipo no está limpio.",
+      "details": "Protocolo disponible en la página del Hipatec. No requiere laboratorio complejo, solo aplicación sistemática y manipulación estéril para no contaminar la muestra (falso positivo)."
+    },
+    {
+      "timestamp_ms": 1067000,
+      "timestamp": "17:47",
+      "category": "tecnica",
+      "title": "Test de diacetilo forzado",
+      "tip": "Tomar muestra del fermentador, dejar a temperatura determinada y evaluar presencia de diacetilo (aroma a manteca). Determina si la maduración en caliente fue completa antes de envasar.",
+      "details": "Si hay diacetilo, dejar más tiempo en caliente. Evita liberar 'cervezas verdes' que desarrollan aroma a manteca en el envase. Protocolo en la página del Hipatec."
+    },
+    {
+      "timestamp_ms": 1163000,
+      "timestamp": "19:23",
+      "category": "proceso",
+      "title": "Evaluación sensorial constante",
+      "tip": "Hacer análisis sensorial durante la fermentación, no solo del producto final. Evaluar también materias primas y mosto en proceso. Nuestros sentidos son un 'laboratorio' económico y eficiente para detectar fallas.",
+      "details": "Calibrar nuestros sentidos probando sistemáticamente ayuda a detectar desvíos tempranamente. Es complementario a análisis instrumental."
+    },
+    {
+      "timestamp_ms": 1304000,
+      "timestamp": "21:44",
+      "category": "proceso",
+      "title": "Triángulo: inóculo, nutrientes, oxígeno",
+      "tip": "Las tres patas fundamentales de una fermentación saludable son el inóculo (cantidad y calidad), los nutrientes y el oxígeno. Están interrelacionadas: tocar una afecta directamente a las otras.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1385000,
+      "timestamp": "23:05",
+      "category": "ingrediente",
+      "title": "Zinc: único nutriente faltante en mosto",
+      "tip": "En un mosto 100% malta, el zinc es el único nutriente que falta. El requerimiento de la levadura es 0,25-0,5 ppm y un mosto sin aditivos tiene solo 0,1-0,3 ppm. Se recomienda agregar 0,2-0,3 ppm de zinc.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1463000,
+      "timestamp": "24:23",
+      "category": "ratio",
+      "title": "Dosis de sulfato de zinc",
+      "tip": "Agregar 0,13-0,15 g/hL de sulfato de zinc heptahidratado para aportar 0,2-0,3 ppm de zinc al mosto.",
+      "details": "Verificar la composición de la sal utilizada para calcular correctamente."
+    },
+    {
+      "timestamp_ms": 1545000,
+      "timestamp": "25:45",
+      "category": "ratio",
+      "title": "Cervomis: duplicar dosis del paquete",
+      "tip": "Con 1 g/hL de Cervomis agregado en caliente, el zinc que llega al fermentador queda por debajo del mínimo requerido. Con 2 g/hL se alcanzan ~0,66 ppm de zinc en el fermentador.",
+      "details": "La pérdida de zinc ocurre durante el Whirlpool y el paso por el enfriador de placas."
+    },
+    {
+      "timestamp_ms": 1640000,
+      "timestamp": "27:20",
+      "category": "ingrediente",
+      "title": "Más nutrientes para cervezas complejas",
+      "tip": "Con adjuntos (dextrosa, miel, candy sugar), enzimas o alta densidad, aumentar a 2-3 g/hL de Cervomis. Los adjuntos aportan fermentables pero no nutrientes, causando fermentaciones estancadas y baja viabilidad del barro.",
+      "details": "Aplica para NEIPA, BrutIPA (con enzimas), Imperial Stout (>1.100) y cervezas con gran proporción de adjuntos."
+    },
+    {
+      "timestamp_ms": 1689000,
+      "timestamp": "28:09",
+      "category": "levadura",
+      "title": "Nutrientes a levadura seca si reutilizás",
+      "tip": "Aunque los fabricantes dicen que la levadura seca no necesita nutrientes extra, siempre agregar nutrientes en la primera fermentación si se planea reutilizar el barro. Genera levadura de mejor calidad para generaciones futuras.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1770000,
+      "timestamp": "29:30",
+      "category": "tecnica",
+      "title": "Nutrientes en frío conservan vitaminas",
+      "tip": "Las vitaminas en Cervomis y SpringFerm son termolábiles: se pierden al agregar en caliente. Agregándolos en el fermentador se conservan compuestos esenciales para la levadura.",
+      "details": "El riesgo del agregado en frío es introducir contaminantes. Maximizar sanitización y manipulación cuidadosa de los paquetes."
+    },
+    {
+      "timestamp_ms": 1974000,
+      "timestamp": "32:54",
+      "category": "proceso",
+      "title": "Cuándo nutrir en caliente o en frío",
+      "tip": "Mosto normal (<1.060, 100% malta): agregar Cervomis o SpringFerm en el hervor es suficiente (aporta zinc). Cervezas complejas (alta densidad, adjuntos, enzimas): agregar en frío para nutrir de manera más completa.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2031000,
+      "timestamp": "33:51",
+      "category": "tecnica",
+      "title": "Criterio paquete cerrado vs abierto",
+      "tip": "Paquete abierto de nutrientes: agregar en el hervor para esterilizar. Paquete cerrado: se puede agregar al fermentador manipulándolo como si fuera levadura.",
+      "details": "SpringFerm viene en sobre de 25 g, Cervomis en sobre de 11 g (además del paquete de 500 g)."
+    },
+    {
+      "timestamp_ms": 2172000,
+      "timestamp": "36:12",
+      "category": "ingrediente",
+      "title": "Magnesio: polémico en fermentación",
+      "tip": "La malta aporta 200-400 mg/L de magnesio, suficiente para fermentaciones normales. Para alta densidad con muchos adjuntos, considerar agregar magnesio (30-40 ppm) para ayudar a la levadura a tolerar estrés osmótico y alcohol.",
+      "details": "Algunos cerveceros reportan mejoras al agregar magnesio al agua, pero falta evidencia experimental concluyente. Tema considerado polémico."
+    },
+    {
+      "timestamp_ms": 2356000,
+      "timestamp": "39:16",
+      "category": "proceso",
+      "title": "Oxígeno solo al inicio de fermentación",
+      "tip": "El oxígeno es necesario para que la levadura crezca y mantenga la integridad de su membrana. Se debe adicionar únicamente al inicio de la fermentación; cualquier ingreso previo o posterior es perjudicial para la cerveza.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2388000,
+      "timestamp": "39:48",
+      "category": "levadura",
+      "title": "Oxigenar levadura seca si se reutiliza",
+      "tip": "Aunque se use levadura seca, oxigenar el primer batch cuando se planea reutilizar el barro. La oxigenación genera levadura más saludable para cosecha y futuras generaciones.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2416000,
+      "timestamp": "40:16",
+      "category": "ratio",
+      "title": "Oxígeno disuelto: 8-10 ppm",
+      "tip": "El target estándar de oxígeno disuelto al inicio de la fermentación es 8-10 mg/L (ppm). Para mostos de alta densidad, usar valores superiores porque la levadura necesita más oxígeno para tolerar el estrés.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2445000,
+      "timestamp": "40:45",
+      "category": "equipo",
+      "title": "Oxímetro: costo y alternativa comunitaria",
+      "tip": "Un oxímetro útil para medir O2 en mosto cuesta desde USD 1.000. No confundir con medidor de TPO (oxígeno en producto terminado, partes por billón) que cuesta ~USD 20.000.",
+      "details": "Alternativa: comprarlo entre varios cerveceros y compartirlo. Con una sola medición de referencia ya se puede calibrar el sistema de oxigenación."
+    },
+    {
+      "timestamp_ms": 2509000,
+      "timestamp": "41:49",
+      "category": "proceso",
+      "title": "Oxigenación: difícil de estandarizar",
+      "tip": "Son tantas las variables que afectan la oxigenación (densidad, flujo, piedra difusora, largo de manguera, diámetro de cañería, temperatura) que es imposible replicar la receta de otra fábrica. Medir en el propio fermentador.",
+      "details": "Incluso en una misma fábrica es difícil estandarizar entre batches."
+    },
+    {
+      "timestamp_ms": 2626000,
+      "timestamp": "43:46",
+      "category": "tecnica",
+      "title": "Calibrar sistema de oxigenación",
+      "tip": "Una vez medido el O2 con oxímetro, usar esa referencia como base. Ejemplo práctico: 1 min/hL a 2 L/min de caudal. Luego variar ±10-20% según estilo o condiciones.",
+      "details": "Lagers, alta densidad y muchos adjuntos: oxigenar un poco más. Ales estándar de densidad normal: nivel base."
+    },
+    {
+      "timestamp_ms": 2681000,
+      "timestamp": "44:41",
+      "category": "levadura",
+      "title": "Levadura seca: mitad de oxígeno",
+      "tip": "Con levadura seca, oxigenar aproximadamente la mitad que con levadura reutilizada.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2781000,
+      "timestamp": "46:21",
+      "category": "proceso",
+      "title": "Interrelación del triángulo de fermentación",
+      "tip": "Si se sobreinocula un poco, el requerimiento de oxígeno disminuye. Si se subinocula, aumentar nutrientes y oxígeno. Homebrewers que no oxigenan no deberían subinocular, especialmente en alta densidad.",
+      "details": "Ejemplo: Barley Wine de 1.090 sin oxigenación y subinoculada = fermentación defectuosa asegurada."
+    },
+    {
+      "timestamp_ms": 2894000,
+      "timestamp": "48:14",
+      "category": "levadura",
+      "title": "Estudiar la cepa de levadura",
+      "tip": "Conocer los requerimientos específicos de cada cepa: tasas de inoculación y temperaturas óptimas de fermentación. Algunas levaduras funcionan mejor con pitch rate un poco más alto.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3072000,
+      "timestamp": "51:12",
+      "category": "proceso",
+      "title": "La escala cambia la fermentación",
+      "tip": "Los resultados a 500 mL no se replican a 30 L, ni de 30 L a 2000 L. Los ensayos a pequeña escala sirven como referencia, pero la experiencia real se construye en la escala de producción de cada fábrica.",
+      "details": null
+    }
+  ]
+}

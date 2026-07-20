@@ -1,0 +1,245 @@
+{
+  "episode": "Hernán Castellani-Procesos relevantes para cerveceros caseros - Part 1",
+  "tips": [
+    {
+      "timestamp_ms": 735800,
+      "timestamp": "12:15",
+      "category": "proceso",
+      "title": "Fermentación sana es la clave",
+      "tip": "El mejor mosto del mundo, con los mejores insumos, mal fermentado es una mala birra. Un mosto rústico bien fermentado y bien cuidado es una birra de 7 puntos para arriba. La clave está en controlar la fermentación y cuidar la cerveza terminada.",
+      "details": "Castellani cambió 3 equipos de cocción sin controlar temperatura de fermentación antes de entender esto."
+    },
+    {
+      "timestamp_ms": 847520,
+      "timestamp": "14:07",
+      "category": "proceso",
+      "title": "Priorizar lado frío sobre insumos caros",
+      "tip": "Antes de gastar en maltas importadas o lúpulos australianos de 100 USD/kg, tener un proceso prolijo desde que entra el mosto al fermentador en adelante. Fermentación, maduración, trasvases, carbonatación y embarrilado/embotellado afectan más al producto final que la receta perfecta.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 957160,
+      "timestamp": "15:57",
+      "category": "proceso",
+      "title": "Lado frío más importante que lado caliente",
+      "tip": "Con cualquier equipito se puede hacer buen mosto respetando criterios básicos: no salpicar, no incorporar oxígeno, que no espume el macerado, no picar el mosto del lavado. Lo más significativo para la cerveza final es el lado frío.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 974360,
+      "timestamp": "16:14",
+      "category": "tecnica",
+      "title": "No oxidar cervezas lupuladas al trasvasar",
+      "tip": "No tiene sentido meter 25 g/L de lúpulos americanos a una birra si después se trasvasa sin purgar, sin presión, en atmósfera de aire. Se oxida toda y se pierde la inversión en lúpulo.",
+      "details": "Las NEIPAs son especialmente sensibles. La inestabilidad del lúpulo y la oxidación son los principales enemigos."
+    },
+    {
+      "timestamp_ms": 1045080,
+      "timestamp": "17:25",
+      "category": "proceso",
+      "title": "Controlar temperatura del líquido, no del aire",
+      "tip": "La temperatura del líquido en fermentación es lo que hay que controlar. No vale medir el aire, ni poner un baldecito con agua afuera de la heladera. Hay que lograr la mayor precisión posible en la temperatura del mosto/cerveza.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 1100080,
+      "timestamp": "18:20",
+      "category": "equipo",
+      "title": "STC-1000 en vez de STC-200+",
+      "tip": "El STC-1000 tiene una histéresis de 0.3 °C mientras que el STC-200+ tiene 1 °C. Cuestan casi lo mismo pero la diferencia de precisión es enorme para fermentar entre 19.5 y 19.6 °C.",
+      "details": "Con histéresis de 1 °C la heladera queda prendida mucho tiempo y por inercia térmica la cerveza rebota varios grados por debajo de lo seteado (ej: seteas 19, rebota a 17)."
+    },
+    {
+      "timestamp_ms": 1175720,
+      "timestamp": "19:35",
+      "category": "proceso",
+      "title": "Inercia térmica al final de fermentación",
+      "tip": "Al final de la fermentación la levadura genera menos calor. Si la heladera prende por la histéresis, la temperatura rebota varios grados abajo y no vuelve a subir. Terminar de fermentar por debajo de 17 °C genera diacetilo y acetaldehído.",
+      "details": "En invierno la temperatura exterior agrava el problema. El sistema frío-calor es ideal pero no indispensable."
+    },
+    {
+      "timestamp_ms": 1300240,
+      "timestamp": "21:40",
+      "category": "tecnica",
+      "title": "Guarda en caliente post-fermentación",
+      "tip": "Después de que terminó la actividad visible de fermentación, la levadura en suspensión sigue redondeando subproductos: compuestos intermedios se convierten en alcoholes y luego en ésteres. Es clave mantener temperatura y tiempo en caliente con levadura en suspensión.",
+      "details": "También llamado descanso de diacetilo, fermentación secundaria o guarda en caliente. Mandar a frío con actividad de blow-off es un pecado grave."
+    },
+    {
+      "timestamp_ms": 1321860,
+      "timestamp": "22:01",
+      "category": "tecnica",
+      "title": "Regla de guarda en caliente: mitad de días",
+      "tip": "Los días que tardó en fermentar, la mitad más lo dejás en guarda en caliente. Si fermentó en 4 días, dejarlo 2 días más mínimo antes de bajar temperatura.",
+      "details": "Si tiene mucho sulfuro, dejar más tiempo en caliente (el sulfuro no es soluble y se va en caliente). Si tiene diacetilo, también aumentar el tiempo."
+    },
+    {
+      "timestamp_ms": 1415200,
+      "timestamp": "23:35",
+      "category": "tecnica",
+      "title": "Curva de temperatura ascendente al final",
+      "tip": "El primer 50% de los fermentables se controla a temperatura precisa (ej: US-05 a 19.5 °C). Cuando faltan entre 10 y 25 puntos de densidad por fermentar, subir el setpoint del controlador a 23 °C. La cerveza sigue a 19 pero sin frío sube sola 2-3 grados por el calor de fermentación.",
+      "details": "Ejemplo para American IPA (1.060→1.010): controlar preciso de 1.060 a 1.035, luego liberar a 23 °C. Objetivo: terminar fermentación arriba de 21-22 °C con casi todas las cepas."
+    },
+    {
+      "timestamp_ms": 1583400,
+      "timestamp": "26:23",
+      "category": "tecnica",
+      "title": "Liberar por actividad, no solo por densidad",
+      "tip": "Si la actividad de fermentación se plancha (burbujeo se detiene), liberar el controlador sin importar la densidad. Hay que observar la actividad además de medir densidad.",
+      "details": "Con fermentaciones tranquilas, el frío exterior puede ganarle a la generación de calor. Conocer tu fermentador y tu cepa es clave."
+    },
+    {
+      "timestamp_ms": 1687640,
+      "timestamp": "28:07",
+      "category": "levadura",
+      "title": "No subinocular: el peor error casero",
+      "tip": "La mayoría de cerveceros caseros subinocula (pone menos levadura de la necesaria). Subinocular genera exceso de ésteres, alcoholes superiores, diacetilo y acetaldehído. Siempre preferir sobreinocular que subinocular.",
+      "details": "Sobreinocular tiene muy bajas consecuencias si no reutilizás (solo el costo extra). Subinocular tiene muchas consecuencias negativas en calidad."
+    },
+    {
+      "timestamp_ms": 1715640,
+      "timestamp": "28:35",
+      "category": "levadura",
+      "title": "Viabilidad de levadura seca puede ser 40%",
+      "tip": "La viabilidad real de la levadura seca puede ser muy baja. Castellani hizo conteos celulares tras hidratar y encontró hasta 40% de viabilidad (60% de células muertas). Si ponés 0.5 g/L pero tiene 40% viabilidad, realmente inoculaste 0.2 g/L.",
+      "details": "La viabilidad depende del transporte, almacenamiento del proveedor y tiempo desde el envasado."
+    },
+    {
+      "timestamp_ms": 1786800,
+      "timestamp": "29:46",
+      "category": "ratio",
+      "title": "Mínimo 1 g/L de levadura seca",
+      "tip": "No usar menos de 1 g/L de levadura seca (Nottingham, Windsor, US-04, US-05) para cualquier cerveza. Para cervezas de más de 1.070, usar 1.5 g/L o más. Preferir ser conservador y poner un poco más.",
+      "details": "Cervezas estándar: 1 g/L. Cervezas complejas (>1.070): 1.5+ g/L."
+    },
+    {
+      "timestamp_ms": 1810240,
+      "timestamp": "30:10",
+      "category": "proceso",
+      "title": "Oxígeno es clave para reproducción celular",
+      "tip": "El oxígeno disuelto en el mosto está directamente relacionado con la reproducción de células de levadura. Más oxígeno = más biomasa. La mayoría de cerveceros caseros no agregan oxígeno más que sacudiendo el bidón o dejando que pique al caer al fermentador.",
+      "details": "Cada vez más locales venden piedras difusoras para oxigenar en línea. Es una mejora significativa y accesible."
+    },
+    {
+      "timestamp_ms": 2003200,
+      "timestamp": "33:23",
+      "category": "levadura",
+      "title": "Reutilizar leva: 1 kg por hectolitro de barro",
+      "tip": "Para reutilizar levadura sin microscopio, usar aproximadamente 1 kg de buen barro (cremoso, no seco) por hectolitro como estimación. Requiere conocer bien la cepa, ser metódico en las purgas y tener excelentes prácticas de limpieza y sanitización.",
+      "details": "Si hay bacterias en la cosecha, se reproducen junto con la levadura en la siguiente fermentación. Solo para cerveceros caseros avanzados."
+    },
+    {
+      "timestamp_ms": 2125160,
+      "timestamp": "35:25",
+      "category": "equipo",
+      "title": "Todo fermentador debe poder purgarse",
+      "tip": "Sea botellón, cilindro cónico, bidón plástico alimenticio o lo que sea: debe poder purgarse. Ponerle una canilla de costado con conexión de tanque y una válvula. Es más importante que la estética del fermentador.",
+      "details": "Hay fermentadores de vidrio estéticamente lindos que en la práctica no permiten buenas purgas y no son recomendables."
+    },
+    {
+      "timestamp_ms": 2178320,
+      "timestamp": "36:18",
+      "category": "tecnica",
+      "title": "Por qué purgar: levadura muerta genera defectos",
+      "tip": "La levadura muerta que cae al fondo libera compuestos indeseables. La levadura sana que cae intoxicada por alcohol y sin nutrientes también genera off-flavors. Hay que eliminar el trub y la levadura muerta lo antes posible.",
+      "details": "Síntomas de no purgar: olor a huevo podrido, alcantarilla, hongos, humedad (sulfuros y autólisis)."
+    },
+    {
+      "timestamp_ms": 2272720,
+      "timestamp": "37:52",
+      "category": "tecnica",
+      "title": "Primera purga a las 24-48 horas",
+      "tip": "La primera purga se hace entre 24 y 48 horas post-inoculación. El objetivo es sacar el trub frío (lípidos y compuestos coagulados al enfriar) y la levadura muerta que cayó al fondo al inocular.",
+      "details": "Al enfriar de 100 °C a 20 °C se coagulan compuestos que estaban solubles en caliente (trub frío), llenos de lípidos no deseados."
+    },
+    {
+      "timestamp_ms": 2344180,
+      "timestamp": "39:04",
+      "category": "tecnica",
+      "title": "Purgar con manguera fina, nunca directo",
+      "tip": "Nunca purgar con la válvula directa a una jarra: el caudal alto canaliza el barro. Conectar una manguera fina (3/8\") de al menos 1 metro a la válvula. La caída de presión gradual baja la torta de lúpulo, leva y trub de forma pareja.",
+      "details": "Si se canaliza (sale líquido claro con barro al costado), cortar. Volver al otro día para continuar la purga sin problema."
+    },
+    {
+      "timestamp_ms": 2537160,
+      "timestamp": "42:17",
+      "category": "tecnica",
+      "title": "Micro-purgas diarias hasta llegar a frío",
+      "tip": "Para los que no cosechan levadura: hacer micro-purgas diarias. Purgar un poquito cada día hasta que al purgar sale líquido limpio y ya no hay más barro. Así se mantiene el fermentador libre de sedimento muerto.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2572480,
+      "timestamp": "42:52",
+      "category": "levadura",
+      "title": "Hidratar siempre, starter solo con equipamiento",
+      "tip": "Siempre hidratar la levadura seca. El starter está buenísimo pero requiere agitador magnético, erlenmeyer con agua, control de temperatura y trabajar bajo mechero para evitar contaminación. Sin ese equipamiento, es mejor no hacer starter con leva seca.",
+      "details": "Castellani tuvo que tirar birras por contaminaciones introducidas durante el starter a nivel homebrewer."
+    },
+    {
+      "timestamp_ms": 2685600,
+      "timestamp": "44:46",
+      "category": "levadura",
+      "title": "Hidratar reduce mortalidad por estrés osmótico",
+      "tip": "Inocular levadura seca directo al mosto provoca estrés osmótico (diferencia de densidad entre afuera y adentro de la célula), matando más células. Hidratando en agua primero, el estrés osmótico es mucho menor.",
+      "details": "Después de hidratar, agregar mosto en cuotas pequeñas para aclimatar temperatura (de 30 °C del agua a 20 °C del mosto) y densidad."
+    },
+    {
+      "timestamp_ms": 2782960,
+      "timestamp": "46:23",
+      "category": "levadura",
+      "title": "Protocolo de hidratación de levadura seca",
+      "tip": "Hervir 100 ml de agua por sobre de levadura en un erlenmeyer. Tapar con papel aluminio y dejar enfriar a 30 °C. Sanitizar sobre y tijera, abrir junto a mechero, volcar la leva, tapar y agitar suave para que todo el polvo contacte agua. Esperar exactamente 15 minutos con reloj.",
+      "details": "A los 15 minutos agregar un poco de mosto frío (20 °C) del fermentador. Repetir 2-3 veces, luego volcar al fermentador. Preparar la leva siempre al final, cuando la birra ya está fría en el fermentador."
+    },
+    {
+      "timestamp_ms": 2985440,
+      "timestamp": "49:45",
+      "category": "ingrediente",
+      "title": "Nutrientes solo para fermentaciones complejas",
+      "tip": "Con levadura seca y cerveza 100% malta de densidad normal, no es necesario agregar nutrientes. Sí es necesario cuando se usa mucha miel, candy sugar, dextrosa u otro fermentable simple que no aporta nutrientes, o en cervezas de 1.090+.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3051720,
+      "timestamp": "50:51",
+      "category": "ingrediente",
+      "title": "Servomyces para reutilización de levadura",
+      "tip": "Servomyces es una mezcla de levadura inactivada rica en vitaminas, minerales, aminoácidos y zinc. El zinc es clave para la reproducción celular. Junto con el oxígeno, el Servomyces es fundamental cuando se reutiliza levadura.",
+      "details": "No es necesario para fermentaciones únicas con leva seca de densidad normal, ya que la levadura seca viene con su propio paquete de nutrientes."
+    },
+    {
+      "timestamp_ms": 3149560,
+      "timestamp": "52:29",
+      "category": "levadura",
+      "title": "Levadura líquida: mejor pero más compleja",
+      "tip": "Las levaduras líquidas dan un producto más pulido y acorde a un estilo en particular, pero requieren mucho más conocimiento: cepas más sensibles, menos biomasa, más necesidad de oxígeno y nutrientes, curvas de fermentación específicas por cepa.",
+      "details": "No funciona tratarlas como US-04/05. Cada cepa es un mundo distinto con su temperatura óptima, tasa de inoculación y comportamiento de fermentación."
+    },
+    {
+      "timestamp_ms": 3267960,
+      "timestamp": "54:28",
+      "category": "tecnica",
+      "title": "No usar aceite de oliva en fermentación",
+      "tip": "Aunque la teoría dice que el aceite de oliva tiene micronutrientes que la levadura necesita para reproducirse sin oxígeno, en la práctica no funciona. Cervecerías grandes que lo probaron dejaron de hacerlo. Además, las grasas van en contra de la formación y retención de espuma.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3365120,
+      "timestamp": "56:05",
+      "category": "levadura",
+      "title": "No hidratar levadura con miel",
+      "tip": "Hidratar con miel disuelta en agua genera el mismo estrés osmótico que inocular directo al mosto, anulando el propósito de la hidratación. Si la birra no está lista y la leva ya lleva 15 minutos hidratada, agregar un poco de mosto hervido y enfriado para alimentarla.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 3543000,
+      "timestamp": "59:03",
+      "category": "levadura",
+      "title": "Fraccionar paquetes de leva líquida: máximo 2-3",
+      "tip": "Se puede fraccionar un paquete de levadura líquida, pero cada apertura incorpora posible contaminación y oxígeno (que aumenta mortalidad celular en el paquete). Usar máximo en 2-3 veces.",
+      "details": "Abrir bajo mechero, en ambiente sanitizado. Castellani fracciona en su fábrica (fermentaciones de 200-350 L) pero solo en 2 usos por paquete."
+    }
+  ]
+}

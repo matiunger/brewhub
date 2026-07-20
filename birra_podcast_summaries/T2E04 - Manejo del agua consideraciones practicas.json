@@ -1,0 +1,221 @@
+{
+  "episode": "T2E04 - Manejo del agua consideraciones practicas",
+  "tips": [
+    {
+      "timestamp_ms": 172000,
+      "timestamp": "2:52",
+      "category": "agua",
+      "title": "Parámetros principales para evaluar el agua",
+      "tip": "Los parámetros clave a medir son: alcalinidad, dureza, pH, calcio, magnesio, sulfato, cloruro y sodio. Además es fundamental conocer los sólidos disueltos totales (TDS) como indicador general.",
+      "details": "La alcalinidad se refiere a especies del carbono (carbonato, bicarbonato, ácido carbónico). La dureza es solo calcio y magnesio, no mineralización total."
+    },
+    {
+      "timestamp_ms": 199000,
+      "timestamp": "3:19",
+      "category": "agua",
+      "title": "Alcalinidad actúa como buffer de pH",
+      "tip": "La alcalinidad resiste la baja de pH en la maceración. Actúa como buffer contra la acidez de la malta y la acidez generada por la precipitación de calcio/magnesio con fosfatos.",
+      "details": "Se necesita un pH bajo en maceración, por lo que la alcalinidad se opone a ese objetivo. A mayor alcalinidad, más difícil lograr el pH deseado."
+    },
+    {
+      "timestamp_ms": 251000,
+      "timestamp": "4:11",
+      "category": "agua",
+      "title": "Calcio y magnesio bajan pH del macerado",
+      "tip": "El calcio y magnesio precipitan con los fosfatos de la malta y en ese proceso liberan protones (acidez), contribuyendo a bajar el pH del macerado.",
+      "details": "El calcio es cofactor de enzimas, fundamental para floculación de levadura, precipitación y coagulación de proteínas."
+    },
+    {
+      "timestamp_ms": 282000,
+      "timestamp": "4:42",
+      "category": "agua",
+      "title": "Relación sulfato/cloruro para balance",
+      "tip": "El sulfato favorece la percepción del amargor (no crea amargor). El cloruro favorece la percepción del dulzor de la malta. La relación entre ambos define el balance, pero los valores absolutos también importan.",
+      "details": "No es lo mismo una relación 1:1 de 30/30 ppm que de 300/300 ppm. Relación >1 = más seca/amarga; <1 = más maltosa."
+    },
+    {
+      "timestamp_ms": 334000,
+      "timestamp": "5:34",
+      "category": "agua",
+      "title": "Sodio realza sabores como sal de mesa",
+      "tip": "El sodio realza todos los sabores hasta parecer salado. Su tolerancia depende del estilo y del cervecero. Es polémico: algunos no toleran más de 5 ppm, otros aceptan hasta 30-50 ppm dependiendo del estilo.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 445000,
+      "timestamp": "7:25",
+      "category": "agua",
+      "title": "TDS como indicador de soporte mineral",
+      "tip": "Los sólidos disueltos totales (TDS) funcionan como 'soporte mineral'. Bajos TDS para cervezas ligeras con menos complejidad; a medida que sube el TDS sube la complejidad percibida de la cerveza.",
+      "details": "Es un buen parámetro de partida para decidir el perfil de agua según el estilo."
+    },
+    {
+      "timestamp_ms": 545000,
+      "timestamp": "9:05",
+      "category": "proceso",
+      "title": "Eliminar cloro del agua de red",
+      "tip": "El cloro debe eliminarse antes de que contacte la levadura. Opciones: estacionar destapada un día, hervir unos minutos, o filtro de carbón activado. El cloro residual genera clorofenoles (aromas medicinales desagradables).",
+      "details": "La levadura usa el cloro y genera clorofenoles. Es un defecto siempre considerado indeseable y tiene umbrales de detección muy bajos."
+    },
+    {
+      "timestamp_ms": 736000,
+      "timestamp": "12:16",
+      "category": "agua",
+      "title": "Cloraminas no se eliminan con hervor",
+      "tip": "En verano los proveedores pueden usar cloraminas (liberan cloro gradualmente). Son más difíciles de eliminar que el cloro libre: el hervor y el estacionamiento no son suficientes. Requieren filtro de carbón activado.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 784000,
+      "timestamp": "13:04",
+      "category": "equipo",
+      "title": "Filtro de carbón activado imprescindible",
+      "tip": "El filtro de carbón activado es la solución más confiable y reproducible para eliminar cloro y cloraminas. Hervir o estacionar puede no ser suficiente, especialmente con aguas con alta concentración de cloro (ej: Capital Federal en verano).",
+      "details": "A diferencia de hervir, el filtro deja siempre la misma cantidad residual mínima independientemente de cuánto cloro tenga el agua de entrada."
+    },
+    {
+      "timestamp_ms": 873000,
+      "timestamp": "14:33",
+      "category": "proceso",
+      "title": "Hervir para reducir alcalinidad (limitado)",
+      "tip": "Hervir el agua puede precipitar carbonatos con la dureza (Ca/Mg), reduciendo alcalinidad. Pero depende de la cantidad de dureza disponible: si hay poco Ca/Mg y mucha alcalinidad, no funciona bien.",
+      "details": "Si se agrega Ca para forzar la precipitación, se pierde control de los valores finales. Método poco reproducible, más prueba y error."
+    },
+    {
+      "timestamp_ms": 988000,
+      "timestamp": "16:28",
+      "category": "proceso",
+      "title": "Dilución: la mejor forma de bajar iones",
+      "tip": "Para sacarle cosas al agua, lo más útil es diluirla con agua de ósmosis inversa, destilada o agua envasada. El equipo de ósmosis elimina ~99% de todas las sales.",
+      "details": "Al diluir se baja todo proporcionalmente. Si querés bajar sodio de 200 a 50 ppm (dilución 25%), también bajás alcalinidad, sulfato y cloruro al 25% del valor original."
+    },
+    {
+      "timestamp_ms": 1181000,
+      "timestamp": "19:41",
+      "category": "equipo",
+      "title": "Cuándo comprar equipo de ósmosis inversa",
+      "tip": "Con TDS arriba de 150 ppm ya es útil tener ósmosis inversa. Por debajo de 100 ppm se puede diluir con agua envasada. También es necesario cuando hay un ion específico problemático (ej: sodio de 180-220 ppm).",
+      "details": "Si la alcalinidad supera 300 ppm (común en provincia de Buenos Aires, acuífero Guaraní), sin dilución es muy poco lo que se puede hacer bien. Para microcervecerías, es útil en casi cualquier caso excepto aguas con TDS muy bajos (ej: 45 ppm en Capital Federal)."
+    },
+    {
+      "timestamp_ms": 1484000,
+      "timestamp": "24:44",
+      "category": "equipo",
+      "title": "Ablandadores iónicos no sirven para cerveza",
+      "tip": "Los ablandadores de intercambio iónico reemplazan calcio y magnesio por sodio. No sirven para cervecería: eliminan la dureza útil y agregan sodio problemático, sin tocar la alcalinidad.",
+      "details": "Única utilidad: instalarlos ANTES de un equipo de ósmosis inversa para proteger las membranas de precipitación de sarro (CaCO3). La ósmosis luego elimina el sodio agregado."
+    },
+    {
+      "timestamp_ms": 1799000,
+      "timestamp": "29:59",
+      "category": "agua",
+      "title": "Al agregar un ion se agrega su contra-ion",
+      "tip": "Cada sal aporta dos iones. Si querés agregar sulfato, viene como sulfato de calcio o de magnesio. Si querés agregar cloruro, viene como cloruro de calcio. Hay que planificar el impacto en todos los parámetros al agregar cualquier sal.",
+      "details": "Ejemplo: partir de agua vacía, agregarle calcio para llegar a un buen valor puede disparar los TDS si no se planifica bien la combinación de sales."
+    },
+    {
+      "timestamp_ms": 1842000,
+      "timestamp": "30:42",
+      "category": "proceso",
+      "title": "Disolver sales recirculando 15 minutos",
+      "tip": "Las sales deben disolverse completamente como iones, no quedarse como precipitado. El sulfato de calcio es el más difícil de disolver. Recirculando con bomba, a los 15 minutos se disuelve todo lo necesario.",
+      "details": "A mayores volúmenes, más tiempo o inversión para lograr disolución completa. Alternativa: agregar un poco de más sabiendo que un porcentaje no se disolverá."
+    },
+    {
+      "timestamp_ms": 1882000,
+      "timestamp": "31:22",
+      "category": "proceso",
+      "title": "Considerar grado de hidratación de las sales",
+      "tip": "Las sales vienen con moléculas de agua (ej: sulfato de calcio con 7 moléculas de agua). Al pesar, parte del peso es agua, no ion activo. Hay que usar la fórmula correcta según el grado de hidratación.",
+      "details": "También almacenar las sales correctamente para que no incorporen humedad adicional que altere los cálculos."
+    },
+    {
+      "timestamp_ms": 1963000,
+      "timestamp": "32:43",
+      "category": "agua",
+      "title": "Preferir sales de calcio sobre magnesio",
+      "tip": "El magnesio en exceso da amargor metálico feo, puede causar malestar estomacal (con sulfato alto) y la malta ya aporta todo el Mg que la levadura necesita. Usar sales de magnesio solo si el calcio se está yendo muy alto.",
+      "details": "Calcio máximo recomendado: ~150 ppm. Por encima puede dar sabor metálico/mineraloso. Usar Mg como complemento cuando Ca se acerca al límite."
+    },
+    {
+      "timestamp_ms": 2167000,
+      "timestamp": "36:07",
+      "category": "receta",
+      "title": "Agua para Golden/Blonde Ale",
+      "tip": "Cerveza ligera de baja densidad y bajo amargor. Usar agua poco mineralizada: TDS ≤75-80 ppm, relación sulfato/cloruro <1, sulfato y cloruro entre 35-40 ppm, sodio <30 ppm.",
+      "details": "Por debajo de 35-40 ppm, sulfato y cloruro no tienen demasiada influencia. El agua tipo Pilsen (extremadamente baja en todos los iones) maximiza la tomabilidad."
+    },
+    {
+      "timestamp_ms": 2333000,
+      "timestamp": "38:53",
+      "category": "agua",
+      "title": "Intensidad del agua según intensidad del estilo",
+      "tip": "A mayor densidad inicial, mayor carga de IBUs y mayor complejidad de maltas, más mineralización requiere el agua. Dentro del mismo estilo, la versión más intensa necesita más soporte mineral.",
+      "details": "No es lo mismo una Golden de OG 1.042 con 15 IBU que una de OG 1.050+ con más IBU. La segunda necesita más TDS."
+    },
+    {
+      "timestamp_ms": 2525000,
+      "timestamp": "42:05",
+      "category": "receta",
+      "title": "Melanoidina en Golden requiere más alcalinidad",
+      "tip": "Si se agrega 10-15% de malta melanoidina a una Golden o Blonde, el agua debe tener más carbonatos porque la melanoidina es muy ácida y bajará demasiado el pH sin ese soporte.",
+      "details": "Evaluar el pH estimado con planillas y ajustar la alcalinidad según la composición específica de granos de la receta."
+    },
+    {
+      "timestamp_ms": 2671000,
+      "timestamp": "44:31",
+      "category": "receta",
+      "title": "Agua para Scottish/Irish Red",
+      "tip": "Cerveza maltosa de baja densidad pero mayor complejidad. TDS hasta 140-150 ppm, relación sulfato/cloruro <0.8, cloruros y sulfatos en rango 50-100 ppm, carbonatos entre 50-100 ppm. Calcio quedará arriba de 75 ppm.",
+      "details": "El rango de alcalinidad (50-100) es amplio porque depende de la acidez de las maltas caramelo usadas. Más caramelo oscuro = más ácido = más alcalinidad necesaria."
+    },
+    {
+      "timestamp_ms": 2766920,
+      "timestamp": "46:06",
+      "category": "agua",
+      "title": "Bicarbonato de sodio para aportar alcalinidad",
+      "tip": "El carbonato de calcio no se disuelve en el tiempo de maceración. Para agregar alcalinidad al agua, usar bicarbonato de sodio. El carbonato de calcio puede servir en el hervor (mínimo 30 min) pero no en el macerado.",
+      "details": null
+    },
+    {
+      "timestamp_ms": 2818560,
+      "timestamp": "46:58",
+      "category": "agua",
+      "title": "Calcio mínimo 50 ppm siempre cubierto",
+      "tip": "Se necesitan al menos 50 ppm de calcio para todas las reacciones metabólicas y enzimáticas. En la práctica, siempre que se agregan sales de sulfato o cloruro de calcio, este mínimo queda cubierto automáticamente.",
+      "details": "El foco al diseñar el agua suele estar en sulfato y cloruro; el calcio se acomoda solo como consecuencia."
+    },
+    {
+      "timestamp_ms": 2917680,
+      "timestamp": "48:37",
+      "category": "malta",
+      "title": "Maltas caramelo aportan más acidez a mayor color",
+      "tip": "Las maltas caramelo son más ácidas a mayor grado de caramelización. Un Caramelo 140 es mucho más ácido que un Caramelo 30. Esto afecta directamente cuánta alcalinidad necesita el agua.",
+      "details": "Una receta con 20% de maltas caramelo oscuras necesita más alcalinidad (agua más mineralizada) que una con pocas maltas especiales de bajo color."
+    },
+    {
+      "timestamp_ms": 3134440,
+      "timestamp": "52:14",
+      "category": "receta",
+      "title": "Agua para Dry Stout: alta mineralización",
+      "tip": "TDS por arriba de 180 ppm. Relación sulfato/cloruro cerca de 1 (si se mueve, mejor <1). Necesita alta alcalinidad para contener la bajada de pH de las maltas tostadas. Agua poco mineralizada produce efecto 'café recalentado' sin complejidad.",
+      "details": "El 'café recalentado' es una cerveza donde solo se percibe el tostado/quemado sin ningún soporte detrás (sin ésteres, sin lúpulo perceptible, sin complejidad). Aplica también a Porter y todas las Stout con maltas tostadas."
+    },
+    {
+      "timestamp_ms": 3355440,
+      "timestamp": "55:55",
+      "category": "proceso",
+      "title": "No usar solo agua de ósmosis para todos los estilos",
+      "tip": "Error común al incorporar ósmosis inversa: usar agua casi pura para todas las cervezas. Para estilos con maltas tostadas/caramelo (Stout, Porter, Scottish), el agua muy poco mineralizada es perjudicial para el balance y la tomabilidad.",
+      "details": "Para cervezas ligeras y lupuladas sí conviene agua muy baja en TDS. Para cervezas oscuras y complejas hay que remineralizar fuerte."
+    },
+    {
+      "timestamp_ms": 3488440,
+      "timestamp": "58:08",
+      "category": "agua",
+      "title": "El agua correcta suma complejidad al estilo",
+      "tip": "Con el agua correcta la cerveza destaca lo que queremos (lúpulo en IPA, caramelo en Scottish, grano en Blonde) y por detrás se perciben ésteres, alcohol, otras maltas. Con agua incorrecta solo se percibe el carácter principal, plano y sin soporte.",
+      "details": "Frase atribuida a Palmer. El agua es tan importante como la receta de granos, lúpulo y levadura para el resultado final."
+    }
+  ]
+}
