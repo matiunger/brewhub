@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash2, FileText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CollapsibleCard } from "./beer-sections";
 import {
   type BrewdayData,
@@ -21,6 +22,7 @@ import {
   type WhirlpoolChillingData,
   type FermentationData,
   type FermentationStep,
+  type YeastGrowthModel,
   type KeggingData,
   type LageringData,
   type BottlingData,
@@ -28,6 +30,11 @@ import {
   type BoilEntry,
 } from "@/lib/brewday-types";
 import { type StepInfusionResult } from "@/lib/calculations";
+import {
+  calculateYeastPitch,
+  DEFAULT_CELL_DENSITY_B_PER_G,
+  YEAST_GROWTH_MODELS,
+} from "@/lib/yeast-pitch";
 
 // ---- carbonation ----
 
@@ -177,13 +184,20 @@ export interface RecipeData {
   mashStepNames: string[];
 }
 
+function sameStoredNum(a: number | null, b: number | null): boolean {
+  if (a == null && b == null) return true;
+  if (a == null || b == null) return false;
+  return Math.abs(a - b) < 1e-6;
+}
+
 function FermentationSection({
   fermentation,
   setFermentation,
+  patchFermentation,
   addStep,
   removeStep,
   setStep,
-  og,
+  ogGL,
   fermenterWeightKg,
   startingGasTankKg,
   brewDate,
@@ -192,17 +206,18 @@ function FermentationSection({
 }: {
   fermentation: FermentationData;
   setFermentation: (key: keyof FermentationData, val: string | number | boolean | null) => void;
+  patchFermentation: (patch: Partial<FermentationData>) => void;
   addStep: () => void;
   removeStep: (id: string) => void;
   setStep: (id: string, key: keyof FermentationStep, val: string | number | null) => void;
-  og: number | null;
+  ogGL: number | null;
   fermenterWeightKg: number | null;
   startingGasTankKg: number | null;
   brewDate: Date | null;
   open: boolean;
   onToggle: () => void;
 }) {
-  const [mode, setMode] = useState<"direct" | "weight">("direct");
+  const mode = fermentation.volumeMode ?? "direct";
   const [notesModalId, setNotesModalId] = useState<string | null>(null);
   const [curves, setCurves] = useState(new Set<"gravity" | "activity" | "temp" | "pressure">(["gravity", "activity"]));
 
@@ -217,19 +232,63 @@ function FermentationSection({
       ? Math.max(0, fermentation.totalWeightKg - fermenterWeightKg)
       : null;
 
+  const ogSG = ogGL != null && ogGL > 0 ? ogGL / 1000 : null;
   const computedVolumenL =
-    computedLiquidKg != null && og != null && og > 0
-      ? computedLiquidKg / og
+    computedLiquidKg != null && ogSG != null
+      ? computedLiquidKg / ogSG
       : null;
 
+  const fermenterVolumeL =
+    mode === "weight" ? computedVolumenL : fermentation.volumeL;
+
+  const pitch = calculateYeastPitch({
+    dryYeastGrams: fermentation.dryYeastGrams,
+    cellDensityBPerG: fermentation.cellDensityBPerG,
+    starterSizeL: fermentation.starterSizeL,
+    starterGravityGL: fermentation.starterGravityGL,
+    growthModel: fermentation.growthModel ?? "braukaiser_stir_plate",
+    volumeL: fermenterVolumeL,
+    ogGL,
+  });
+
+  const storedCellsAfterB = pitch.cellsAfterB != null ? Math.round(pitch.cellsAfterB * 100) / 100 : null;
+  const storedPitchRate = pitch.pitchRate != null ? Math.round(pitch.pitchRate * 1000) / 1000 : null;
+
+  useEffect(() => {
+    if (
+      sameStoredNum(storedCellsAfterB, fermentation.cellsAfterB) &&
+      sameStoredNum(storedPitchRate, fermentation.actualPitchRate)
+    ) {
+      return;
+    }
+    patchFermentation({ cellsAfterB: storedCellsAfterB, actualPitchRate: storedPitchRate });
+  }, [
+    storedCellsAfterB,
+    storedPitchRate,
+    fermentation.cellsAfterB,
+    fermentation.actualPitchRate,
+    patchFermentation,
+  ]);
+
+  const pitchCaption = (() => {
+    if (fermentation.dryYeastGrams == null) return null;
+    if (fermenterVolumeL == null && ogGL == null) return "Need fermenter volume and OG for pitch rate";
+    if (fermenterVolumeL == null) return "Need fermenter volume for pitch rate";
+    if (ogGL == null) return "Need wort OG for pitch rate";
+    if (pitch.cellsAfterB == null) return "Need starter gravity for Braukaiser growth";
+    const bits = [`${fermenterVolumeL.toFixed(1)} L`, `OG ${ogGL.toFixed(0)}`];
+    if (pitch.plato != null) bits.push(`${pitch.plato.toFixed(1)} °P`);
+    return bits.join(" · ");
+  })();
+
   return (
-    <CollapsibleCard title="Fermentation" icon={<FlaskConical className="h-4 w-4" />} open={open} onToggle={onToggle}>
+    <CollapsibleCard id="section-bdFermentation" title="Fermentation" icon={<FlaskConical className="h-4 w-4" />} open={open} onToggle={onToggle}>
       <div className="space-y-3">
         {/* Mode toggle */}
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => setMode("direct")}
+            onClick={() => setFermentation("volumeMode", "direct")}
             className={`px-3 py-1 text-xs rounded border transition-colors ${
               mode === "direct"
                 ? "bg-primary text-primary-foreground border-primary"
@@ -240,7 +299,7 @@ function FermentationSection({
           </button>
           <button
             type="button"
-            onClick={() => setMode("weight")}
+            onClick={() => setFermentation("volumeMode", "weight")}
             className={`px-3 py-1 text-xs rounded border transition-colors ${
               mode === "weight"
                 ? "bg-primary text-primary-foreground border-primary"
@@ -274,7 +333,7 @@ function FermentationSection({
                   {computedLiquidKg != null ? computedLiquidKg.toFixed(2) : "—"}
                 </div>
               </FieldGroup>
-              <FieldGroup label={`Volume L${og != null ? ` (OG ${og.toFixed(3)})` : " (no OG)"}`}>
+              <FieldGroup label={`Volume L${ogGL != null ? ` (OG ${ogGL.toFixed(0)})` : " (no OG)"}`}>
                 <div className="h-7 flex items-center px-2 bg-muted rounded text-sm font-medium text-foreground">
                   {computedVolumenL != null ? computedVolumenL.toFixed(2) : "—"}
                 </div>
@@ -292,6 +351,75 @@ function FermentationSection({
               {(startingGasTankKg - fermentation.endGasTankKg) >= 0 ? "−" : "+"}{Math.abs(startingGasTankKg - fermentation.endGasTankKg).toFixed(2)} kg
             </span>
           )}
+        </div>
+
+        {/* Yeast pitching */}
+        <div className="border rounded-lg p-3 space-y-3">
+          <SubTitle>Yeast pitching</SubTitle>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <FieldGroup label="Dry yeast g">
+              <NumInput value={fermentation.dryYeastGrams} onChange={(v) => setFermentation("dryYeastGrams", v)} />
+            </FieldGroup>
+            <FieldGroup label="Cell density B/g">
+              <NumInput
+                value={fermentation.cellDensityBPerG ?? DEFAULT_CELL_DENSITY_B_PER_G}
+                onChange={(v) => setFermentation("cellDensityBPerG", v)}
+              />
+            </FieldGroup>
+            <FieldGroup label="Starter L">
+              <NumInput value={fermentation.starterSizeL} onChange={(v) => setFermentation("starterSizeL", v)} />
+            </FieldGroup>
+            <FieldGroup label="Starter gravity g/L">
+              <NumInput
+                value={fermentation.starterGravityGL}
+                onChange={(v) => setFermentation("starterGravityGL", v)}
+                placeholder="1034"
+              />
+            </FieldGroup>
+          </div>
+          <FieldGroup label="Growth model & aeration">
+            <Select
+              value={fermentation.growthModel ?? "braukaiser_stir_plate"}
+              onValueChange={(v) => setFermentation("growthModel", v as YeastGrowthModel)}
+            >
+              <SelectTrigger size="sm" className="h-7 text-sm w-full max-w-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {YEAST_GROWTH_MODELS.map((m) => (
+                  <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FieldGroup>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <FieldGroup label="Cells before starter">
+              <div className="h-7 flex items-center px-2 bg-muted rounded text-sm font-medium text-foreground tabular-nums">
+                {pitch.cellsBeforeB != null ? `${pitch.cellsBeforeB.toFixed(1)} B` : "—"}
+              </div>
+            </FieldGroup>
+            <FieldGroup label="Cells after starter">
+              <div className="h-7 flex items-center px-2 bg-muted rounded text-sm font-medium text-foreground tabular-nums">
+                {pitch.cellsAfterB != null ? `${pitch.cellsAfterB.toFixed(1)} B` : "—"}
+              </div>
+            </FieldGroup>
+            <FieldGroup label="Pitch rate M cells / mL / °P">
+              <div className="h-7 flex items-center px-2 bg-muted rounded text-sm font-medium text-foreground tabular-nums">
+                {pitch.pitchRate != null ? pitch.pitchRate.toFixed(2) : "—"}
+              </div>
+            </FieldGroup>
+          </div>
+          {pitchCaption && (
+            <div className="text-xs text-muted-foreground">{pitchCaption}</div>
+          )}
+          <FieldGroup label="Starter notes">
+            <Textarea
+              value={fermentation.starterNotes ?? ""}
+              onChange={(e) => setFermentation("starterNotes", e.target.value || null)}
+              placeholder="Starter notes…"
+              className="text-sm min-h-[72px] resize-none"
+            />
+          </FieldGroup>
         </div>
 
         {/* Follow-up table */}
@@ -902,6 +1030,13 @@ export function BrewdaySection({
     [fermentation, updateBrewday]
   );
 
+  const patchFermentation = useCallback(
+    (patch: Partial<FermentationData>) => {
+      updateBrewday("fermentation", { ...fermentation, ...patch });
+    },
+    [fermentation, updateBrewday]
+  );
+
   const addFermentationStep = useCallback(() => {
     const newStep: FermentationStep = { id: crypto.randomUUID(), dateTime: null, volumeL: null, densityGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null };
     updateBrewday("fermentation", { ...fermentation, steps: [...fermentation.steps, newStep] });
@@ -1000,7 +1135,7 @@ export function BrewdaySection({
       {openBrewday && <>
 
       {/* ---- PREPARATION ---- */}
-      <CollapsibleCard title="Preparation" icon={<ClipboardList className="h-4 w-4" />} open={openPreparation} onToggle={onTogglePreparation}>
+      <CollapsibleCard id="section-bdPreparation" title="Preparation" icon={<ClipboardList className="h-4 w-4" />} open={openPreparation} onToggle={onTogglePreparation}>
         <div className="space-y-4">
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Previous Day</p>
@@ -1041,7 +1176,7 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- MILLING ---- */}
-      <CollapsibleCard title="Milling" icon={<Settings2 className="h-4 w-4" />} open={openMilling} onToggle={onToggleMilling}>
+      <CollapsibleCard id="section-bdMilling" title="Milling" icon={<Settings2 className="h-4 w-4" />} open={openMilling} onToggle={onToggleMilling}>
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-3">
             <FieldLabel>Date &amp; time</FieldLabel>
@@ -1083,6 +1218,7 @@ export function BrewdaySection({
 
       {/* ---- MASH ---- */}
       <CollapsibleCard
+        id="section-bdMash"
         title="Mash"
         icon={<Layers className="h-4 w-4" />}
         open={openMash}
@@ -1383,6 +1519,7 @@ export function BrewdaySection({
 
       {/* ---- SPARGE ---- */}
       <CollapsibleCard
+        id="section-bdSparge"
         title="Lauter & Sparge"
         icon={<Filter className="h-4 w-4" />}
         open={openSparge}
@@ -1482,6 +1619,7 @@ export function BrewdaySection({
 
       {/* ---- BOIL ---- */}
       <CollapsibleCard
+        id="section-bdBoil"
         title="Boil"
         icon={<Flame className="h-4 w-4" />}
         open={openBoil}
@@ -1725,6 +1863,7 @@ export function BrewdaySection({
 
       {/* ---- WHIRLPOOL Y ENFRIADO ---- */}
       <CollapsibleCard
+        id="section-bdWhirlpool"
         title="Whirlpool &amp; Chilling"
         icon={<Snowflake className="h-4 w-4" />}
         open={openWhirlpool}
@@ -1795,10 +1934,11 @@ export function BrewdaySection({
       <FermentationSection
         fermentation={fermentation}
         setFermentation={setFermentation}
+        patchFermentation={patchFermentation}
         addStep={addFermentationStep}
         removeStep={removeFermentationStep}
         setStep={setFermentationStep}
-        og={whirlpoolChilling.ogSampleDensity != null ? whirlpoolChilling.ogSampleDensity / 1000 : recipeData.targetOg}
+        ogGL={whirlpoolChilling.ogSampleDensity ?? recipeData.targetOg}
         fermenterWeightKg={recipeData.fermenterWeightKg}
         startingGasTankKg={preparation.gasTankKg}
         brewDate={recipeData.brewDate}
@@ -1807,7 +1947,7 @@ export function BrewdaySection({
       />
 
       {/* ---- KEGGING ---- */}
-      <CollapsibleCard title="Kegging & Carbonation" icon={<Package className="h-4 w-4" />} open={openKegging} onToggle={onToggleKegging}>
+      <CollapsibleCard id="section-bdKegging" title="Kegging & Carbonation" icon={<Package className="h-4 w-4" />} open={openKegging} onToggle={onToggleKegging}>
         {(() => {
           const kegList = kegging.kegs ?? [];
           const usedKegIds = new Set(kegList.map(k => k.kegId));
@@ -1961,7 +2101,7 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- LAGERING ---- */}
-      <CollapsibleCard title="Lagering" icon={<Barrel className="h-4 w-4" />} open={openLagering} onToggle={onToggleLagering}>
+      <CollapsibleCard id="section-bdLagering" title="Lagering" icon={<Barrel className="h-4 w-4" />} open={openLagering} onToggle={onToggleLagering}>
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2">
@@ -1996,7 +2136,7 @@ export function BrewdaySection({
       </CollapsibleCard>
 
       {/* ---- BOTTLING ---- */}
-      <CollapsibleCard title="Bottling" icon={<GlassWater className="h-4 w-4" />} open={openBottling} onToggle={onToggleBottling}>
+      <CollapsibleCard id="section-bdBottling" title="Bottling" icon={<GlassWater className="h-4 w-4" />} open={openBottling} onToggle={onToggleBottling}>
         <div className="space-y-3">
           <div className="flex items-center gap-4 flex-wrap">
             <FieldGroup label="Bottling date &amp; time">

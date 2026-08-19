@@ -56,10 +56,11 @@ Total water volume is approximately 34 liters: around 23 liters for the main mas
 On brew day I check the taste of the water and the pH using an ADWA AD12 pH meter.
 I start heating the water and add the recipe salts. Usually CaCl and/or CaSO4.
 I add citric acid (solid) according to the pH calculations.
-I heat the water to approximately 74°C.
+I heat the water to approximately 70°C (I dont want to use higher strike water temperatures to avoid enzymes denaturing).
 I add the mash bag and then the malts, mixing everything well.
 I set aside part of the water in another aluminum pot.
 The mash ends up fairly thin.
+I turn on the gas burner in case the temp is lower than the target.
 I stir every 10 minutes or so.
 I generally mash for 50 minutes at a temperature between 64 and 70°C, depending on the recipe.
 Then I add the water I set aside, brought to a boil, to do a mash out at 75°C.
@@ -87,7 +88,7 @@ I chill for approximately 1 hour and manage to bring it down to around 25-28°C.
 
 ## Fermentation
 
-From there I transfer to my fermenter, from the bottom tap of the kettle via a hose. My fermenter is a 20-liter Cornelius keg with a floating dip tube. Typical volume into the fermenter is 16-17 liters.
+From there I transfer to my fermenter, from the bottom tap of the kettle via a hose. My fermenter is a 20-liter Cornelius keg with a floating dip tube. Typical wort volume into the fermenter is 16-17 liters.
 
 I measure OG with a hydrometer after transferring.
 
@@ -98,9 +99,12 @@ For example, for a lager:
 
 I pitch dry yeast directly into the keg, close the lid and agitate for 20 seconds
 
+## Starter
+If I want a higher pitch rate, I make a starter with one packet of dry yeast and aprox 1500 ml of wort (1034). It sits on a stir plate for 24 hours aprox.
+
 I monitor fermentation activity by counting seconds between bubbles in the blow-off tube, and take 2-3 hydrometer readings throughout fermentation to track and confirm completion.
 
-After 7 days I raise the temperature to 16°C and leave it there for 3-4 days.
+After 4-5 days (around 1015) I raise the temperature to 16°C and leave it there for 3-4 days. I put on spunding valve at 15 psi.
 
 The blow-off is a tube connected to a ball lock connector on the keg, submerged in sanitizer water.
 Sometimes I disconnect the blow off and attach a spunding valve at 15 psi.
@@ -111,10 +115,10 @@ When the recipe calls for it, I dry hop at the end of primary fermentation. I op
 
 ## Cold Crash
 
-On day 12 I lower the temperature to 1°C and leave it for 2 days.
+On day 10-12 I lower the temperature to 1°C and leave it for 2 days.
 
 Then I transfer to smaller 10-liter kegs.
-I fill the kegs with sanitizer (Oxisan) and then purge them with CO2.
+I fill the kegs with sanitizer (Oxisan) + SMB (sodium metabisulfite) and then purge them with CO2.
 I fill from the fermenter dip tube to the small keg's tube (fills from the bottom up).
 These kegs stay in the fridge (1°C) for a few more days before starting to drink.
 
@@ -125,6 +129,10 @@ These kegs stay in the fridge (1°C) for a few more days before starting to drin
 
 **Fining agents** (optional):
 - Gelatin: sometimes added for clarity
-- SMB (sodium metabisulfite): sometimes added as an antioxidant
 
 **Serving**: 1 bar (approximately 14.5 psi) at 3-4°C.
+
+## Bottling
+
+I use a counter-pressure bottling system.
+I use sanitizer or alcohol 70& with little bit SMB to sanitize the bottles.

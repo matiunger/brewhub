@@ -137,12 +137,27 @@ export interface WhirlpoolChillingData {
   ogSamplePh: number | null;
 }
 
+export type FermentationVolumeMode = "direct" | "weight";
+
+export type YeastGrowthModel =
+  | "white_shaking"
+  | "white_no_agitation"
+  | "braukaiser_stir_plate";
+
 export interface FermentationData {
+  volumeMode: FermentationVolumeMode;
   totalWeightKg: number | null;
   liquidWeightKg: number | null;
   volumeL: number | null;
   endGasTankKg: number | null;
   starterNotes: string | null;
+  dryYeastGrams: number | null;
+  cellDensityBPerG: number | null;
+  starterSizeL: number | null;
+  starterGravityGL: number | null;
+  growthModel: YeastGrowthModel;
+  cellsAfterB: number | null;
+  actualPitchRate: number | null;
   steps: FermentationStep[];
 }
 
@@ -227,11 +242,15 @@ export const DEFAULT_BREWDAY_DATA: BrewdayData = {
   lastRun: { densityGL: null, ph: null },
   boil: { entries: [], irishMossCheck: false, irishMossGr: null, nutrientsCheck: false, nutrientsGr: null, evaporationL: null },
   whirlpoolChilling: { whirlpoolStartTime: null, chillingStartTime: null, startTempC: null, chillingEndTime: null, endTempC: null, transferEndTime: null, transferTempC: null, ogSample: false, ogSampleDensity: null, ogSampleTargetDensity: null, ogSamplePh: null },
-  fermentation: { totalWeightKg: null, liquidWeightKg: null, volumeL: null, endGasTankKg: null, starterNotes: null, steps: [{ id: "pitching", dateTime: null, volumeL: null, densityGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null }] },
+  fermentation: { volumeMode: "direct", totalWeightKg: null, liquidWeightKg: null, volumeL: null, endGasTankKg: null, starterNotes: null, dryYeastGrams: null, cellDensityBPerG: null, starterSizeL: null, starterGravityGL: null, growthModel: "braukaiser_stir_plate", cellsAfterB: null, actualPitchRate: null, steps: [{ id: "pitching", dateTime: null, volumeL: null, densityGL: null, ph: null, tempC: null, pressureBar: null, bubbleIntervalSec: null, notes: null }] },
   kegging: { dateTime: null, volumeL: null, kegs: [], carbonationVols: null, carbonationTempC: null },
   lagering: { gelatinCheck: false, gelatinText: null, smbCheck: false, smbText: null, notes: null },
   bottling: { dateTime: null, volumeL: null, notes: null },
 };
+
+function numOrNull(v: unknown): number | null {
+  return typeof v === "number" && Number.isFinite(v) ? v : null;
+}
 
 export function parseBrewdayData(raw: string | null): BrewdayData {
   if (!raw) return DEFAULT_BREWDAY_DATA;
@@ -267,6 +286,23 @@ export function parseBrewdayData(raw: string | null): BrewdayData {
       fermentation: {
         ...DEFAULT_BREWDAY_DATA.fermentation,
         ...parsed.fermentation,
+        volumeMode: parsed.fermentation?.volumeMode === "weight" ? "weight" : "direct",
+        starterNotes:
+          typeof parsed.fermentation?.starterNotes === "string"
+            ? parsed.fermentation.starterNotes
+            : DEFAULT_BREWDAY_DATA.fermentation.starterNotes,
+        dryYeastGrams: numOrNull(parsed.fermentation?.dryYeastGrams),
+        cellDensityBPerG: numOrNull(parsed.fermentation?.cellDensityBPerG),
+        starterSizeL: numOrNull(parsed.fermentation?.starterSizeL),
+        starterGravityGL: numOrNull(parsed.fermentation?.starterGravityGL),
+        cellsAfterB: numOrNull(parsed.fermentation?.cellsAfterB),
+        actualPitchRate: numOrNull(parsed.fermentation?.actualPitchRate),
+        growthModel:
+          parsed.fermentation?.growthModel === "white_shaking" ||
+          parsed.fermentation?.growthModel === "white_no_agitation" ||
+          parsed.fermentation?.growthModel === "braukaiser_stir_plate"
+            ? parsed.fermentation.growthModel
+            : "braukaiser_stir_plate",
         steps: Array.isArray(parsed.fermentation?.steps) && parsed.fermentation.steps.length > 0
           ? parsed.fermentation.steps.map((s: Record<string, unknown>) => ({
               id: (s.id as string) ?? crypto.randomUUID(),

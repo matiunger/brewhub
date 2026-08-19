@@ -151,7 +151,7 @@ export function Sidebar() {
   const wikiTree = buildWikiTree(wikiPages);
 
   return (
-    <aside className={cn("border-r bg-card flex flex-col transition-all duration-200", collapsed ? "w-14" : "w-64")}>
+    <aside className={cn("flex h-full min-h-0 shrink-0 flex-col border-r bg-card transition-all duration-200", collapsed ? "w-14" : "w-64")}>
       <div className={cn("h-14 flex items-center border-b gap-2", collapsed ? "justify-center px-3" : "px-3")}>
         <Beer className="w-6 h-6 shrink-0 cursor-pointer" onClick={() => collapsed && setCollapsed(false)} />
         {!collapsed && (

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ClipboardList, Wrench, BarChart2, Flame, Layers, Wheat, Hop as HopIcon, FlaskConical, GlassWater, Droplet } from "lucide-react";
+import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ClipboardList, Wrench, BarChart2, Flame, Layers, Wheat, Hop as HopIcon, FlaskConical, GlassWater, Droplet, AlertTriangle, Settings2, Filter, Snowflake, Package, Barrel, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -472,6 +472,45 @@ const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
   finalStatsTastings: true,
 };
 
+type NavGroup = "recipe" | "brewday" | "final";
+
+const SECTION_NAV: {
+  group: NavGroup;
+  key: SectionKey;
+  parent?: SectionKey;
+  label: string;
+  icon: LucideIcon;
+  hoverClass?: string;
+}[] = [
+  { group: "recipe", key: "basicInfo", label: "Basic Information", icon: ClipboardList },
+  { group: "recipe", key: "equipment", parent: "recipeDesign", label: "Equipment", icon: Wrench },
+  { group: "recipe", key: "recipeOverview", parent: "recipeDesign", label: "Recipe Overview", icon: BarChart2 },
+  { group: "recipe", key: "fermentables", parent: "recipeDesign", label: "Fermentables", icon: Wheat, hoverClass: "hover:text-orange-700 hover:bg-orange-50" },
+  { group: "recipe", key: "hops", parent: "recipeDesign", label: "Hops", icon: HopIcon, hoverClass: "hover:text-lime-700 hover:bg-lime-50" },
+  { group: "recipe", key: "cultures", parent: "recipeDesign", label: "Cultures", icon: FlaskConical, hoverClass: "hover:text-purple-700 hover:bg-purple-50" },
+  { group: "recipe", key: "boil", parent: "recipeDesign", label: "Boil", icon: Flame },
+  { group: "recipe", key: "mash", parent: "recipeDesign", label: "Mash", icon: Layers },
+  { group: "recipe", key: "waterVolumes", parent: "recipeDesign", label: "Volumes", icon: GlassWater },
+  { group: "recipe", key: "water", parent: "recipeDesign", label: "Water", icon: Droplet, hoverClass: "hover:text-sky-700 hover:bg-sky-50" },
+  { group: "brewday", key: "bdPreparation", parent: "bdBrewday", label: "Preparation", icon: ClipboardList },
+  { group: "brewday", key: "bdMilling", parent: "bdBrewday", label: "Milling", icon: Settings2 },
+  { group: "brewday", key: "bdMash", parent: "bdBrewday", label: "Mash", icon: Layers },
+  { group: "brewday", key: "bdSparge", parent: "bdBrewday", label: "Lauter & Sparge", icon: Filter },
+  { group: "brewday", key: "bdBoil", parent: "bdBrewday", label: "Boil", icon: Flame },
+  { group: "brewday", key: "bdWhirlpool", parent: "bdBrewday", label: "Whirlpool & Chilling", icon: Snowflake },
+  { group: "brewday", key: "bdFermentation", parent: "bdBrewday", label: "Fermentation", icon: FlaskConical },
+  { group: "brewday", key: "bdKegging", parent: "bdBrewday", label: "Kegging & Carbonation", icon: Package },
+  { group: "brewday", key: "bdLagering", parent: "bdBrewday", label: "Lagering", icon: Barrel },
+  { group: "brewday", key: "bdBottling", parent: "bdBrewday", label: "Bottling", icon: GlassWater },
+  { group: "final", key: "finalStatsOverview", parent: "finalStats", label: "Overview", icon: BarChart2 },
+  { group: "final", key: "finalStatsTiming", parent: "finalStats", label: "Timing", icon: ClipboardList },
+  { group: "final", key: "finalStatsTastings", parent: "finalStats", label: "Tastings", icon: GlassWater },
+];
+
+function sectionAnchorId(key: SectionKey) {
+  return `section-${key}`;
+}
+
 // ---------- CollapsibleCard ----------
 
 export function CollapsibleCard({
@@ -482,6 +521,7 @@ export function CollapsibleCard({
   actions,
   badge,
   className,
+  id,
   children,
 }: {
   title: React.ReactNode;
@@ -491,10 +531,11 @@ export function CollapsibleCard({
   actions?: React.ReactNode;
   badge?: React.ReactNode;
   className?: string;
+  id?: string;
   children: React.ReactNode;
 }) {
   return (
-    <Card className={`p-4 px-0 ${open ? "pt-2" : "border-b"} ${className ?? ""}`}>
+    <Card id={id} className={`p-4 px-0 scroll-mt-16 ${open ? "pt-2" : "border-b"} ${className ?? ""}`}>
       <CardHeader className={`flex flex-row items-center justify-between px-4 ${open ? "py-3" : "py-1"}`}>
         <button
           type="button"
@@ -785,10 +826,23 @@ export function BeerSections({
     }, 800);
   }, [updateAcidAdditionAction]);
 
-  const [brewday, setBrewday] = useState<BrewdayData>(() => parseBrewdayData(brewdayData));
+  const [brewday, setBrewday] = useState<BrewdayData>(() => {
+    const parsed = parseBrewdayData(brewdayData);
+    if (parsed.fermentation.starterNotes) return parsed;
+    const notes = yeasts.map((y) => y.starterNotes?.trim()).filter((n): n is string => !!n);
+    if (notes.length === 0) return parsed;
+    return {
+      ...parsed,
+      fermentation: { ...parsed.fermentation, starterNotes: notes.join("\n\n") },
+    };
+  });
   const brewdayRef = useRef(brewday);
   brewdayRef.current = brewday;
   const brewdayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const persistSeededStarterNotes = useRef(
+    !parseBrewdayData(brewdayData).fermentation.starterNotes &&
+      yeasts.some((y) => !!y.starterNotes?.trim())
+  );
 
   const scheduleBrewdaySave = useCallback(() => {
     if (brewdayTimerRef.current) clearTimeout(brewdayTimerRef.current);
@@ -800,6 +854,12 @@ export function BeerSections({
       }
     }, 800);
   }, [updateBrewdayDataAction]);
+
+  useEffect(() => {
+    if (!persistSeededStarterNotes.current) return;
+    persistSeededStarterNotes.current = false;
+    scheduleBrewdaySave();
+  }, [scheduleBrewdaySave]);
 
   const updateBrewday = useCallback(<K extends keyof BrewdayData>(
     section: K,
@@ -1034,6 +1094,44 @@ export function BeerSections({
     });
   };
 
+  const pendingScrollRef = useRef<string | null>(null);
+  const sectionNavRef = useRef<HTMLElement>(null);
+
+  const scrollToPendingSection = () => {
+    const id = pendingScrollRef.current;
+    if (!id) return false;
+    const el = document.getElementById(id);
+    if (!el) return false;
+    pendingScrollRef.current = null;
+    el.style.scrollMarginTop = `${(sectionNavRef.current?.offsetHeight ?? 48) + 8}px`;
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    return true;
+  };
+
+  const goToSection = (key: SectionKey, parent?: SectionKey) => {
+    pendingScrollRef.current = sectionAnchorId(key);
+    setOpen((prev) => {
+      const next = { ...prev, [key]: true };
+      if (parent) next[parent] = true;
+      if (next[key] === prev[key] && (!parent || next[parent] === prev[parent])) {
+        return prev;
+      }
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+    requestAnimationFrame(() => {
+      scrollToPendingSection();
+    });
+  };
+
+  useEffect(() => {
+    scrollToPendingSection();
+  }, [open]);
+
   function sortRows<T>(rows: T[], sort: { key: string; dir: "asc" | "desc" } | null, getter: (row: T, key: string) => string | number | null): T[] {
     if (!sort) return rows;
     return [...rows].sort((a, b) => {
@@ -1221,8 +1319,45 @@ export function BeerSections({
 
   return (
     <div className="space-y-4">
+      <nav
+        ref={sectionNavRef}
+        aria-label="Batch sections"
+        className="sticky top-0 z-40 -mx-6 border-b bg-background/95 px-6 py-1.5 shadow-sm backdrop-blur-sm"
+      >
+        <div className="flex flex-wrap items-center gap-0.5">
+          {SECTION_NAV.map((item, i) => {
+            const prev = SECTION_NAV[i - 1];
+            const showDivider = prev && prev.group !== item.group;
+            const Icon = item.icon;
+            const tipPos =
+              i === 0
+                ? "left-0"
+                : i === SECTION_NAV.length - 1
+                  ? "right-0"
+                  : "left-1/2 -translate-x-1/2";
+            return (
+              <Fragment key={item.key}>
+                {showDivider && <div className="mx-1.5 h-5 w-px shrink-0 self-center bg-border" />}
+                <button
+                  type="button"
+                  aria-label={item.label}
+                  onClick={() => goToSection(item.key, item.parent)}
+                  className={`group relative flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground ${item.hoverClass ?? "hover:bg-muted"}`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className={`pointer-events-none absolute top-[calc(100%+6px)] z-50 ${tipPos} whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-[11px] font-medium text-background opacity-0 shadow-md transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100`}>
+                    {item.label}
+                  </span>
+                </button>
+              </Fragment>
+            );
+          })}
+        </div>
+      </nav>
+
       {/* 1. Basic Information */}
       <CollapsibleCard
+        id={sectionAnchorId("basicInfo")}
         title="Basic Information"
         icon={<ClipboardList className="h-4 w-4" />}
         open={open.basicInfo}
@@ -1250,6 +1385,7 @@ export function BeerSections({
 
       {/* 1b. Equipment */}
       <CollapsibleCard
+        id={sectionAnchorId("equipment")}
         title={eqSnap ? `Equipment — ${eqSnap.name ?? "Custom"}` : "Equipment"}
         icon={<Wrench className="h-4 w-4" />}
         open={open.equipment}
@@ -1338,6 +1474,7 @@ export function BeerSections({
 
       {/* 2. Recipe Overview */}
       <CollapsibleCard
+        id={sectionAnchorId("recipeOverview")}
         title="Recipe Overview"
         icon={<BarChart2 className="h-4 w-4" />}
         open={open.recipeOverview}
@@ -1566,6 +1703,7 @@ export function BeerSections({
 
       {/* 4. Fermentables */}
       <CollapsibleCard
+        id={sectionAnchorId("fermentables")}
         title={`Fermentables (${grainRows.length})`}
         icon={<Wheat className="h-4 w-4" />}
         open={open.fermentables}
@@ -1788,6 +1926,7 @@ export function BeerSections({
 
       {/* 5. Hops */}
       <CollapsibleCard
+        id={sectionAnchorId("hops")}
         title={`Hops (${hopRows.length})`}
         icon={<HopIcon className="h-4 w-4" />}
         open={open.hops}
@@ -2023,6 +2162,7 @@ export function BeerSections({
 
       {/* 6. Cultures */}
       <CollapsibleCard
+        id={sectionAnchorId("cultures")}
         title={`Cultures (${yeastRows.length})`}
         icon={<FlaskConical className="h-4 w-4" />}
         open={open.cultures}
@@ -2042,8 +2182,8 @@ export function BeerSections({
                 <th className="text-left font-medium pb-2 pr-3">Qty</th>
                 <th className="text-left font-medium pb-2 pr-3">Units</th>
                 <th className="text-left font-medium pb-2 pr-3">Base Inoculation</th>
-                <th className="text-left font-medium pb-2 pr-3">Pitch Rate</th>
-                <th className="text-left font-medium pb-2 pr-3">Temp (°C)</th>
+                <th className="text-left font-medium pb-2 pr-3">Target Pitch Rate</th>
+                <th className="text-left font-medium pb-2 pr-3">Target Temp (°C)</th>
                 <th className="pb-2" />
               </tr>
             </thead>
@@ -2205,27 +2345,6 @@ export function BeerSections({
                       )}
                     </td>
                   </tr>
-                  <tr className="border-b last:border-0 bg-muted/20">
-                    <td colSpan={9} className="px-2 pb-2 pt-1">
-                      <textarea
-                        value={by.starterNotes ?? ""}
-                        onChange={(e) => {
-                          const val = e.target.value || null;
-                          setYeastRows((rows) => rows.map((r) => r.id === by.id ? { ...r, starterNotes: val } : r));
-                        }}
-                        onBlur={async (e) => {
-                          try {
-                            await updateYeastAction(by.id, { starterNotes: e.target.value || null });
-                          } catch {
-                            toast.error("Failed to save notes");
-                          }
-                        }}
-                        placeholder="Starter notes…"
-                        rows={2}
-                        className="w-full text-xs text-muted-foreground bg-transparent border-none outline-none resize-none placeholder:text-muted-foreground/50"
-                      />
-                    </td>
-                  </tr>
                   </Fragment>
                 );
               })}
@@ -2262,7 +2381,7 @@ export function BeerSections({
               </Select>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs text-muted-foreground">Temp (°C)</span>
+              <span className="text-xs text-muted-foreground">Target Temp (°C)</span>
               <NumberInput step="0.1" placeholder="°C" value={addYeastDraft.temp} onChange={(e) => setAddYeastDraft((d) => ({ ...d, temp: e.target.value }))} className="h-8 text-sm w-20" />
             </div>
             <Button size="sm" disabled={!addYeastDraft.yeastId || !addYeastDraft.quantityAmount}
@@ -2283,6 +2402,7 @@ export function BeerSections({
 
       {/* 7. Boil */}
       <CollapsibleCard
+        id={sectionAnchorId("boil")}
         title="Boil"
         icon={<Flame className="h-4 w-4" />}
         open={open.boil}
@@ -2316,6 +2436,7 @@ export function BeerSections({
 
       {/* 8. Mash */}
       <CollapsibleCard
+        id={sectionAnchorId("mash")}
         title="Mash"
         icon={<Layers className="h-4 w-4" />}
         open={open.mash}
@@ -2476,8 +2597,11 @@ export function BeerSections({
                 </div>
 
                 {Math.abs(waterDelta) > 0.1 && (
-                  <div className={`flex items-center justify-between px-3 py-1.5 text-xs ${waterDelta > 0 ? "text-amber-600" : "text-blue-600"}`}>
-                    <span>Water delta (infusions vs needed)</span>
+                  <div className="flex items-center justify-between px-3 py-1.5 text-xs text-yellow-600 dark:text-yellow-500">
+                    <span className="flex items-center gap-1.5">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      Water delta (infusions vs needed)
+                    </span>
                     <span className="tabular-nums font-medium">{waterDelta > 0 ? "+" : ""}{waterDelta.toFixed(1)} L</span>
                   </div>
                 )}
@@ -2896,6 +3020,7 @@ export function BeerSections({
 
       {/* 9. Volumes */}
       <CollapsibleCard
+        id={sectionAnchorId("waterVolumes")}
         title="Volumes"
         icon={<GlassWater className="h-4 w-4" />}
         open={open.waterVolumes}
@@ -3004,6 +3129,7 @@ export function BeerSections({
 
       {/* 7. Water */}
       <CollapsibleCard
+        id={sectionAnchorId("water")}
         title="Water"
         icon={<Droplet className="h-4 w-4" />}
         open={open.water}
@@ -3834,6 +3960,7 @@ export function BeerSections({
         return (
           <>
             <CollapsibleCard
+              id={sectionAnchorId("finalStatsOverview")}
               title="Overview"
               icon={<BarChart2 className="h-4 w-4" />}
               open={open.finalStatsOverview}
@@ -3907,6 +4034,7 @@ export function BeerSections({
               </table>
             </CollapsibleCard>
             <CollapsibleCard
+              id={sectionAnchorId("finalStatsTiming")}
               title="Timing"
               icon={<ClipboardList className="h-4 w-4" />}
               open={open.finalStatsTiming}
@@ -3995,6 +4123,7 @@ export function BeerSections({
 
             {/* ── Tastings ── */}
             <CollapsibleCard
+              id={sectionAnchorId("finalStatsTastings")}
               title="Tastings"
               icon={<GlassWater className="h-4 w-4" />}
               open={open.finalStatsTastings}
