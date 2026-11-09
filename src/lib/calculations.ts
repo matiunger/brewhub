@@ -1,41 +1,3 @@
-interface BatchWithIngredients {
-  grains: {
-    grams: number;
-    // Snapshot fields take priority; fall back to inventory if null
-    colorL?: number | null;
-    maxYield?: number | null;
-    grain: {
-      maxYield: number | null;
-      colorL: number | null;
-    };
-  }[];
-  hops: {
-    grams: number;
-    additionTime: number | null;
-    use: string;
-    alphaAcid?: number | null;
-    hop: {
-      alphaAcid: number;
-    };
-  }[];
-  yeasts: {
-    attenuation?: number | null;
-    yeast: {
-      attenuation: number | null;
-    };
-  }[];
-  targetFermentarL: number | null;
-  equipment: {
-    trubLossL: number;
-    brewhouseEfficiency: number;
-    mashEfficiency?: number | null;
-  } | null;
-  // Equipment snapshot fields (take priority over linked equipment)
-  equipmentTrubLossL?: number | null;
-  equipmentBrewhouseEff?: number | null;
-  equipmentMashEff?: number | null;
-}
-
 // --- IBU Calculation (Tinseth + Whirlpool + Dry Hop) ---
 
 function tinsethUtilization(boilGravity: number, timeMinutes: number): number {
@@ -84,6 +46,7 @@ export function calculateIbuBreakdown(
   boilGravity: number,
   batchVolumeLiters: number,
   boilTimeMinutes: number,
+  whirlpoolTimeMinutes?: number | null,
   whirlpoolDefaultTempC = 90
 ): IbuBreakdown {
   const volume = Math.max(batchVolumeLiters, 0.001);
@@ -107,7 +70,9 @@ export function calculateIbuBreakdown(
       isDryHop = true;
       perceivedIbu = (0.10 * (aa / 100) * grams * 1000) / volume;
     } else if (use === "whirlpool" || use === "hop_stand") {
-      const effectiveTime = 15 * whirlpoolTempFactor(whirlpoolDefaultTempC);
+      // Steep time: the hop's own time if set, else the batch whirlpool time, else 15 min
+      const steepMin = time > 0 ? time : (whirlpoolTimeMinutes ?? 15);
+      const effectiveTime = steepMin * whirlpoolTempFactor(whirlpoolDefaultTempC);
       ibu = tinsethIbu(aa, grams, gravity, effectiveTime, volume);
       perceivedIbu = ibu;
     } else if (use === "fwh" || use === "mash") {
@@ -136,82 +101,78 @@ const L_TO_GAL = 0.264172;
 const G_TO_LBS = 0.00220462;
 const L_PER_KG_TO_QT_PER_LB = 0.4792; // Water-to-grist ratio unit conversion
 
-export function calculateBrewingStats(batch: BatchWithIngredients) {
-  const batchVolume = batch.targetFermentarL || 20; // Default to 20L if not specified
-  const trubLossL = batch.equipmentTrubLossL ?? batch.equipment?.trubLossL ?? 1.0;
-  const postChillVolumeL = batchVolume + trubLossL;
+/** SG from extract (kg) dissolved in a volume (L), via °P and the Balling formula. */
+export function gravityFromExtract(extractKg: number, volumeL: number): number {
+  if (volumeL <= 0) return 1;
+  const plato = (extractKg * 1000) / volumeL / 10;
+  return 1 + plato / (258.6 - plato * (227.1 / 258.2));
+}
 
-  // Mash efficiency: snapshot takes priority, fall back to linked equipment, then default 75%
-  const mashEff = (
-    batch.equipmentMashEff ??
-    batch.equipment?.mashEfficiency ??
-    batch.equipmentBrewhouseEff ??
-    batch.equipment?.brewhouseEfficiency ??
-    75
-  ) / 100;
+/** Average attenuation (%) across yeasts, preferring the per-batch value. Null if none known. */
+export function averageAttenuation(
+  yeasts: { attenuation?: number | null; yeast: { attenuation: number | null } }[]
+): number | null {
+  const values = yeasts
+    .map((y) => y.attenuation ?? y.yeast.attenuation)
+    .filter((v): v is number => v != null);
+  if (values.length === 0) return null;
+  return values.reduce((a, b) => a + b, 0) / values.length;
+}
 
-  // Total theoretical extract (kg), then apply mash efficiency
-  let totalExtractableSugar = 0;
-  batch.grains.forEach((bg) => {
-    const yield_ = (bg.maxYield ?? bg.grain.maxYield) || 75;
-    totalExtractableSugar += (bg.grams / 1000) * (yield_ / 100);
-  });
-  const adjustedExtract = totalExtractableSugar * mashEff;
+/** FG (SG) from OG (SG) and apparent attenuation (%). */
+export function estimateFg(ogSg: number, attenuationPct: number): number {
+  return ogSg - (ogSg - 1) * (attenuationPct / 100);
+}
 
-  // °P = extract (kg) × 1000 / post-chill volume (L) / 10
-  const plato = (adjustedExtract * 1000) / postChillVolumeL / 10;
-  // Balling formula: SG from °P
-  const og = 1 + plato / (258.6 - plato * (227.1 / 258.2));
-  
-  // Calculate FG from OG and average yeast attenuation
-  let avgAttenuation = 75; // Default 75%
-  if (batch.yeasts.length > 0) {
-    const totalAttenuation = batch.yeasts.reduce((sum, by) => {
-      return sum + ((by.attenuation ?? by.yeast.attenuation) || 75);
-    }, 0);
-    avgAttenuation = totalAttenuation / batch.yeasts.length;
+export function abvFromGravity(ogSg: number, fgSg: number): number {
+  return (ogSg - fgSg) * ABV_FACTOR;
+}
+
+/** Morey SRM from the grain bill over a post-chill volume. Null if no colour data. */
+export function calculateSrm(
+  grains: { grams: number; colorL?: number | null; grain: { colorL: number | null } }[],
+  postChillL: number
+): number | null {
+  if (postChillL <= 0) return null;
+  const postChillGal = postChillL * L_TO_GAL;
+  const mcu = grains.reduce((sum, g) => {
+    const colorL = g.colorL ?? g.grain.colorL;
+    return colorL != null ? sum + (g.grams * G_TO_LBS * colorL) / postChillGal : sum;
+  }, 0);
+  return mcu > 0 ? 1.4922 * Math.pow(mcu, 0.6859) : null;
+}
+
+/** Volume (L) of a boil log entry: from liquid height and pot diameter if known, else the stored volume. */
+export function boilEntryVolumeL(
+  entry: { heightCm: number | null; volumeL: number | null },
+  potDiameterCm: number | null | undefined
+): number | null {
+  if (potDiameterCm != null && potDiameterCm > 0 && entry.heightCm != null && entry.heightCm > 0) {
+    return (Math.PI * Math.pow(potDiameterCm / 2, 2) * entry.heightCm) / 1000;
   }
-  
-  const attenuationFactor = avgAttenuation / 100;
-  const fg = og - (og - 1) * attenuationFactor;
-  
-  // Calculate ABV
-  const abv = (og - fg) * ABV_FACTOR;
-  
-  // Calculate IBU using Tinseth formula
-  const boilGravityForIbu = (og + 1) / 2; // Average between OG and water
-  const ibuResult = calculateIbuBreakdown(batch.hops, boilGravityForIbu, batchVolume, 60);
-  const totalIbu = ibuResult.totalCalculatedIbu;
-  
-  // Convert post-chill volume to gallons for MCU
-  const postChillGal = postChillVolumeL * L_TO_GAL;
+  return entry.volumeL ?? null;
+}
 
-  // Calculate SRM (Standard Reference Method)
-  // Formula: SRM = 1.4922 * MCU^0.6859
-  // MCU (Malt Color Units) = (grain weight in lbs * grain color in L) / post-chill volume in gallons
-  let mcu = 0;
-  batch.grains.forEach((bg) => {
-    const weightLbs = bg.grams * G_TO_LBS; // Convert grams to lbs
-    const colorL = (bg.colorL ?? bg.grain.colorL) || 2; // Default to 2L (pale)
-    mcu += (weightLbs * colorL) / postChillGal;
-  });
-  
-  const srm = 1.4922 * Math.pow(mcu, 0.6859);
-  
-  // Calculate total grain weight
-  const totalGrainWeight = batch.grains.reduce((sum, bg) => sum + bg.grams, 0);
-  
-  return {
-    og: Math.max(1.000, og),
-    fg: Math.max(1.000, fg),
-    ibu: Math.max(0, totalIbu),
-    srm: Math.max(0, srm),
-    abv: Math.max(0, abv),
-    totalGrainWeight,
-    ogMashEffPct: Math.round(mashEff * 100),
-    ogPostChillVolumeL: Math.round(postChillVolumeL * 10) / 10,
-    ogAdjustedExtractKg: Math.round(adjustedExtract * 100) / 100,
-  };
+/**
+ * Measured post-chill volume: last boil log volume × thermal contraction,
+ * falling back to fermenter volume + trub loss.
+ */
+export function measuredPostChillVolumeL(input: {
+  boilEntries: { heightCm: number | null; volumeL: number | null }[];
+  potDiameterCm: number | null | undefined;
+  tempContractionPct: number | null | undefined;
+  trubLossL: number | null | undefined;
+  fermenterVolumeL: number | null;
+}): number | null {
+  const { boilEntries, potDiameterCm, tempContractionPct, trubLossL, fermenterVolumeL } = input;
+  const contractionFactor = 1 - (tempContractionPct ?? 4) / 100;
+  const lastVol = [...boilEntries]
+    .reverse()
+    .map((e) => boilEntryVolumeL(e, potDiameterCm))
+    .find((v) => v != null);
+  if (lastVol != null && lastVol > 0) return lastVol * contractionFactor;
+  if (fermenterVolumeL != null && fermenterVolumeL > 0) return fermenterVolumeL + (trubLossL ?? 1.0);
+  return null;
 }
 
 export type AcidType = "lactic" | "phosphoric" | "citric";
@@ -327,23 +288,92 @@ export function calculateInfusionVolume(input: {
   return (targetTempC - currentTempC) * (grainKg * 0.4 + currentWaterL) / (infuseWaterTempC - targetTempC);
 }
 
+export interface DecoctionResult {
+  decoctionL: number;           // mash volume to pull
+  decoctionFraction: number;    // fraction of total mash pulled
+  mainMashTempBeforeC: number;  // main mash temp after cooling while decoction is out
+  resultingTempC: number;       // mash temp after decoction is returned
+  unreachable: boolean;         // target cannot be reached even pulling the whole mash
+}
+
+// Decoction: pull a fraction of the mash, bring it to a boil, boil for a fixed time,
+// return it. Assumes the pulled portion has the same composition as the whole mash
+// (heat capacity proportional to volume) and ignores evaporation during the boil.
+export function calculateDecoction(input: {
+  targetTempC: number;
+  currentTempC: number;
+  grainKg: number;
+  currentWaterL: number;
+  boilTempC: number;
+  timeOutMin: number;           // heat-up + boil time, while the main mash rests
+  coolingRateCH: number;        // main mash heat loss (°C/h)
+  amountOverrideL?: number | null;
+}): DecoctionResult {
+  const { targetTempC, currentTempC, grainKg, currentWaterL, boilTempC, timeOutMin, coolingRateCH, amountOverrideL } = input;
+  const mashVolumeL = currentWaterL + grainKg * L_PER_KG_GRAIN_VOLUME;
+  const mainMashTempBeforeC = currentTempC - coolingRateCH * (timeOutMin / 60);
+
+  if (amountOverrideL != null && amountOverrideL > 0 && mashVolumeL > 0) {
+    const f = Math.min(amountOverrideL / mashVolumeL, 1);
+    return {
+      decoctionL: amountOverrideL,
+      decoctionFraction: f,
+      mainMashTempBeforeC,
+      resultingTempC: (1 - f) * mainMashTempBeforeC + f * boilTempC,
+      unreachable: false,
+    };
+  }
+
+  const f = boilTempC > mainMashTempBeforeC
+    ? (targetTempC - mainMashTempBeforeC) / (boilTempC - mainMashTempBeforeC)
+    : Infinity;
+  const unreachable = !isFinite(f) || f >= 1;
+  const fClamped = unreachable ? 1 : Math.max(f, 0);
+  return {
+    decoctionL: fClamped * mashVolumeL,
+    decoctionFraction: fClamped,
+    mainMashTempBeforeC,
+    resultingTempC: unreachable ? boilTempC : Math.max(targetTempC, mainMashTempBeforeC),
+    unreachable,
+  };
+}
+
 export interface StepInfusionResult {
   stepIndex: number;
   waterAddedL: number;
   infuseTemperatureC: number;
   cumulativeWaterL: number;
   mashTunOccupiedL: number;
+  decoction?: DecoctionResult & { boilMin: number };
 }
 
+export const DEFAULT_DECOCTION_HEATUP_MIN = 15;
+
 export function calculateStepInfusionSchedule(input: {
-  steps: Array<{ stepTemperatureC: number; type: string; infuseTemperatureC: number | null }>;
+  steps: Array<{
+    stepTemperatureC: number;
+    type: string;
+    infuseTemperatureC: number | null;
+    amountL?: number | null;
+    rampTimeMin?: number | null;
+    decoctionBoilMin?: number | null;
+  }>;
   grainKg: number;
   grainTempC: number;
   mashRatioLKg: number;
   mashTunDeadSpaceL: number;
   defaultInfuseTempC: number;
+  // Strike water override (full volume mode). Defaults to grain × ratio + dead space.
+  initialWaterL?: number;
+  // Only step infusion mode adds water on infusion steps; other modes treat them as temperature steps.
+  allowInfusions?: boolean;
+  decoctionBoilTempC?: number;
+  coolingRateCH?: number;
 }): StepInfusionResult[] {
-  const { steps, grainKg, grainTempC, mashRatioLKg, mashTunDeadSpaceL, defaultInfuseTempC } = input;
+  const {
+    steps, grainKg, grainTempC, mashRatioLKg, mashTunDeadSpaceL, defaultInfuseTempC,
+    initialWaterL, allowInfusions = true, decoctionBoilTempC = 100, coolingRateCH = 0,
+  } = input;
   if (steps.length === 0) return [];
 
   const results: StepInfusionResult[] = [];
@@ -354,11 +384,12 @@ export function calculateStepInfusionSchedule(input: {
     const step = steps[i];
 
     if (i === 0) {
-      const waterAddedL = grainKg * mashRatioLKg + mashTunDeadSpaceL;
+      const waterAddedL = initialWaterL ?? grainKg * mashRatioLKg + mashTunDeadSpaceL;
+      const effectiveRatio = initialWaterL != null && grainKg > 0 ? waterAddedL / grainKg : mashRatioLKg;
       const strikeTemp = calculateStrikeTemperature({
         targetTempC: step.stepTemperatureC,
         grainTempC,
-        mashRatioLKg,
+        mashRatioLKg: effectiveRatio,
       });
       cumulativeWaterL = waterAddedL;
       currentTempC = step.stepTemperatureC;
@@ -369,7 +400,7 @@ export function calculateStepInfusionSchedule(input: {
         cumulativeWaterL,
         mashTunOccupiedL: cumulativeWaterL + grainKg * L_PER_KG_GRAIN_VOLUME,
       });
-    } else if (step.type === "infusion") {
+    } else if (step.type === "infusion" && allowInfusions) {
       const infuseTemp = step.infuseTemperatureC ?? defaultInfuseTempC;
       const waterAddedL = calculateInfusionVolume({
         targetTempC: step.stepTemperatureC,
@@ -387,8 +418,29 @@ export function calculateStepInfusionSchedule(input: {
         cumulativeWaterL,
         mashTunOccupiedL: cumulativeWaterL + grainKg * L_PER_KG_GRAIN_VOLUME,
       });
+    } else if (step.type === "decoction") {
+      const boilMin = step.decoctionBoilMin ?? 0;
+      const decoction = calculateDecoction({
+        targetTempC: step.stepTemperatureC,
+        currentTempC,
+        grainKg,
+        currentWaterL: cumulativeWaterL,
+        boilTempC: decoctionBoilTempC,
+        timeOutMin: (step.rampTimeMin ?? DEFAULT_DECOCTION_HEATUP_MIN) + boilMin,
+        coolingRateCH,
+        amountOverrideL: step.amountL,
+      });
+      currentTempC = decoction.resultingTempC;
+      results.push({
+        stepIndex: i,
+        waterAddedL: 0,
+        infuseTemperatureC: 0,
+        cumulativeWaterL,
+        mashTunOccupiedL: cumulativeWaterL + grainKg * L_PER_KG_GRAIN_VOLUME,
+        decoction: { ...decoction, boilMin },
+      });
     } else {
-      // temperature/decoction steps: no water added, but temperature changes
+      // temperature steps: no water added, but temperature changes
       currentTempC = step.stepTemperatureC;
       results.push({
         stepIndex: i,

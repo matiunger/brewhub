@@ -145,6 +145,8 @@ model Batch {
   mashMode          String? @map("mash_mode")         // sparge, biab, step_infusion
   mashRatioLKg      Float?  @map("mash_ratio_l_kg")
   mashInfuseTempC   Float?  @map("mash_infuse_temp_c")
+  decoctionBoilTempC Float? @map("decoction_boil_temp_c")
+  mashCoolingRateCH Float?  @map("mash_cooling_rate_c_h")
 
   mashAcidType      String? @map("mash_acid_type")
   mashAcidDose      Float?  @map("mash_acid_dose")
@@ -215,7 +217,7 @@ model BatchGrain {
   grain        Grain    @relation(fields: [grainId], references: [id])
   grainId      String   @map("grain_id")
   grams        Float
-  mashAddition String?  @map("mash_addition") @default("mash") // mash, mash_out, sparge
+  mashAddition String?  @map("mash_addition") @default("mash") // mash, mash_out, sparge, cold_steep
   // Snapshot fields — copied from inventory at add time, editable per batch
   name         String?
   brand        String?
@@ -275,6 +277,7 @@ model MashStep {
   endTemperatureC   Float?   @map("end_temperature_c")
   description       String?
   infuseTemperatureC Float?  @map("infuse_temperature_c")
+  decoctionBoilMin  Float?   @map("decoction_boil_min")
   sortOrder         Int      @default(0) @map("sort_order")
 
   @@map("mash_steps")

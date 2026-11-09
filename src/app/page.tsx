@@ -3,7 +3,8 @@ import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { ImportBeerJsonButton } from "@/components/import-beerjson-button";
 import { parseBrewdayData } from "@/lib/brewday-types";
-import { calculateIbuBreakdown } from "@/lib/calculations";
+import { calculateIbuBreakdown, calculateSrm, measuredPostChillVolumeL } from "@/lib/calculations";
+import { cn } from "@/lib/utils";
 
 interface HomePageProps {
   searchParams: Promise<{ type?: string; draft?: string; sort?: string; order?: string }>;
@@ -51,41 +52,20 @@ function computeDisplayValues(batch: BatchWithRelations): DisplayValues {
       finalOg / 1000,
       finalVol ?? batch.targetFermentarL ?? 20,
       batch.boilTimeMin ?? 60,
+      batch.whirpoolTimeMin,
     );
-    finalIbu = result.totalPerceivedIbu > 0 ? result.totalPerceivedIbu : null;
+    finalIbu = result.totalCalculatedIbu > 0 ? result.totalCalculatedIbu : null;
   }
 
-  // Final SRM — grain bill over actual post-chill volume
-  let finalSrm: number | null = null;
-  {
-    const boilEntries = data.boil.entries;
-    const d = batch.equipmentBoilPotDiameter;
-    const trubLossL = batch.equipmentTrubLossL ?? 1.0;
-    const contractionFactor = 1 - ((batch.equipmentTempContractionPct ?? 4) / 100);
-
-    const entryVol = (e: { heightCm: number | null; volumeL: number | null }): number | null => {
-      if (d != null && d > 0 && e.heightCm != null && e.heightCm > 0)
-        return Math.PI * Math.pow(d / 2, 2) * e.heightCm / 1000;
-      return e.volumeL ?? null;
-    };
-
-    const lastEntry = [...boilEntries].reverse().find((e) => entryVol(e) != null);
-    const endOfBoilL = lastEntry != null ? entryVol(lastEntry) : null;
-    const postChillL =
-      endOfBoilL != null && endOfBoilL > 0
-        ? endOfBoilL * contractionFactor
-        : finalVol != null && finalVol > 0
-          ? finalVol + trubLossL
-          : null;
-
-    if (postChillL != null) {
-      const mcu = batch.grains.reduce((sum, r) => {
-        const colorL = r.colorL ?? r.grain.colorL;
-        return colorL != null ? sum + (r.grams * 0.00220462 * colorL) / (postChillL * 0.264172) : sum;
-      }, 0);
-      finalSrm = mcu > 0 ? 1.4922 * Math.pow(mcu, 0.6859) : null;
-    }
-  }
+  // Final SRM — grain bill over actual post-chill volume (same as batch page)
+  const postChillL = measuredPostChillVolumeL({
+    boilEntries: data.boil.entries,
+    potDiameterCm: batch.equipmentBoilPotDiameter,
+    tempContractionPct: batch.equipmentTempContractionPct,
+    trubLossL: batch.equipmentTrubLossL,
+    fermenterVolumeL: finalVol,
+  });
+  const finalSrm = postChillL != null ? calculateSrm(batch.grains, postChillL) : null;
 
   return {
     og: finalOg ?? batch.targetOg,
@@ -282,8 +262,15 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                       const scores = batch.tastings.map((t) => t.totalScore).filter((s): s is number => s != null);
                       const best = scores.length > 0 ? Math.max(...scores) : null;
                       if (best == null) return <span className="opacity-40">—</span>;
-                      const color = best >= 38 ? "bg-green-100 text-green-800" : best >= 21 ? "bg-orange-100 text-orange-800" : "bg-red-100 text-red-800";
-                      return <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold tabular-nums ${color}`}>{best.toFixed(1)}</span>;
+                      // BJCP bands: Outstanding 45+, Excellent 38+, Very Good 30+, Good 21+, Fair 14+, Problematic <14
+                      const color =
+                        best >= 45 ? "bg-emerald-200 text-emerald-900"
+                        : best >= 38 ? "bg-green-100 text-green-800"
+                        : best >= 30 ? "bg-lime-100 text-lime-800"
+                        : best >= 21 ? "bg-yellow-100 text-yellow-800"
+                        : best >= 14 ? "bg-orange-100 text-orange-800"
+                        : "bg-red-100 text-red-800";
+                      return <span className={cn("inline-block px-1.5 py-0.5 rounded text-xs font-semibold tabular-nums", color)}>{best.toFixed(1)}</span>;
                     })()}
                   </td>
                 </tr>

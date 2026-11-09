@@ -197,7 +197,7 @@ export function WikiPageView({ page, slugMap = {} }: { page: WikiPage; slugMap?:
           remarkPlugins={[remarkGfm, remarkWikilinks(slugMap, page.folder) as Plugin]}
           components={{
             img({ src, alt }) {
-              if (src && !src.startsWith("http") && !src.startsWith("/")) {
+              if (typeof src === "string" && !src.startsWith("http") && !src.startsWith("/")) {
                 const base = page.folder ? `/api/wiki-images/${page.folder}/` : "/api/wiki-images/";
                 src = base + src;
               }

@@ -32,6 +32,22 @@ function colorToLovibond(value: number, unit: string): number {
   }
 }
 
+// BrewHub stores gravity as g/L-style points (e.g. 1046); BeerJSON uses SG (1.046) or °P.
+function pointsToSg(value: number): number {
+  return value > 2 ? value / 1000 : value;
+}
+
+function gravityToPoints(g: { value: number; unit: string }): number {
+  const unit = g.unit.toLowerCase();
+  let sg: number;
+  if (unit === "plato" || unit === "brix") {
+    sg = 1 + g.value / (258.6 - g.value * (227.1 / 258.2));
+  } else {
+    sg = g.value > 2 ? g.value / 1000 : g.value; // tolerate points written as "sg"
+  }
+  return Math.round(sg * 10000) / 10;
+}
+
 function timeToMinutes(value: number, unit: string): number {
   switch (unit) {
     case "sec":   return value / 60;
@@ -191,8 +207,8 @@ export function batchToBeerjson(batch: BatchForExport): BeerJson {
   if (batch.style) recipe.style = { name: batch.style };
   if (batch.notes) recipe.notes = batch.notes;
   if (batch.boilTimeMin) recipe.boil = { boil_time: { value: batch.boilTimeMin, unit: "min" } };
-  if (batch.targetOg) recipe.original_gravity = { value: batch.targetOg, unit: "sg" };
-  if (batch.targetFg) recipe.final_gravity = { value: batch.targetFg, unit: "sg" };
+  if (batch.targetOg) recipe.original_gravity = { value: pointsToSg(batch.targetOg), unit: "sg" };
+  if (batch.targetFg) recipe.final_gravity = { value: pointsToSg(batch.targetFg), unit: "sg" };
   if (batch.targetIbu) recipe.ibu_estimate = { value: batch.targetIbu, unit: "ibu" };
   if (batch.targetSrm) recipe.color_estimate = { value: batch.targetSrm, unit: "srm" };
 
@@ -312,7 +328,7 @@ export interface ImportedBatchData {
   }[];
   hops: {
     name: string;
-    alphaAcid: number;
+    alphaAcid: number | null;
     grams: number;
     additionTime: number;
     use: string;
@@ -350,8 +366,8 @@ export function beerjsonToBatchData(recipe: BeerJsonRecipe): ImportedBatchData {
     boilTimeMin: recipe.boil?.boil_time
       ? timeToMinutes(recipe.boil.boil_time.value, recipe.boil.boil_time.unit)
       : null,
-    targetOg: recipe.original_gravity?.value ?? null,
-    targetFg: recipe.final_gravity?.value ?? null,
+    targetOg: recipe.original_gravity ? gravityToPoints(recipe.original_gravity) : null,
+    targetFg: recipe.final_gravity ? gravityToPoints(recipe.final_gravity) : null,
     targetIbu: recipe.ibu_estimate?.value ?? null,
     targetSrm: (() => {
       const ce = recipe.color_estimate;
@@ -373,7 +389,7 @@ export function beerjsonToBatchData(recipe: BeerJsonRecipe): ImportedBatchData {
 
   const hops = (recipe.hop_additions ?? []).map((h) => ({
     name: h.name,
-    alphaAcid: h.alpha_acid?.value ?? 5,
+    alphaAcid: h.alpha_acid?.value ?? null,
     grams: massToGrams(h.amount.value, h.amount.unit),
     additionTime: h.timing?.time
       ? timeToMinutes(h.timing.time.value, h.timing.time.unit)

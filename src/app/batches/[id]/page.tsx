@@ -2,7 +2,6 @@ import { redirect, notFound } from "next/navigation";
 import { type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { Pencil, Copy } from "lucide-react";
-import { calculateBrewingStats } from "@/lib/calculations";
 import { DeleteBatchDialog } from "./delete-dialog";
 import { BatchForm } from "./batch-form";
 import { BeerSections } from "./beer-sections";
@@ -19,9 +18,15 @@ async function updateBatch(id: string, formData: FormData) {
   const brewDateValue = formData.get("brewDate") as string;
   const equipmentId = formData.get("equipmentId") as string || null;
 
-  // When equipment is selected, always overwrite snapshot with latest values from inventory
+  // Copy equipment values from inventory only when the equipment changes (or no snapshot exists yet).
+  // Otherwise keep the batch's own values, which may have been edited for this batch.
+  const current = await prisma.batch.findUnique({
+    where: { id },
+    select: { equipmentId: true, equipmentFermenterLossL: true },
+  });
+  const equipmentChanged = current?.equipmentId !== equipmentId || current?.equipmentFermenterLossL == null;
   const equipmentSnapshot: Record<string, unknown> = {};
-  if (equipmentId) {
+  if (equipmentId && equipmentChanged) {
     const eq = await prisma.equipment.findUnique({ where: { id: equipmentId } });
     if (eq) {
       equipmentSnapshot.equipmentName = eq.name;
@@ -122,7 +127,7 @@ async function updateMashParams(
 
 async function updateMashSettings(
   id: string,
-  data: { mashMode: string; mashRatioLKg: number; mashInfuseTempC: number }
+  data: { mashMode: string; mashRatioLKg: number; mashInfuseTempC: number; decoctionBoilTempC: number; mashCoolingRateCH: number }
 ) {
   "use server";
   await prisma.batch.update({ where: { id }, data });
@@ -285,6 +290,7 @@ async function createMashStep(
     endTemperatureC?: number | null;
     description?: string | null;
     infuseTemperatureC?: number | null;
+    decoctionBoilMin?: number | null;
     sortOrder?: number;
   }
 ) {
@@ -301,6 +307,7 @@ async function createMashStep(
       endTemperatureC: data.endTemperatureC ?? null,
       description: data.description ?? null,
       infuseTemperatureC: data.infuseTemperatureC ?? null,
+      decoctionBoilMin: data.decoctionBoilMin ?? null,
       sortOrder: data.sortOrder ?? 0,
     },
   });
@@ -319,6 +326,7 @@ async function updateMashStep(
     endTemperatureC?: number | null;
     description?: string | null;
     infuseTemperatureC?: number | null;
+    decoctionBoilMin?: number | null;
     sortOrder?: number;
   }
 ) {
@@ -335,6 +343,7 @@ async function updateMashStep(
       endTemperatureC: data.endTemperatureC ?? null,
       description: data.description ?? null,
       infuseTemperatureC: data.infuseTemperatureC ?? null,
+      decoctionBoilMin: data.decoctionBoilMin ?? null,
       sortOrder: data.sortOrder ?? 0,
     },
   });
@@ -496,7 +505,8 @@ async function copyBatch(id: string) {
       batchId: copy.id, name: s.name, type: s.type,
       stepTemperatureC: s.stepTemperatureC, stepTimeMin: s.stepTimeMin,
       amountL: s.amountL, rampTimeMin: s.rampTimeMin, endTemperatureC: s.endTemperatureC,
-      description: s.description, infuseTemperatureC: s.infuseTemperatureC, sortOrder: s.sortOrder,
+      description: s.description, infuseTemperatureC: s.infuseTemperatureC,
+      decoctionBoilMin: s.decoctionBoilMin, sortOrder: s.sortOrder,
     })),
   });
 
@@ -602,8 +612,6 @@ export default async function BatchPage({ params }: BatchPageProps) {
     notFound();
   }
 
-  const stats = calculateBrewingStats(batch);
-  
   const updateWithId = updateBatch.bind(null, id);
   const updateNotesWithId = updateNotes.bind(null, id);
   const updateTargetStatsWithId = updateTargetStats.bind(null, id);
@@ -679,7 +687,6 @@ export default async function BatchPage({ params }: BatchPageProps) {
         <BeerSections
           batchId={id}
           batch={batch}
-          stats={stats}
           equipment={allEquipment}
           grains={batch.grains}
           hops={batch.hops}
@@ -731,6 +738,8 @@ export default async function BatchPage({ params }: BatchPageProps) {
           initialMashMode={batch.mashMode}
           initialMashRatioLKg={batch.mashRatioLKg}
           initialMashInfuseTempC={batch.mashInfuseTempC}
+          initialDecoctionBoilTempC={batch.decoctionBoilTempC}
+          initialMashCoolingRateCH={batch.mashCoolingRateCH}
           mashSteps={batch.mashSteps}
           createMashStepAction={createMashStepWithId}
           updateMashStepAction={updateMashStep}

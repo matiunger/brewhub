@@ -180,7 +180,7 @@ export interface RecipeData {
   targetOg: number | null;
   fermenterWeightKg: number | null;
   brewDate: Date | null;
-  stepInfusionSchedule: StepInfusionResult[] | null;
+  mashSchedule: StepInfusionResult[] | null;
   mashStepNames: string[];
 }
 
@@ -579,50 +579,6 @@ function FermentationSection({
 
           const coords = points.map(p => ({ x: screenX(p.x), y: padT + yScale(p.d) }));
 
-          // Activity (bubble) curve
-          let bubbleActivityPts: { x: number; b: number }[];
-          if (hasTime) {
-            bubbleActivityPts = allSteps
-              .filter(s => s.bubbleIntervalSec != null && s.bubbleIntervalSec > 0 && s.dateTime != null)
-              .map(s => ({ x: new Date(s.dateTime!).getTime(), b: s.bubbleIntervalSec! }))
-              .sort((a, b) => a.x - b.x)
-              .map(p => ({ x: screenX(p.x), b: p.b }));
-          } else {
-            bubbleActivityPts = points
-              .map((p, i) => ({ x: coords[i].x, b: p.b }))
-              .filter((p): p is { x: number; b: number } => p.b != null && p.b > 0);
-          }
-          let speedPathD = "";
-          if (bubbleActivityPts.length >= 2) {
-            const activities = bubbleActivityPts.map(p => 1 / p.b);
-            const bxs = bubbleActivityPts.map(p => p.x);
-            const lagrange = (x: number) => {
-              let result = 0;
-              for (let i = 0; i < bxs.length; i++) {
-                let term = activities[i];
-                for (let j = 0; j < bxs.length; j++) {
-                  if (j !== i) term *= (x - bxs[j]) / (bxs[i] - bxs[j]);
-                }
-                result += term;
-              }
-              return result;
-            };
-            const samples = 80;
-            const bx0 = bxs[0], bx1 = bxs[bxs.length - 1];
-            const sampled = Array.from({ length: samples }, (_, i) => ({
-              x: bx0 + (i / (samples - 1)) * (bx1 - bx0),
-              v: lagrange(bx0 + (i / (samples - 1)) * (bx1 - bx0)),
-            }));
-            const actMin = Math.min(0, ...sampled.map(s => s.v));
-            const actMax = Math.max(...sampled.map(s => s.v));
-            const actRange = actMax - actMin || 1;
-            speedPathD = sampled.map((s, i) => {
-              const y = (s.v - actMin) / actRange;
-              const cy = padT + innerH - y * innerH;
-              return i === 0 ? `M ${s.x.toFixed(1)} ${cy.toFixed(1)}` : `L ${s.x.toFixed(1)} ${cy.toFixed(1)}`;
-            }).join(" ");
-          }
-
           // Helper: normalized monotone cubic spline (each curve fills chart height)
           const normalizedCurve = (pts: { x: number; v: number }[]): { path: string; screenPts: { x: number; y: number; v: number }[] } => {
             if (pts.length < 2) return { path: "", screenPts: [] };
@@ -659,6 +615,19 @@ function FermentationSection({
             }).join(" ");
             return { path, screenPts: pts.map((p, i) => ({ x: sxs[i], y: sys[i], v: p.v })) };
           };
+
+          // Activity (bubble) curve: activity = 1 / seconds between bubbles.
+          // Uses the same monotone spline as the other curves so it never overshoots the data.
+          const activityPts: { x: number; v: number }[] = hasTime
+            ? allSteps
+                .filter(s => s.bubbleIntervalSec != null && s.bubbleIntervalSec > 0 && s.dateTime != null)
+                .map(s => ({ x: new Date(s.dateTime!).getTime(), v: 1 / s.bubbleIntervalSec! }))
+                .sort((a, b) => a.x - b.x)
+            : points
+                .filter(p => p.b != null && p.b > 0)
+                .map(p => ({ x: p.x, v: 1 / p.b! }));
+          const { path: speedPathD, screenPts: activityScreenPts } = curves.has("activity") && activityPts.length >= 2
+            ? normalizedCurve(activityPts) : { path: "", screenPts: [] };
 
           const { path: tempPathD, screenPts: tempScreenPts } = curves.has("temp") && tempPts.length >= 2
             ? normalizedCurve(tempPts) : { path: "", screenPts: [] };
@@ -770,8 +739,18 @@ function FermentationSection({
                 ))}
                 {/* Activity curve */}
                 {curves.has("activity") && speedPathD && (
-                  <path d={speedPathD} fill="none" stroke="#22c55e" strokeWidth={1.5}
-                    strokeDasharray="4 4" strokeLinecap="round" opacity={0.35} />
+                  <>
+                    <path d={speedPathD} fill="none" stroke="#22c55e" strokeWidth={1.5}
+                      strokeDasharray="4 4" strokeLinecap="round" opacity={0.5} />
+                    {activityScreenPts.map((pt, i) => (
+                      <g key={`act-${i}`}>
+                        <circle cx={pt.x} cy={pt.y} r={2.5} fill="#22c55e" opacity={0.7} />
+                        <text x={pt.x} y={pt.y - 6} textAnchor="middle" fontSize={8} fill="#22c55e" opacity={0.8}>
+                          {(1 / pt.v).toFixed(1)}s
+                        </text>
+                      </g>
+                    ))}
+                  </>
                 )}
                 {/* Temperature curve */}
                 {curves.has("temp") && tempPathD && (
@@ -949,6 +928,13 @@ export function BrewdaySection({
   const setInfusionWarmUp = useCallback(
     (stepIndex: number, val: boolean) => {
       updateBrewday("mash", { ...mash, infusionWarmUp: { ...mash.infusionWarmUp, [stepIndex]: val } });
+    },
+    [mash, updateBrewday]
+  );
+
+  const setDecoctionPulled = useCallback(
+    (stepIndex: number, val: boolean) => {
+      updateBrewday("mash", { ...mash, decoctionPulled: { ...mash.decoctionPulled, [stepIndex]: val } });
     },
     [mash, updateBrewday]
   );
@@ -1322,11 +1308,11 @@ export function BrewdaySection({
             })()}
 
             {/* Infusion Steps — step infusion mode */}
-            {recipeData.mashMode === "step_infusion" && recipeData.stepInfusionSchedule != null && recipeData.stepInfusionSchedule.length > 1 && (
+            {recipeData.mashMode === "step_infusion" && recipeData.mashSchedule != null && recipeData.mashSchedule.length > 1 && (
               <div className="border rounded-lg p-3 space-y-2">
                 <SubTitle>Infusion Steps</SubTitle>
                 <div className="space-y-1.5">
-                  {recipeData.stepInfusionSchedule.slice(1).map((step, i) => {
+                  {recipeData.mashSchedule.slice(1).map((step, i) => {
                     const stepName = recipeData.mashStepNames[step.stepIndex] || `Step ${step.stepIndex + 1}`;
                     if (step.waterAddedL === 0) return null;
                     const d = recipeData.spargePotDiameterCm;
@@ -1350,6 +1336,39 @@ export function BrewdaySection({
                           checked={!!mash.infusionWarmUp[step.stepIndex]}
                           onCheckedChange={(v) => setInfusionWarmUp(step.stepIndex, v)}
                           label="Warm up water"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Decoctions — any mash mode */}
+            {recipeData.mashSchedule != null && recipeData.mashSchedule.some((s) => s.decoction) && (
+              <div className="border rounded-lg p-3 space-y-2">
+                <SubTitle>Decoctions</SubTitle>
+                <div className="space-y-1.5">
+                  {recipeData.mashSchedule.map((step) => {
+                    const dec = step.decoction;
+                    if (!dec) return null;
+                    const stepName = recipeData.mashStepNames[step.stepIndex] || `Step ${step.stepIndex + 1}`;
+                    return (
+                      <div key={step.stepIndex} className="bg-muted/40 rounded-md p-2 space-y-1">
+                        <div className="text-xs font-medium">{stepName}</div>
+                        <div className="flex flex-wrap gap-x-4">
+                          <RecipeRef label="Pull:" value={`${dec.decoctionL.toFixed(1)} L (${Math.round(dec.decoctionFraction * 100)}%)`} />
+                          <RecipeRef label="Boil:" value={`${dec.boilMin.toFixed(0)} min`} />
+                          <RecipeRef label="Expected:" value={`${dec.resultingTempC.toFixed(1)} °C`} />
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Main mash ~{dec.mainMashTempBeforeC.toFixed(1)} °C when returning
+                          {dec.unreachable && <span className="text-red-600 dark:text-red-400"> — target not reachable</span>}
+                        </div>
+                        <CheckRow
+                          checked={!!mash.decoctionPulled?.[step.stepIndex]}
+                          onCheckedChange={(v) => setDecoctionPulled(step.stepIndex, v)}
+                          label="Decoction pulled"
                         />
                       </div>
                     );

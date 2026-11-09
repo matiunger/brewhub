@@ -31,7 +31,8 @@ export async function POST(req: NextRequest) {
         grain = await tx.grain.create({ data: { name: g.name, brand: g.brand, colorL: g.colorL, maxYield: g.maxYield } });
         allGrains.push(grain);
       }
-      grainIds.push({ grainId: grain.id, grams: g.grams, name: grain.name, brand: grain.brand, colorL: grain.colorL, maxYield: grain.maxYield, grainGroup: grain.grainGroup });
+      // Snapshot keeps the recipe's own values; inventory only fills gaps
+      grainIds.push({ grainId: grain.id, grams: g.grams, name: grain.name, brand: g.brand ?? grain.brand, colorL: g.colorL ?? grain.colorL, maxYield: g.maxYield ?? grain.maxYield, grainGroup: grain.grainGroup });
     }
 
     // Find-or-create hops
@@ -40,10 +41,10 @@ export async function POST(req: NextRequest) {
     for (const h of data.hops) {
       let hop = allHops.find((r) => r.name.toLowerCase() === h.name.toLowerCase());
       if (!hop) {
-        hop = await tx.hop.create({ data: { name: h.name, alphaAcid: h.alphaAcid } });
+        hop = await tx.hop.create({ data: { name: h.name, alphaAcid: h.alphaAcid ?? 5 } });
         allHops.push(hop);
       }
-      hopIds.push({ hopId: hop.id, grams: h.grams, additionTime: h.additionTime, use: h.use, name: hop.name, alphaAcid: hop.alphaAcid });
+      hopIds.push({ hopId: hop.id, grams: h.grams, additionTime: h.additionTime, use: h.use, name: hop.name, alphaAcid: h.alphaAcid ?? hop.alphaAcid });
     }
 
     // Find-or-create yeasts
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
         yeast = await tx.yeast.create({ data: { name: y.name, brand: y.brand, type: y.type, attenuation: y.attenuation } });
         allYeasts.push(yeast);
       }
-      yeastIds.push({ yeastId: yeast.id, quantity: "", quantityAmount: y.quantityAmount, quantityUnits: y.quantityUnits, temp: y.temp, name: yeast.name, brand: yeast.brand, attenuation: yeast.attenuation });
+      yeastIds.push({ yeastId: yeast.id, quantity: "", quantityAmount: y.quantityAmount, quantityUnits: y.quantityUnits, temp: y.temp, name: yeast.name, brand: y.brand ?? yeast.brand, attenuation: y.attenuation ?? yeast.attenuation });
     }
 
     // Find-or-create water profile

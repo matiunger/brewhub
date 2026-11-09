@@ -15,7 +15,7 @@ import { BatchForm } from "./batch-form";
 import stylesData from "../../../../styles.json";
 import baStylesData from "../../../data/ba_styles.json";
 import { srmToHex, srmIsLight } from "@/lib/olfarve";
-import { calculateAcidAddition, calculateSpargeAcidDose, calculateIbuBreakdown, calculateStepInfusionSchedule, type AcidType, type StepInfusionResult } from "@/lib/calculations";
+import { calculateAcidAddition, calculateSpargeAcidDose, calculateIbuBreakdown, calculateStepInfusionSchedule, calculateSrm, averageAttenuation, estimateFg, abvFromGravity, gravityFromExtract, measuredPostChillVolumeL, DEFAULT_DECOCTION_HEATUP_MIN, type AcidType, type StepInfusionResult } from "@/lib/calculations";
 import { parseBrewdayData, type BrewdayData } from "@/lib/brewday-types";
 import { BrewdaySection, type RecipeData } from "./brewday-section";
 
@@ -197,9 +197,6 @@ interface Stats {
   ibu: number;
   srm: number;
   abv: number;
-  ogMashEffPct: number;
-  ogPostChillVolumeL: number;
-  ogAdjustedExtractKg: number;
 }
 
 interface Equipment {
@@ -260,6 +257,7 @@ interface MashStep {
   endTemperatureC: number | null;
   description: string | null;
   infuseTemperatureC: number | null;
+  decoctionBoilMin: number | null;
   sortOrder: number;
 }
 
@@ -286,7 +284,6 @@ interface BeerSectionsProps {
     targetPh: number | null;
     spargeTargetPh: number | null;
   };
-  stats: Stats;
   equipment: Equipment[];
   grains: BatchGrain[];
   hops: BatchHop[];
@@ -328,20 +325,22 @@ interface BeerSectionsProps {
   updateWaterTdsAction: (data: { sourceWaterTds: number | null; finalWaterTds: number | null }) => Promise<void>;
   updateBoilTimesAction: (data: { heatUpTimeMin: number | null; boilTimeMin: number | null; whirpoolTimeMin: number | null }) => Promise<void>;
   updateMashParamsAction: (data: { grainTempC: number | null; targetPh: number | null; spargeTargetPh: number | null }) => Promise<void>;
-  updateMashSettingsAction: (data: { mashMode: string; mashRatioLKg: number; mashInfuseTempC: number }) => Promise<void>;
+  updateMashSettingsAction: (data: { mashMode: string; mashRatioLKg: number; mashInfuseTempC: number; decoctionBoilTempC: number; mashCoolingRateCH: number }) => Promise<void>;
   initialMashMode: string | null;
   initialMashRatioLKg: number | null;
   initialMashInfuseTempC: number | null;
+  initialDecoctionBoilTempC: number | null;
+  initialMashCoolingRateCH: number | null;
   mashSteps: MashStep[];
   createMashStepAction: (data: {
     name: string; type: string; stepTemperatureC: number; stepTimeMin: number;
     amountL?: number | null; rampTimeMin?: number | null; endTemperatureC?: number | null;
-    description?: string | null; infuseTemperatureC?: number | null; sortOrder?: number;
+    description?: string | null; infuseTemperatureC?: number | null; decoctionBoilMin?: number | null; sortOrder?: number;
   }) => Promise<MashStep>;
   updateMashStepAction: (id: string, data: {
     name: string; type: string; stepTemperatureC: number; stepTimeMin: number;
     amountL?: number | null; rampTimeMin?: number | null; endTemperatureC?: number | null;
-    description?: string | null; infuseTemperatureC?: number | null; sortOrder?: number;
+    description?: string | null; infuseTemperatureC?: number | null; decoctionBoilMin?: number | null; sortOrder?: number;
   }) => Promise<void>;
   deleteMashStepAction: (id: string) => Promise<void>;
   brewdayData: string | null;
@@ -376,9 +375,10 @@ interface BeerSectionsProps {
 type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparation" | "bdMilling" | "bdMash" | "bdSparge" | "bdPreboil" | "bdBoil" | "bdWhirlpool" | "bdFermentation" | "bdKegging" | "bdLagering" | "bdBottling" | "finalStats" | "finalStatsOverview" | "finalStatsTiming" | "finalStatsTastings";
 
 const MASH_ADDITIONS = [
-  { value: "mash",     label: "Mash" },
-  { value: "mash_out", label: "Mash out" },
-  { value: "sparge",   label: "Sparge" },
+  { value: "mash",       label: "Mash" },
+  { value: "mash_out",   label: "Mash out" },
+  { value: "sparge",     label: "Sparge" },
+  { value: "cold_steep", label: "Cold steep" },
 ] as const;
 
 const MASH_STEP_PRESETS = [
@@ -600,7 +600,6 @@ function getStyleRange(
 export function BeerSections({
   batchId,
   batch,
-  stats,
   equipment,
   grains,
   hops,
@@ -640,6 +639,8 @@ export function BeerSections({
   initialMashMode,
   initialMashRatioLKg,
   initialMashInfuseTempC,
+  initialDecoctionBoilTempC,
+  initialMashCoolingRateCH,
   mashSteps,
   createMashStepAction,
   updateMashStepAction,
@@ -663,6 +664,8 @@ export function BeerSections({
   );
   const [mashRatioInput, setMashRatioInput] = useState(initialMashRatioLKg ?? 3.0);
   const [infuseTemp, setInfuseTemp] = useState(initialMashInfuseTempC ?? 100);
+  const [decoctionBoilTemp, setDecoctionBoilTemp] = useState(initialDecoctionBoilTempC ?? 100);
+  const [mashCoolingRate, setMashCoolingRate] = useState(initialMashCoolingRateCH ?? 3);
 
   const [targets, setTargets] = useState<Record<TargetKey, number | null>>({
     og: batch.targetOg,
@@ -708,8 +711,8 @@ export function BeerSections({
   const [editMashStepDraft, setEditMashStepDraft] = useState<{
     name: string; type: string; stepTemperatureC: string; stepTimeMin: string;
     amountL: string; rampTimeMin: string; endTemperatureC: string;
-    description: string; infuseTemperatureC: string;
-  }>({ name: "", type: "infusion", stepTemperatureC: "", stepTimeMin: "", amountL: "", rampTimeMin: "", endTemperatureC: "", description: "", infuseTemperatureC: "" });
+    description: string; infuseTemperatureC: string; decoctionBoilMin: string;
+  }>({ name: "", type: "infusion", stepTemperatureC: "", stepTimeMin: "", amountL: "", rampTimeMin: "", endTemperatureC: "", description: "", infuseTemperatureC: "", decoctionBoilMin: "" });
   const [showAddMashStep, setShowAddMashStep] = useState(false);
   const [savingMashStepId, setSavingMashStepId] = useState<string | null>(null);
 
@@ -922,8 +925,8 @@ export function BeerSections({
     }, 800);
   }, [updateMashParamsAction]);
 
-  const mashSettingsRef = useRef({ mashMode, mashRatioLKg: mashRatioInput, mashInfuseTempC: infuseTemp });
-  mashSettingsRef.current = { mashMode, mashRatioLKg: mashRatioInput, mashInfuseTempC: infuseTemp };
+  const mashSettingsRef = useRef({ mashMode, mashRatioLKg: mashRatioInput, mashInfuseTempC: infuseTemp, decoctionBoilTempC: decoctionBoilTemp, mashCoolingRateCH: mashCoolingRate });
+  mashSettingsRef.current = { mashMode, mashRatioLKg: mashRatioInput, mashInfuseTempC: infuseTemp, decoctionBoilTempC: decoctionBoilTemp, mashCoolingRateCH: mashCoolingRate };
   const mashSettingsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const scheduleMashSettingsSave = useCallback(() => {
@@ -1233,8 +1236,10 @@ export function BeerSections({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetPh, spargeTargetPh, grainRows, wv.mashWater, wv.spargeWater, sourceSnapshotLocal, salts, acidType, acidAmount]);
 
-  const stepInfusionCalc = useMemo(() => {
-    if (mashMode !== "step_infusion") return null;
+  const hasDecoction = mashStepRows.some((s) => s.type === "decoction");
+
+  const mashScheduleCalc = useMemo(() => {
+    if (mashMode !== "step_infusion" && !hasDecoction) return null;
     return calculateStepInfusionSchedule({
       steps: mashStepRows,
       grainKg: totalGrainGrams / 1000,
@@ -1242,8 +1247,14 @@ export function BeerSections({
       mashRatioLKg: mashRatioInput,
       mashTunDeadSpaceL: eqSnap?.mashTunDeadSpaceL ?? 0,
       defaultInfuseTempC: infuseTemp,
+      initialWaterL: mashMode === "biab" ? wv.mashWater : undefined,
+      allowInfusions: mashMode === "step_infusion",
+      decoctionBoilTempC: decoctionBoilTemp,
+      coolingRateCH: mashCoolingRate,
     });
-  }, [mashMode, mashStepRows, totalGrainGrams, grainTempC, mashRatioInput, eqSnap?.mashTunDeadSpaceL, infuseTemp]);
+  }, [mashMode, hasDecoction, mashStepRows, totalGrainGrams, grainTempC, mashRatioInput, eqSnap?.mashTunDeadSpaceL, infuseTemp, wv.mashWater, decoctionBoilTemp, mashCoolingRate]);
+  // Infusion water accounting only applies in step infusion mode
+  const stepInfusionCalc = mashMode === "step_infusion" ? mashScheduleCalc : null;
 
   const grainCalc = (r: typeof grainRows[0]) => {
     const effectiveMaxYield = r.maxYield ?? r.grain.maxYield;
@@ -1265,8 +1276,7 @@ export function BeerSections({
     if (grainRows.length === 0 || !wv.postChill) return null;
     const mashEffPct = eqSnap?.mashEff ?? eqSnap?.brewhouseEff ?? 75;
     const adjustedExtractKg = (grainTotals.extract / 1000) * (mashEffPct / 100);
-    const plato = (adjustedExtractKg * 1000) / wv.postChill / 10;
-    const og = 1 + plato / (258.6 - plato * (227.1 / 258.2));
+    const og = gravityFromExtract(adjustedExtractKg, wv.postChill);
     return { og, mashEffPct, adjustedExtractKg, postChillL: wv.postChill };
   })();
 
@@ -1300,12 +1310,26 @@ export function BeerSections({
     return "";
   });
 
+  // Single source for recipe IBU: boil gravity = target OG (or estimated OG), volume = fermenter volume
+  const estimatedOgSg = estimatedOG?.og ?? null;
   const ibuBreakdown = useMemo(() => {
-    const boilGravity = batch.targetOg ? batch.targetOg / 1000 : 1.050;
-    const batchVolume = batch.targetFermentarL ?? 20;
-    const boilTime = batch.boilTimeMin ?? 60;
-    return calculateIbuBreakdown(hopRows, boilGravity, batchVolume, boilTime);
-  }, [hopRows, batch.targetOg, batch.targetFermentarL, batch.boilTimeMin]);
+    const boilGravity = targets.og != null ? targets.og / 1000 : (estimatedOgSg ?? 1.050);
+    return calculateIbuBreakdown(hopRows, boilGravity, batchSize ?? 20, boilTimeMin ?? 60, whirpoolTimeMin);
+  }, [hopRows, targets.og, estimatedOgSg, batchSize, boilTimeMin, whirpoolTimeMin]);
+
+  // Live recipe estimates (recalculated as you edit)
+  const avgAttenuation = averageAttenuation(yeastRows);
+  const stats: Stats = (() => {
+    const og = estimatedOgSg ?? 1;
+    const fg = estimateFg(og, avgAttenuation ?? 75);
+    return {
+      og,
+      fg,
+      ibu: ibuBreakdown.totalCalculatedIbu,
+      srm: calculateSrm(grainRows, wv.postChill) ?? 0,
+      abv: abvFromGravity(og, fg),
+    };
+  })();
 
   const HOP_USES = [
     { value: "fwh",       label: "First Wort Hop" },
@@ -1501,10 +1525,10 @@ export function BeerSections({
 
           {/* OG, FG, IBU, SRM */}
           {(() => {
-            const firstAttenuation = yeasts[0]?.yeast.attenuation ?? null;
+            const firstAttenuation = avgAttenuation != null ? Math.round(avgAttenuation * 10) / 10 : null;
             const suggestedFg =
-              targets.og != null && firstAttenuation != null
-                ? Math.round(1000 + (targets.og - 1000) * (1 - firstAttenuation / 100))
+              targets.og != null && avgAttenuation != null
+                ? Math.round(1000 + (targets.og - 1000) * (1 - avgAttenuation / 100))
                 : null;
 
             return STAT_CONFIGS.map((cfg) => {
@@ -2099,16 +2123,16 @@ export function BeerSections({
                   <div className="space-y-1">
                     <p><strong>Boil</strong> — standard Tinseth with addition time.</p>
                     <p><strong>FWH / Mash</strong> — Tinseth capped at 60 min.</p>
-                    <p><strong>Whirlpool / Hop Stand</strong> — fixed 15 min at 90°C (temp-adjusted).</p>
+                    <p><strong>Whirlpool / Hop Stand</strong> — steeps for the hop&apos;s time (or the batch whirlpool time if 0) at 90°C (temp-adjusted).</p>
                     <p><strong>Dry Hop</strong> — 0 calculated IBU, but adds ~10% utilization as <em>perceived</em> bitterness.</p>
                   </div>
                   <p className="text-muted-foreground">Perceived IBU includes dry hop contribution. Estimated IBU does not.</p>
                 </div>
               )}
             </span>
-            {batch.targetIbu != null && (
+            {targets.ibu != null && (
               <span className="text-muted-foreground">
-                Target: <span className="font-medium">{batch.targetIbu}</span>
+                Target: <span className="font-medium">{targets.ibu}</span>
               </span>
             )}
           </div>
@@ -2508,6 +2532,47 @@ export function BeerSections({
           </div>
         )}
 
+        {hasDecoction && (
+          <div className="space-y-2 mb-4">
+            <div className="flex items-center gap-3">
+              <span className="w-32 text-sm shrink-0">Decoction boil temp</span>
+              <NumberInput
+                min="80"
+                max="105"
+                step="0.1"
+                value={decoctionBoilTemp}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  if (!isNaN(v) && v > 0) {
+                    setDecoctionBoilTemp(v);
+                    scheduleMashSettingsSave();
+                  }
+                }}
+                className="w-24 h-7 text-sm"
+              />
+              <span className="text-sm text-muted-foreground">°C (lower at altitude)</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="w-32 text-sm shrink-0">Mash heat loss</span>
+              <NumberInput
+                min="0"
+                max="30"
+                step="0.5"
+                value={mashCoolingRate}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  if (!isNaN(v) && v >= 0) {
+                    setMashCoolingRate(v);
+                    scheduleMashSettingsSave();
+                  }
+                }}
+                className="w-24 h-7 text-sm"
+              />
+              <span className="text-sm text-muted-foreground">°C/h while decoction is out</span>
+            </div>
+          </div>
+        )}
+
         <div className="rounded-lg overflow-hidden border text-sm">
           {/* Strike / mash water */}
           <div className="flex items-center justify-between px-3 py-2.5 bg-blue-50 dark:bg-blue-950/30 font-semibold text-blue-900 dark:text-blue-100">
@@ -2715,7 +2780,7 @@ export function BeerSections({
               variant="outline"
               className="h-7 text-xs"
               onClick={() => {
-                setEditMashStepDraft({ name: "", type: "infusion", stepTemperatureC: "", stepTimeMin: "", amountL: "", rampTimeMin: "", endTemperatureC: "", description: "", infuseTemperatureC: "" });
+                setEditMashStepDraft({ name: "", type: "infusion", stepTemperatureC: "", stepTimeMin: "", amountL: "", rampTimeMin: "", endTemperatureC: "", description: "", infuseTemperatureC: "", decoctionBoilMin: "" });
                 setShowAddMashStep(true);
                 setEditingMashStepId(null);
               }}
@@ -2765,13 +2830,19 @@ export function BeerSections({
                           <NumberInput step="1" value={editMashStepDraft.stepTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTimeMin: e.target.value }))} className="h-7 text-sm" />
                         </div>
                         <div>
-                          <label className="text-xs text-muted-foreground">Amount (L)</label>
-                          <NumberInput step="0.1" value={editMashStepDraft.amountL} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, amountL: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                          <label className="text-xs text-muted-foreground">{editMashStepDraft.type === "decoction" ? "Pull (L)" : "Amount (L)"}</label>
+                          <NumberInput step="0.1" value={editMashStepDraft.amountL} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, amountL: e.target.value }))} className="h-7 text-sm" placeholder={editMashStepDraft.type === "decoction" ? "Empty = calculated" : "Optional"} />
                         </div>
                         <div>
-                          <label className="text-xs text-muted-foreground">Ramp time (min)</label>
-                          <NumberInput step="1" value={editMashStepDraft.rampTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, rampTimeMin: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                          <label className="text-xs text-muted-foreground">{editMashStepDraft.type === "decoction" ? "Heat to boil (min)" : "Ramp time (min)"}</label>
+                          <NumberInput step="1" value={editMashStepDraft.rampTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, rampTimeMin: e.target.value }))} className="h-7 text-sm" placeholder={editMashStepDraft.type === "decoction" ? String(DEFAULT_DECOCTION_HEATUP_MIN) : "Optional"} />
                         </div>
+                        {editMashStepDraft.type === "decoction" && (
+                          <div>
+                            <label className="text-xs text-muted-foreground">Decoction boil (min)</label>
+                            <NumberInput step="1" value={editMashStepDraft.decoctionBoilMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, decoctionBoilMin: e.target.value }))} className="h-7 text-sm" placeholder="e.g. 15" />
+                          </div>
+                        )}
                         <div>
                           <label className="text-xs text-muted-foreground">End temp (°C)</label>
                           <NumberInput step="0.1" value={editMashStepDraft.endTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, endTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
@@ -2806,6 +2877,7 @@ export function BeerSections({
                               endTemperatureC: editMashStepDraft.endTemperatureC ? parseFloat(editMashStepDraft.endTemperatureC) : null,
                               description: editMashStepDraft.description || null,
                               infuseTemperatureC: editMashStepDraft.infuseTemperatureC ? parseFloat(editMashStepDraft.infuseTemperatureC) : null,
+                      decoctionBoilMin: editMashStepDraft.decoctionBoilMin ? parseFloat(editMashStepDraft.decoctionBoilMin) : null,
                               sortOrder: idx,
                             });
                             setMashStepRows((rows) => rows.map((r) => r.id === step.id ? {
@@ -2819,6 +2891,7 @@ export function BeerSections({
                               endTemperatureC: editMashStepDraft.endTemperatureC ? parseFloat(editMashStepDraft.endTemperatureC) : null,
                               description: editMashStepDraft.description || null,
                               infuseTemperatureC: editMashStepDraft.infuseTemperatureC ? parseFloat(editMashStepDraft.infuseTemperatureC) : null,
+                              decoctionBoilMin: editMashStepDraft.decoctionBoilMin ? parseFloat(editMashStepDraft.decoctionBoilMin) : null,
                             } : r));
                             setEditingMashStepId(null);
                             toast.success("Mash step updated");
@@ -2862,6 +2935,7 @@ export function BeerSections({
                           endTemperatureC: step.endTemperatureC != null ? String(step.endTemperatureC) : "",
                           description: step.description ?? "",
                           infuseTemperatureC: step.infuseTemperatureC != null ? String(step.infuseTemperatureC) : "",
+                          decoctionBoilMin: step.decoctionBoilMin != null ? String(step.decoctionBoilMin) : "",
                         });
                         setEditingMashStepId(step.id);
                         setShowAddMashStep(false);
@@ -2882,6 +2956,31 @@ export function BeerSections({
                       </Button>
                     </div>
                     </div>
+                    {/* Decoction annotations (any mash mode) */}
+                    {step.type === "decoction" && (() => {
+                      const dec = mashScheduleCalc?.find(s => s.stepIndex === idx)?.decoction;
+                      if (!dec) return null;
+                      return (
+                        <div className="mt-1 pl-8 space-y-0.5 text-xs">
+                          <div className="flex flex-wrap items-center gap-x-3 text-amber-700 dark:text-amber-400">
+                            <span className="font-medium">Pull {dec.decoctionL.toFixed(1)} L ({Math.round(dec.decoctionFraction * 100)}%)</span>
+                            <span>Boil {dec.boilMin.toFixed(0)} min</span>
+                            <span className="text-muted-foreground">
+                              Mash drops to {dec.mainMashTempBeforeC.toFixed(1)}°C → returns to {dec.resultingTempC.toFixed(1)}°C
+                            </span>
+                          </div>
+                          {dec.unreachable && (
+                            <div className="text-red-600 dark:text-red-400">Target not reachable by decoction — even the whole mash isn&apos;t enough</div>
+                          )}
+                          {!dec.unreachable && dec.decoctionFraction > 0.5 && (
+                            <div className="text-amber-600 dark:text-amber-400">Over half the mash — consider an infusion or a second decoction</div>
+                          )}
+                          {step.amountL != null && Math.abs(dec.resultingTempC - step.stepTemperatureC) > 0.5 && (
+                            <div className="text-amber-600 dark:text-amber-400">Manual pull: lands {(dec.resultingTempC - step.stepTemperatureC).toFixed(1)}°C off target</div>
+                          )}
+                        </div>
+                      );
+                    })()}
                     {/* Step infusion annotations */}
                     {mashMode === "step_infusion" && stepInfusionCalc != null && (() => {
                       const info = stepInfusionCalc.find(s => s.stepIndex === idx);
@@ -2963,13 +3062,19 @@ export function BeerSections({
                   <NumberInput step="1" value={editMashStepDraft.stepTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, stepTimeMin: e.target.value }))} className="h-7 text-sm" />
                 </div>
                 <div>
-                  <label className="text-xs text-muted-foreground">Amount (L)</label>
-                  <NumberInput step="0.1" value={editMashStepDraft.amountL} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, amountL: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                  <label className="text-xs text-muted-foreground">{editMashStepDraft.type === "decoction" ? "Pull (L)" : "Amount (L)"}</label>
+                  <NumberInput step="0.1" value={editMashStepDraft.amountL} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, amountL: e.target.value }))} className="h-7 text-sm" placeholder={editMashStepDraft.type === "decoction" ? "Empty = calculated" : "Optional"} />
                 </div>
                 <div>
-                  <label className="text-xs text-muted-foreground">Ramp time (min)</label>
-                  <NumberInput step="1" value={editMashStepDraft.rampTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, rampTimeMin: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
+                  <label className="text-xs text-muted-foreground">{editMashStepDraft.type === "decoction" ? "Heat to boil (min)" : "Ramp time (min)"}</label>
+                  <NumberInput step="1" value={editMashStepDraft.rampTimeMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, rampTimeMin: e.target.value }))} className="h-7 text-sm" placeholder={editMashStepDraft.type === "decoction" ? String(DEFAULT_DECOCTION_HEATUP_MIN) : "Optional"} />
                 </div>
+                {editMashStepDraft.type === "decoction" && (
+                  <div>
+                    <label className="text-xs text-muted-foreground">Decoction boil (min)</label>
+                    <NumberInput step="1" value={editMashStepDraft.decoctionBoilMin} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, decoctionBoilMin: e.target.value }))} className="h-7 text-sm" placeholder="e.g. 15" />
+                  </div>
+                )}
                 <div>
                   <label className="text-xs text-muted-foreground">End temp (°C)</label>
                   <NumberInput step="0.1" value={editMashStepDraft.endTemperatureC} onChange={(e) => setEditMashStepDraft((d) => ({ ...d, endTemperatureC: e.target.value }))} className="h-7 text-sm" placeholder="Optional" />
@@ -3003,6 +3108,7 @@ export function BeerSections({
                       endTemperatureC: editMashStepDraft.endTemperatureC ? parseFloat(editMashStepDraft.endTemperatureC) : null,
                       description: editMashStepDraft.description || null,
                       infuseTemperatureC: editMashStepDraft.infuseTemperatureC ? parseFloat(editMashStepDraft.infuseTemperatureC) : null,
+                              decoctionBoilMin: editMashStepDraft.decoctionBoilMin ? parseFloat(editMashStepDraft.decoctionBoilMin) : null,
                       sortOrder: mashStepRows.length,
                     });
                     setMashStepRows((rows) => [...rows, newStep]);
@@ -3652,8 +3758,7 @@ export function BeerSections({
             if (grainRows.length === 0 || !wv.preHeatUp) return null;
             const mashEffPct = eqSnap?.mashEff ?? eqSnap?.brewhouseEff ?? 75;
             const adjustedExtractKg = (grainTotals.extract / 1000) * (mashEffPct / 100);
-            const plato = (adjustedExtractKg * 1000) / wv.preHeatUp / 10;
-            return Math.round((1 + plato / (258.6 - plato * (227.1 / 258.2))) * 10000) / 10;
+            return Math.round(gravityFromExtract(adjustedExtractKg, wv.preHeatUp) * 10000) / 10;
           })(),
           boilTimeMin: boilTimeMin ?? 60,
           boilHops: hopRows
@@ -3662,7 +3767,7 @@ export function BeerSections({
           targetOg: targets.og,
           fermenterWeightKg: eqSnap?.fermenterWeightKg ?? null,
           brewDate: batch.brewDate,
-          stepInfusionSchedule: stepInfusionCalc,
+          mashSchedule: mashScheduleCalc,
           mashStepNames: mashStepRows.map(s => s.name),
         };
         return (
@@ -3714,26 +3819,18 @@ export function BeerSections({
 
       {open.finalStats && (() => {
         // Estimated values (from recipe)
-        const firstAttenuation = yeasts[0]?.yeast.attenuation ?? null;
+        const firstAttenuation = avgAttenuation;
         const estOg = estimatedOG?.og ?? null;
         const estOgInt = estOg != null ? Math.round(estOg * 1000) : null;
         const estFgInt = estOg != null && firstAttenuation != null
-          ? Math.round(1000 + (estOg * 1000 - 1000) * (1 - firstAttenuation / 100))
+          ? Math.round(estimateFg(estOg, firstAttenuation) * 1000)
           : null;
         const estFg = estFgInt != null ? estFgInt / 1000 : null;
-        const estAbv = estOg != null && estFg != null ? (estOg - estFg) * 131.25 : null;
+        const estAbv = estOg != null && estFg != null ? abvFromGravity(estOg, estFg) : null;
         // Same formula as fermentables: MCU over theoretical post-chill volume
-        const estSrm = (() => {
-          if (wv.postChill <= 0) return null;
-          const postChillGal = wv.postChill * 0.264172;
-          const mcu = grainRows.reduce((sum, r) => {
-            const colorL = r.colorL ?? r.grain.colorL;
-            return colorL != null ? sum + (r.grams * 0.00220462 * colorL) / postChillGal : sum;
-          }, 0);
-          return mcu > 0 ? 1.4922 * Math.pow(mcu, 0.6859) : null;
-        })();
-        const estIbu = ibuBreakdown.totalPerceivedIbu > 0 ? ibuBreakdown.totalPerceivedIbu : null;
-        const estVol = batch.targetFermentarL;
+        const estSrm = calculateSrm(grainRows, wv.postChill);
+        const estIbu = ibuBreakdown.totalCalculatedIbu > 0 ? ibuBreakdown.totalCalculatedIbu : null;
+        const estVol = batchSize;
 
         // Final values (from brewday fermentation steps)
         const stepsWithDensity = brewday.fermentation.steps.filter(s => s.densityGL != null);
@@ -3758,42 +3855,23 @@ export function BeerSections({
         const finalIbu = finalOgInt != null
           ? (() => {
               const finalOgSg = finalOgInt / 1000;
-              const actualVolumeL = finalVol ?? batch.targetFermentarL ?? 20;
-              const result = calculateIbuBreakdown(hopRows, finalOgSg, actualVolumeL, batch.boilTimeMin ?? 60);
-              return result.totalPerceivedIbu > 0 ? result.totalPerceivedIbu : null;
+              const actualVolumeL = finalVol ?? batchSize ?? 20;
+              const result = calculateIbuBreakdown(hopRows, finalOgSg, actualVolumeL, boilTimeMin ?? 60, whirpoolTimeMin);
+              return result.totalCalculatedIbu > 0 ? result.totalCalculatedIbu : null;
             })()
           : null;
 
         // Final SRM: grain bill over actual post-chill volume
         // = last boil entry volume (from heightCm + pot diameter, or stored volumeL) × thermal contraction
         // fallback: fermenter volume + trub loss
-        const finalSrm = (() => {
-          const boilEntries = brewday.boil.entries;
-          const trubLossL = eqSnap?.trubLossL ?? 1.0;
-          const contractionFactor = 1 - ((eqSnap?.tempContractionPct ?? 4) / 100);
-          const d = eqSnap?.boilPotDiameter ?? null;
-
-          // Compute volume from heightCm if diameter is known, else use stored volumeL
-          const entryVol = (entry: { heightCm: number | null; volumeL: number | null }): number | null => {
-            if (d != null && d > 0 && entry.heightCm != null && entry.heightCm > 0)
-              return Math.PI * Math.pow(d / 2, 2) * entry.heightCm / 1000;
-            return entry.volumeL ?? null;
-          };
-
-          const lastEntry = [...boilEntries].reverse().find(e => entryVol(e) != null);
-          const endOfBoilL = lastEntry != null ? entryVol(lastEntry) : null;
-          const postChillL = endOfBoilL != null && endOfBoilL > 0
-            ? endOfBoilL * contractionFactor
-            : finalVol != null && finalVol > 0
-              ? finalVol + trubLossL
-              : null;
-          if (postChillL == null) return null;
-          const mcu = grainRows.reduce((sum, r) => {
-            const colorL = r.colorL ?? r.grain.colorL;
-            return colorL != null ? sum + (r.grams * 0.00220462 * colorL) / (postChillL * 0.264172) : sum;
-          }, 0);
-          return mcu > 0 ? 1.4922 * Math.pow(mcu, 0.6859) : null;
-        })();
+        const finalPostChillL = measuredPostChillVolumeL({
+          boilEntries: brewday.boil.entries,
+          potDiameterCm: eqSnap?.boilPotDiameter ?? null,
+          tempContractionPct: eqSnap?.tempContractionPct,
+          trubLossL: eqSnap?.trubLossL,
+          fermenterVolumeL: finalVol,
+        });
+        const finalSrm = finalPostChillL != null ? calculateSrm(grainRows, finalPostChillL) : null;
 
         // Style ranges
         const styleOg  = getStyleRange(styleEntry, "ogmin",  "ogmax");

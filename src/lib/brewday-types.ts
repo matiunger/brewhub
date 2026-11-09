@@ -77,6 +77,7 @@ export interface MashData {
     warmUpWater: boolean;
   };
   infusionWarmUp: Record<number, boolean>;
+  decoctionPulled?: Record<number, boolean>;
   general: {
     checkWaterTaste: boolean;
     heatWaterTime: string | null;
@@ -234,6 +235,7 @@ export const DEFAULT_BREWDAY_DATA: BrewdayData = {
     mashWater: { liters: null, heightCm: null, potDiameterCm: null, pot: null, tStrikeC: null, notes: null },
     spargeWater: { liters: null, heightCm: null, potDiameterCm: null, pot: null, tempC: null, ph: null, notes: null, warmUpWater: false },
     infusionWarmUp: {},
+    decoctionPulled: {},
     general: { checkWaterTaste: false, heatWaterTime: null, mashInTime: null, mashStartTime: null, targetTempC: null, mashTempC: null, mashPh: null },
     timeline: [{ id: "initial", time: null, tempC: null, ph: null, recirculated: false, stir: false }],
   },
