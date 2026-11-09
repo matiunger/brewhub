@@ -31,7 +31,7 @@ export async function PUT(
     const page = await prisma.wikiPage.update({ where: { slug }, data });
     return NextResponse.json(page);
   } catch (error) {
-    if ((error as any).code === "P2025") {
+    if ((error as { code?: string }).code === "P2025") {
       return NextResponse.json({ error: "Page not found" }, { status: 404 });
     }
     throw error;

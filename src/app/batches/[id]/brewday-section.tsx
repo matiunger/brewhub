@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ChevronDown, ChevronRight, ClipboardList, Settings2, Layers, GlassWater, Flame, Snowflake, FlaskConical, Package, Filter, Barrel } from "lucide-react";
+import { ClipboardList, Settings2, Layers, GlassWater, Flame, Snowflake, FlaskConical, Package, Filter, Barrel } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,7 +10,7 @@ import { Plus, Trash2, FileText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CollapsibleCard } from "./beer-sections";
+import { CollapsibleCard } from "./collapsible-card";
 import {
   type BrewdayData,
   type MashData,
@@ -18,7 +18,6 @@ import {
   type SpargeData,
   type PreboilData,
   type LastRunData,
-  type BoilData,
   type WhirlpoolChillingData,
   type FermentationData,
   type FermentationStep,
@@ -93,17 +92,6 @@ function TimeInput({ value, onChange, className }: { value: string | null; onCha
       type="time"
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value || null)}
-      className={`h-7 text-sm w-full ${className ?? ""}`}
-    />
-  );
-}
-
-function TextInput({ value, onChange, placeholder, className }: { value: string | null; onChange: (v: string | null) => void; placeholder?: string; className?: string }) {
-  return (
-    <Input
-      value={value ?? ""}
-      onChange={(e) => onChange(e.target.value || null)}
-      placeholder={placeholder ?? "—"}
       className={`h-7 text-sm w-full ${className ?? ""}`}
     />
   );
@@ -840,7 +828,8 @@ interface BrewdaySectionProps {
   updateBrewday: <K extends keyof BrewdayData>(section: K, value: BrewdayData[K]) => void;
   recipeData: RecipeData;
   kegInventory: { id: string; name: string; capacity: number; tareWeight: number | null }[];
-  openBrewday: boolean; onToggleBrewday: () => void;
+  /** Which half to render: brew day steps, or fermentation → packaging */
+  part: "brewday" | "fermentation";
   openPreparation: boolean; onTogglePreparation: () => void;
   openMilling: boolean; onToggleMilling: () => void;
   openMash: boolean; onToggleMash: () => void;
@@ -855,7 +844,7 @@ interface BrewdaySectionProps {
 
 export function BrewdaySection({
   brewday, updateBrewday, recipeData, kegInventory,
-  openBrewday, onToggleBrewday,
+  part,
   openPreparation, onTogglePreparation,
   openMilling, onToggleMilling,
   openMash, onToggleMash,
@@ -886,13 +875,6 @@ export function BrewdaySection({
   const setSpargeWater = useCallback(
     (key: keyof MashData["spargeWater"], val: string | number | boolean | null) => {
       updateBrewday("mash", { ...mash, spargeWater: { ...mash.spargeWater, [key]: val } });
-    },
-    [mash, updateBrewday]
-  );
-
-  const setSpargeWaterPot = useCallback(
-    (val: string | null) => {
-      updateBrewday("mash", { ...mash, spargeWater: { ...mash.spargeWater, pot: val } });
     },
     [mash, updateBrewday]
   );
@@ -958,13 +940,6 @@ export function BrewdaySection({
       updateBrewday("lastRun", { ...lastRun, [key]: val });
     },
     [lastRun, updateBrewday]
-  );
-
-  const setBoil = useCallback(
-    (key: keyof Omit<BoilData, "entries">, val: boolean | number | null) => {
-      updateBrewday("boil", { ...boil, [key]: val });
-    },
-    [boil, updateBrewday]
   );
 
   // Ensure boil always has at least start + end entries
@@ -1103,22 +1078,7 @@ export function BrewdaySection({
 
   return (
     <>
-      {/* Brewday title separator */}
-      <button
-        type="button"
-        onClick={onToggleBrewday}
-        className="flex items-center gap-3 pt-2 w-full text-left"
-      >
-        {openBrewday ? (
-          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-        ) : (
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-        )}
-        <h2 className="text-lg font-bold tracking-tight whitespace-nowrap">Brewday</h2>
-        <div className="flex-1 border-t" />
-      </button>
-
-      {openBrewday && <>
+      {part === "brewday" && <>
 
       {/* ---- PREPARATION ---- */}
       <CollapsibleCard id="section-bdPreparation" title="Preparation" icon={<ClipboardList className="h-4 w-4" />} open={openPreparation} onToggle={onTogglePreparation}>
@@ -1193,7 +1153,7 @@ export function BrewdaySection({
                              ["Very coarse","text-red-500"];
               return (
                 <span className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">{(gap / 25.4).toFixed(4)}"</span>
+                  <span className="text-xs text-muted-foreground">{(gap / 25.4).toFixed(4)}&quot;</span>
                   <span className={`text-xs font-medium ${color}`}>{label}</span>
                 </span>
               );
@@ -1948,6 +1908,10 @@ export function BrewdaySection({
           </div>
         </div>
       </CollapsibleCard>
+
+      </>}
+
+      {part === "fermentation" && <>
 
       {/* ---- FERMENTATION ---- */}
       <FermentationSection

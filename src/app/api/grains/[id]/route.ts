@@ -33,6 +33,22 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+
+  // Batches keep a link to the inventory item, so block deletes that are still in use
+  const usedIn = await prisma.batchGrain.findMany({
+    where: { grainId: id },
+    select: { batchId: true, batch: { select: { name: true } } },
+  });
+  if (usedIn.length > 0) {
+    const batchCount = new Set(usedIn.map((u) => u.batchId)).size;
+    const names = [...new Set(usedIn.map((u) => u.batch.name))];
+    const shown = names.slice(0, 3).join(", ") + (names.length > 3 ? ", …" : "");
+    return NextResponse.json(
+      { error: `Can't delete: used in ${batchCount} batch${batchCount === 1 ? "" : "es"} (${shown})` },
+      { status: 409 }
+    );
+  }
+
   try {
     await prisma.grain.delete({ where: { id } });
     return NextResponse.json({ success: true });

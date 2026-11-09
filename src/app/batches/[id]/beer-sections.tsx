@@ -1,21 +1,27 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ChevronDown, ChevronRight, Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ClipboardList, Wrench, BarChart2, Flame, Layers, Wheat, Hop as HopIcon, FlaskConical, GlassWater, Droplet, AlertTriangle, Settings2, Filter, Snowflake, Package, Barrel, type LucideIcon } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Info, Pencil, Check, X, Trash2, ArrowUpDown, ArrowUp, ArrowDown, ClipboardList, Wrench, BarChart2, Flame, Layers, Wheat, Hop as HopIcon, FlaskConical, GlassWater, Droplet, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NumberInput } from "@/components/ui/number-input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SearchableSelect } from "@/components/ui/searchable-select";
 import { BatchForm } from "./batch-form";
+import { CollapsibleCard } from "./collapsible-card";
+import { SECTION_DEFAULTS, SECTION_NAV, BATCH_TABS, parseTab, sectionAnchorId, type SectionKey, type BatchTab } from "./batch-sections-config";
+import type { Grain, Hop, Yeast, BatchGrain, BatchHop, BatchYeast, Stats, Equipment, EquipmentSnapshot, WaterProfile, MashStep } from "./batch-types";
 import stylesData from "../../../../styles.json";
 import baStylesData from "../../../data/ba_styles.json";
 import { srmToHex, srmIsLight } from "@/lib/olfarve";
-import { calculateAcidAddition, calculateSpargeAcidDose, calculateIbuBreakdown, calculateStepInfusionSchedule, calculateSrm, averageAttenuation, estimateFg, abvFromGravity, gravityFromExtract, measuredPostChillVolumeL, DEFAULT_DECOCTION_HEATUP_MIN, type AcidType, type StepInfusionResult } from "@/lib/calculations";
+import { cn } from "@/lib/utils";
+import { tracked } from "@/lib/save-status";
+import { useDebouncedSave } from "@/lib/use-debounced-save";
+import { getStyleRange } from "@/lib/style-range";
+import { ResultsTab } from "./results-tab";
+import { calculateAcidAddition, calculateSpargeAcidDose, calculateIbuBreakdown, calculateStepInfusionSchedule, calculateSrm, averageAttenuation, estimateFg, abvFromGravity, gravityFromExtract, DEFAULT_DECOCTION_HEATUP_MIN, type AcidType } from "@/lib/calculations";
 import { parseBrewdayData, type BrewdayData } from "@/lib/brewday-types";
 import { BrewdaySection, type RecipeData } from "./brewday-section";
 
@@ -129,139 +135,7 @@ function SrmRangeBar({
   );
 }
 
-// ---------- Interfaces ----------
-
-interface Grain {
-  id: string;
-  name: string;
-  brand: string | null;
-  colorL: number | null;
-  maxYield: number | null;
-  grainGroup: string | null;
-}
-
-interface Hop {
-  id: string;
-  name: string;
-  alphaAcid: number;
-}
-
-interface Yeast {
-  id: string;
-  name: string;
-  brand: string | null;
-  attenuation: number | null;
-}
-
-interface BatchGrain {
-  id: string;
-  grams: number;
-  mashAddition: string | null;
-  // Snapshot fields (copied from inventory at add time, editable per batch)
-  name: string | null;
-  brand: string | null;
-  colorL: number | null;
-  maxYield: number | null;
-  grainGroup: string | null;
-  grain: Grain;
-}
-
-interface BatchHop {
-  id: string;
-  grams: number;
-  use: string;
-  additionTime: number | null;
-  // Snapshot fields
-  name: string | null;
-  alphaAcid: number | null;
-  hop: Hop;
-}
-
-interface BatchYeast {
-  id: string;
-  quantityAmount: number | null;
-  quantityUnits: string | null;
-  temp: number | null;
-  pitchRate: number | null;
-  starterNotes: string | null;
-  // Snapshot fields
-  name: string | null;
-  brand: string | null;
-  attenuation: number | null;
-  yeast: Yeast;
-}
-
-interface Stats {
-  og: number;
-  fg: number;
-  ibu: number;
-  srm: number;
-  abv: number;
-}
-
-interface Equipment {
-  id: string;
-  name: string;
-  fermenterLossL: number;
-  trubLossL: number;
-  systemLossPercent: number | null;
-  mashTunDeadSpaceL: number | null;
-  grainAbsorptionLKg: number | null;
-  boilEvaporationRateLH: number | null;
-  heatingEvaporationRateLH: number | null;
-  tempContractionPercent: number | null;
-}
-
-interface EquipmentSnapshot {
-  name: string | null;
-  brewhouseEff: number | null;
-  mashEff: number | null;
-  mashTunVolumeL: number | null;
-  mashTunDeadSpaceL: number | null;
-  mashTunLossL: number | null;
-  boilPotVolumeL: number | null;
-  boilEvapRateLH: number | null;
-  heatEvapRateLH: number | null;
-  grainAbsLKg: number | null;
-  fermenterVolumeL: number | null;
-  fermenterWeightKg: number | null;
-  fermenterLossL: number | null;
-  trubLossL: number | null;
-  systemLossPct: number | null;
-  tempContractionPct: number | null;
-  boilPotDiameter: number | null;
-  spargeWaterPotDiameter: number | null;
-}
-
-interface WaterProfile {
-  id: string;
-  name: string;
-  caPpm: number;
-  mgPpm: number;
-  naPpm: number;
-  clPpm: number;
-  so4Ppm: number;
-  znPpm: number | null;
-  hco3Ppm: number | null;
-  pH: number | null;
-}
-
-interface MashStep {
-  id: string;
-  name: string;
-  type: string;
-  stepTemperatureC: number;
-  stepTimeMin: number;
-  amountL: number | null;
-  rampTimeMin: number | null;
-  endTemperatureC: number | null;
-  description: string | null;
-  infuseTemperatureC: number | null;
-  decoctionBoilMin: number | null;
-  sortOrder: number;
-}
-
-interface BeerSectionsProps {
+export interface BeerSectionsProps {
   batchId: string;
   batch: {
     id: string;
@@ -372,8 +246,6 @@ interface BeerSectionsProps {
   }) => Promise<void>;
 }
 
-type SectionKey = "basicInfo" | "recipeDesign" | "equipment" | "recipeOverview" | "boil" | "waterVolumes" | "mash" | "fermentables" | "hops" | "cultures" | "water" | "bdBrewday" | "bdPreparation" | "bdMilling" | "bdMash" | "bdSparge" | "bdPreboil" | "bdBoil" | "bdWhirlpool" | "bdFermentation" | "bdKegging" | "bdLagering" | "bdBottling" | "finalStats" | "finalStatsOverview" | "finalStatsTiming" | "finalStatsTastings";
-
 const MASH_ADDITIONS = [
   { value: "mash",       label: "Mash" },
   { value: "mash_out",   label: "Mash out" },
@@ -442,124 +314,6 @@ function MashStepNameInput({ value, onChange, onSelect, placeholder, className }
   );
 }
 
-const SECTION_DEFAULTS: Record<SectionKey, boolean> = {
-  basicInfo: true,
-  recipeDesign: true,
-  equipment: false,
-  recipeOverview: true,
-  boil: true,
-  waterVolumes: true,
-  mash: true,
-  fermentables: true,
-  hops: true,
-  cultures: true,
-  water: true,
-  bdBrewday: true,
-  bdPreparation: false,
-  bdMilling: false,
-  bdMash: false,
-  bdSparge: false,
-  bdPreboil: false,
-  bdBoil: false,
-  bdWhirlpool: false,
-  bdFermentation: false,
-  bdKegging: false,
-  bdLagering: false,
-  bdBottling: false,
-  finalStats: true,
-  finalStatsOverview: true,
-  finalStatsTiming: true,
-  finalStatsTastings: true,
-};
-
-type NavGroup = "recipe" | "brewday" | "final";
-
-const SECTION_NAV: {
-  group: NavGroup;
-  key: SectionKey;
-  parent?: SectionKey;
-  label: string;
-  icon: LucideIcon;
-  hoverClass?: string;
-}[] = [
-  { group: "recipe", key: "basicInfo", label: "Basic Information", icon: ClipboardList },
-  { group: "recipe", key: "equipment", parent: "recipeDesign", label: "Equipment", icon: Wrench },
-  { group: "recipe", key: "recipeOverview", parent: "recipeDesign", label: "Recipe Overview", icon: BarChart2 },
-  { group: "recipe", key: "fermentables", parent: "recipeDesign", label: "Fermentables", icon: Wheat, hoverClass: "hover:text-orange-700 hover:bg-orange-50" },
-  { group: "recipe", key: "hops", parent: "recipeDesign", label: "Hops", icon: HopIcon, hoverClass: "hover:text-lime-700 hover:bg-lime-50" },
-  { group: "recipe", key: "cultures", parent: "recipeDesign", label: "Cultures", icon: FlaskConical, hoverClass: "hover:text-purple-700 hover:bg-purple-50" },
-  { group: "recipe", key: "boil", parent: "recipeDesign", label: "Boil", icon: Flame },
-  { group: "recipe", key: "mash", parent: "recipeDesign", label: "Mash", icon: Layers },
-  { group: "recipe", key: "waterVolumes", parent: "recipeDesign", label: "Volumes", icon: GlassWater },
-  { group: "recipe", key: "water", parent: "recipeDesign", label: "Water", icon: Droplet, hoverClass: "hover:text-sky-700 hover:bg-sky-50" },
-  { group: "brewday", key: "bdPreparation", parent: "bdBrewday", label: "Preparation", icon: ClipboardList },
-  { group: "brewday", key: "bdMilling", parent: "bdBrewday", label: "Milling", icon: Settings2 },
-  { group: "brewday", key: "bdMash", parent: "bdBrewday", label: "Mash", icon: Layers },
-  { group: "brewday", key: "bdSparge", parent: "bdBrewday", label: "Lauter & Sparge", icon: Filter },
-  { group: "brewday", key: "bdBoil", parent: "bdBrewday", label: "Boil", icon: Flame },
-  { group: "brewday", key: "bdWhirlpool", parent: "bdBrewday", label: "Whirlpool & Chilling", icon: Snowflake },
-  { group: "brewday", key: "bdFermentation", parent: "bdBrewday", label: "Fermentation", icon: FlaskConical },
-  { group: "brewday", key: "bdKegging", parent: "bdBrewday", label: "Kegging & Carbonation", icon: Package },
-  { group: "brewday", key: "bdLagering", parent: "bdBrewday", label: "Lagering", icon: Barrel },
-  { group: "brewday", key: "bdBottling", parent: "bdBrewday", label: "Bottling", icon: GlassWater },
-  { group: "final", key: "finalStatsOverview", parent: "finalStats", label: "Overview", icon: BarChart2 },
-  { group: "final", key: "finalStatsTiming", parent: "finalStats", label: "Timing", icon: ClipboardList },
-  { group: "final", key: "finalStatsTastings", parent: "finalStats", label: "Tastings", icon: GlassWater },
-];
-
-function sectionAnchorId(key: SectionKey) {
-  return `section-${key}`;
-}
-
-// ---------- CollapsibleCard ----------
-
-export function CollapsibleCard({
-  title,
-  icon,
-  open,
-  onToggle,
-  actions,
-  badge,
-  className,
-  id,
-  children,
-}: {
-  title: React.ReactNode;
-  icon?: React.ReactNode;
-  open: boolean;
-  onToggle: () => void;
-  actions?: React.ReactNode;
-  badge?: React.ReactNode;
-  className?: string;
-  id?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Card id={id} className={`p-4 px-0 scroll-mt-16 ${open ? "pt-2" : "border-b"} ${className ?? ""}`}>
-      <CardHeader className={`flex flex-row items-center justify-between px-4 ${open ? "py-3" : "py-1"}`}>
-        <button
-          type="button"
-          onClick={onToggle}
-          className="flex items-center gap-2 text-left flex-1"
-        >
-          {open ? (
-            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-          ) : (
-            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-          )}
-          {icon && <span className="text-muted-foreground">{icon}</span>}
-          <CardTitle>{title}</CardTitle>
-        </button>
-        <div className="flex items-center gap-2 ml-2">
-          {badge}
-          {open && actions}
-        </div>
-      </CardHeader>
-      {open && <CardContent>{children}</CardContent>}
-    </Card>
-  );
-}
-
 // ---------- Stat config ----------
 
 type TargetKey = "og" | "fg" | "ibu" | "srm";
@@ -584,16 +338,6 @@ const STAT_CONFIGS: StatConfig[] = [
   { key: "srm", label: "SRM", absMin: 0,    absMax: 40,   sMinKey: "srmmin", sMaxKey: "srmmax", decimals: 1, step: "0.5", scale: 1 },
 ];
 
-function getStyleRange(
-  entry: Record<string, string> | null,
-  minKey: string,
-  maxKey: string
-): { min: number | null; max: number | null } {
-  if (!entry) return { min: null, max: null };
-  const min = parseFloat(entry[minKey]);
-  const max = parseFloat(entry[maxKey]);
-  return { min: isNaN(min) ? null : min, max: isNaN(max) ? null : max };
-}
 
 // ---------- BeerSections ----------
 
@@ -607,57 +351,95 @@ export function BeerSections({
   allGrains,
   allHops,
   allYeasts,
-  updateAction,
-  updateNotesAction,
-  updateTargetStatsAction,
-  addGrainAction,
-  updateGrainAction,
-  deleteGrainAction,
-  addHopAction,
-  updateHopAction,
-  deleteHopAction,
-  addYeastAction,
-  updateYeastAction,
-  deleteYeastAction,
+  updateAction: rawUpdateAction,
+  updateNotesAction: rawUpdateNotesAction,
+  updateTargetStatsAction: rawUpdateTargetStatsAction,
+  addGrainAction: rawAddGrainAction,
+  updateGrainAction: rawUpdateGrainAction,
+  deleteGrainAction: rawDeleteGrainAction,
+  addHopAction: rawAddHopAction,
+  updateHopAction: rawUpdateHopAction,
+  deleteHopAction: rawDeleteHopAction,
+  addYeastAction: rawAddYeastAction,
+  updateYeastAction: rawUpdateYeastAction,
+  deleteYeastAction: rawDeleteYeastAction,
   waterProfiles,
   sourceWaterProfile,
   targetWaterProfile,
   sourceWaterSnapshot,
   targetWaterSnapshot,
-  updateBatchWaterAction,
-  updateBatchWaterSnapshotAction,
+  updateBatchWaterAction: rawUpdateBatchWaterAction,
+  updateBatchWaterSnapshotAction: rawUpdateBatchWaterSnapshotAction,
   saltAdditions,
-  updateSaltAdditionsAction,
+  updateSaltAdditionsAction: rawUpdateSaltAdditionsAction,
   acidAddition,
-  updateAcidAdditionAction,
+  updateAcidAdditionAction: rawUpdateAcidAdditionAction,
   sourceWaterTds,
   finalWaterTds,
-  updateWaterTdsAction,
-  updateBoilTimesAction,
-  updateMashParamsAction,
-  updateMashSettingsAction,
+  updateWaterTdsAction: rawUpdateWaterTdsAction,
+  updateBoilTimesAction: rawUpdateBoilTimesAction,
+  updateMashParamsAction: rawUpdateMashParamsAction,
+  updateMashSettingsAction: rawUpdateMashSettingsAction,
   initialMashMode,
   initialMashRatioLKg,
   initialMashInfuseTempC,
   initialDecoctionBoilTempC,
   initialMashCoolingRateCH,
   mashSteps,
-  createMashStepAction,
-  updateMashStepAction,
-  deleteMashStepAction,
+  createMashStepAction: rawCreateMashStepAction,
+  updateMashStepAction: rawUpdateMashStepAction,
+  deleteMashStepAction: rawDeleteMashStepAction,
   brewdayData,
-  updateBrewdayDataAction,
+  updateBrewdayDataAction: rawUpdateBrewdayDataAction,
   allKegs,
   tastings,
-  deleteTastingAction,
-  importTastingAction,
+  deleteTastingAction: rawDeleteTastingAction,
+  importTastingAction: rawImportTastingAction,
   equipmentSnapshot,
-  updateEquipmentSnapshotAction,
+  updateEquipmentSnapshotAction: rawUpdateEquipmentSnapshotAction,
 }: BeerSectionsProps) {
+  // Every server action call feeds the "Saving… / Saved" indicator
+  const updateAction = tracked(rawUpdateAction);
+  const updateNotesAction = tracked(rawUpdateNotesAction);
+  const updateTargetStatsAction = tracked(rawUpdateTargetStatsAction);
+  const addGrainAction = tracked(rawAddGrainAction);
+  const updateGrainAction = tracked(rawUpdateGrainAction);
+  const deleteGrainAction = tracked(rawDeleteGrainAction);
+  const addHopAction = tracked(rawAddHopAction);
+  const updateHopAction = tracked(rawUpdateHopAction);
+  const deleteHopAction = tracked(rawDeleteHopAction);
+  const addYeastAction = tracked(rawAddYeastAction);
+  const updateYeastAction = tracked(rawUpdateYeastAction);
+  const deleteYeastAction = tracked(rawDeleteYeastAction);
+  const updateBatchWaterAction = tracked(rawUpdateBatchWaterAction);
+  const updateBatchWaterSnapshotAction = tracked(rawUpdateBatchWaterSnapshotAction);
+  const updateSaltAdditionsAction = tracked(rawUpdateSaltAdditionsAction);
+  const updateAcidAdditionAction = tracked(rawUpdateAcidAdditionAction);
+  const updateWaterTdsAction = tracked(rawUpdateWaterTdsAction);
+  const updateBoilTimesAction = tracked(rawUpdateBoilTimesAction);
+  const updateMashParamsAction = tracked(rawUpdateMashParamsAction);
+  const updateMashSettingsAction = tracked(rawUpdateMashSettingsAction);
+  const createMashStepAction = tracked(rawCreateMashStepAction);
+  const updateMashStepAction = tracked(rawUpdateMashStepAction);
+  const deleteMashStepAction = tracked(rawDeleteMashStepAction);
+  const updateBrewdayDataAction = tracked(rawUpdateBrewdayDataAction);
+  const deleteTastingAction = tracked(rawDeleteTastingAction);
+  const importTastingAction = tracked(rawImportTastingAction);
+  const updateEquipmentSnapshotAction = tracked(rawUpdateEquipmentSnapshotAction);
   const router = useRouter();
   const storageKey = `brewhub:batch:${batchId}:sections`;
 
   const [open, setOpen] = useState<Record<SectionKey, boolean>>(SECTION_DEFAULTS);
+  const searchParams = useSearchParams();
+  const [tab, setTab] = useState<BatchTab>(() => parseTab(searchParams.get("tab")));
+  const selectTab = (next: BatchTab) => {
+    setTab(next);
+    // Keep the tab in the URL without a server round-trip
+    const url = new URL(window.location.href);
+    if (next === "recipe") url.searchParams.delete("tab");
+    else url.searchParams.set("tab", next);
+    window.history.replaceState(window.history.state, "", url);
+  };
   const [hydrated, setHydrated] = useState(false);
   const [mashMode, setMashMode] = useState<"sparge" | "biab" | "step_infusion">(
     (initialMashMode as "sparge" | "biab" | "step_infusion") ?? "sparge"
@@ -767,67 +549,29 @@ export function BeerSections({
       saltNaClGL:       saltAdditions.saltNaClGL       != null ? String(saltAdditions.saltNaClGL)       : "",
     });
   }, [saltAdditions]);
-  const saltsRef = useRef(salts);
-  saltsRef.current = salts;
-  const saltTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const scheduleSaltSave = useCallback(() => {
-    if (saltTimerRef.current) clearTimeout(saltTimerRef.current);
-    saltTimerRef.current = setTimeout(async () => {
-      try {
-        const s = saltsRef.current;
-        await updateSaltAdditionsAction({
-          saltChalkGL:      s.saltChalkGL      || null,
-          saltBakingSodaGL: s.saltBakingSodaGL || null,
-          saltGypsumGL:     s.saltGypsumGL     || null,
-          saltCaCl2GL:      s.saltCaCl2GL      || null,
-          saltEpsomGL:      s.saltEpsomGL      || null,
-          saltNaClGL:       s.saltNaClGL       || null,
-        });
-      } catch {
-        toast.error("Failed to save salt additions");
-      }
-    }, 800);
-  }, [updateSaltAdditionsAction]);
-
-  const acidRef = useRef({ acidType, acidAmount });
-  acidRef.current = { acidType, acidAmount };
-  const acidTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scheduleSaltSave = useDebouncedSave("salt", () =>
+    updateSaltAdditionsAction({
+      saltChalkGL:      salts.saltChalkGL      || null,
+      saltBakingSodaGL: salts.saltBakingSodaGL || null,
+      saltGypsumGL:     salts.saltGypsumGL     || null,
+      saltCaCl2GL:      salts.saltCaCl2GL      || null,
+      saltEpsomGL:      salts.saltEpsomGL      || null,
+      saltNaClGL:       salts.saltNaClGL       || null,
+    }), "Failed to save salt additions");
 
   const [sourceWaterTdsStr, setSourceWaterTdsStr] = useState(sourceWaterTds != null ? String(sourceWaterTds) : "");
   const [finalWaterTdsStr, setFinalWaterTdsStr] = useState(finalWaterTds != null ? String(finalWaterTds) : "");
-  const tdsRef = useRef({ sourceWaterTdsStr, finalWaterTdsStr });
-  tdsRef.current = { sourceWaterTdsStr, finalWaterTdsStr };
-  const tdsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const scheduleTdsSave = useCallback(() => {
-    if (tdsTimerRef.current) clearTimeout(tdsTimerRef.current);
-    tdsTimerRef.current = setTimeout(async () => {
-      try {
-        const { sourceWaterTdsStr: s, finalWaterTdsStr: f } = tdsRef.current;
-        await updateWaterTdsAction({
-          sourceWaterTds: s === "" ? null : parseFloat(s) || null,
-          finalWaterTds: f === "" ? null : parseFloat(f) || null,
-        });
-      } catch {
-        toast.error("Failed to save TDS values");
-      }
-    }, 800);
-  }, [updateWaterTdsAction]);
+  const scheduleTdsSave = useDebouncedSave("tds", () =>
+    updateWaterTdsAction({
+      sourceWaterTds: sourceWaterTdsStr === "" ? null : parseFloat(sourceWaterTdsStr) || null,
+      finalWaterTds: finalWaterTdsStr === "" ? null : parseFloat(finalWaterTdsStr) || null,
+    }), "Failed to save TDS values");
 
-  const scheduleAcidSave = useCallback(() => {
-    if (acidTimerRef.current) clearTimeout(acidTimerRef.current);
-    acidTimerRef.current = setTimeout(async () => {
-      try {
-        const { acidType: t, acidAmount: a } = acidRef.current;
-        await updateAcidAdditionAction({
-          mashAcidType: t,
-          mashAcidDose: parseFloat(a) > 0 ? parseFloat(a) : null,
-        });
-      } catch {
-        toast.error("Failed to save acid addition");
-      }
-    }, 800);
-  }, [updateAcidAdditionAction]);
+  const scheduleAcidSave = useDebouncedSave("acid", () =>
+    updateAcidAdditionAction({
+      mashAcidType: acidType,
+      mashAcidDose: parseFloat(acidAmount) > 0 ? parseFloat(acidAmount) : null,
+    }), "Failed to save acid addition");
 
   const [brewday, setBrewday] = useState<BrewdayData>(() => {
     const parsed = parseBrewdayData(brewdayData);
@@ -839,24 +583,13 @@ export function BeerSections({
       fermentation: { ...parsed.fermentation, starterNotes: notes.join("\n\n") },
     };
   });
-  const brewdayRef = useRef(brewday);
-  brewdayRef.current = brewday;
-  const brewdayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const persistSeededStarterNotes = useRef(
     !parseBrewdayData(brewdayData).fermentation.starterNotes &&
       yeasts.some((y) => !!y.starterNotes?.trim())
   );
 
-  const scheduleBrewdaySave = useCallback(() => {
-    if (brewdayTimerRef.current) clearTimeout(brewdayTimerRef.current);
-    brewdayTimerRef.current = setTimeout(async () => {
-      try {
-        await updateBrewdayDataAction(JSON.stringify(brewdayRef.current));
-      } catch {
-        toast.error("Failed to save brewday data");
-      }
-    }, 800);
-  }, [updateBrewdayDataAction]);
+  const scheduleBrewdaySave = useDebouncedSave("brewday", () =>
+    updateBrewdayDataAction(JSON.stringify(brewday)), "Failed to save brewday data");
 
   useEffect(() => {
     if (!persistSeededStarterNotes.current) return;
@@ -872,73 +605,29 @@ export function BeerSections({
     scheduleBrewdaySave();
   }, [scheduleBrewdaySave]);
 
-  const targetsRef = useRef(targets);
-  targetsRef.current = targets;
-  const batchSizeRef = useRef(batchSize);
-  batchSizeRef.current = batchSize;
-  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scheduleSave = useDebouncedSave("targets", () =>
+    updateTargetStatsAction({
+      targetOg: targets.og,
+      targetFg: targets.fg,
+      targetIbu: targets.ibu,
+      targetSrm: targets.srm,
+      targetFermentarL: batchSize,
+    }), "Failed to save targets");
 
-  const scheduleSave = useCallback(() => {
-    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(async () => {
-      try {
-        await updateTargetStatsAction({
-          targetOg: targetsRef.current.og,
-          targetFg: targetsRef.current.fg,
-          targetIbu: targetsRef.current.ibu,
-          targetSrm: targetsRef.current.srm,
-          targetFermentarL: batchSizeRef.current,
-        });
-      } catch {
-        toast.error("Failed to save targets");
-      }
-    }, 800);
-  }, [updateTargetStatsAction]);
+  const scheduleBoilSave = useDebouncedSave("boil", () =>
+    updateBoilTimesAction({ heatUpTimeMin, boilTimeMin, whirpoolTimeMin }), "Failed to save boil times");
 
-  const boilTimesRef = useRef({ heatUpTimeMin, boilTimeMin, whirpoolTimeMin });
-  boilTimesRef.current = { heatUpTimeMin, boilTimeMin, whirpoolTimeMin };
-  const boilTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scheduleMashSave = useDebouncedSave("mash", () =>
+    updateMashParamsAction({ grainTempC, targetPh, spargeTargetPh }), "Failed to save mash parameters");
 
-  const scheduleBoilSave = useCallback(() => {
-    if (boilTimerRef.current) clearTimeout(boilTimerRef.current);
-    boilTimerRef.current = setTimeout(async () => {
-      try {
-        await updateBoilTimesAction(boilTimesRef.current);
-      } catch {
-        toast.error("Failed to save boil times");
-      }
-    }, 800);
-  }, [updateBoilTimesAction]);
-
-  const mashParamsRef = useRef({ grainTempC, targetPh, spargeTargetPh });
-  mashParamsRef.current = { grainTempC, targetPh, spargeTargetPh };
-  const mashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const scheduleMashSave = useCallback(() => {
-    if (mashTimerRef.current) clearTimeout(mashTimerRef.current);
-    mashTimerRef.current = setTimeout(async () => {
-      try {
-        await updateMashParamsAction(mashParamsRef.current);
-      } catch {
-        toast.error("Failed to save mash parameters");
-      }
-    }, 800);
-  }, [updateMashParamsAction]);
-
-  const mashSettingsRef = useRef({ mashMode, mashRatioLKg: mashRatioInput, mashInfuseTempC: infuseTemp, decoctionBoilTempC: decoctionBoilTemp, mashCoolingRateCH: mashCoolingRate });
-  mashSettingsRef.current = { mashMode, mashRatioLKg: mashRatioInput, mashInfuseTempC: infuseTemp, decoctionBoilTempC: decoctionBoilTemp, mashCoolingRateCH: mashCoolingRate };
-  const mashSettingsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const scheduleMashSettingsSave = useCallback(() => {
-    if (mashSettingsTimerRef.current) clearTimeout(mashSettingsTimerRef.current);
-    mashSettingsTimerRef.current = setTimeout(async () => {
-      try {
-        await updateMashSettingsAction(mashSettingsRef.current);
-      } catch {
-        toast.error("Failed to save mash settings");
-      }
-    }, 800);
-  }, [updateMashSettingsAction]);
+  const scheduleMashSettingsSave = useDebouncedSave("mashSettings", () =>
+    updateMashSettingsAction({
+      mashMode,
+      mashRatioLKg: mashRatioInput,
+      mashInfuseTempC: infuseTemp,
+      decoctionBoilTempC: decoctionBoilTemp,
+      mashCoolingRateCH: mashCoolingRate,
+    }), "Failed to save mash settings");
 
   const handleTargetChange = useCallback(
     (key: TargetKey, raw: string) => {
@@ -1111,14 +800,13 @@ export function BeerSections({
     return true;
   };
 
-  const goToSection = (key: SectionKey, parent?: SectionKey) => {
+  const goToSection = (key: SectionKey) => {
     pendingScrollRef.current = sectionAnchorId(key);
+    const sectionTab = SECTION_NAV.find((n) => n.key === key)?.group;
+    if (sectionTab && sectionTab !== tab) selectTab(sectionTab);
     setOpen((prev) => {
+      if (prev[key]) return prev;
       const next = { ...prev, [key]: true };
-      if (parent) next[parent] = true;
-      if (next[key] === prev[key] && (!parent || next[parent] === prev[parent])) {
-        return prev;
-      }
       try {
         localStorage.setItem(storageKey, JSON.stringify(next));
       } catch {
@@ -1133,7 +821,7 @@ export function BeerSections({
 
   useEffect(() => {
     scrollToPendingSection();
-  }, [open]);
+  }, [open, tab]);
 
   function sortRows<T>(rows: T[], sort: { key: string; dir: "asc" | "desc" } | null, getter: (row: T, key: string) => string | number | null): T[] {
     if (!sort) return rows;
@@ -1159,7 +847,6 @@ export function BeerSections({
   }
 
   const batchVolumeL = batchSize ?? 20;
-  const batchVolumeGal = batchVolumeL * 0.264172;
   const totalGrainGrams = grainRows.reduce((s, r) => s + r.grams, 0);
 
   // Water volumes calculation — uses equipment snapshot stored on the batch
@@ -1233,7 +920,6 @@ export function BeerSections({
         })
       : null;
     return { mash, sparge };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [targetPh, spargeTargetPh, grainRows, wv.mashWater, wv.spargeWater, sourceSnapshotLocal, salts, acidType, acidAmount]);
 
   const hasDecoction = mashStepRows.some((s) => s.type === "decoction");
@@ -1341,6 +1027,8 @@ export function BeerSections({
 
   if (!hydrated) return null;
 
+  const tabNavItems = SECTION_NAV.filter((item) => item.group === tab);
+
   return (
     <div className="space-y-4">
       <nav
@@ -1348,24 +1036,40 @@ export function BeerSections({
         aria-label="Batch sections"
         className="sticky top-0 z-40 -mx-6 border-b bg-background/95 px-6 py-1.5 shadow-sm backdrop-blur-sm"
       >
-        <div className="flex flex-wrap items-center gap-0.5">
-          {SECTION_NAV.map((item, i) => {
-            const prev = SECTION_NAV[i - 1];
-            const showDivider = prev && prev.group !== item.group;
-            const Icon = item.icon;
-            const tipPos =
-              i === 0
-                ? "left-0"
-                : i === SECTION_NAV.length - 1
-                  ? "right-0"
-                  : "left-1/2 -translate-x-1/2";
-            return (
-              <Fragment key={item.key}>
-                {showDivider && <div className="mx-1.5 h-5 w-px shrink-0 self-center bg-border" />}
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+          <div role="tablist" aria-label="Batch views" className="flex items-center gap-1">
+            {BATCH_TABS.map((t) => {
+              const TabIcon = t.icon;
+              const active = tab === t.key;
+              return (
                 <button
+                  key={t.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => selectTab(t.key)}
+                  className={cn(
+                    "flex h-8 items-center gap-1.5 rounded-md px-3 text-sm font-medium transition-colors",
+                    active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  )}
+                >
+                  <TabIcon className="h-4 w-4" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap items-center gap-0.5">
+            {tabNavItems.map((item, i) => {
+              const Icon = item.icon;
+              const tipPos =
+                i === tabNavItems.length - 1 ? "right-0" : "left-1/2 -translate-x-1/2";
+              return (
+                <button
+                  key={item.key}
                   type="button"
                   aria-label={item.label}
-                  onClick={() => goToSection(item.key, item.parent)}
+                  onClick={() => goToSection(item.key)}
                   className={`group relative flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground ${item.hoverClass ?? "hover:bg-muted"}`}
                 >
                   <Icon className="h-4 w-4" />
@@ -1373,11 +1077,13 @@ export function BeerSections({
                     {item.label}
                   </span>
                 </button>
-              </Fragment>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </nav>
+
+      {tab === "recipe" && <>
 
       {/* 1. Basic Information */}
       <CollapsibleCard
@@ -1390,22 +1096,6 @@ export function BeerSections({
         <BatchForm batch={batch} equipment={equipment} updateAction={updateAction} updateNotesAction={updateNotesAction} bare />
       </CollapsibleCard>
 
-      {/* Recipe Design section header */}
-      <button
-        type="button"
-        onClick={() => toggle("recipeDesign")}
-        className="flex items-center gap-3 pt-2 w-full text-left"
-      >
-        {open.recipeDesign ? (
-          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-        ) : (
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-        )}
-        <h2 className="text-lg font-bold tracking-tight whitespace-nowrap">Recipe Design</h2>
-        <div className="flex-1 border-t" />
-      </button>
-
-      {open.recipeDesign && <>
 
       {/* 1b. Equipment */}
       <CollapsibleCard
@@ -3454,10 +3144,6 @@ export function BeerSections({
             { key: "saltBakingSodaGL", name: "Baking Soda",      formula: "NaHCO₃",  minerals: { naPpm: 273.6, hco3Ppm: 726.3 } },
           ];
 
-          const MINERAL_LABELS: Record<string, string> = {
-            caPpm: "Ca²⁺", mgPpm: "Mg²⁺", naPpm: "Na⁺", clPpm: "Cl⁻", so4Ppm: "SO₄²⁻", hco3Ppm: "HCO₃⁻",
-          };
-
           // Total ppm contribution from all salts
           const totals: Record<string, number> = {};
           for (const def of SALT_DEFS) {
@@ -3489,10 +3175,10 @@ export function BeerSections({
                     <div className="font-medium text-muted-foreground text-right">Diff</div>
 
                     {PROFILE_MINERALS.map(({ key, label }) => {
-                      const source = (sourceSnapshotLocal as any)[key] ?? 0;
+                      const source = sourceSnapshotLocal?.[key] ?? 0;
                       const added = totals[key] ?? 0;
                       const final = source + added;
-                      const target = (targetSnapshotLocal as any)[key] ?? 0;
+                      const target = targetSnapshotLocal?.[key] ?? 0;
                       const diffAbs = final - target;
                       const diffPct = target > 0 ? Math.abs(diffAbs / target) * 100 : 0;
                       const isClose = diffPct <= 10;
@@ -3706,7 +3392,7 @@ export function BeerSections({
 
       </>}
 
-      {(() => {
+      {(tab === "brewday" || tab === "fermentation") && (() => {
         const recipeData: RecipeData = {
           mashMode,
           mashWaterL: wv.mashWater,
@@ -3776,8 +3462,7 @@ export function BeerSections({
             updateBrewday={updateBrewday}
             recipeData={recipeData}
             kegInventory={allKegs}
-            openBrewday={open.bdBrewday}
-            onToggleBrewday={() => toggle("bdBrewday")}
+            part={tab === "fermentation" ? "fermentation" : "brewday"}
             openPreparation={open.bdPreparation}
             onTogglePreparation={() => toggle("bdPreparation")}
             openMilling={open.bdMilling}
@@ -3802,503 +3487,31 @@ export function BeerSections({
         );
       })()}
 
-      {/* ── Final Stats group ── */}
-      <button
-        type="button"
-        onClick={() => toggle("finalStats")}
-        className="flex items-center gap-3 pt-2 w-full text-left"
-      >
-        {open.finalStats ? (
-          <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
-        ) : (
-          <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-        )}
-        <h2 className="text-lg font-bold tracking-tight whitespace-nowrap">Final Stats</h2>
-        <div className="flex-1 border-t" />
-      </button>
-
-      {open.finalStats && (() => {
-        // Estimated values (from recipe)
-        const firstAttenuation = avgAttenuation;
-        const estOg = estimatedOG?.og ?? null;
-        const estOgInt = estOg != null ? Math.round(estOg * 1000) : null;
-        const estFgInt = estOg != null && firstAttenuation != null
-          ? Math.round(estimateFg(estOg, firstAttenuation) * 1000)
-          : null;
-        const estFg = estFgInt != null ? estFgInt / 1000 : null;
-        const estAbv = estOg != null && estFg != null ? abvFromGravity(estOg, estFg) : null;
-        // Same formula as fermentables: MCU over theoretical post-chill volume
-        const estSrm = calculateSrm(grainRows, wv.postChill);
-        const estIbu = ibuBreakdown.totalCalculatedIbu > 0 ? ibuBreakdown.totalCalculatedIbu : null;
-        const estVol = batchSize;
-
-        // Final values (from brewday fermentation steps)
-        const stepsWithDensity = brewday.fermentation.steps.filter(s => s.densityGL != null);
-        const finalOgInt = stepsWithDensity.length > 0 ? stepsWithDensity[0].densityGL! : null;
-        const finalFgInt = stepsWithDensity.length > 1 ? stepsWithDensity[stepsWithDensity.length - 1].densityGL! : null;
-        const finalAbv = finalOgInt != null && finalFgInt != null
-          ? ((finalOgInt - finalFgInt) / 1000) * 131.25
-          : null;
-        const finalVol = brewday.fermentation.steps[0]?.volumeL ?? null;
-        const estVolKegged = Math.max(0, wv.fermenterVol - wv.fermenterLossL);
-        const fgForKeg = stepsWithDensity.length > 0
-          ? stepsWithDensity[stepsWithDensity.length - 1].densityGL! / 1000
-          : null;
-        const kegList = brewday.kegging.kegs ?? [];
-        const rawVolKegged = fgForKeg != null
-          ? kegList.reduce((sum, k) => {
-              if (k.totalWeightKg == null || k.tareWeightKg == null) return sum;
-              return sum + (k.totalWeightKg - k.tareWeightKg) / fgForKeg;
-            }, 0)
-          : 0;
-        const finalVolKegged = rawVolKegged > 0 ? rawVolKegged : null;
-        const finalIbu = finalOgInt != null
-          ? (() => {
-              const finalOgSg = finalOgInt / 1000;
-              const actualVolumeL = finalVol ?? batchSize ?? 20;
-              const result = calculateIbuBreakdown(hopRows, finalOgSg, actualVolumeL, boilTimeMin ?? 60, whirpoolTimeMin);
-              return result.totalCalculatedIbu > 0 ? result.totalCalculatedIbu : null;
-            })()
-          : null;
-
-        // Final SRM: grain bill over actual post-chill volume
-        // = last boil entry volume (from heightCm + pot diameter, or stored volumeL) × thermal contraction
-        // fallback: fermenter volume + trub loss
-        const finalPostChillL = measuredPostChillVolumeL({
-          boilEntries: brewday.boil.entries,
-          potDiameterCm: eqSnap?.boilPotDiameter ?? null,
-          tempContractionPct: eqSnap?.tempContractionPct,
-          trubLossL: eqSnap?.trubLossL,
-          fermenterVolumeL: finalVol,
-        });
-        const finalSrm = finalPostChillL != null ? calculateSrm(grainRows, finalPostChillL) : null;
-
-        // Style ranges
-        const styleOg  = getStyleRange(styleEntry, "ogmin",  "ogmax");
-        const styleFg  = getStyleRange(styleEntry, "fgmin",  "fgmax");
-        const styleIbu = getStyleRange(styleEntry, "ibumin", "ibumax");
-        const styleSrm = getStyleRange(styleEntry, "srmmin", "srmmax");
-        const styleAbv = getStyleRange(styleEntry, "abvmin", "abvmax");
-
-        const inRange = (val: number | null, min: number | null, max: number | null): boolean | null => {
-          if (val == null || min == null || max == null) return null;
-          return val >= min && val <= max;
-        };
-
-        type OverviewRow = {
-          label: string;
-          styleMin: number | null;
-          styleMax: number | null;
-          estVal: number | null;
-          finalVal: number | null;
-          format: (v: number) => string;
-          srmColor?: string | null;
-          finalSrmColor?: string | null;
-        };
-
-        const rows: OverviewRow[] = [
-          {
-            label: "Vol Fermenter",
-            styleMin: null, styleMax: null,
-            estVal: estVol, finalVal: finalVol,
-            format: (v) => `${v.toFixed(1)} L`,
-          },
-          {
-            label: "Vol Kegged",
-            styleMin: null, styleMax: null,
-            estVal: estVolKegged, finalVal: finalVolKegged,
-            format: (v) => `${v.toFixed(1)} L`,
-          },
-          {
-            label: "OG",
-            styleMin: styleOg.min != null ? Math.round(styleOg.min * 1000) : null,
-            styleMax: styleOg.max != null ? Math.round(styleOg.max * 1000) : null,
-            estVal: estOgInt, finalVal: finalOgInt,
-            format: (v) => v.toFixed(0),
-          },
-          {
-            label: "FG",
-            styleMin: styleFg.min != null ? Math.round(styleFg.min * 1000) : null,
-            styleMax: styleFg.max != null ? Math.round(styleFg.max * 1000) : null,
-            estVal: estFgInt, finalVal: finalFgInt,
-            format: (v) => v.toFixed(0),
-          },
-          {
-            label: "Attenuation",
-            styleMin: null, styleMax: null,
-            estVal: firstAttenuation,
-            finalVal: finalOgInt != null && finalFgInt != null && finalOgInt > 1000
-              ? ((finalOgInt - finalFgInt) / (finalOgInt - 1000)) * 100
-              : null,
-            format: (v) => `${v.toFixed(1)}%`,
-          },
-          {
-            label: "IBU",
-            styleMin: styleIbu.min, styleMax: styleIbu.max,
-            estVal: estIbu, finalVal: finalIbu,
-            format: (v) => v.toFixed(1),
-          },
-          {
-            label: "SRM",
-            styleMin: styleSrm.min, styleMax: styleSrm.max,
-            estVal: estSrm, finalVal: finalSrm,
-            format: (v) => v.toFixed(1),
-            srmColor: estSrm != null ? srmToHex(estSrm) : null,
-            finalSrmColor: finalSrm != null ? srmToHex(finalSrm) : null,
-          },
-          {
-            label: "ABV",
-            styleMin: styleAbv.min, styleMax: styleAbv.max,
-            estVal: estAbv, finalVal: finalAbv,
-            format: (v) => `${v.toFixed(1)}%`,
-          },
-          {
-            label: "BU:GU",
-            styleMin: null, styleMax: null,
-            estVal: estIbu != null && estOgInt != null && estOgInt > 1000 ? estIbu / (estOgInt - 1000) : null,
-            finalVal: finalIbu != null && finalOgInt != null && finalOgInt > 1000 ? finalIbu / (finalOgInt - 1000) : null,
-            format: (v) => {
-              const lbl = v < 0.38 ? "Very Malty" : v < 0.45 ? "Malty" : v < 0.54 ? "Balanced" : v < 0.67 ? "Slightly Hoppy" : "Very Hoppy";
-              return `${v.toFixed(2)} ${lbl}`;
-            },
-          },
-        ];
-
-        // Efficiency rows
-        const sgToPlato = (sg: number) => {
-          const k = 227.1 / 258.2;
-          return (sg - 1) * 258.6 / (1 + k * (sg - 1));
-        };
-        const preboilData = brewday.preboil;
-        const boilPotDiam = eqSnap?.boilPotDiameter ?? null;
-        const preboilVolumeL = boilPotDiam != null && boilPotDiam > 0 && preboilData.heightCm != null
-          ? Math.PI * Math.pow(boilPotDiam / 2, 2) * preboilData.heightCm / 1000
-          : preboilData.volumeL ?? null;
-        const realMashEff = preboilData.densityGL != null && preboilVolumeL != null && preboilVolumeL > 0 && grainTotals.extract > 0
-          ? sgToPlato(preboilData.densityGL / 1000) * 1000 * preboilVolumeL / grainTotals.extract
-          : null;
-        const realBrewhouseEff = finalOgInt != null && finalVol != null && finalVol > 0 && grainTotals.extract > 0
-          ? sgToPlato(finalOgInt / 1000) * 1000 * finalVol / grainTotals.extract
-          : null;
-        const effRows: OverviewRow[] = [
-          {
-            label: "Mash Eff",
-            styleMin: null, styleMax: null,
-            estVal: eqSnap?.mashEff ?? null,
-            finalVal: realMashEff,
-            format: (v) => `${v.toFixed(1)}%`,
-          },
-          {
-            label: "Brew Eff",
-            styleMin: null, styleMax: null,
-            estVal: eqSnap?.brewhouseEff ?? null,
-            finalVal: realBrewhouseEff,
-            format: (v) => `${v.toFixed(1)}%`,
-          },
-        ];
-
-        const parseHHMM = (s: string | null): Date | null => {
-          if (!s) return null;
-          const m = s.match(/^(\d{1,2}):(\d{2})$/);
-          if (!m) return null;
-          const d = new Date(0);
-          d.setHours(Number(m[1]), Number(m[2]), 0, 0);
-          return d;
-        };
-        const diffMin = (a: Date | null, b: Date | null): number | null => {
-          if (!a || !b) return null;
-          let delta = (b.getTime() - a.getTime()) / 60000;
-          if (delta < 0) delta += 24 * 60;
-          return Math.round(delta);
-        };
-        const fmtHHMM = (t: Date | null) =>
-          t != null ? `${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}` : null;
-        const fmtDur = (min: number | null): string | null => {
-          if (min == null) return null;
-          const h = Math.floor(min / 60);
-          const m = min % 60;
-          if (h > 0 && m > 0) return `${h} hs ${m} min`;
-          if (h > 0) return `${h} hs`;
-          return `${m} min`;
-        };
-
-        const boilEntries = brewday.boil.entries;
-        const timingSteps = [
-          { label: "Mash",      start: parseHHMM(brewday.mash.general.heatWaterTime ?? brewday.mash.general.mashStartTime), end: parseHHMM(brewday.sparge.recirculationStartTime ?? brewday.sparge.spargeStartTime) },
-          { label: "Lautering", start: parseHHMM(brewday.sparge.recirculationStartTime ?? brewday.sparge.spargeStartTime),  end: parseHHMM(brewday.sparge.spargeEndTime) },
-          { label: "Boil",      start: parseHHMM(boilEntries[0]?.time ?? null),                                             end: parseHHMM(boilEntries[boilEntries.length - 1]?.time ?? null) },
-          { label: "Whirlpool", start: parseHHMM(brewday.whirlpoolChilling.whirlpoolStartTime),                             end: parseHHMM(brewday.whirlpoolChilling.chillingStartTime) },
-          { label: "Chilling",  start: parseHHMM(brewday.whirlpoolChilling.chillingStartTime),                              end: parseHHMM(brewday.whirlpoolChilling.chillingEndTime) },
-          { label: "Transfer",  start: parseHHMM(brewday.whirlpoolChilling.chillingEndTime),                                end: parseHHMM(brewday.whirlpoolChilling.transferEndTime) },
-        ];
-        const totalStart = timingSteps.find(s => s.start != null)?.start ?? null;
-        const totalEnd = [...timingSteps].reverse().find(s => s.end != null)?.end ?? null;
-        const totalMin = diffMin(totalStart, totalEnd);
-
-        return (
-          <>
-            <CollapsibleCard
-              id={sectionAnchorId("finalStatsOverview")}
-              title="Overview"
-              icon={<BarChart2 className="h-4 w-4" />}
-              open={open.finalStatsOverview}
-              onToggle={() => toggle("finalStatsOverview")}
-            >
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-xs text-muted-foreground border-b">
-                    <th className="text-left pb-2 font-medium w-12">Stat</th>
-                    <th className="text-right pb-2 font-medium">Style</th>
-                    <th className="text-right pb-2 font-medium">Recipe</th>
-                    <th className="text-right pb-2 font-medium">Final</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map(({ label, styleMin, styleMax, estVal, finalVal, format, srmColor, finalSrmColor }) => {
-                    const estInRange  = inRange(estVal,   styleMin, styleMax);
-                    const finalInRange = inRange(finalVal, styleMin, styleMax);
-                    const valClass = (ok: boolean | null) =>
-                      ok == null ? "text-foreground" : ok ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400";
-                    return (
-                      <tr key={label} className="border-b last:border-0">
-                        <td className="py-1.5 font-medium text-muted-foreground text-xs">{label}</td>
-                        <td className="text-right py-1.5 tabular-nums text-xs text-muted-foreground">
-                          {styleMin != null || styleMax != null
-                            ? `${styleMin ?? "?"} – ${styleMax ?? "?"}`
-                            : "—"}
-                        </td>
-                        <td className="text-right py-1.5 tabular-nums font-medium">
-                          {estVal != null ? (
-                            <span className={`flex items-center justify-end gap-1.5 ${valClass(estInRange)}`}>
-                              {srmColor && (
-                                <span
-                                  className="inline-block w-3 h-3 rounded-sm shrink-0 border border-black/10"
-                                  style={{ background: srmColor }}
-                                />
-                              )}
-                              {format(estVal)}
-                            </span>
-                          ) : <span className="text-muted-foreground">—</span>}
-                        </td>
-                        <td className="text-right py-1.5 tabular-nums font-medium">
-                          {finalVal != null ? (
-                            <span className={`flex items-center justify-end gap-1.5 ${valClass(finalInRange)}`}>
-                              {finalSrmColor && (
-                                <span
-                                  className="inline-block w-3 h-3 rounded-sm shrink-0 border border-black/10"
-                                  style={{ background: finalSrmColor }}
-                                />
-                              )}
-                              {format(finalVal)}
-                            </span>
-                          ) : <span className="text-muted-foreground">—</span>}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {effRows.map(({ label, estVal, finalVal, format }) => (
-                    <tr key={label} className="border-b last:border-0">
-                      <td className="py-1.5 font-medium text-muted-foreground text-xs">{label}</td>
-                      <td className="text-right py-1.5 tabular-nums text-xs text-muted-foreground">—</td>
-                      <td className="text-right py-1.5 tabular-nums font-medium">
-                        {estVal != null ? format(estVal) : <span className="text-muted-foreground">—</span>}
-                      </td>
-                      <td className="text-right py-1.5 tabular-nums font-medium">
-                        {finalVal != null ? format(finalVal) : <span className="text-muted-foreground">—</span>}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </CollapsibleCard>
-            <CollapsibleCard
-              id={sectionAnchorId("finalStatsTiming")}
-              title="Timing"
-              icon={<ClipboardList className="h-4 w-4" />}
-              open={open.finalStatsTiming}
-              onToggle={() => toggle("finalStatsTiming")}
-            >
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-xs text-muted-foreground border-b">
-                    <th className="text-left pb-2 font-medium">Step</th>
-                    <th className="text-right pb-2 font-medium">Start</th>
-                    <th className="text-right pb-2 font-medium">End</th>
-                    <th className="text-right pb-2 font-medium">Duration</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {timingSteps.map(({ label, start, end }) => {
-                    const dur = diffMin(start, end);
-                    return (
-                      <tr key={label} className="border-b last:border-0">
-                        <td className="py-1.5 text-xs text-muted-foreground font-medium">{label}</td>
-                        <td className="text-right py-1.5 tabular-nums text-xs">{fmtHHMM(start) ?? <span className="text-muted-foreground">—</span>}</td>
-                        <td className="text-right py-1.5 tabular-nums text-xs">{fmtHHMM(end) ?? <span className="text-muted-foreground">—</span>}</td>
-                        <td className="text-right py-1.5 tabular-nums font-medium">{fmtDur(dur) ?? <span className="text-muted-foreground">—</span>}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-                {totalMin != null && (
-                  <tfoot>
-                    <tr className="border-t">
-                      <td colSpan={3} className="pt-2 text-xs font-medium">Total</td>
-                      <td className="text-right pt-2 tabular-nums font-bold">{fmtDur(totalMin)}</td>
-                    </tr>
-                  </tfoot>
-                )}
-              </table>
-
-              {(() => {
-                const parseDateTime = (s: string | null): Date | null => {
-                  if (!s) return null;
-                  const d = new Date(s);
-                  return isNaN(d.getTime()) ? null : d;
-                };
-                const fmtDT = (d: Date | null) =>
-                  d != null
-                    ? `${d.toLocaleDateString(undefined, { month: "short", day: "numeric" })} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
-                    : null;
-                const fmtFermDur = (ms: number): string => {
-                  const totalMin = Math.round(ms / 60000);
-                  const days = Math.floor(totalMin / (60 * 24));
-                  const hrs = Math.floor((totalMin % (60 * 24)) / 60);
-                  if (days > 0 && hrs > 0) return `${days} days ${hrs} hs`;
-                  if (days > 0) return `${days} days`;
-                  return `${hrs} hs`;
-                };
-
-                const fermSteps = brewday.fermentation.steps;
-                const startDate = parseDateTime(fermSteps[0]?.dateTime ?? null);
-                const endDate = parseDateTime(brewday.kegging.dateTime ?? fermSteps[fermSteps.length - 1]?.dateTime ?? null);
-                const diffMs = startDate != null && endDate != null && endDate !== startDate ? endDate.getTime() - startDate.getTime() : null;
-
-                if (startDate == null && endDate == null) return null;
-
-                return (
-                  <table className="w-full text-sm mt-4">
-                    <thead>
-                      <tr className="text-xs text-muted-foreground border-b">
-                        <th className="text-left pb-2 font-medium">Period</th>
-                        <th className="text-right pb-2 font-medium">Start</th>
-                        <th className="text-right pb-2 font-medium">End</th>
-                        <th className="text-right pb-2 font-medium">Duration</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="py-1.5 text-xs text-muted-foreground font-medium">Fermentation</td>
-                        <td className="text-right py-1.5 tabular-nums text-xs">{fmtDT(startDate) ?? <span className="text-muted-foreground">—</span>}</td>
-                        <td className="text-right py-1.5 tabular-nums text-xs">{fmtDT(endDate) ?? <span className="text-muted-foreground">—</span>}</td>
-                        <td className="text-right py-1.5 tabular-nums font-medium">{diffMs != null ? fmtFermDur(diffMs) : <span className="text-muted-foreground">—</span>}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                );
-              })()}
-            </CollapsibleCard>
-
-            {/* ── Tastings ── */}
-            <CollapsibleCard
-              id={sectionAnchorId("finalStatsTastings")}
-              title="Tastings"
-              icon={<GlassWater className="h-4 w-4" />}
-              open={open.finalStatsTastings}
-              onToggle={() => toggle("finalStatsTastings")}
-              actions={
-                <div className="flex items-center gap-1.5">
-                  <label
-                    className="cursor-pointer inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-border hover:bg-muted transition-colors font-medium"
-                    title="Import from Brewtaste JSON"
-                  >
-                    <input
-                      type="file"
-                      accept=".json"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file) return;
-                        const text = await file.text();
-                        try {
-                          JSON.parse(text); // validate JSON
-                          await importTastingAction(text);
-                          router.refresh();
-                          toast.success("Tasting imported");
-                        } catch {
-                          toast.error("Invalid Brewtaste JSON file");
-                        }
-                        e.target.value = '';
-                      }}
-                    />
-                    Import
-                  </label>
-                  <Link href={`/batches/${batchId}/tastings/new`}>
-                    <Button size="sm" variant="outline">Add Tasting</Button>
-                  </Link>
-                </div>
-              }
-            >
-              {tastings.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">No tastings logged yet.</p>
-              ) : (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="text-xs text-muted-foreground border-b">
-                      <th className="text-left pb-2 font-medium">Date</th>
-                      <th className="text-left pb-2 font-medium">Serving</th>
-                      <th className="text-right pb-2 font-medium">Age</th>
-                      <th className="text-right pb-2 font-medium">Score</th>
-                      <th className="pb-2" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tastings.map((t) => {
-                      const packagingDateStr = brewday.kegging.dateTime ?? brewday.bottling.dateTime;
-                      const packagingDate = packagingDateStr ? (() => { const d = new Date(packagingDateStr); return isNaN(d.getTime()) ? null : d; })() : null;
-                      const tastingDate = new Date(t.date);
-                      const ageMs = packagingDate ? tastingDate.getTime() - packagingDate.getTime() : null;
-                      const ageDays = ageMs != null ? Math.round(ageMs / (1000 * 60 * 60 * 24)) : null;
-                      return (
-                        <tr
-                          key={t.id}
-                          className="border-b last:border-0 hover:bg-muted/40 cursor-pointer"
-                          onClick={() => router.push(`/batches/${batchId}/tastings/${t.id}`)}
-                        >
-                          <td className="py-1.5 text-xs">{tastingDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</td>
-                          <td className="py-1.5 text-xs capitalize">{t.servingType}</td>
-                          <td className="py-1.5 text-right text-xs tabular-nums">{ageDays != null ? `${ageDays}d` : <span className="text-muted-foreground">—</span>}</td>
-                          <td className="py-1.5 text-right text-xs tabular-nums font-medium">{t.totalScore != null ? `${t.totalScore}/50` : <span className="text-muted-foreground">—</span>}</td>
-                          <td className="py-1.5 text-right">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-6 w-6"
-                              onClick={async (e) => {
-                                e.stopPropagation();
-                                if (!confirm("Delete this tasting?")) return;
-                                try {
-                                  await deleteTastingAction(t.id);
-                                  toast.success("Tasting deleted");
-                                  router.refresh();
-                                } catch {
-                                  toast.error("Failed to delete tasting");
-                                }
-                              }}
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              )}
-            </CollapsibleCard>
-          </>
-        );
-      })()}
+      {tab === "results" && (
+        <ResultsTab
+          batchId={batchId}
+          brewday={brewday}
+          eqSnap={eqSnap}
+          estimatedOgSg={estimatedOG?.og ?? null}
+          avgAttenuation={avgAttenuation}
+          grainRows={grainRows}
+          hopRows={hopRows}
+          grainExtractG={grainTotals.extract}
+          ibuBreakdown={ibuBreakdown}
+          batchSize={batchSize}
+          boilTimeMin={boilTimeMin}
+          whirpoolTimeMin={whirpoolTimeMin}
+          postChillL={wv.postChill}
+          fermenterVolL={wv.fermenterVol}
+          fermenterLossL={wv.fermenterLossL}
+          styleEntry={styleEntry}
+          tastings={tastings}
+          deleteTastingAction={deleteTastingAction}
+          importTastingAction={importTastingAction}
+          open={open}
+          toggle={toggle}
+        />
+      )}
     </div>
   );
 }

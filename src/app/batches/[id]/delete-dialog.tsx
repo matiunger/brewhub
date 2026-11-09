@@ -36,7 +36,7 @@ export function DeleteBatchDialog({ batchName, deleteAction }: DeleteBatchDialog
         <DialogHeader>
           <DialogTitle>Delete Batch</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete "{batchName}"? This action cannot be undone.
+            Are you sure you want to delete &quot;{batchName}&quot;? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleDelete}>

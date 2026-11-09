@@ -23,7 +23,7 @@ export function MarkdownNotes({ notes, onSave }: MarkdownNotesProps) {
       setSavedNotes(editValue);
       toast.success("Notes saved");
       setIsEditing(false);
-    } catch (error) {
+    } catch {
       toast.error("Failed to save notes");
     }
   };

@@ -15,7 +15,7 @@ import FormHeader from './FormHeader';
 import SectionCard from './SectionCard';
 import TastingHints from './TastingHints';
 import { useLocale } from '@/lib/locale-context';
-import { FlagTriangleRight, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 
 const DRAFT_KEY = 'brewhub_tasting_draft';
@@ -51,8 +51,10 @@ export default function EvaluationForm({ initialState, onSave, batchName, batchS
   const [state, setState] = useState<EvaluationState | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Load on mount (reads localStorage, so it can't run during server render)
   useEffect(() => {
     if (initialState) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setState(initialState);
     } else {
       const draft = loadDraft();

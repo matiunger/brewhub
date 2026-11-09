@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     const page = await prisma.wikiPage.create({ data });
     return NextResponse.json(page, { status: 201 });
   } catch (error) {
-    if ((error as any).code === "P2002") {
+    if ((error as { code?: string }).code === "P2002") {
       return NextResponse.json(
         { error: "A page with this slug already exists" },
         { status: 400 }

@@ -350,7 +350,7 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
   const deleteItem = async (id: string) => {
     if (!confirm("Are you sure you want to delete this equipment?")) return;
     const r = await fetch(`/api/equipment/${id}`, { method: "DELETE" });
-    if (r.ok) { refresh(); } else { toast.error("Failed to delete equipment"); }
+    if (r.ok) { refresh(); } else { toast.error(await deleteErrorMessage(r, "Failed to delete equipment")); }
   };
 
   const addItem = async () => {
@@ -445,6 +445,15 @@ export function EquipmentTable({ initialData }: { initialData: Equipment[] }) {
   );
 }
 
+async function deleteErrorMessage(r: Response, fallback: string): Promise<string> {
+  try {
+    const body = await r.json();
+    return typeof body?.error === "string" ? body.error : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 // ---- Grains Table ----
 
 export function GrainsTable({ initialData }: { initialData: Grain[] }) {
@@ -480,7 +489,7 @@ export function GrainsTable({ initialData }: { initialData: Grain[] }) {
   const deleteItem = async (id: string) => {
     if (!confirm("Are you sure you want to delete this fermentable?")) return;
     const r = await fetch(`/api/grains/${id}`, { method: "DELETE" });
-    if (r.ok) { refresh(); } else { toast.error("Failed to delete fermentable"); }
+    if (r.ok) { refresh(); } else { toast.error(await deleteErrorMessage(r, "Failed to delete fermentable")); }
   };
 
   const addItem = async () => {
@@ -695,7 +704,7 @@ export function HopsTable({ initialData }: { initialData: Hop[] }) {
   const deleteItem = async (id: string) => {
     if (!confirm("Are you sure you want to delete this hop?")) return;
     const r = await fetch(`/api/hops/${id}`, { method: "DELETE" });
-    if (r.ok) { refresh(); } else { toast.error("Failed to delete hop"); }
+    if (r.ok) { refresh(); } else { toast.error(await deleteErrorMessage(r, "Failed to delete hop")); }
   };
 
   const addItem = async () => {
@@ -896,7 +905,7 @@ export function YeastsTable({ initialData }: { initialData: Yeast[] }) {
   const deleteItem = async (id: string) => {
     if (!confirm("Are you sure you want to delete this culture?")) return;
     const r = await fetch(`/api/yeasts/${id}`, { method: "DELETE" });
-    if (r.ok) { refresh(); } else { toast.error("Failed to delete culture"); }
+    if (r.ok) { refresh(); } else { toast.error(await deleteErrorMessage(r, "Failed to delete culture")); }
   };
 
   const addItem = async () => {
@@ -1080,7 +1089,7 @@ export function WaterTable({ initialData }: { initialData: WaterProfile[] }) {
   const deleteItem = async (id: string) => {
     if (!confirm("Are you sure you want to delete this water profile?")) return;
     const r = await fetch(`/api/water-profiles/${id}`, { method: "DELETE" });
-    if (r.ok) { refresh(); } else { toast.error("Failed to delete water profile"); }
+    if (r.ok) { refresh(); } else { toast.error(await deleteErrorMessage(r, "Failed to delete water profile")); }
   };
 
   const addItem = async () => {
@@ -1262,7 +1271,7 @@ export function KegsTable({ initialData }: { initialData: Keg[] }) {
   const deleteItem = async (id: string) => {
     if (!confirm("Are you sure you want to delete this keg?")) return;
     const r = await fetch(`/api/kegs/${id}`, { method: "DELETE" });
-    if (r.ok) { refresh(); } else { toast.error("Failed to delete keg"); }
+    if (r.ok) { refresh(); } else { toast.error(await deleteErrorMessage(r, "Failed to delete keg")); }
   };
 
   const addItem = async () => {

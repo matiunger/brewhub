@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { ImportBeerJsonButton } from "@/components/import-beerjson-button";
@@ -88,7 +89,7 @@ function buildUrl(params: Record<string, string | undefined>): string {
 export default async function HomePage({ searchParams }: HomePageProps) {
   const { type: typeFilter, draft: draftFilter, sort = "brewDate", order = "desc" } = await searchParams;
 
-  const whereClause: any = {};
+  const whereClause: Prisma.BatchWhereInput = {};
   if (typeFilter) whereClause.type = typeFilter;
   if (draftFilter === "true") whereClause.draft = true;
   if (draftFilter === "false") whereClause.draft = false;
@@ -130,12 +131,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     const href = buildUrl({ type: typeFilter, draft: draftFilter, sort: col, order: nextOrder });
     return (
       <th className={`px-4 py-3 font-medium text-${align}${extraClass ? ` ${extraClass}` : ""}`}>
-        <a href={href} className={`inline-flex items-center gap-1 hover:text-foreground transition-colors ${isActive ? "text-foreground" : ""}`}>
+        <Link href={href} className={`inline-flex items-center gap-1 hover:text-foreground transition-colors ${isActive ? "text-foreground" : ""}`}>
           {label}
           <span className="text-[10px] w-3">
             {isActive ? (order === "asc" ? "↑" : "↓") : ""}
           </span>
-        </a>
+        </Link>
       </th>
     );
   }
@@ -153,7 +154,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       </div>
 
       <div className="flex gap-4">
-        <a
+        <Link
           href="/"
           className={`px-4 py-2 rounded-md text-sm font-medium ${
             !typeFilter && !draftFilter
@@ -162,8 +163,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           }`}
         >
           All
-        </a>
-        <a
+        </Link>
+        <Link
           href="/?draft=false"
           className={`px-4 py-2 rounded-md text-sm font-medium ${
             draftFilter === "false"
@@ -172,8 +173,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           }`}
         >
           Executed
-        </a>
-        <a
+        </Link>
+        <Link
           href="/?draft=true"
           className={`px-4 py-2 rounded-md text-sm font-medium ${
             draftFilter === "true"
@@ -182,10 +183,10 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           }`}
         >
           Drafts
-        </a>
+        </Link>
         <div className="border-l mx-2" />
         {["beer", "cider", "hopwater", "other"].map((t) => (
-          <a
+          <Link
             key={t}
             href={`/?type=${t}${draftFilter ? `&draft=${draftFilter}` : ""}`}
             className={`px-4 py-2 rounded-md text-sm font-medium ${
@@ -195,7 +196,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             }`}
           >
             {t.charAt(0).toUpperCase() + t.slice(1)}
-          </a>
+          </Link>
         ))}
       </div>
 

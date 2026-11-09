@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MarkdownNotes } from "./markdown-notes";
+import { tracked, markDirty, clearDirty } from "@/lib/save-status";
 import bjcpStyles from "../../../../styles.json";
 import baStyles from "../../../data/ba_styles.json";
 
@@ -34,7 +35,9 @@ interface BatchFormProps {
   bare?: boolean;
 }
 
-export function BatchForm({ batch, equipment, updateAction, updateNotesAction, bare }: BatchFormProps) {
+export function BatchForm({ batch, equipment, updateAction: rawUpdateAction, updateNotesAction: rawUpdateNotesAction, bare }: BatchFormProps) {
+  const updateAction = tracked(rawUpdateAction);
+  const updateNotesAction = tracked(rawUpdateNotesAction);
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -42,6 +45,7 @@ export function BatchForm({ batch, equipment, updateAction, updateNotesAction, b
   const [equipmentId, setEquipmentId] = useState<string>(batch.equipmentId ?? "");
 
   const save = useCallback(async () => {
+    clearDirty("batchForm");
     if (!formRef.current) return;
     const formData = new FormData(formRef.current);
     try {
@@ -54,6 +58,7 @@ export function BatchForm({ batch, equipment, updateAction, updateNotesAction, b
 
   const scheduleAutoSave = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
+    markDirty("batchForm");
     timerRef.current = setTimeout(save, 800);
   }, [save]);
 

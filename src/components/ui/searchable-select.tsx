@@ -26,14 +26,16 @@ export function SearchableSelect({ value, onValueChange, placeholder = "Selectâ€
   const selected = options.find((o) => o.value === value);
 
   useEffect(() => {
-    if (open) {
-      setSearch("");
-      setTimeout(() => inputRef.current?.focus(), 0);
-    }
+    if (open) setTimeout(() => inputRef.current?.focus(), 0);
   }, [open]);
 
+  const handleOpenChange = (next: boolean) => {
+    if (next) setSearch("");
+    setOpen(next);
+  };
+
   return (
-    <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
+    <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
       <PopoverPrimitive.Trigger asChild>
         <button
           type="button"
